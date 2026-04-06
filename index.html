@@ -1648,21 +1648,23 @@ function renderResumen() {
   // Construir mensaje WhatsApp
   const fecha2 = new Date(state.fecha + 'T12:00:00').toLocaleDateString('es-AR', {weekday:'long',day:'numeric',month:'long'});
 
-  const msg = `Hola Celestia 🌟 Quiero reservar un chef privado.\n\n` +
-    `👨‍🍳 *Chef:* ${state.chef.nombre}\n` +
-    `🍽 *Servicio:* ${state.menu.nombre}\n` +
-    `📅 *Fecha:* ${fecha2}\n` +
-    `⏰ *Turno:* ${state.turno === 'almuerzo' ? 'Almuerzo 12:00hs' : 'Cena 20:00hs'}\n` +
-    `👥 *Personas:* ${state.personas}\n` +
-    `🎭 *Presencia del chef:* ${state.visibilidad}\n` +
-    `📍 *Dirección:* ${state.dir}\n\n` +
-    `💰 *Honorario:* ${fmt(hon.base)}${hon.asistente > 0 ? ` + ${fmt(hon.asistente)} asistente` : ''}\n` +
-    (ingredientes ? `🛒 *Ingredientes (est. sujeto a menú final):* ${fmt(ingredientes)}\n📊 *Total estimado:* ${fmt(total)}\n` : '') +
-    `\n📞 *Contacto:* ${state.nombre} · ${state.tel}\n` +
-    `✉️ *Email:* ${state.email}` +
-    (state.ocasion ? `\n🎉 *Ocasión:* ${state.ocasion}` : '') +
-    (state.notas ? `\n📝 *Notas:* ${state.notas}` : '') +
-    `\n\n¡Quedo a la espera de confirmación!`;
+  const msg =
+    `Hola Celestia, quiero reservar un chef privado.\n\n` +
+    `*Chef:* ${state.chef.nombre}\n` +
+    `*Servicio:* ${state.menu.nombre}\n` +
+    `*Fecha:* ${fecha2}\n` +
+    `*Turno:* ${state.turno === 'almuerzo' ? 'Almuerzo 12:00hs' : 'Cena 20:00hs'}\n` +
+    `*Personas:* ${state.personas}\n` +
+    `*Presencia del chef:* ${state.visibilidad}\n` +
+    `*Direccion:* ${state.dir}\n\n` +
+    `*Honorario:* ${fmt(hon.base)}${hon.asistente > 0 ? ` + ${fmt(hon.asistente)} asistente` : ''}\n` +
+    (ingredientes ? `*Ingredientes estimados (sujeto a menu final):* ${fmt(ingredientes)}\n*Total estimado:* ${fmt(total)}\n` : '') +
+    `\n*Contacto:* ${state.nombre}\n` +
+    `*Telefono:* ${state.tel}\n` +
+    `*Email:* ${state.email}` +
+    (state.ocasion ? `\n*Ocasion:* ${state.ocasion}` : '') +
+    (state.notas ? `\n*Notas:* ${state.notas}` : '') +
+    `\n\nQuedo a la espera de confirmacion. Muchas gracias.`;
 
   const waNumber = '5491160410607';
   const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(msg)}`;
@@ -1718,9 +1720,21 @@ function resetFlow() {
     calcPersonas:4, calcDia:'finde',
     nombre:'', tel:'', email:'', dir:'', personas:'', ocasion:'', visibilidad:'', notas:'', ref:null
   });
-  calYear = now.getFullYear();
-  calMonth = now.getMonth();
 
+  // Resetear calendario a fecha mínima 48hs
+  const minDate = new Date();
+  minDate.setDate(minDate.getDate() + 2);
+  calYear = minDate.getFullYear();
+  calMonth = minDate.getMonth();
+
+  // Resetear calcDiaState
+  Object.keys(calcDiaState).forEach(k => { calcDiaState[k] = 'finde'; });
+
+  // Ocultar todo y mostrar hero
+  [1, 2, 25, 3, 4, 5].forEach(s => {
+    const el = document.getElementById('screen-' + s);
+    if (el) el.style.display = 'none';
+  });
   document.getElementById('screen-success').style.display = 'none';
   document.getElementById('steps-bar').style.display = 'none';
   document.getElementById('main-content').style.display = 'none';
