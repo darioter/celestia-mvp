@@ -755,7 +755,115 @@ textarea { resize: vertical; min-height: 80px; }
     <div class="hero-label">✦ Experiencia gastronómica privada</div>
     <h1>El lujo de un chef privado,<br><em>ahora al alcance de tu mano.</em></h1>
     <p>Celestia transforma la forma de vivir la alta cocina en casa. Cocina, presentación y servicio de nivel restaurante, diseñada especialmente para vos.</p>
-    <button class="cta-btn" onclick="startFlow()">Reservar una experiencia →</button>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <button class="cta-btn" onclick="startFlow()">Reservar una experiencia →</button>
+      <button class="cta-btn" onclick="startMealPrep()" style="background:transparent;border:1.5px solid var(--gold);color:var(--gold-light);">Meal prep semanal →</button>
+    </div>
+  </div>
+
+  <!-- MEAL PREP SECTION -->
+  <div style="max-width:900px;margin:0 auto;padding:48px 20px 64px;">
+    <div style="text-align:center;margin-bottom:40px;">
+      <div style="font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;">✦ Servicio semanal</div>
+      <h2 style="font-family:'DM Serif Display',serif;font-size:32px;color:var(--navy);margin-bottom:12px;">Meal prep · Tu semana resuelta</h2>
+      <p style="color:var(--text-mid);font-size:15px;font-weight:300;max-width:520px;margin:0 auto;line-height:1.7;">Una o dos jornadas de cocción en tu casa que dejan toda la semana lista. Desayunos, almuerzos, meriendas, cenas y postres — variados, etiquetados y listos para regenerar.</p>
+    </div>
+
+    <!-- COMO FUNCIONA -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:40px;">
+      <div style="background:var(--white);border-radius:var(--radius);padding:22px;border:1px solid var(--cream-dark);">
+        <div style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--gold);margin-bottom:8px;">1</div>
+        <div style="font-size:14px;font-weight:500;color:var(--navy);margin-bottom:6px;">Planificación</div>
+        <div style="font-size:13px;color:var(--text-mid);font-weight:300;line-height:1.6;">Armamos juntos el menú de la semana según tus gustos, restricciones y rutinas.</div>
+      </div>
+      <div style="background:var(--white);border-radius:var(--radius);padding:22px;border:1px solid var(--cream-dark);">
+        <div style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--gold);margin-bottom:8px;">2</div>
+        <div style="font-size:14px;font-weight:500;color:var(--navy);margin-bottom:6px;">Compras y producción</div>
+        <div style="font-size:13px;color:var(--text-mid);font-weight:300;line-height:1.6;">Daro compra, cocina y produce todo en tu cocina. Sin que tengas que mover un dedo.</div>
+      </div>
+      <div style="background:var(--white);border-radius:var(--radius);padding:22px;border:1px solid var(--cream-dark);">
+        <div style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--gold);margin-bottom:8px;">3</div>
+        <div style="font-size:14px;font-weight:500;color:var(--navy);margin-bottom:6px;">Etiquetado y orden</div>
+        <div style="font-size:13px;color:var(--text-mid);font-weight:300;line-height:1.6;">Todo fraccionado, etiquetado con instrucciones de regenerado. Tu heladera lista para la semana.</div>
+      </div>
+      <div style="background:var(--white);border-radius:var(--radius);padding:22px;border:1px solid var(--cream-dark);">
+        <div style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--gold);margin-bottom:8px;">56+</div>
+        <div style="font-size:14px;font-weight:500;color:var(--navy);margin-bottom:6px;">Porciones semanales</div>
+        <div style="font-size:13px;color:var(--text-mid);font-weight:300;line-height:1.6;">Para una familia de 4: desayunos, almuerzos, meriendas, cenas, postres y snacks.</div>
+      </div>
+    </div>
+
+    <!-- CALCULADORA MEAL PREP -->
+    <div style="background:var(--navy);border-radius:var(--radius-lg);padding:32px;margin-bottom:24px;">
+      <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:24px;">✦ Calculá tu servicio</div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px;">
+
+        <!-- Personas -->
+        <div>
+          <label style="display:block;font-size:11px;color:rgba(250,246,239,0.5);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">Personas</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;" id="mp-pp-btns">
+            <button type="button" onclick="selectMpParam('pp','1-2')" id="mp-pp-1-2"
+              style="background:rgba(255,255,255,0.06);border:1.5px solid rgba(201,168,76,0.25);border-radius:10px;padding:10px 4px;cursor:pointer;text-align:center;">
+              <div style="font-size:12px;font-weight:500;color:var(--gold-light);">1–2</div>
+              <div style="font-size:10px;color:rgba(250,246,239,0.45);margin-top:2px;">personas</div>
+            </button>
+            <button type="button" onclick="selectMpParam('pp','3-4')" id="mp-pp-3-4"
+              style="background:rgba(201,168,76,0.15);border:1.5px solid var(--gold);border-radius:10px;padding:10px 4px;cursor:pointer;text-align:center;">
+              <div style="font-size:12px;font-weight:500;color:var(--gold-light);">3–4</div>
+              <div style="font-size:10px;color:rgba(250,246,239,0.45);margin-top:2px;">personas</div>
+            </button>
+            <button type="button" onclick="selectMpParam('pp','5-6')" id="mp-pp-5-6"
+              style="background:rgba(255,255,255,0.06);border:1.5px solid rgba(201,168,76,0.25);border-radius:10px;padding:10px 4px;cursor:pointer;text-align:center;">
+              <div style="font-size:12px;font-weight:500;color:var(--gold-light);">5–6</div>
+              <div style="font-size:10px;color:rgba(250,246,239,0.45);margin-top:2px;">personas</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Jornadas -->
+        <div>
+          <label style="display:block;font-size:11px;color:rgba(250,246,239,0.5);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">Jornadas semanales</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+            <button type="button" onclick="selectMpParam('jornadas','1')" id="mp-jornadas-1"
+              style="background:rgba(255,255,255,0.06);border:1.5px solid rgba(201,168,76,0.25);border-radius:10px;padding:10px 8px;cursor:pointer;text-align:center;">
+              <div style="font-size:12px;font-weight:500;color:var(--gold-light);">1 jornada</div>
+              <div style="font-size:10px;color:rgba(250,246,239,0.45);margin-top:2px;">~8hs · mitad semana</div>
+            </button>
+            <button type="button" onclick="selectMpParam('jornadas','2')" id="mp-jornadas-2"
+              style="background:rgba(201,168,76,0.15);border:1.5px solid var(--gold);border-radius:10px;padding:10px 8px;cursor:pointer;text-align:center;">
+              <div style="font-size:12px;font-weight:500;color:var(--gold-light);">2 jornadas</div>
+              <div style="font-size:10px;color:rgba(250,246,239,0.45);margin-top:2px;">~16hs · semana completa</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Comidas -->
+        <div>
+          <label style="display:block;font-size:11px;color:rgba(250,246,239,0.5);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">Comidas incluidas</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+            <button type="button" onclick="selectMpParam('comidas','basico')" id="mp-comidas-basico"
+              style="background:rgba(255,255,255,0.06);border:1.5px solid rgba(201,168,76,0.25);border-radius:10px;padding:10px 8px;cursor:pointer;text-align:center;">
+              <div style="font-size:12px;font-weight:500;color:var(--gold-light);">Básico</div>
+              <div style="font-size:10px;color:rgba(250,246,239,0.45);margin-top:2px;line-height:1.4;">Almuerzo + cena</div>
+            </button>
+            <button type="button" onclick="selectMpParam('comidas','completo')" id="mp-comidas-completo"
+              style="background:rgba(201,168,76,0.15);border:1.5px solid var(--gold);border-radius:10px;padding:10px 8px;cursor:pointer;text-align:center;">
+              <div style="font-size:12px;font-weight:500;color:var(--gold-light);">Completo</div>
+              <div style="font-size:10px;color:rgba(250,246,239,0.45);margin-top:2px;line-height:1.4;">Desayuno + almuerzo + merienda + cena + postre</div>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Resultado -->
+      <div id="mp-result" style="border-top:1px solid rgba(201,168,76,0.15);padding-top:20px;"></div>
+    </div>
+
+    <div style="text-align:center;">
+      <button class="cta-btn" onclick="startMealPrep()">Solicitar este servicio →</button>
+    </div>
   </div>
 </div>
 
@@ -960,6 +1068,174 @@ textarea { resize: vertical; min-height: 80px; }
       <p>Recibimos tu solicitud. En las próximas horas nos comunicamos para confirmar los detalles finales.</p>
       <div class="success-ref" id="success-ref"></div>
       <button class="cta-btn" onclick="resetFlow()">Hacer otra reserva</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- MEAL PREP FLOW -->
+<div id="mp-steps-bar" class="steps-bar" style="display:none">
+  <div class="step-item" id="mp-tab-1"><div class="step-num">1</div> Configurar</div>
+  <div class="step-divider"></div>
+  <div class="step-item" id="mp-tab-2"><div class="step-num">2</div> Fecha</div>
+  <div class="step-divider"></div>
+  <div class="step-item" id="mp-tab-3"><div class="step-num">3</div> Datos</div>
+  <div class="step-divider"></div>
+  <div class="step-item" id="mp-tab-4"><div class="step-num">4</div> Confirmar</div>
+</div>
+
+<div class="main" id="mp-content" style="display:none">
+
+  <!-- MP PASO 1: CONFIGURAR -->
+  <div id="mp-screen-1" class="screen" style="display:none">
+    <h2 class="section-title">Configurá tu semana</h2>
+    <p class="section-sub">Personalizá el servicio según tu familia y necesidades</p>
+
+    <div style="background:var(--navy);border-radius:var(--radius-lg);padding:28px;margin-bottom:20px;">
+      <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;">✦ Calculá tu servicio</div>
+
+      <div style="display:grid;grid-template-columns:1fr;gap:16px;margin-bottom:20px;">
+
+        <div>
+          <label style="display:block;font-size:11px;color:rgba(250,246,239,0.5);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">Personas</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+            <button type="button" onclick="selectMpFlow('pp','1-2')" id="mpf-pp-1-2"
+              style="background:rgba(255,255,255,0.06);border:1.5px solid rgba(201,168,76,0.25);border-radius:10px;padding:12px 4px;cursor:pointer;text-align:center;">
+              <div style="font-size:13px;font-weight:500;color:var(--gold-light);">1–2</div>
+              <div style="font-size:10px;color:rgba(250,246,239,0.45);margin-top:2px;">personas</div>
+            </button>
+            <button type="button" onclick="selectMpFlow('pp','3-4')" id="mpf-pp-3-4"
+              style="background:rgba(201,168,76,0.15);border:1.5px solid var(--gold);border-radius:10px;padding:12px 4px;cursor:pointer;text-align:center;">
+              <div style="font-size:13px;font-weight:500;color:var(--gold-light);">3–4</div>
+              <div style="font-size:10px;color:rgba(250,246,239,0.45);margin-top:2px;">personas</div>
+            </button>
+            <button type="button" onclick="selectMpFlow('pp','5-6')" id="mpf-pp-5-6"
+              style="background:rgba(255,255,255,0.06);border:1.5px solid rgba(201,168,76,0.25);border-radius:10px;padding:12px 4px;cursor:pointer;text-align:center;">
+              <div style="font-size:13px;font-weight:500;color:var(--gold-light);">5–6</div>
+              <div style="font-size:10px;color:rgba(250,246,239,0.45);margin-top:2px;">personas</div>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <label style="display:block;font-size:11px;color:rgba(250,246,239,0.5);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">Jornadas semanales</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <button type="button" onclick="selectMpFlow('jornadas','1')" id="mpf-jornadas-1"
+              style="background:rgba(255,255,255,0.06);border:1.5px solid rgba(201,168,76,0.25);border-radius:10px;padding:12px 8px;cursor:pointer;text-align:center;">
+              <div style="font-size:13px;font-weight:500;color:var(--gold-light);">1 jornada</div>
+              <div style="font-size:10px;color:rgba(250,246,239,0.45);margin-top:3px;">~8hs · mitad de semana</div>
+            </button>
+            <button type="button" onclick="selectMpFlow('jornadas','2')" id="mpf-jornadas-2"
+              style="background:rgba(201,168,76,0.15);border:1.5px solid var(--gold);border-radius:10px;padding:12px 8px;cursor:pointer;text-align:center;">
+              <div style="font-size:13px;font-weight:500;color:var(--gold-light);">2 jornadas</div>
+              <div style="font-size:10px;color:rgba(250,246,239,0.45);margin-top:3px;">~16hs · semana completa</div>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <label style="display:block;font-size:11px;color:rgba(250,246,239,0.5);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">Comidas incluidas</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <button type="button" onclick="selectMpFlow('comidas','basico')" id="mpf-comidas-basico"
+              style="background:rgba(255,255,255,0.06);border:1.5px solid rgba(201,168,76,0.25);border-radius:10px;padding:12px 8px;cursor:pointer;text-align:center;">
+              <div style="font-size:13px;font-weight:500;color:var(--gold-light);">Básico</div>
+              <div style="font-size:10px;color:rgba(250,246,239,0.45);margin-top:3px;">Almuerzo + cena</div>
+            </button>
+            <button type="button" onclick="selectMpFlow('comidas','completo')" id="mpf-comidas-completo"
+              style="background:rgba(201,168,76,0.15);border:1.5px solid var(--gold);border-radius:10px;padding:12px 8px;cursor:pointer;text-align:center;">
+              <div style="font-size:13px;font-weight:500;color:var(--gold-light);">Completo</div>
+              <div style="font-size:10px;color:rgba(250,246,239,0.45);margin-top:3px;line-height:1.4;">Desayuno + almuerzo + merienda + cena + postre</div>
+            </button>
+          </div>
+        </div>
+
+      </div>
+      <div id="mpf-result" style="border-top:1px solid rgba(201,168,76,0.15);padding-top:16px;"></div>
+    </div>
+
+    <div style="background:var(--gold-pale);border-radius:var(--radius);padding:16px 20px;margin-bottom:24px;font-size:13px;color:var(--text-mid);font-weight:300;line-height:1.7;">
+      Los ingredientes se coordinan y cotizan junto al menú definitivo — antes de la primera jornada coordinamos todo por WhatsApp.
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn-back" onclick="exitMealPrep()">← Volver al inicio</button>
+      <button class="btn-next" id="mp-btn-next-1" onclick="mpGoTo(2)">Elegir fecha →</button>
+    </div>
+  </div>
+
+  <!-- MP PASO 2: FECHA -->
+  <div id="mp-screen-2" class="screen" style="display:none">
+    <h2 class="section-title">¿Cuándo empezamos?</h2>
+    <p class="section-sub">Elegí la fecha de la primera jornada — días de semana únicamente</p>
+    <div id="mp-cal-nota" style="display:inline-flex;align-items:center;gap:8px;background:var(--gold-pale);border-radius:40px;padding:6px 14px;font-size:12px;color:var(--text-mid);margin-bottom:20px;">✦ Disponible: lunes · martes · miércoles · jueves</div>
+
+    <div class="calendar-wrap">
+      <div class="cal-header">
+        <button class="cal-nav" onclick="mpPrevMonth()">‹</button>
+        <div class="cal-month" id="mp-cal-month-label"></div>
+        <button class="cal-nav" onclick="mpNextMonth()">›</button>
+      </div>
+      <div class="cal-grid" id="mp-cal-grid"></div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="btn-back" onclick="mpGoTo(1)">← Volver</button>
+      <button class="btn-next" id="mp-btn-next-2" onclick="mpGoTo(3)" disabled>Continuar →</button>
+    </div>
+  </div>
+
+  <!-- MP PASO 3: DATOS -->
+  <div id="mp-screen-3" class="screen" style="display:none">
+    <h2 class="section-title">Tus datos</h2>
+    <p class="section-sub">Para coordinar el servicio con vos</p>
+    <div class="form-wrap">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nombre completo *</label>
+          <input type="text" id="mp-nombre" placeholder="Tu nombre" oninput="checkMpForm()">
+        </div>
+        <div class="form-group">
+          <label>Teléfono *</label>
+          <input type="tel" id="mp-tel" placeholder="+54 11 ..." oninput="checkMpForm()">
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Email *</label>
+          <input type="email" id="mp-email" placeholder="tu@email.com" oninput="checkMpForm()">
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Dirección *</label>
+          <input type="text" id="mp-dir" placeholder="Calle, número, barrio" oninput="checkMpForm()">
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Restricciones o preferencias alimentarias</label>
+          <textarea id="mp-notas" placeholder="Vegetarianos, alergias, gustos, rutinas..."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="nav-btns">
+      <button class="btn-back" onclick="mpGoTo(2)">← Volver</button>
+      <button class="btn-next" id="mp-btn-next-3" onclick="mpGoTo(4)" disabled>Ver resumen →</button>
+    </div>
+  </div>
+
+  <!-- MP PASO 4: CONFIRMAR -->
+  <div id="mp-screen-4" class="screen" style="display:none">
+    <h2 class="section-title">Confirmá tu servicio</h2>
+    <p class="section-sub">Revisá los detalles y envianos tu pedido por WhatsApp</p>
+    <div class="resumen-card" id="mp-resumen-card"></div>
+    <a id="mp-wa-link" class="wa-btn" href="#" target="_blank">
+      <svg class="wa-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+      Confirmar por WhatsApp
+    </a>
+    <p style="text-align:center;font-size:12px;color:var(--text-light);margin-bottom:32px;">Los ingredientes y el menú definitivo se coordinan junto a vos antes de la primera jornada.</p>
+    <div class="nav-btns" style="justify-content:flex-start;">
+      <button class="btn-back" onclick="mpGoTo(3)">← Editar datos</button>
     </div>
   </div>
 
@@ -1561,7 +1837,280 @@ function checkStep3() {
   document.getElementById('btn-next-3').disabled = !(state.fecha && state.turno);
 }
 
-// ─── PASO 4: DATOS ───────────────────────────────────────
+// ─── MEAL PREP ───────────────────────────────────────────
+
+// Estado meal prep
+const mpState = {
+  pp: '3-4',
+  jornadas: '2',
+  comidas: 'completo',
+  fecha: null,
+  nombre: '', tel: '', email: '', dir: '', notas: ''
+};
+
+let mpCalYear, mpCalMonth;
+
+// Precios base (honorario) para 3-4 personas
+const MP_PRECIOS = {
+  '1': { basico: 200000, completo: 240000 },
+  '2': { basico: 400000, completo: 480000 }
+};
+const MP_MULT = { '1-2': 0.8, '3-4': 1.0, '5-6': 1.25 };
+
+function calcMpHonorario(pp, jornadas, comidas) {
+  const base = MP_PRECIOS[jornadas][comidas];
+  const mult = MP_MULT[pp];
+  return Math.round(base * mult / 1000) * 1000;
+}
+
+const MP_COMIDAS_LABEL = {
+  basico: 'Almuerzo + cena',
+  completo: 'Desayuno · almuerzo · merienda · cena · postre'
+};
+
+// Calculadora del hero (sección informativa)
+function selectMpParam(param, valor) {
+  // Actualiza estado visual del hero
+  const grupos = { pp: ['1-2','3-4','5-6'], jornadas: ['1','2'], comidas: ['basico','completo'] };
+  grupos[param].forEach(v => {
+    const btn = document.getElementById(`mp-${param}-${v}`);
+    if (!btn) return;
+    const activo = v === valor;
+    btn.style.background = activo ? 'rgba(201,168,76,0.15)' : 'rgba(255,255,255,0.06)';
+    btn.style.border = activo ? '1.5px solid var(--gold)' : '1.5px solid rgba(201,168,76,0.25)';
+  });
+  // Guarda en mpState también
+  mpState[param] = valor;
+  updateMpResult('mp-result', mpState.pp, mpState.jornadas, mpState.comidas);
+}
+
+function updateMpResult(elId, pp, jornadas, comidas) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  const hon = calcMpHonorario(pp, jornadas, comidas);
+  const fmt = n => '$' + n.toLocaleString('es-AR');
+  const hs = jornadas === '1' ? '~8 horas' : '~16 horas en 2 jornadas';
+  el.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;">
+      <span style="font-size:13px;color:rgba(250,246,239,0.6);">Honorario del servicio</span>
+      <span style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--gold-light);">${fmt(hon)}</span>
+    </div>
+    <div style="font-size:12px;color:rgba(250,246,239,0.4);text-align:right;margin-bottom:12px;">${hs} · ${MP_COMIDAS_LABEL[comidas]}</div>
+    <div style="font-size:12px;color:rgba(250,246,239,0.4);font-style:italic;line-height:1.6;">Honorario de servicio puro. Los ingredientes se coordinan y cotizan junto al menu definitivo antes de la primera jornada.</div>`;
+}
+
+// Flujo meal prep
+function selectMpFlow(param, valor) {
+  mpState[param] = valor;
+  const grupos = { pp: ['1-2','3-4','5-6'], jornadas: ['1','2'], comidas: ['basico','completo'] };
+  grupos[param].forEach(v => {
+    const btn = document.getElementById(`mpf-${param}-${v}`);
+    if (!btn) return;
+    const activo = v === valor;
+    btn.style.background = activo ? 'rgba(201,168,76,0.15)' : 'rgba(255,255,255,0.06)';
+    btn.style.border = activo ? '1.5px solid var(--gold)' : '1.5px solid rgba(201,168,76,0.25)';
+  });
+  updateMpResult('mpf-result', mpState.pp, mpState.jornadas, mpState.comidas);
+}
+
+function startMealPrep() {
+  document.getElementById('hero-section').style.display = 'none';
+  document.getElementById('mp-steps-bar').style.display = 'flex';
+  document.getElementById('mp-content').style.display = 'block';
+
+  const minDate = new Date();
+  minDate.setDate(minDate.getDate() + 2);
+  mpCalYear = minDate.getFullYear();
+  mpCalMonth = minDate.getMonth();
+
+  // Sync estado de los botones del flujo con el estado actual
+  ['pp','jornadas','comidas'].forEach(param => {
+    selectMpFlow(param, mpState[param]);
+  });
+
+  mpGoTo(1);
+}
+
+function mpGoTo(step) {
+  [1,2,3,4].forEach(s => {
+    const el = document.getElementById('mp-screen-' + s);
+    if (el) el.style.display = 'none';
+  });
+  const screen = document.getElementById('mp-screen-' + step);
+  if (screen) screen.style.display = 'block';
+
+  [1,2,3,4].forEach(s => {
+    const tab = document.getElementById('mp-tab-' + s);
+    if (!tab) return;
+    tab.classList.remove('active', 'done');
+    if (s === step) tab.classList.add('active');
+    else if (s < step) tab.classList.add('done');
+  });
+
+  if (step === 2) mpRenderCalendar();
+  if (step === 4) mpRenderResumen();
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function exitMealPrep() {
+  document.getElementById('mp-steps-bar').style.display = 'none';
+  document.getElementById('mp-content').style.display = 'none';
+  document.getElementById('hero-section').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Calendario meal prep — solo Lu Ma Mi Ju (1,2,3,4)
+function mpRenderCalendar() {
+  document.getElementById('mp-cal-month-label').textContent = MESES[mpCalMonth] + ' ' + mpCalYear;
+  const grid = document.getElementById('mp-cal-grid');
+  grid.innerHTML = '';
+
+  DIAS.forEach(d => {
+    const el = document.createElement('div');
+    el.className = 'cal-day-name';
+    el.textContent = d;
+    grid.appendChild(el);
+  });
+
+  const firstDay = new Date(mpCalYear, mpCalMonth, 1).getDay();
+  const daysInMonth = new Date(mpCalYear, mpCalMonth + 1, 0).getDate();
+
+  const minDate = new Date();
+  minDate.setDate(minDate.getDate() + 2);
+  minDate.setHours(0, 0, 0, 0);
+
+  const diasHabilitados = [1, 2, 3, 4]; // Lu Ma Mi Ju
+
+  for (let i = 0; i < firstDay; i++) {
+    const el = document.createElement('div');
+    el.className = 'cal-day empty';
+    grid.appendChild(el);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date = new Date(mpCalYear, mpCalMonth, d);
+    date.setHours(0, 0, 0, 0);
+    const el = document.createElement('div');
+    const isBlocked = date < minDate || !diasHabilitados.includes(date.getDay());
+    const dateStr = date.toISOString().slice(0, 10);
+    const isSelected = mpState.fecha === dateStr;
+
+    el.className = 'cal-day' + (isBlocked ? ' disabled' : '') + (isSelected ? ' selected' : '');
+    el.textContent = d;
+
+    if (!isBlocked) {
+      el.onclick = () => {
+        mpState.fecha = dateStr;
+        document.querySelectorAll('#mp-cal-grid .cal-day').forEach(d => d.classList.remove('selected'));
+        el.classList.add('selected');
+        document.getElementById('mp-btn-next-2').disabled = false;
+      };
+    }
+    grid.appendChild(el);
+  }
+}
+
+function mpPrevMonth() {
+  mpCalMonth--;
+  if (mpCalMonth < 0) { mpCalMonth = 11; mpCalYear--; }
+  mpRenderCalendar();
+}
+function mpNextMonth() {
+  mpCalMonth++;
+  if (mpCalMonth > 11) { mpCalMonth = 0; mpCalYear++; }
+  mpRenderCalendar();
+}
+
+function checkMpForm() {
+  const ok = ['mp-nombre','mp-tel','mp-email','mp-dir'].every(id =>
+    document.getElementById(id).value.trim() !== ''
+  );
+  document.getElementById('mp-btn-next-3').disabled = !ok;
+  if (ok) {
+    mpState.nombre = document.getElementById('mp-nombre').value.trim();
+    mpState.tel = document.getElementById('mp-tel').value.trim();
+    mpState.email = document.getElementById('mp-email').value.trim();
+    mpState.dir = document.getElementById('mp-dir').value.trim();
+    mpState.notas = document.getElementById('mp-notas').value.trim();
+  }
+}
+
+function mpRenderResumen() {
+  mpState.nombre = document.getElementById('mp-nombre').value.trim();
+  mpState.tel = document.getElementById('mp-tel').value.trim();
+  mpState.email = document.getElementById('mp-email').value.trim();
+  mpState.dir = document.getElementById('mp-dir').value.trim();
+  mpState.notas = document.getElementById('mp-notas').value.trim();
+
+  const hon = calcMpHonorario(mpState.pp, mpState.jornadas, mpState.comidas);
+  const fmt = n => '$' + n.toLocaleString('es-AR');
+  const fecha = new Date(mpState.fecha + 'T12:00:00');
+  const fechaStr = fecha.toLocaleDateString('es-AR', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+  const jornadasLabel = mpState.jornadas === '1' ? '1 jornada (~8hs)' : '2 jornadas (~16hs en semana)';
+
+  document.getElementById('mp-resumen-card').innerHTML = `
+    <div class="resumen-title">✦ Tu meal prep semanal</div>
+    <div class="resumen-row">
+      <div class="resumen-label">Chef</div>
+      <div class="resumen-val"><strong>Daro Castello</strong><br><small style="opacity:.6">Cocina de mercado · estacional</small></div>
+    </div>
+    <div class="resumen-row">
+      <div class="resumen-label">Personas</div>
+      <div class="resumen-val">${mpState.pp} personas</div>
+    </div>
+    <div class="resumen-row">
+      <div class="resumen-label">Jornadas</div>
+      <div class="resumen-val">${jornadasLabel}</div>
+    </div>
+    <div class="resumen-row">
+      <div class="resumen-label">Comidas</div>
+      <div class="resumen-val">${MP_COMIDAS_LABEL[mpState.comidas]}</div>
+    </div>
+    <div class="resumen-row">
+      <div class="resumen-label">Primera jornada</div>
+      <div class="resumen-val">${fechaStr}</div>
+    </div>
+    <div class="resumen-row" style="background:rgba(201,168,76,0.08);margin:0 -32px;padding:12px 32px;border-radius:0;">
+      <div class="resumen-label" style="color:var(--gold-light);">Honorario</div>
+      <div class="resumen-val" style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--gold-light);">${fmt(hon)}</div>
+    </div>
+    <div class="resumen-row">
+      <div class="resumen-label">Dirección</div>
+      <div class="resumen-val">${mpState.dir}</div>
+    </div>
+    <div class="resumen-row">
+      <div class="resumen-label">Contacto</div>
+      <div class="resumen-val">${mpState.nombre}<br><small style="opacity:.6">${mpState.tel} · ${mpState.email}</small></div>
+    </div>
+    ${mpState.notas ? `<div class="resumen-row"><div class="resumen-label">Notas</div><div class="resumen-val">${mpState.notas}</div></div>` : ''}
+  `;
+
+  const fechaWA = fecha.toLocaleDateString('es-AR', {weekday:'long', day:'numeric', month:'long'});
+  const msg =
+    `Hola Celestia, quiero solicitar el servicio de meal prep semanal.\n\n` +
+    `*Chef:* Daro Castello\n` +
+    `*Personas:* ${mpState.pp}\n` +
+    `*Jornadas:* ${jornadasLabel}\n` +
+    `*Comidas incluidas:* ${MP_COMIDAS_LABEL[mpState.comidas]}\n` +
+    `*Primera jornada:* ${fechaWA}\n` +
+    `*Honorario:* ${fmt(hon)}\n` +
+    `*Direccion:* ${mpState.dir}\n\n` +
+    `*Contacto:* ${mpState.nombre}\n` +
+    `*Telefono:* ${mpState.tel}\n` +
+    `*Email:* ${mpState.email}` +
+    (mpState.notas ? `\n*Notas:* ${mpState.notas}` : '') +
+    `\n\nQuedo a la espera de confirmacion para coordinar el menu y los ingredientes. Muchas gracias.`;
+
+  const waUrl = `https://wa.me/5491160410607?text=${encodeURIComponent(msg)}`;
+  document.getElementById('mp-wa-link').href = waUrl;
+}
+
+// Inicializar calculadora del hero
+document.addEventListener('DOMContentLoaded', () => {
+  updateMpResult('mp-result', mpState.pp, mpState.jornadas, mpState.comidas);
+});
+
 function checkForm4() {
   const ok = ['f-nombre','f-tel','f-email','f-dir','f-personas','f-visibilidad'].every(id => {
     return document.getElementById(id).value.trim() !== '';
