@@ -266,25 +266,29 @@ header {
 /* ─── MENU CARDS ─── */
 .menu-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 16px;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
   margin-bottom: 40px;
+}
+@media (max-width: 700px) {
+  .menu-grid { grid-template-columns: 1fr; }
 }
 .menu-card {
   background: var(--white);
-  border-radius: var(--radius);
-  padding: 24px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
   cursor: pointer;
   border: 2px solid var(--cream-dark);
   transition: all 0.2s;
   position: relative;
   display: flex;
   flex-direction: column;
+  box-shadow: var(--shadow);
 }
-.menu-card:hover { border-color: var(--gold-light); transform: translateY(-2px); }
+.menu-card:hover { border-color: var(--gold-light); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
 .menu-card.selected {
   border-color: var(--gold);
-  background: var(--gold-pale);
+  box-shadow: var(--shadow-lg);
 }
 .menu-card.selected::after {
   content: '✓';
@@ -298,9 +302,10 @@ header {
   font-size: 12px;
   font-weight: 700;
 }
+.menu-card-body { padding: 28px 28px 0; }
 .menu-name {
   font-family: 'DM Serif Display', serif;
-  font-size: 18px;
+  font-size: 24px;
   color: var(--navy);
   margin-bottom: 6px;
 }
@@ -309,27 +314,27 @@ header {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-light);
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 .menu-desc {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text-mid);
-  line-height: 1.6;
+  line-height: 1.7;
   font-weight: 300;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 .menu-courses {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
   margin-bottom: 16px;
 }
 .menu-course {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-mid);
   display: flex;
   align-items: flex-start;
-  gap: 6px;
+  gap: 8px;
 }
 .menu-course::before {
   content: '·';
@@ -337,12 +342,78 @@ header {
   font-weight: 700;
   flex-shrink: 0;
 }
-.menu-price {
-  font-family: 'DM Serif Display', serif;
-  font-size: 22px;
-  color: var(--navy);
+/* Tabs de menús de ejemplo */
+.menu-tabs {
+  display: flex;
+  border-top: 1px solid var(--cream-dark);
+  margin-top: 4px;
 }
-.menu-price span { font-size: 13px; color: var(--text-light); font-family: 'DM Sans', sans-serif; }
+.menu-tab {
+  flex: 1;
+  padding: 10px 12px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-light);
+  text-align: center;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+  background: none;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  font-family: 'DM Sans', sans-serif;
+}
+.menu-tab.active {
+  color: var(--navy);
+  border-bottom-color: var(--gold);
+}
+.menu-tab:hover:not(.active) { color: var(--navy); background: var(--cream); }
+.menu-ejemplo-panel {
+  display: none;
+  padding: 20px 28px;
+  background: var(--cream);
+  border-top: 1px solid var(--cream-dark);
+}
+.menu-ejemplo-panel.active { display: block; }
+.menu-ejemplo-nombre {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+.menu-ejemplo-plato {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--cream-dark);
+  font-size: 13px;
+  color: var(--text-mid);
+  font-weight: 300;
+  line-height: 1.5;
+}
+.menu-ejemplo-plato:last-child { border-bottom: none; }
+.menu-ejemplo-num {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--gold);
+  flex-shrink: 0;
+  padding-top: 2px;
+  min-width: 14px;
+}
+.menu-ideal {
+  font-size: 12px;
+  color: var(--text-light);
+  font-style: italic;
+  padding: 14px 28px;
+  border-top: 1px solid var(--cream-dark);
+  flex-grow: 1;
+}
 
 /* ─── CALENDARIO ─── */
 .calendar-wrap { background: var(--white); border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow); margin-bottom: 24px; }
@@ -1519,16 +1590,45 @@ function renderMenus() {
 
   const grid = document.getElementById('menu-grid');
   grid.innerHTML = availableMenus.map(m => `
-    <div class="menu-card${state.menu?.id === m.id ? ' selected' : ''}" onclick="selectMenu(${m.id})" id="menu-card-${m.id}" style="cursor:pointer;">
-      <div class="menu-name">${m.nombre}</div>
-      <div class="menu-persons">👥 ${m.personas}</div>
-      <div class="menu-desc">${m.desc}</div>
-      <div class="menu-courses">
-        ${m.cursos.map(c => `<div class="menu-course">${c}</div>`).join('')}
+    <div class="menu-card${state.menu?.id === m.id ? ' selected' : ''}" id="menu-card-${m.id}">
+
+      <div class="menu-card-body" onclick="selectMenu(${m.id})">
+        <div class="menu-name">${m.nombre}</div>
+        <div class="menu-persons">👥 ${m.personas}</div>
+        <div class="menu-desc">${m.desc}</div>
+        <div class="menu-courses">
+          ${m.cursos.map(c => `<div class="menu-course">${c}</div>`).join('')}
+        </div>
       </div>
-      <div style="font-size:12px;color:var(--text-light);margin-bottom:16px;font-style:italic;flex-grow:1;">Ideal para: ${m.ideal}</div>
-      ${m.id !== 3 ? `
-      <div class="calc-wrap" onclick="event.stopPropagation()">
+
+      <!-- Tabs: Estructura / Menú de ejemplo -->
+      <div class="menu-tabs" onclick="event.stopPropagation()">
+        <button class="menu-tab active" onclick="switchTab(${m.id},'estructura',this)">Estructura</button>
+        ${m.ejemplo ? `<button class="menu-tab" onclick="switchTab(${m.id},'ejemplo',this)">${m.ejemplo.nombre}</button>` : ''}
+      </div>
+
+      <!-- Panel estructura (visible por defecto) -->
+      <div class="menu-ejemplo-panel active" id="tab-estructura-${m.id}" onclick="event.stopPropagation()">
+        <div class="menu-courses" style="margin:0;">
+          ${m.cursos.map(c => `<div class="menu-course">${c}</div>`).join('')}
+        </div>
+      </div>
+
+      <!-- Panel ejemplo -->
+      ${m.ejemplo ? `
+      <div class="menu-ejemplo-panel" id="tab-ejemplo-${m.id}" onclick="event.stopPropagation()">
+        <div class="menu-ejemplo-nombre">✦ ${m.ejemplo.nombre}</div>
+        ${m.ejemplo.platos.map((p, i) => `
+          <div class="menu-ejemplo-plato">
+            <span class="menu-ejemplo-num">${i + 1}</span>
+            <span>${p}</span>
+          </div>`).join('')}
+      </div>` : ''}
+
+      <div class="menu-ideal" onclick="selectMenu(${m.id})">Ideal para: ${m.ideal}</div>
+
+      <!-- Calculadora -->
+      <div class="calc-wrap" onclick="event.stopPropagation()" style="margin:0;border-radius:0 0 var(--radius-lg) var(--radius-lg);">
         <div class="calc-title">✦ Calculá tu experiencia</div>
         <div class="calc-controls">
           <div class="calc-control">
@@ -1540,16 +1640,12 @@ function renderMenus() {
           <div class="calc-control">
             <label>Día del servicio</label>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;" id="calc-dia-btns-${m.id}">
-              <button type="button"
-                onclick="selectDia(${m.id},'semana')"
-                id="calc-dia-semana-${m.id}"
+              <button type="button" onclick="selectDia(${m.id},'semana')" id="calc-dia-semana-${m.id}"
                 style="background:rgba(255,255,255,0.06);border:1.5px solid rgba(201,168,76,0.25);border-radius:10px;padding:10px 8px;cursor:pointer;text-align:center;transition:all 0.15s;">
                 <div style="font-size:11px;font-weight:500;color:var(--gold-light);letter-spacing:0.06em;margin-bottom:3px;">SEMANA</div>
                 <div style="font-size:10px;color:rgba(250,246,239,0.5);line-height:1.4;">Lu Ma Mi Ju<br>Vi mediodía</div>
               </button>
-              <button type="button"
-                onclick="selectDia(${m.id},'finde')"
-                id="calc-dia-finde-${m.id}"
+              <button type="button" onclick="selectDia(${m.id},'finde')" id="calc-dia-finde-${m.id}"
                 style="background:rgba(201,168,76,0.15);border:1.5px solid var(--gold);border-radius:10px;padding:10px 8px;cursor:pointer;text-align:center;transition:all 0.15s;">
                 <div style="font-size:11px;font-weight:500;color:var(--gold-light);letter-spacing:0.06em;margin-bottom:3px;">FIN DE SEMANA</div>
                 <div style="font-size:10px;color:rgba(250,246,239,0.5);line-height:1.4;">Vi noche<br>Sá · Do</div>
@@ -1558,23 +1654,28 @@ function renderMenus() {
           </div>
         </div>
         <div class="calc-result" id="calc-result-${m.id}"></div>
-      </div>` : `
-      <div style="background:var(--gold-pale);border-radius:10px;padding:14px 16px;font-size:13px;color:var(--text-mid);font-weight:300;line-height:1.6;margin-top:auto;">
-        <strong style="color:var(--navy);display:block;margin-bottom:4px;">Honorario del servicio</strong>
-        1–2 personas: $280.000 · 3–5 personas: $380.000<br>
-        <span style="font-size:11px;font-style:italic;">Ingredientes y productos a coordinar por WhatsApp</span>
-      </div>`}
+      </div>
+
     </div>
   `).join('');
 
   // Inicializar calculadoras
   availableMenus.forEach(m => {
-    if (m.id !== 3) {
-      if (!calcDiaState[m.id]) calcDiaState[m.id] = 'finde';
-      updateCalc(m.id);
-    }
+    if (!calcDiaState[m.id]) calcDiaState[m.id] = 'finde';
+    updateCalc(m.id);
   });
   document.getElementById('btn-next-2').disabled = !state.menu;
+}
+
+function switchTab(menuId, tab, btn) {
+  // Toggle tabs
+  const card = document.getElementById('menu-card-' + menuId);
+  card.querySelectorAll('.menu-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  // Toggle panels
+  card.querySelectorAll('.menu-ejemplo-panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById(`tab-${tab}-${menuId}`);
+  if (panel) panel.classList.add('active');
 }
 
 // Estado de día por menuId
