@@ -1793,24 +1793,6 @@ function renderMenus() {
     const platos = m.ejemplo ? m.ejemplo.platos : [];
     return `
     <div class="menu-card${state.menu?.id === m.id ? ' selected' : ''}" id="menu-card-${m.id}">
-      ${m.ejemplo ? `
-      <div class="carrusel-wrap" onclick="event.stopPropagation()">
-        <div class="carrusel-track" id="${carruselId}-track">
-          ${platos.map((p, i) => `
-            <div class="carrusel-slide">
-              ${p.foto ? `<img class="carrusel-img" src="${p.foto}" alt="${p.nombre}">` : `<div class="carrusel-placeholder"><div style="font-size:32px;opacity:0.25;">✦</div><div style="font-size:10px;color:rgba(250,246,239,0.25);letter-spacing:0.1em;text-transform:uppercase;margin-top:6px;">${p.paso}</div></div>`}
-              <div class="carrusel-overlay">
-                <div class="carrusel-paso">${p.paso}</div>
-                <div class="carrusel-nombre">${p.nombre}</div>
-              </div>
-            </div>`).join('')}
-        </div>
-        <button class="carrusel-nav prev" onclick="carruselNav('${carruselId}', -1, ${platos.length})">‹</button>
-        <button class="carrusel-nav next" onclick="carruselNav('${carruselId}', 1, ${platos.length})">›</button>
-        <div class="carrusel-dots">
-          ${platos.map((_, i) => `<button class="carrusel-dot${i===0?' active':''}" onclick="carruselGoTo('${carruselId}', ${i}, ${platos.length})"></button>`).join('')}
-        </div>
-      </div>` : ''}
       <div class="menu-card-body" onclick="selectMenu(${m.id})" style="padding:20px 22px 0;">
         <div class="menu-name" style="font-size:20px;">${m.nombre}</div>
         <div class="menu-persons">👥 ${m.personas}</div>
@@ -1968,7 +1950,7 @@ function renderDesglose() {
         ${menu.ejemplo.platos.map((p, i) => `
           <div class="calc-plato">
             <span class="calc-plato-num">${i + 1}</span>
-            <span>${p}</span>
+            <span>${typeof p === 'object' ? p.nombre : p}</span>
           </div>`).join('')}
       </div>`;
   }
