@@ -1005,7 +1005,7 @@ textarea { resize: vertical; min-height: 80px; }
     <p>Celestia transforma la forma de vivir la alta cocina en casa. Cocina, presentación y servicio de nivel restaurante, diseñada especialmente para vos.</p>
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
       <button class="cta-btn" onclick="startFlow()">Reservar una experiencia →</button>
-      <button class="cta-btn" onclick="startMealPrep()" style="background:transparent;border:1.5px solid var(--gold);color:var(--gold-light);">Meal prep semanal →</button>
+      <button class="cta-btn" onclick="startMealPrep()" style="background:transparent;border:1.5px solid var(--gold);color:var(--gold-light);">Chef semanal →</button>
     </div>
   </div>
 
@@ -1021,7 +1021,7 @@ textarea { resize: vertical; min-height: 80px; }
       </button>
       <button id="tab-btn-meal" onclick="switchServiceTab('meal')"
         style="font-family:'DM Sans',sans-serif;font-size:14px;font-weight:400;color:var(--text-light);padding:12px 28px;border:none;background:none;cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1.5px;letter-spacing:0.02em;">
-        Meal prep semanal
+        Chef semanal
       </button>
     </div>
 
@@ -1082,7 +1082,7 @@ textarea { resize: vertical; min-height: 80px; }
           <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;">✦ Tu semana resuelta</div>
           <h3 style="font-family:'DM Serif Display',serif;font-size:26px;color:var(--navy);margin-bottom:16px;line-height:1.2;">Una o dos jornadas que dejan toda la semana lista</h3>
           <p style="font-size:14px;color:var(--text-mid);font-weight:300;line-height:1.75;margin-bottom:24px;">Daro cocina en tu casa, deja todo fraccionado, etiquetado y listo para regenerar. Desayunos, almuerzos, meriendas, cenas y postres — variados y de calidad, sin que tengas que mover un dedo.</p>
-          <button class="cta-btn" onclick="startMealPrep()" style="font-size:13px;padding:12px 28px;">Solicitar meal prep →</button>
+          <button class="cta-btn" onclick="startMealPrep()" style="font-size:13px;padding:12px 28px;">Solicitar chef semanal →</button>
         </div>
         <div style="display:flex;flex-direction:column;gap:16px;">
           <div style="display:flex;gap:16px;align-items:flex-start;">
@@ -2451,7 +2451,7 @@ function mpRenderResumen() {
   const jornadasLabel = mpState.jornadas === '1' ? '1 jornada (~8hs)' : '2 jornadas (~16hs en semana)';
 
   document.getElementById('mp-resumen-card').innerHTML = `
-    <div class="resumen-title">✦ Tu meal prep semanal</div>
+    <div class="resumen-title">✦ Tu chef semanal</div>
     <div class="resumen-row">
       <div class="resumen-label">Chef</div>
       <div class="resumen-val"><strong>Daro Castello</strong><br><small style="opacity:.6">Cocina de mercado · estacional</small></div>
@@ -2489,7 +2489,7 @@ function mpRenderResumen() {
 
   const fechaWA = fecha.toLocaleDateString('es-AR', {weekday:'long', day:'numeric', month:'long'});
   const msg =
-    `Hola Celestia, quiero solicitar el servicio de meal prep semanal.\n\n` +
+    `Hola Celestia, quiero solicitar el servicio de chef semanal.\n\n` +
     `*Chef:* Daro Castello\n` +
     `*Personas:* ${mpState.pp}\n` +
     `*Jornadas:* ${jornadasLabel}\n` +
