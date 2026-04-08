@@ -199,7 +199,7 @@ header {
 /* ─── CHEF CARDS ─── */
 .chef-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: 1fr;
   gap: 20px;
   margin-bottom: 40px;
 }
@@ -211,6 +211,11 @@ header {
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
   border: 2px solid transparent;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+}
+@media (max-width: 640px) {
+  .chef-card { grid-template-columns: 1fr; }
 }
 .chef-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
 .chef-card.selected {
@@ -219,9 +224,15 @@ header {
   box-shadow: var(--shadow-lg);
 }
 .chef-photo {
-  width: 100%; aspect-ratio: 4/3;
+  width: 100%;
+  height: 100%;
+  min-height: 260px;
   object-fit: cover;
+  object-position: center top;
   display: block;
+}
+@media (max-width: 640px) {
+  .chef-photo { height: auto; min-height: unset; aspect-ratio: 4/3; }
 }
 .chef-photo-placeholder {
   width: 100%; aspect-ratio: 4/3;
@@ -229,12 +240,12 @@ header {
   display: flex; align-items: center; justify-content: center;
   font-size: 56px;
 }
-.chef-info { padding: 20px; }
+.chef-info { padding: 32px; display: flex; flex-direction: column; justify-content: center; }
 .chef-name {
   font-family: 'DM Serif Display', serif;
-  font-size: 20px;
+  font-size: 26px;
   color: var(--navy);
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 .chef-specialty {
   font-size: 11px;
@@ -242,12 +253,12 @@ header {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--gold);
-  margin-bottom: 10px;
+  margin-bottom: 14px;
 }
 .chef-bio {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text-mid);
-  line-height: 1.65;
+  line-height: 1.75;
   font-weight: 300;
 }
 .chef-badge {
@@ -996,6 +1007,120 @@ textarea { resize: vertical; min-height: 80px; }
       <button class="cta-btn" onclick="startFlow()">Reservar una experiencia →</button>
       <button class="cta-btn" onclick="startMealPrep()" style="background:transparent;border:1.5px solid var(--gold);color:var(--gold-light);">Meal prep semanal →</button>
     </div>
+  </div>
+
+  <!-- SECCIÓN EXPLICATIVA CON SOLAPAS -->
+  <div style="background:var(--cream);border-top:1px solid var(--cream-dark);">
+  <div style="max-width:860px;margin:0 auto;padding:56px 20px 64px;">
+
+    <!-- Tabs -->
+    <div style="display:flex;border-bottom:1.5px solid var(--cream-dark);margin-bottom:40px;">
+      <button id="tab-btn-chef" onclick="switchServiceTab('chef')"
+        style="font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;color:var(--navy);padding:12px 28px;border:none;background:none;cursor:pointer;border-bottom:2.5px solid var(--gold);margin-bottom:-1.5px;letter-spacing:0.02em;">
+        Chef privado
+      </button>
+      <button id="tab-btn-meal" onclick="switchServiceTab('meal')"
+        style="font-family:'DM Sans',sans-serif;font-size:14px;font-weight:400;color:var(--text-light);padding:12px 28px;border:none;background:none;cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1.5px;letter-spacing:0.02em;">
+        Meal prep semanal
+      </button>
+    </div>
+
+    <!-- Panel: Chef privado -->
+    <div id="tab-panel-chef">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;">
+        <div>
+          <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;">✦ Cómo funciona</div>
+          <h3 style="font-family:'DM Serif Display',serif;font-size:26px;color:var(--navy);margin-bottom:16px;line-height:1.2;">Una experiencia de restaurante, en la intimidad de tu casa</h3>
+          <p style="font-size:14px;color:var(--text-mid);font-weight:300;line-height:1.75;margin-bottom:24px;">Daro llega a tu domicilio, cocina en vivo y presenta cada paso. Vos y tus invitados disfrutan — sin moverse, sin esperar, sin reservar con meses de anticipación.</p>
+          <button class="cta-btn" onclick="startFlow()" style="font-size:13px;padding:12px 28px;">Reservar una experiencia →</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div style="display:flex;gap:16px;align-items:flex-start;">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--gold-pale);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <span style="font-family:'DM Serif Display',serif;font-size:16px;color:var(--gold);">1</span>
+            </div>
+            <div>
+              <div style="font-size:14px;font-weight:500;color:var(--navy);margin-bottom:4px;">Reservá y coordinamos</div>
+              <div style="font-size:13px;color:var(--text-mid);font-weight:300;line-height:1.6;">Elegís el menú, la fecha y el turno. Daro confirma y coordinan los últimos detalles por WhatsApp.</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:16px;align-items:flex-start;">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--gold-pale);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <span style="font-family:'DM Serif Display',serif;font-size:16px;color:var(--gold);">2</span>
+            </div>
+            <div>
+              <div style="font-size:14px;font-weight:500;color:var(--navy);margin-bottom:4px;">Visita previa y compras</div>
+              <div style="font-size:13px;color:var(--text-mid);font-weight:300;line-height:1.6;">Daro visita tu cocina, planifica y compra los ingredientes del menú acordado.</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:16px;align-items:flex-start;">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--gold-pale);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <span style="font-family:'DM Serif Display',serif;font-size:16px;color:var(--gold);">3</span>
+            </div>
+            <div>
+              <div style="font-size:14px;font-weight:500;color:var(--navy);margin-bottom:4px;">El servicio</div>
+              <div style="font-size:13px;color:var(--text-mid);font-weight:300;line-height:1.6;">Llega de buena presencia, presenta la idea rectora de la cena y sirve cada paso con su historia. El vino lo elegís vos.</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:16px;align-items:flex-start;">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--gold-pale);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <span style="font-family:'DM Serif Display',serif;font-size:16px;color:var(--gold);">4</span>
+            </div>
+            <div>
+              <div style="font-size:14px;font-weight:500;color:var(--navy);margin-bottom:4px;">Cierre y pago</div>
+              <div style="font-size:13px;color:var(--text-mid);font-weight:300;line-height:1.6;">Daro ordena la cocina y se retira. El saldo se abona al final del servicio — con propina sugerida del 15%.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel: Meal prep -->
+    <div id="tab-panel-meal" style="display:none;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;">
+        <div>
+          <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;">✦ Tu semana resuelta</div>
+          <h3 style="font-family:'DM Serif Display',serif;font-size:26px;color:var(--navy);margin-bottom:16px;line-height:1.2;">Una o dos jornadas que dejan toda la semana lista</h3>
+          <p style="font-size:14px;color:var(--text-mid);font-weight:300;line-height:1.75;margin-bottom:24px;">Daro cocina en tu casa, deja todo fraccionado, etiquetado y listo para regenerar. Desayunos, almuerzos, meriendas, cenas y postres — variados y de calidad, sin que tengas que mover un dedo.</p>
+          <button class="cta-btn" onclick="startMealPrep()" style="font-size:13px;padding:12px 28px;">Solicitar meal prep →</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div style="display:flex;gap:16px;align-items:flex-start;">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--gold-pale);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <span style="font-family:'DM Serif Display',serif;font-size:16px;color:var(--gold);">1</span>
+            </div>
+            <div>
+              <div style="font-size:14px;font-weight:500;color:var(--navy);margin-bottom:4px;">Planificación personalizada</div>
+              <div style="font-size:13px;color:var(--text-mid);font-weight:300;line-height:1.6;">Armamos juntos el menú de la semana según tus gustos, restricciones y rutinas.</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:16px;align-items:flex-start;">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--gold-pale);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <span style="font-family:'DM Serif Display',serif;font-size:16px;color:var(--gold);">2</span>
+            </div>
+            <div>
+              <div style="font-size:14px;font-weight:500;color:var(--navy);margin-bottom:4px;">Compras y producción</div>
+              <div style="font-size:13px;color:var(--text-mid);font-weight:300;line-height:1.6;">Daro compra todo y cocina en tu cocina en 1 o 2 jornadas de 7 a 9 horas cada una.</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:16px;align-items:flex-start;">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--gold-pale);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <span style="font-family:'DM Serif Display',serif;font-size:16px;color:var(--gold);">3</span>
+            </div>
+            <div>
+              <div style="font-size:14px;font-weight:500;color:var(--navy);margin-bottom:4px;">Fraccionado y etiquetado</div>
+              <div style="font-size:13px;color:var(--text-mid);font-weight:300;line-height:1.6;">Todo ordenado, etiquetado con instrucciones de regenerado. Tu heladera lista de lunes a viernes.</div>
+            </div>
+          </div>
+          <div style="background:var(--gold-pale);border-radius:var(--radius);padding:14px 16px;">
+            <div style="font-size:13px;font-weight:500;color:var(--navy);margin-bottom:4px;">56+ porciones semanales</div>
+            <div style="font-size:12px;color:var(--text-mid);font-weight:300;line-height:1.6;">Para una familia de 4: desayunos, almuerzos, meriendas, cenas, postres y snacks — todo resuelto.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
   </div>
 </div>
 
@@ -2125,6 +2250,16 @@ function mpGoTo(step) {
   if (step === 4) mpRenderResumen();
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function switchServiceTab(tab) {
+  const isChef = tab === 'chef';
+  document.getElementById('tab-panel-chef').style.display = isChef ? 'block' : 'none';
+  document.getElementById('tab-panel-meal').style.display = isChef ? 'none' : 'block';
+  const on = 'font-family:\'DM Sans\',sans-serif;font-size:14px;font-weight:500;color:var(--navy);padding:12px 28px;border:none;background:none;cursor:pointer;border-bottom:2.5px solid var(--gold);margin-bottom:-1.5px;letter-spacing:0.02em;';
+  const off = 'font-family:\'DM Sans\',sans-serif;font-size:14px;font-weight:400;color:var(--text-light);padding:12px 28px;border:none;background:none;cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1.5px;letter-spacing:0.02em;';
+  document.getElementById('tab-btn-chef').style.cssText = isChef ? on : off;
+  document.getElementById('tab-btn-meal').style.cssText = isChef ? off : on;
 }
 
 function exitMealPrep() {
