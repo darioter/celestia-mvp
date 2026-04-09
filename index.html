@@ -1891,6 +1891,34 @@ function renderMenus() {
         <div class="corpo-items">
           ${m.cursos.map(c => `<div class="corpo-item">${c}</div>`).join('')}
         </div>
+        <!-- SVG decorativo corporativo -->
+        <div style="padding:0 24px;margin-bottom:8px;">
+          <svg width="100%" viewBox="0 0 220 140" xmlns="http://www.w3.org/2000/svg" style="display:block;opacity:0.55;">
+            <circle cx="50" cy="70" r="32" fill="none" stroke="rgba(201,168,76,0.5)" stroke-width="1"/>
+            <circle cx="110" cy="70" r="32" fill="none" stroke="rgba(201,168,76,0.5)" stroke-width="1"/>
+            <circle cx="170" cy="70" r="32" fill="none" stroke="rgba(201,168,76,0.5)" stroke-width="1"/>
+            <g opacity="0.7">
+              <path d="M35,60 L50,48 L65,60" fill="none" stroke="rgba(201,168,76,0.8)" stroke-width="0.9" stroke-linecap="round"/>
+              <rect x="40" y="60" width="20" height="14" rx="1.5" fill="none" stroke="rgba(201,168,76,0.8)" stroke-width="0.9"/>
+              <line x1="47" y1="60" x2="47" y2="74" stroke="rgba(201,168,76,0.8)" stroke-width="0.7"/>
+              <line x1="53" y1="60" x2="53" y2="74" stroke="rgba(201,168,76,0.8)" stroke-width="0.7"/>
+            </g>
+            <g opacity="0.7">
+              <circle cx="110" cy="62" r="7" fill="none" stroke="rgba(201,168,76,0.8)" stroke-width="0.9"/>
+              <path d="M95,82 C95,74 100,70 110,70 C120,70 125,74 125,82" fill="none" stroke="rgba(201,168,76,0.8)" stroke-width="0.9"/>
+            </g>
+            <g opacity="0.7">
+              <line x1="156" y1="62" x2="184" y2="62" stroke="rgba(201,168,76,0.8)" stroke-width="0.9" stroke-linecap="round"/>
+              <line x1="156" y1="70" x2="184" y2="70" stroke="rgba(201,168,76,0.8)" stroke-width="0.9" stroke-linecap="round"/>
+              <line x1="156" y1="78" x2="175" y2="78" stroke="rgba(201,168,76,0.8)" stroke-width="0.9" stroke-linecap="round"/>
+            </g>
+            <text x="50" y="116" text-anchor="middle" font-family="Georgia,serif" font-size="6.5" fill="rgba(201,168,76,0.7)" letter-spacing="0.5">ESPACIO</text>
+            <text x="110" y="116" text-anchor="middle" font-family="Georgia,serif" font-size="6.5" fill="rgba(201,168,76,0.7)" letter-spacing="0.5">EQUIPO</text>
+            <text x="170" y="116" text-anchor="middle" font-family="Georgia,serif" font-size="6.5" fill="rgba(201,168,76,0.7)" letter-spacing="0.5">MENÚ</text>
+            <line x1="82" y1="70" x2="78" y2="70" stroke="rgba(201,168,76,0.35)" stroke-width="0.6"/>
+            <line x1="142" y1="70" x2="138" y2="70" stroke="rgba(201,168,76,0.35)" stroke-width="0.6"/>
+          </svg>
+        </div>
         <div style="padding:0 24px;margin-bottom:16px;">
           <div style="background:rgba(201,168,76,0.08);border-radius:10px;padding:14px 16px;">
             <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;">Cada evento es único</div>
@@ -1903,16 +1931,95 @@ function renderMenus() {
 
     const carruselId = `car-${m.id}`;
     const platos = m.ejemplo ? m.ejemplo.platos : [];
+
+    const svg3p = `<svg width="100%" viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:8px 0 4px;">
+      <defs><marker id="a3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+      <text x="130" y="104" text-anchor="middle" font-family="Georgia,serif" font-size="13" fill="#1A2E1A" opacity="0.3" font-style="italic">M</text>
+      <line x1="116" y1="107" x2="144" y2="107" stroke="#1A2E1A" stroke-width="0.6" opacity="0.25"/>
+      <text x="130" y="126" text-anchor="middle" font-family="Georgia,serif" font-size="20" fill="#1A2E1A" opacity="0.25" font-weight="700">3P</text>
+      <!-- ENTRADA top-left -->
+      <circle cx="62" cy="72" r="38" fill="none" stroke="#2C4A2C" stroke-width="1.1" opacity="0.6"/>
+      <g transform="translate(62,59)" opacity="0.65"><path d="M0,-8 C5,-6 8,-1 5,4 C2,8 -2,8 -5,4 C-8,-1 -5,-6 0,-8Z" fill="none" stroke="#2C4A2C" stroke-width="1"/><line x1="0" y1="4" x2="0" y2="9" stroke="#2C4A2C" stroke-width="0.9"/></g>
+      <text x="62" y="75" text-anchor="middle" font-family="Georgia,serif" font-size="7.5" font-weight="700" letter-spacing="1" fill="#2C4A2C">ENTRADA</text>
+      <text x="62" y="85" text-anchor="middle" font-family="Georgia,serif" font-size="6.5" fill="#2C4A2C" opacity="0.55">Fresca y aromática</text>
+      <!-- PRINCIPAL top-right -->
+      <circle cx="198" cy="72" r="38" fill="none" stroke="#2C4A2C" stroke-width="1.1" opacity="0.6"/>
+      <g transform="translate(198,59)" opacity="0.65"><path d="M-10,4 C-10,-4 -5,-9 0,-9 C5,-9 10,-4 10,4Z" fill="none" stroke="#2C4A2C" stroke-width="1"/><line x1="-12" y1="4" x2="12" y2="4" stroke="#2C4A2C" stroke-width="1"/><line x1="0" y1="-9" x2="0" y2="-12" stroke="#2C4A2C" stroke-width="0.9"/><circle cx="0" cy="-13" r="1.3" fill="#2C4A2C"/></g>
+      <text x="198" y="75" text-anchor="middle" font-family="Georgia,serif" font-size="7.5" font-weight="700" letter-spacing="1" fill="#2C4A2C">PRINCIPAL</text>
+      <text x="198" y="85" text-anchor="middle" font-family="Georgia,serif" font-size="6.5" fill="#2C4A2C" opacity="0.55">Profundo y sabroso</text>
+      <!-- POSTRE bottom-center -->
+      <circle cx="130" cy="175" r="38" fill="none" stroke="#2C4A2C" stroke-width="1.1" opacity="0.6"/>
+      <g transform="translate(130,162)" opacity="0.65"><path d="M-7,-6 C-7,2 0,9 0,9 C0,9 7,2 7,-6Z" fill="none" stroke="#2C4A2C" stroke-width="1"/><line x1="0" y1="9" x2="0" y2="13" stroke="#2C4A2C" stroke-width="0.9"/><line x1="-4" y1="13" x2="4" y2="13" stroke="#2C4A2C" stroke-width="0.9"/><circle cx="-2" cy="-3" r="1.4" fill="none" stroke="#2C4A2C" stroke-width="0.7"/><circle cx="2" cy="-1" r="1" fill="none" stroke="#2C4A2C" stroke-width="0.7"/></g>
+      <text x="130" y="178" text-anchor="middle" font-family="Georgia,serif" font-size="7.5" font-weight="700" letter-spacing="1" fill="#2C4A2C">POSTRE</text>
+      <text x="130" y="188" text-anchor="middle" font-family="Georgia,serif" font-size="6.5" fill="#2C4A2C" opacity="0.55">Dulce y memorable</text>
+      <!-- Flechas -->
+      <path d="M98,57 C116,40 160,40 178,57" fill="none" stroke="#2C4A2C" stroke-width="0.9" opacity="0.4" marker-end="url(#a3)"/>
+      <path d="M210,108 C220,140 190,170 168,175" fill="none" stroke="#2C4A2C" stroke-width="0.9" opacity="0.4" marker-end="url(#a3)"/>
+      <path d="M92,175 C70,170 42,140 52,108" fill="none" stroke="#2C4A2C" stroke-width="0.9" opacity="0.4" marker-end="url(#a3)"/>
+    </svg>`;
+
+    const svg7p = `<svg width="100%" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:8px 0 4px;">
+      <defs><marker id="a7" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+      <text x="130" y="122" text-anchor="middle" font-family="Georgia,serif" font-size="13" fill="#6B2A15" opacity="0.28" font-style="italic">M</text>
+      <line x1="116" y1="125" x2="144" y2="125" stroke="#6B2A15" stroke-width="0.6" opacity="0.22"/>
+      <text x="130" y="147" text-anchor="middle" font-family="Georgia,serif" font-size="20" fill="#6B2A15" opacity="0.22" font-weight="700">7P</text>
+      <!-- 7 nodos radio orbita=95, centro=(130,130), r_nodo=28 -->
+      <!-- 1:(130,35) 2:(212,68) 3:(225,152) 4:(181,222) 5:(79,222) 6:(35,152) 7:(48,68) -->
+      <!-- 1 BIENVENIDA -->
+      <circle cx="130" cy="35" r="28" fill="none" stroke="#8B3A1A" stroke-width="1.0" opacity="0.6"/>
+      <text x="130" y="22" text-anchor="middle" font-family="Georgia,serif" font-size="7" font-weight="700" fill="#C84B1E" opacity="0.75">1</text>
+      <g transform="translate(130,31)" opacity="0.6"><path d="M-7,2 C-7,-4 7,-4 7,2 L5,5 L-5,5Z" fill="none" stroke="#8B3A1A" stroke-width="0.9"/><line x1="0" y1="-4" x2="6" y2="-10" stroke="#8B3A1A" stroke-width="0.7"/></g>
+      <text x="130" y="41" text-anchor="middle" font-family="Georgia,serif" font-size="6" font-weight="700" letter-spacing="0.5" fill="#8B3A1A">BIENVENIDA</text>
+      <!-- 2 ENTRADA FRÍA -->
+      <circle cx="212" cy="68" r="28" fill="none" stroke="#8B3A1A" stroke-width="1.0" opacity="0.6"/>
+      <text x="212" y="55" text-anchor="middle" font-family="Georgia,serif" font-size="7" font-weight="700" fill="#C84B1E" opacity="0.75">2</text>
+      <g transform="translate(212,64)" opacity="0.6"><ellipse cx="-2" cy="0" rx="6" ry="4" fill="none" stroke="#8B3A1A" stroke-width="0.9"/><path d="M4,0 L10,-3 L10,3Z" fill="none" stroke="#8B3A1A" stroke-width="0.7"/><circle cx="-4" cy="-1" r="0.9" fill="#8B3A1A"/></g>
+      <text x="212" y="74" text-anchor="middle" font-family="Georgia,serif" font-size="6" font-weight="700" letter-spacing="0.5" fill="#8B3A1A">ENT. FRÍA</text>
+      <!-- 3 ENT. CALIENTE -->
+      <circle cx="225" cy="152" r="28" fill="none" stroke="#8B3A1A" stroke-width="1.0" opacity="0.6"/>
+      <text x="225" y="139" text-anchor="middle" font-family="Georgia,serif" font-size="7" font-weight="700" fill="#C84B1E" opacity="0.75">3</text>
+      <g transform="translate(225,148)" opacity="0.6"><path d="M-8,3 C-8,-3 8,-3 8,3 L6,6 L-6,6Z" fill="none" stroke="#8B3A1A" stroke-width="0.9"/><path d="M-2,-3 C-2,-7 0,-9 -2,-11" fill="none" stroke="#8B3A1A" stroke-width="0.7"/><path d="M2,-3 C2,-7 4,-9 2,-11" fill="none" stroke="#8B3A1A" stroke-width="0.7"/></g>
+      <text x="225" y="158" text-anchor="middle" font-family="Georgia,serif" font-size="6" font-weight="700" letter-spacing="0.5" fill="#8B3A1A">ENT. CALIENTE</text>
+      <!-- 4 INTERMEDIO -->
+      <circle cx="181" cy="222" r="28" fill="none" stroke="#8B3A1A" stroke-width="1.0" opacity="0.6"/>
+      <text x="181" y="209" text-anchor="middle" font-family="Georgia,serif" font-size="7" font-weight="700" fill="#C84B1E" opacity="0.75">4</text>
+      <g transform="translate(181,218)" opacity="0.6"><rect x="-7" y="-4" width="14" height="9" rx="2" fill="none" stroke="#8B3A1A" stroke-width="0.9"/><line x1="-7" y1="0" x2="7" y2="0" stroke="#8B3A1A" stroke-width="0.6"/><line x1="0" y1="-4" x2="0" y2="5" stroke="#8B3A1A" stroke-width="0.6"/></g>
+      <text x="181" y="228" text-anchor="middle" font-family="Georgia,serif" font-size="6" font-weight="700" letter-spacing="0.5" fill="#8B3A1A">INTERMEDIO</text>
+      <!-- 5 PRINCIPAL -->
+      <circle cx="79" cy="222" r="28" fill="none" stroke="#8B3A1A" stroke-width="1.0" opacity="0.6"/>
+      <text x="79" y="209" text-anchor="middle" font-family="Georgia,serif" font-size="7" font-weight="700" fill="#C84B1E" opacity="0.75">5</text>
+      <g transform="translate(79,218)" opacity="0.6"><path d="M-10,0 C-7,-5 7,-5 10,0 C7,5 -7,5 -10,0Z" fill="none" stroke="#8B3A1A" stroke-width="0.9"/><line x1="-3" y1="-3" x2="3" y2="3" stroke="#8B3A1A" stroke-width="0.6"/><line x1="3" y1="-3" x2="-3" y2="3" stroke="#8B3A1A" stroke-width="0.6"/></g>
+      <text x="79" y="228" text-anchor="middle" font-family="Georgia,serif" font-size="6" font-weight="700" letter-spacing="0.5" fill="#8B3A1A">PRINCIPAL</text>
+      <!-- 6 QUESOS -->
+      <circle cx="35" cy="152" r="28" fill="none" stroke="#8B3A1A" stroke-width="1.0" opacity="0.6"/>
+      <text x="35" y="139" text-anchor="middle" font-family="Georgia,serif" font-size="7" font-weight="700" fill="#C84B1E" opacity="0.75">6</text>
+      <g transform="translate(35,148)" opacity="0.6"><path d="M-9,5 L0,-6 L9,5Z" fill="none" stroke="#8B3A1A" stroke-width="0.9"/><circle cx="2" cy="2" r="1.4" fill="none" stroke="#8B3A1A" stroke-width="0.7"/><circle cx="-3" cy="1" r="1" fill="none" stroke="#8B3A1A" stroke-width="0.7"/></g>
+      <text x="35" y="158" text-anchor="middle" font-family="Georgia,serif" font-size="6" font-weight="700" letter-spacing="0.5" fill="#8B3A1A">QUESOS</text>
+      <!-- 7 POSTRE -->
+      <circle cx="48" cy="68" r="28" fill="none" stroke="#8B3A1A" stroke-width="1.0" opacity="0.6"/>
+      <text x="48" y="55" text-anchor="middle" font-family="Georgia,serif" font-size="7" font-weight="700" fill="#C84B1E" opacity="0.75">7</text>
+      <g transform="translate(48,64)" opacity="0.6"><path d="M-6,-6 C-6,2 0,8 0,8 C0,8 6,2 6,-6Z" fill="none" stroke="#8B3A1A" stroke-width="0.9"/><line x1="0" y1="8" x2="0" y2="12" stroke="#8B3A1A" stroke-width="0.8"/><line x1="-4" y1="12" x2="4" y2="12" stroke="#8B3A1A" stroke-width="0.8"/></g>
+      <text x="48" y="74" text-anchor="middle" font-family="Georgia,serif" font-size="6" font-weight="700" letter-spacing="0.5" fill="#8B3A1A">POSTRE</text>
+      <!-- Flechas 7P -->
+      <path d="M157,44 C178,50 200,56 188,64" fill="none" stroke="#8B3A1A" stroke-width="0.8" opacity="0.35" marker-end="url(#a7)"/>
+      <path d="M222,95 C228,110 228,130 224,132" fill="none" stroke="#8B3A1A" stroke-width="0.8" opacity="0.35" marker-end="url(#a7)"/>
+      <path d="M214,178 C206,196 198,208 200,210" fill="none" stroke="#8B3A1A" stroke-width="0.8" opacity="0.35" marker-end="url(#a7)"/>
+      <path d="M152,224 C140,230 118,230 110,224" fill="none" stroke="#8B3A1A" stroke-width="0.8" opacity="0.35" marker-end="url(#a7)"/>
+      <path d="M52,210 C44,198 38,178 36,176" fill="none" stroke="#8B3A1A" stroke-width="0.8" opacity="0.35" marker-end="url(#a7)"/>
+      <path d="M38,124 C38,104 42,84 44,78" fill="none" stroke="#8B3A1A" stroke-width="0.8" opacity="0.35" marker-end="url(#a7)"/>
+      <path d="M72,50 C90,38 112,34 106,36" fill="none" stroke="#8B3A1A" stroke-width="0.7" opacity="0.22" stroke-dasharray="3 3" marker-end="url(#a7)"/>
+    </svg>`;
+
+    const svgMenu = m.id === 1 ? svg3p : svg7p;
+
     return `
     <div class="menu-card${state.menu?.id === m.id ? ' selected' : ''}" id="menu-card-${m.id}">
       <div class="menu-card-body" onclick="selectMenu(${m.id})" style="padding:20px 22px 0;">
         <div class="menu-name" style="font-size:20px;">${m.nombre}</div>
         <div class="menu-persons">👥 ${m.personas}</div>
         <div class="menu-desc">${m.desc}</div>
-        <div class="menu-courses" style="margin-bottom:10px;">
-          ${m.cursos.map(c => `<div class="menu-course">${c}</div>`).join('')}
-        </div>
-        <div style="font-size:12px;color:var(--text-light);font-style:italic;margin-bottom:16px;">Ideal para: ${m.ideal}</div>
+        ${svgMenu}
+        <div style="font-size:12px;color:var(--text-light);font-style:italic;margin-bottom:16px;flex-grow:1;">Ideal para: ${m.ideal}</div>
       </div>
       <div class="calc-wrap" onclick="event.stopPropagation()" style="margin:0;border-radius:0 0 var(--radius-lg) var(--radius-lg);">
         <div class="calc-title">✦ Calculá tu experiencia</div>
