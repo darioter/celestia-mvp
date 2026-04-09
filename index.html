@@ -2234,26 +2234,25 @@ function renderCalendar() {
     const date = new Date(calYear, calMonth, d);
     date.setHours(0, 0, 0, 0);
     const el = document.createElement('div');
+    const dateStr = date.toISOString().slice(0, 10);
     const isBefore48 = date < minDate;
     const dayOfWeek = date.getDay();
     const isDiaValido = diasHabilitados.includes(dayOfWeek);
 
     // Verificar si la fecha está bloqueada en Supabase
     const bloqueada = fechasBloqueadas[dateStr];
-    const esFin = state.calcDia === 'finde';
     let isFechaBloqueada = false;
     if (bloqueada) {
       if (bloqueada['almuerzo'] && bloqueada['cena']) {
-        isFechaBloqueada = true; // ambos turnos ocupados
+        isFechaBloqueada = true;
       } else if (!esFin && bloqueada['almuerzo']) {
-        isFechaBloqueada = true; // semana → solo almuerzo, ocupado
+        isFechaBloqueada = true;
       } else if (esFin && dayOfWeek === 5 && bloqueada['cena']) {
-        isFechaBloqueada = true; // viernes noche ocupado
+        isFechaBloqueada = true;
       }
     }
 
     const isBlocked = isBefore48 || !isDiaValido || isFechaBloqueada;
-    const dateStr = date.toISOString().slice(0, 10);
     const isSelected = state.fecha === dateStr;
 
     el.className = 'cal-day' +
