@@ -588,8 +588,79 @@
   .agenda-detalle-fecha { font-size: 12px; font-weight: 500; color: var(--cream); min-width: 130px; }
   .agenda-detalle-info { font-size: 11px; color: rgba(250,246,239,0.5); }
 
-  .empty-state {
-    text-align: center;
+  /* PAGOS */
+  .pagos-grid { display: flex; flex-direction: column; gap: 12px; }
+  .pago-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 20px 24px;
+    display: grid;
+    grid-template-columns: 200px 1fr 180px 180px 160px;
+    gap: 20px;
+    align-items: center;
+  }
+  .pago-card.saldo-cobrado { opacity: 0.55; }
+  .pago-card.estado-reservada { border-left: 3px solid var(--gold); }
+  .pago-card.estado-confirmada { border-left: 3px solid #4CAF50; }
+  .pago-fecha { font-family: 'DM Serif Display', serif; font-size: 15px; color: var(--cream); }
+  .pago-ref { font-size: 10px; color: var(--gold); letter-spacing: 0.1em; margin-top: 3px; }
+  .pago-cliente { font-size: 14px; font-weight: 500; color: var(--cream); }
+  .pago-menu { font-size: 12px; color: rgba(250,246,239,0.45); margin-top: 2px; }
+  .pago-bloque { display: flex; flex-direction: column; gap: 4px; }
+  .pago-bloque-titulo { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(250,246,239,0.3); margin-bottom: 4px; }
+  .pago-monto { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--gold-light); }
+  .pago-estado-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 500; padding: 4px 10px;
+    border-radius: 20px; letter-spacing: 0.04em;
+  }
+  .pago-estado-badge.pendiente { background: rgba(201,168,76,0.12); color: var(--gold); border: 1px solid rgba(201,168,76,0.25); }
+  .pago-estado-badge.cobrado { background: rgba(76,175,80,0.12); color: #81C784; border: 1px solid rgba(76,175,80,0.25); }
+  .pago-estado-badge.cerrado { background: rgba(255,255,255,0.06); color: rgba(250,246,239,0.4); border: 1px solid rgba(255,255,255,0.1); }
+  .btn-cobrar {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px; font-weight: 500;
+    padding: 8px 14px; border-radius: 8px;
+    cursor: pointer; transition: all 0.15s;
+    border: 1px solid; letter-spacing: 0.03em;
+    text-align: center; width: 100%;
+  }
+  .btn-cobrar-senia {
+    background: rgba(201,168,76,0.1);
+    border-color: rgba(201,168,76,0.35);
+    color: var(--gold-light);
+  }
+  .btn-cobrar-senia:hover { background: rgba(201,168,76,0.2); }
+  .btn-cobrar-saldo {
+    background: rgba(76,175,80,0.1);
+    border-color: rgba(76,175,80,0.3);
+    color: #81C784;
+  }
+  .btn-cobrar-saldo:hover { background: rgba(76,175,80,0.2); }
+  .btn-cobrar:disabled {
+    opacity: 0.3; cursor: default;
+    background: transparent;
+  }
+  .pagos-resumen {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .resumen-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 18px 20px;
+  }
+  .resumen-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(250,246,239,0.35); margin-bottom: 8px; }
+  .resumen-valor { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--gold-light); }
+  .resumen-sub { font-size: 11px; color: rgba(250,246,239,0.35); margin-top: 4px; }
+  @media (max-width: 900px) {
+    .pago-card { grid-template-columns: 1fr; }
+    .pagos-resumen { grid-template-columns: repeat(2,1fr); }
+  }
     padding: 60px 20px;
     color: rgba(250,246,239,0.3);
     font-size: 14px;
@@ -721,7 +792,37 @@
     <div style="display:flex;gap:12px;margin-bottom:28px;">
       <button class="filter-btn active" onclick="verSeccion('reservas',this)">Reservas</button>
       <button class="filter-btn" onclick="verSeccion('agenda',this)">Agenda</button>
+      <button class="filter-btn" onclick="verSeccion('pagos',this)">Pagos</button>
       <button class="filter-btn" onclick="verSeccion('bloqueos',this)">Bloquear días</button>
+    </div>
+
+    <!-- SECCIÓN PAGOS -->
+    <div id="seccion-pagos" style="display:none;">
+      <div class="pagos-resumen">
+        <div class="resumen-card">
+          <div class="resumen-label">Señas pendientes</div>
+          <div class="resumen-valor" id="res-senias-pendientes">—</div>
+          <div class="resumen-sub" id="res-senias-monto">—</div>
+        </div>
+        <div class="resumen-card">
+          <div class="resumen-label">Señas cobradas</div>
+          <div class="resumen-valor" id="res-senias-cobradas">—</div>
+          <div class="resumen-sub" id="res-senias-cobradas-monto">—</div>
+        </div>
+        <div class="resumen-card">
+          <div class="resumen-label">Saldos pendientes</div>
+          <div class="resumen-valor" id="res-saldos-pendientes">—</div>
+          <div class="resumen-sub" id="res-saldos-monto">—</div>
+        </div>
+        <div class="resumen-card">
+          <div class="resumen-label">Total cobrado</div>
+          <div class="resumen-valor" id="res-total-cobrado">—</div>
+          <div class="resumen-sub">señas + saldos</div>
+        </div>
+      </div>
+      <div class="pagos-grid" id="pagos-grid">
+        <div class="loading">Cargando pagos...</div>
+      </div>
     </div>
 
     <!-- SECCIÓN AGENDA -->
@@ -963,14 +1064,139 @@ async function renderAgenda() {
   renderAgendaRight();
 }
 
+// ─── PAGOS ───────────────────────────────────────────────
+const fmt = n => n ? '$' + Math.round(n).toLocaleString('es-AR') : '—';
+const fmtFechaPago = f => f ? new Date(f+'T12:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'short',year:'numeric'}) : '';
+
+async function cargarPagos() {
+  document.getElementById('pagos-grid').innerHTML = '<div class="loading">Cargando...</div>';
+  const { data, error } = await supa
+    .from('reservas')
+    .select('*')
+    .in('estado', ['reservada','confirmada'])
+    .order('fecha', { ascending: true });
+  if (error) { document.getElementById('pagos-grid').innerHTML = '<div class="loading">Error</div>'; return; }
+
+  // Calcular resumen
+  let seniasPend = 0, seniasCobr = 0, saldosPend = 0, totalCobrado = 0;
+  let montoSeniasPend = 0, montoSeniasCobr = 0, montoSaldosPend = 0;
+
+  data.forEach(r => {
+    const honorario = r.honorario || 0;
+    const senia = Math.round(honorario * 0.5);
+    const saldo = honorario - senia;
+    if (!r.senia_cobrada) { seniasPend++; montoSeniasPend += senia; }
+    else { seniasCobr++; montoSeniasCobr += senia; totalCobrado += senia; }
+    if (r.senia_cobrada && !r.saldo_cobrado) { saldosPend++; montoSaldosPend += saldo; }
+    if (r.saldo_cobrado) totalCobrado += saldo;
+  });
+
+  document.getElementById('res-senias-pendientes').textContent = seniasPend;
+  document.getElementById('res-senias-monto').textContent = fmt(montoSeniasPend) + ' por cobrar';
+  document.getElementById('res-senias-cobradas').textContent = seniasCobr;
+  document.getElementById('res-senias-cobradas-monto').textContent = fmt(montoSeniasCobr) + ' ingresado';
+  document.getElementById('res-saldos-pendientes').textContent = saldosPend;
+  document.getElementById('res-saldos-monto').textContent = fmt(montoSaldosPend) + ' por cobrar';
+  document.getElementById('res-total-cobrado').textContent = fmt(totalCobrado);
+
+  if (data.length === 0) {
+    document.getElementById('pagos-grid').innerHTML = '<div class="empty-state"><div class="empty-state-icon">✦</div>No hay reservas activas</div>';
+    return;
+  }
+
+  const fmtFecha = f => new Date(f+'T12:00:00').toLocaleDateString('es-AR',{weekday:'short',day:'numeric',month:'short'});
+
+  document.getElementById('pagos-grid').innerHTML = data.map(r => {
+    const honorario = r.honorario || 0;
+    const senia = Math.round(honorario * 0.5);
+    const saldo = honorario - senia;
+    const seniaCobrada = !!r.senia_cobrada;
+    const saldoCobrado = !!r.saldo_cobrado;
+    const cerrado = seniaCobrada && saldoCobrado;
+
+    return `
+    <div class="pago-card estado-${r.estado}${cerrado?' saldo-cobrado':''}">
+      <div>
+        <div class="pago-fecha">${fmtFecha(r.fecha)}</div>
+        <div style="font-size:12px;color:rgba(250,246,239,0.5);margin-top:2px;">${r.turno==='almuerzo'?'☀ Almuerzo':'🌙 Cena'} · ${r.personas}p</div>
+        <div class="pago-ref">${r.ref}</div>
+      </div>
+      <div>
+        <div class="pago-cliente">${r.nombre||'—'}</div>
+        <div class="pago-menu">${r.menu||'—'}</div>
+        ${r.tel ? `<div style="font-size:11px;color:rgba(250,246,239,0.35);margin-top:3px;">${r.tel}</div>` : ''}
+      </div>
+      <div class="pago-bloque">
+        <div class="pago-bloque-titulo">Seña (50%)</div>
+        <div class="pago-monto">${fmt(senia)}</div>
+        <div class="${seniaCobrada?'pago-estado-badge cobrado':'pago-estado-badge pendiente'}" style="margin-top:4px;">
+          ${seniaCobrada ? '✓ Cobrada' : '· Pendiente'}
+        </div>
+        ${r.senia_fecha ? `<div style="font-size:10px;color:rgba(250,246,239,0.3);margin-top:2px;">${fmtFechaPago(r.senia_fecha)}</div>` : ''}
+      </div>
+      <div class="pago-bloque">
+        <div class="pago-bloque-titulo">Saldo</div>
+        <div class="pago-monto">${fmt(saldo)}</div>
+        <div class="${saldoCobrado?'pago-estado-badge cobrado':seniaCobrada?'pago-estado-badge pendiente':'pago-estado-badge cerrado'}" style="margin-top:4px;">
+          ${saldoCobrado ? '✓ Cobrado' : seniaCobrada ? '· Pendiente' : '· Bloqueado'}
+        </div>
+        ${r.saldo_fecha ? `<div style="font-size:10px;color:rgba(250,246,239,0.3);margin-top:2px;">${fmtFechaPago(r.saldo_fecha)}</div>` : ''}
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        ${!seniaCobrada ? `<button class="btn-cobrar btn-cobrar-senia" onclick="cobrarSenia('${r.id}')">✓ Cobrar seña</button>` : ''}
+        ${seniaCobrada && !saldoCobrado ? `<button class="btn-cobrar btn-cobrar-saldo" onclick="cobrarSaldo('${r.id}')">✓ Cobrar saldo</button>` : ''}
+        ${cerrado ? `<div class="pago-estado-badge cobrado" style="justify-content:center;">✓ Cerrado</div>` : ''}
+        ${r.tel ? `<button class="accion-btn btn-whatsapp" onclick="waRecordatorio('${r.tel}','${r.nombre}','${r.ref}',${senia},${!seniaCobrada})">WA recordatorio</button>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function cobrarSenia(id) {
+  if (!confirm('¿Confirmás que recibiste la seña?')) return;
+  const hoy = new Date().toISOString().slice(0,10);
+  const { error } = await supa.from('reservas').update({
+    senia_cobrada: true,
+    senia_fecha: hoy,
+    estado: 'confirmada'
+  }).eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  // Actualizar también en todasReservas
+  const r = todasReservas.find(r => r.id === id);
+  if (r) { r.senia_cobrada = true; r.senia_fecha = hoy; r.estado = 'confirmada'; }
+  cargarPagos();
+}
+
+async function cobrarSaldo(id) {
+  if (!confirm('¿Confirmás que recibiste el saldo completo?')) return;
+  const hoy = new Date().toISOString().slice(0,10);
+  const { error } = await supa.from('reservas').update({
+    saldo_cobrado: true,
+    saldo_fecha: hoy
+  }).eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  cargarPagos();
+}
+
+function waRecordatorio(tel, nombre, ref, senia, esSenia) {
+  const num = tel.replace(/\D/g,'');
+  const monto = '$' + Math.round(senia).toLocaleString('es-AR');
+  const msg = esSenia
+    ? `Hola ${nombre}! Te recordamos que la seña de ${monto} para confirmar tu reserva Celestia (${ref}) está pendiente. Podés hacerla al alias daro.chef. Cualquier consulta estamos acá.`
+    : `Hola ${nombre}! Te recordamos que el saldo de tu experiencia Celestia (${ref}) se abona el día del evento antes de comenzar el servicio. Cualquier consulta estamos acá.`;
+  window.open(`https://wa.me/${num.startsWith('54')?num:'54'+num}?text=${encodeURIComponent(msg)}`,'_blank');
+}
+
 function verSeccion(seccion, btn) {
-  document.getElementById('seccion-reservas').style.display = seccion === 'reservas' ? 'block' : 'none';
-  document.getElementById('seccion-agenda').style.display = seccion === 'agenda' ? 'block' : 'none';
-  document.getElementById('seccion-bloqueos').style.display = seccion === 'bloqueos' ? 'block' : 'none';
+  ['reservas','agenda','pagos','bloqueos'].forEach(s => {
+    const el = document.getElementById('seccion-'+s);
+    if (el) el.style.display = seccion === s ? 'block' : 'none';
+  });
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   if (seccion === 'bloqueos') cargarBloqueos();
   if (seccion === 'agenda') renderAgenda();
+  if (seccion === 'pagos') cargarPagos();
 }
 
 async function cargarBloqueos() {
