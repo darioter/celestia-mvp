@@ -1607,17 +1607,23 @@ const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
 let fechasBloqueadas = {}; // { 'YYYY-MM-DD': 'reservada'|'confirmada' }
 
 async function cargarFechasBloqueadas() {
-  const { data, error } = await supa
-    .from('reservas')
-    .select('fecha, turno, estado')
-    .in('estado', ['reservada', 'confirmada']);
-  if (error) { console.error(error); return; }
-  fechasBloqueadas = {};
-  data.forEach(r => {
-    const key = r.fecha;
-    if (!fechasBloqueadas[key]) fechasBloqueadas[key] = {};
-    fechasBloqueadas[key][r.turno] = r.estado;
-  });
+  try {
+    const { data, error } = await supa
+      .from('reservas')
+      .select('fecha, turno, estado')
+      .in('estado', ['reservada', 'confirmada']);
+    if (error) { console.error(error); return; }
+    fechasBloqueadas = {};
+    data.forEach(r => {
+      const key = r.fecha;
+      if (!fechasBloqueadas[key]) fechasBloqueadas[key] = {};
+      fechasBloqueadas[key][r.turno] = r.estado;
+    });
+  } catch(e) {
+    console.error('Supabase error:', e);
+  }
+  // Re-renderizar el calendario con las fechas actualizadas
+  if (state.step === 3) renderCalendar();
 }
 
 async function guardarReservaSupabase(reserva) {
@@ -1884,7 +1890,9 @@ function goTo(step) {
     }
     renderDesglose();
   }
-  if (step === 3) renderCalendar();
+  if (step === 3) {
+    cargarFechasBloqueadas().then(() => renderCalendar());
+  }
   if (step === 4) {
     // Autocompletar personas desde la selección previa
     const fPersonas = document.getElementById('f-personas');
