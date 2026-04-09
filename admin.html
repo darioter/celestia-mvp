@@ -342,7 +342,69 @@
     color: rgba(250,246,239,0.3);
     font-size: 14px;
   }
-  .empty-state-icon {
+  .bloqueo-card {
+  background: rgba(155,35,53,0.08);
+  border: 1px solid rgba(155,35,53,0.2);
+  border-radius: 10px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.bloqueo-fecha { font-size: 14px; color: var(--cream); font-weight: 500; }
+.bloqueo-motivo { font-size: 12px; color: rgba(250,246,239,0.45); margin-top: 2px; }
+.bloqueo-eliminar {
+  background: rgba(155,35,53,0.2);
+  border: 1px solid rgba(155,35,53,0.3);
+  color: #E57373;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.bloqueo-eliminar:hover { background: rgba(155,35,53,0.35); }
+.bloqueo-form {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.bloqueo-input {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  color: var(--cream);
+  outline: none;
+}
+.bloqueo-input:focus { border-color: var(--gold); }
+.bloqueo-agregar {
+  background: rgba(201,168,76,0.15);
+  border: 1px solid rgba(201,168,76,0.3);
+  color: var(--gold-light);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.bloqueo-agregar:hover { background: rgba(201,168,76,0.25); }
+.section-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 16px;
+  color: var(--gold-light);
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(201,168,76,0.15);
+}
+.empty-state-icon {
     font-size: 40px;
     margin-bottom: 12px;
     opacity: 0.3;
@@ -404,6 +466,26 @@
   </div>
 
   <div class="admin-body">
+    <div style="display:flex;gap:12px;margin-bottom:28px;">
+      <button class="filter-btn active" onclick="verSeccion('reservas',this)">Reservas</button>
+      <button class="filter-btn" onclick="verSeccion('bloqueos',this)">Bloquear días</button>
+    </div>
+
+    <!-- SECCIÓN BLOQUEOS -->
+    <div id="seccion-bloqueos" style="display:none;">
+      <div class="section-title">✦ Días bloqueados — sin disponibilidad</div>
+      <div class="bloqueo-form">
+        <input type="date" class="bloqueo-input" id="bloqueo-fecha" placeholder="Fecha">
+        <input type="text" class="bloqueo-input" id="bloqueo-motivo" placeholder="Motivo (opcional)" style="min-width:200px;">
+        <button class="bloqueo-agregar" onclick="agregarBloqueo()">+ Bloquear fecha</button>
+      </div>
+      <div id="bloqueos-grid" style="display:flex;flex-direction:column;gap:8px;">
+        <div class="loading">Cargando bloqueos...</div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN RESERVAS -->
+    <div id="seccion-reservas">
     <div class="filters">
       <button class="filter-btn active" onclick="setFiltro('todas', this)">Todas</button>
       <button class="filter-btn" onclick="setFiltro('reservada', this)">Reservadas</button>
@@ -416,6 +498,7 @@
     </div>
   </div>
 </div>
+</div>
 
 <script>
 const SUPA_URL = 'https://qolpnuscpmzqeacshfvu.supabase.co';
@@ -425,6 +508,57 @@ const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
 const PWD = 'piko6969';
 let todasReservas = [];
 let filtroActual = 'todas';
+
+function verSeccion(seccion, btn) {
+  document.getElementById('seccion-reservas').style.display = seccion === 'reservas' ? 'block' : 'none';
+  document.getElementById('seccion-bloqueos').style.display = seccion === 'bloqueos' ? 'block' : 'none';
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (seccion === 'bloqueos') cargarBloqueos();
+}
+
+async function cargarBloqueos() {
+  document.getElementById('bloqueos-grid').innerHTML = '<div class="loading">Cargando...</div>';
+  const { data, error } = await supa.from('bloqueos').select('*').order('fecha', { ascending: true });
+  if (error) { document.getElementById('bloqueos-grid').innerHTML = '<div class="loading">Error</div>'; return; }
+
+  if (data.length === 0) {
+    document.getElementById('bloqueos-grid').innerHTML = '<div class="empty-state"><div class="empty-state-icon">✦</div>No hay días bloqueados</div>';
+    return;
+  }
+
+  const fmtFecha = f => {
+    const d = new Date(f + 'T12:00:00');
+    return d.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  };
+
+  document.getElementById('bloqueos-grid').innerHTML = data.map(b => `
+    <div class="bloqueo-card">
+      <div>
+        <div class="bloqueo-fecha">${fmtFecha(b.fecha)}</div>
+        ${b.motivo ? `<div class="bloqueo-motivo">${b.motivo}</div>` : ''}
+      </div>
+      <button class="bloqueo-eliminar" onclick="eliminarBloqueo('${b.id}')">✕ Liberar</button>
+    </div>
+  `).join('');
+}
+
+async function agregarBloqueo() {
+  const fecha = document.getElementById('bloqueo-fecha').value;
+  const motivo = document.getElementById('bloqueo-motivo').value;
+  if (!fecha) { alert('Seleccioná una fecha'); return; }
+  const { error } = await supa.from('bloqueos').insert([{ fecha, motivo }]);
+  if (error) { alert('Error: ' + (error.message || 'fecha ya bloqueada')); return; }
+  document.getElementById('bloqueo-fecha').value = '';
+  document.getElementById('bloqueo-motivo').value = '';
+  cargarBloqueos();
+}
+
+async function eliminarBloqueo(id) {
+  const { error } = await supa.from('bloqueos').delete().eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  cargarBloqueos();
+}
 
 function login() {
   const val = document.getElementById('pwd-input').value;

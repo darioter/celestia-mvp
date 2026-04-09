@@ -1633,22 +1633,25 @@ const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsI
 const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
 
 // Fechas bloqueadas cargadas desde Supabase
-let fechasBloqueadas = {}; // { 'YYYY-MM-DD': 'reservada'|'confirmada' }
+let fechasBloqueadas = {};
+let diasBloqueados = []; // bloqueos manuales del admin // { 'YYYY-MM-DD': 'reservada'|'confirmada' }
 
 async function cargarFechasBloqueadas() {
   try {
-    const { data, error } = await supa
-      .from('reservas')
-      .select('fecha, turno, estado')
-      .in('estado', ['reservada', 'confirmada']);
-    if (error) { console.error(error); return; }
+    const [resReservas, resBloqueos] = await Promise.all([
+      supa.from('reservas').select('fecha, turno, estado').in('estado', ['reservada', 'confirmada']),
+      supa.from('bloqueos').select('fecha')
+    ]);
     fechasBloqueadas = {};
-    data.forEach(r => {
-      const key = r.fecha;
-      if (!fechasBloqueadas[key]) fechasBloqueadas[key] = {};
-      fechasBloqueadas[key][r.turno] = r.estado;
-    });
-    console.log('Fechas bloqueadas:', fechasBloqueadas);
+    if (!resReservas.error) {
+      resReservas.data.forEach(r => {
+        const key = r.fecha;
+        if (!fechasBloqueadas[key]) fechasBloqueadas[key] = {};
+        fechasBloqueadas[key][r.turno] = r.estado;
+      });
+    }
+    diasBloqueados = resBloqueos.error ? [] : resBloqueos.data.map(b => b.fecha);
+    console.log('Fechas bloqueadas:', fechasBloqueadas, 'Días bloqueados:', diasBloqueados);
   } catch(e) {
     console.error('Supabase error:', e);
   }
@@ -2285,15 +2288,11 @@ function renderCalendar() {
     if (bloqueada) {
       almuerzoOcupado = !!bloqueada['almuerzo'];
       cenaOcupada = !!bloqueada['cena'];
-      // Bloquear el día completo solo si ambos turnos están tomados
-      if (almuerzoOcupado && cenaOcupada) {
-        isFechaBloqueada = true;
-      }
-      // Para semana: solo almuerzo disponible → si almuerzo ocupado, bloquear
-      if (!esFin && almuerzoOcupado) isFechaBloqueada = true;
-      // Para viernes finde: solo cena → si cena ocupada, bloquear
-      if (esFin && dayOfWeek === 5 && cenaOcupada) isFechaBloqueada = true;
+      // Bloquear solo si ambos turnos están tomados
+      if (almuerzoOcupado && cenaOcupada) isFechaBloqueada = true;
     }
+    // Bloquear si está en la lista de bloqueos manuales
+    if (diasBloqueados.includes(dateStr)) isFechaBloqueada = true;
 
     const isBlocked = isBefore48 || !isDiaValido || isFechaBloqueada;
     const isSelected = state.fecha === dateStr;
