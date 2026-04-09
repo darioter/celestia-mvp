@@ -1627,9 +1627,13 @@ async function cargarFechasBloqueadas() {
 }
 
 async function guardarReservaSupabase(reserva) {
-  const { error } = await supa.from('reservas').insert([{
+  // Asegurar formato YYYY-MM-DD
+  const fechaFormateada = reserva.fecha ? reserva.fecha.slice(0, 10) : null;
+  console.log('Guardando reserva:', reserva.ref, fechaFormateada, reserva.turno);
+  
+  const { data, error } = await supa.from('reservas').insert([{
     ref: reserva.ref,
-    fecha: reserva.fecha,
+    fecha: fechaFormateada,
     turno: reserva.turno,
     estado: 'reservada',
     menu: reserva.menu,
@@ -1643,9 +1647,15 @@ async function guardarReservaSupabase(reserva) {
     honorario: reserva.honorario || 0,
     ingredientes: reserva.ingredientes || 0,
     total: reserva.total || 0
-  }]);
-  if (error) console.error('Error guardando reserva:', error);
-  else await cargarFechasBloqueadas();
+  }]).select();
+  
+  if (error) {
+    console.error('Error guardando reserva:', error);
+    showToast('Error al guardar la reserva en la base de datos');
+  } else {
+    console.log('Reserva guardada OK:', data);
+    await cargarFechasBloqueadas();
+  }
 }
 
 // ─── FOTOS DE PLATOS ─────────────────────────────────────
@@ -2234,12 +2244,10 @@ function renderCalendar() {
     const date = new Date(calYear, calMonth, d);
     date.setHours(0, 0, 0, 0);
     const el = document.createElement('div');
-    const dateStr = date.toISOString().slice(0, 10);
+    const dateStr = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
     const isBefore48 = date < minDate;
     const dayOfWeek = date.getDay();
     const isDiaValido = diasHabilitados.includes(dayOfWeek);
-
-    // Verificar si la fecha está bloqueada en Supabase
     const bloqueada = fechasBloqueadas[dateStr];
     let isFechaBloqueada = false;
     if (bloqueada) {
