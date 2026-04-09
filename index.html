@@ -1619,10 +1619,10 @@ async function cargarFechasBloqueadas() {
       if (!fechasBloqueadas[key]) fechasBloqueadas[key] = {};
       fechasBloqueadas[key][r.turno] = r.estado;
     });
+    console.log('Fechas bloqueadas:', fechasBloqueadas);
   } catch(e) {
     console.error('Supabase error:', e);
   }
-  // Re-renderizar el calendario con las fechas actualizadas
   if (state.step === 3) renderCalendar();
 }
 
