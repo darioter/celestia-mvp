@@ -1839,7 +1839,7 @@ function startFlow() {
   calYear = minDate.getFullYear();
   calMonth = minDate.getMonth();
 
-  cargarFechasBloqueadas(); // carga desde Supabase
+  cargarFechasBloqueadas(); // precarga en background
   renderChefs();
   goTo(1);
 }
@@ -1891,7 +1891,8 @@ function goTo(step) {
     renderDesglose();
   }
   if (step === 3) {
-    cargarFechasBloqueadas().then(() => renderCalendar());
+    renderCalendar(); // mostrar inmediatamente
+    cargarFechasBloqueadas(); // actualizar con Supabase en background
   }
   if (step === 4) {
     // Autocompletar personas desde la selección previa
