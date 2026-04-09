@@ -488,6 +488,35 @@ header {
   transition: all 0.15s;
   color: var(--text-dark);
 }
+.cal-day[data-tooltip] { position: relative; }
+.cal-day[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--navy);
+  color: var(--cream);
+  font-size: 11px;
+  font-weight: 400;
+  white-space: nowrap;
+  padding: 5px 10px;
+  border-radius: 6px;
+  z-index: 10;
+  pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+.cal-day[data-tooltip]:hover::before {
+  content: '';
+  position: absolute;
+  bottom: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-top-color: var(--navy);
+  z-index: 10;
+  pointer-events: none;
+}
 .cal-day:hover:not(.disabled):not(.empty) { background: var(--cream-dark); }
 .cal-day.selected { background: var(--navy); color: var(--gold-light); font-weight: 500; }
 .cal-day.today { font-weight: 600; color: var(--gold); }
@@ -1650,8 +1679,8 @@ async function guardarReservaSupabase(reserva) {
   }]).select();
   
   if (error) {
-    console.error('Error guardando reserva:', error);
-    showToast('Error al guardar la reserva en la base de datos');
+    console.error('Error guardando reserva:', JSON.stringify(error));
+    showToast('Error al guardar: ' + (error.message || error.code || JSON.stringify(error)));
   } else {
     console.log('Reserva guardada OK:', data);
     await cargarFechasBloqueadas();
@@ -2250,14 +2279,20 @@ function renderCalendar() {
     const isDiaValido = diasHabilitados.includes(dayOfWeek);
     const bloqueada = fechasBloqueadas[dateStr];
     let isFechaBloqueada = false;
+    let almuerzoOcupado = false;
+    let cenaOcupada = false;
+
     if (bloqueada) {
-      if (bloqueada['almuerzo'] && bloqueada['cena']) {
-        isFechaBloqueada = true;
-      } else if (!esFin && bloqueada['almuerzo']) {
-        isFechaBloqueada = true;
-      } else if (esFin && dayOfWeek === 5 && bloqueada['cena']) {
+      almuerzoOcupado = !!bloqueada['almuerzo'];
+      cenaOcupada = !!bloqueada['cena'];
+      // Bloquear el día completo solo si ambos turnos están tomados
+      if (almuerzoOcupado && cenaOcupada) {
         isFechaBloqueada = true;
       }
+      // Para semana: solo almuerzo disponible → si almuerzo ocupado, bloquear
+      if (!esFin && almuerzoOcupado) isFechaBloqueada = true;
+      // Para viernes finde: solo cena → si cena ocupada, bloquear
+      if (esFin && dayOfWeek === 5 && cenaOcupada) isFechaBloqueada = true;
     }
 
     const isBlocked = isBefore48 || !isDiaValido || isFechaBloqueada;
@@ -2267,6 +2302,26 @@ function renderCalendar() {
       (isBlocked ? ' disabled' : '') +
       (isSelected ? ' selected' : '');
     el.textContent = d;
+
+    // Indicador visual de turnos parcialmente ocupados
+    if (!isBlocked && !isSelected && bloqueada && (almuerzoOcupado || cenaOcupada)) {
+      el.style.background = 'linear-gradient(to bottom, ' +
+        (almuerzoOcupado ? '#e8e0d0' : 'white') + ' 50%, ' +
+        (cenaOcupada ? '#e8e0d0' : 'white') + ' 50%)';
+      el.style.position = 'relative';
+
+      // Tooltip
+      const tooltipLines = [];
+      if (almuerzoOcupado) tooltipLines.push('Almuerzo: ocupado');
+      else tooltipLines.push('Almuerzo: disponible');
+      if (cenaOcupada) tooltipLines.push('Cena: ocupada');
+      else tooltipLines.push('Cena: disponible');
+
+      el.title = tooltipLines.join('\n');
+      el.setAttribute('data-tooltip', tooltipLines.join(' · '));
+    } else if (!isBlocked && !isSelected) {
+      el.title = 'Almuerzo y cena disponibles';
+    }
 
     if (!isBlocked) {
       el.onclick = () => selectFecha(dateStr, el);
