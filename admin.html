@@ -653,11 +653,20 @@ function renderReservas() {
       </div>
       <div class="res-acciones">
         ${r.estado === 'reservada' ? `<button class="accion-btn btn-confirmar" onclick="cambiarEstado('${r.id}','confirmada')">✓ Confirmar</button>` : ''}
-        ${r.estado !== 'cancelada' ? `<button class="accion-btn btn-cancelar" onclick="cambiarEstado('${r.id}','cancelada')">✕ Cancelar</button>` : ''}
+        ${r.estado !== 'cancelada' ? `<button class="accion-btn btn-cancelar" onclick="cambiarEstado('${r.id}','cancelada')">✕ Cancelar</button>` : `<button class="accion-btn btn-cancelar" onclick="eliminarDefinitivo('${r.id}','${r.nombre}')" style="background:rgba(155,35,53,0.25);border-color:rgba(155,35,53,0.5);">🗑 Eliminar</button>`}
         ${r.tel ? `<button class="accion-btn btn-whatsapp" onclick="abrirWA('${r.tel}','${r.nombre}','${r.ref}','${r.estado}')">WA Cliente</button>` : ''}
       </div>
     </div>
   `).join('');
+}
+
+async function eliminarDefinitivo(id, nombre) {
+  if (!confirm(`¿Eliminar definitivamente la reserva de ${nombre}? Esta acción no se puede deshacer.`)) return;
+  const { error } = await supa.from('reservas').delete().eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  todasReservas = todasReservas.filter(r => r.id !== id);
+  actualizarStats();
+  renderReservas();
 }
 
 async function cambiarEstado(id, nuevoEstado) {

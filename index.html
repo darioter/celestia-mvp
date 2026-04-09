@@ -2338,25 +2338,27 @@ function renderTurnos() {
   const fecha = state.fecha ? new Date(state.fecha + 'T12:00:00') : null;
   const dayOfWeek = fecha ? fecha.getDay() : null;
 
-  // Viernes en modo finde → solo cena
-  // Viernes en modo semana → solo almuerzo
-  // Resto de días → ambos turnos
   const soloAlmuerzo = !esFin && dayOfWeek === 5;
   const soloCena = esFin && dayOfWeek === 5;
 
   const cardAlmuerzo = document.getElementById('turno-almuerzo');
   const cardCena = document.getElementById('turno-cena');
 
-  if (soloAlmuerzo) {
-    cardAlmuerzo.style.opacity = '1';
-    cardAlmuerzo.style.pointerEvents = 'auto';
-    cardCena.style.opacity = '0.3';
-    cardCena.style.pointerEvents = 'none';
-    cardCena.classList.remove('selected');
-    if (state.turno === 'cena') { state.turno = null; }
-  } else if (soloCena) {
-    cardCena.style.opacity = '1';
-    cardCena.style.pointerEvents = 'auto';
+  // Verificar turnos ocupados en Supabase para esta fecha
+  const bloqueada = state.fecha ? fechasBloqueadas[state.fecha] : null;
+  const almuerzoOcupado = bloqueada && !!bloqueada['almuerzo'];
+  const cenaOcupada = bloqueada && !!bloqueada['cena'];
+
+  // Almuerzo
+  const almuerzoDisponible = !soloAlmuerzo ? !almuerzoOcupado : !almuerzoOcupado;
+  const almuerzoVisible = !soloCena;
+
+  // Cena
+  const cenaDisponible = !soloCena ? !cenaOcupada : !cenaOcupada;
+  const cenaVisible = !soloAlmuerzo;
+
+  // Aplicar estado almuerzo
+  if (!almuerzoVisible || almuerzoOcupado) {
     cardAlmuerzo.style.opacity = '0.3';
     cardAlmuerzo.style.pointerEvents = 'none';
     cardAlmuerzo.classList.remove('selected');
@@ -2364,9 +2366,24 @@ function renderTurnos() {
   } else {
     cardAlmuerzo.style.opacity = '1';
     cardAlmuerzo.style.pointerEvents = 'auto';
+  }
+
+  // Aplicar estado cena
+  if (!cenaVisible || cenaOcupada) {
+    cardCena.style.opacity = '0.3';
+    cardCena.style.pointerEvents = 'none';
+    cardCena.classList.remove('selected');
+    if (state.turno === 'cena') { state.turno = null; }
+  } else {
     cardCena.style.opacity = '1';
     cardCena.style.pointerEvents = 'auto';
   }
+
+  // Mostrar etiqueta "ocupado" si corresponde
+  document.getElementById('turno-almuerzo').querySelector('.turno-time').textContent =
+    almuerzoOcupado ? 'Ocupado' : '12:00 – 15:30';
+  document.getElementById('turno-cena').querySelector('.turno-time').textContent =
+    cenaOcupada ? 'Ocupado' : '20:00 – 23:30';
 }
 
 function prevMonth() {
