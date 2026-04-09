@@ -1929,6 +1929,13 @@ function renderMenus() {
         <div class="menu-desc">${m.desc}</div>
         <div style="font-size:12px;color:var(--text-light);font-style:italic;margin-bottom:16px;">Ideal para: ${m.ideal}</div>
         <img src="${imgSrc}" alt="${m.nombre}" style="width:100%;aspect-ratio:1/1;object-fit:cover;display:block;border-radius:var(--radius);">
+        <button
+          onclick="selectMenu(${m.id})"
+          id="btn-select-menu-${m.id}"
+          type="button"
+          style="width:100%;margin-top:14px;padding:12px;border-radius:40px;border:1.5px solid var(--cream-dark);background:transparent;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--text-mid);cursor:pointer;transition:all 0.2s;letter-spacing:0.02em;">
+          ${state.menu?.id === m.id ? '✓ Seleccionado' : 'Elegir este menú'}
+        </button>
       </div>
       <div style="flex:1;"></div>
       <div class="calc-wrap" onclick="event.stopPropagation()" style="margin:0;border-radius:0 0 var(--radius-lg) var(--radius-lg);">
@@ -2102,6 +2109,23 @@ function selectMenu(id) {
   document.querySelectorAll('.menu-card').forEach(el => el.classList.remove('selected'));
   document.getElementById('menu-card-' + id).classList.add('selected');
   document.getElementById('btn-next-2').disabled = false;
+
+  // Update all selection buttons
+  [1, 2].forEach(menuId => {
+    const btn = document.getElementById('btn-select-menu-' + menuId);
+    if (!btn) return;
+    if (menuId === id) {
+      btn.textContent = '✓ Seleccionado';
+      btn.style.background = 'var(--gold-pale)';
+      btn.style.borderColor = 'var(--gold)';
+      btn.style.color = 'var(--navy)';
+    } else {
+      btn.textContent = 'Elegir este menú';
+      btn.style.background = 'transparent';
+      btn.style.borderColor = 'var(--cream-dark)';
+      btn.style.color = 'var(--text-mid)';
+    }
+  });
 }
 
 // ─── PASO 3: CALENDARIO ─────────────────────────────────
