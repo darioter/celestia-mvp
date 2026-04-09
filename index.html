@@ -2057,12 +2057,12 @@ function renderMenus() {
         </div>
         <div class="calc-result" id="calc-result-${m.id}"></div>
       </div>
-      <div style="padding:16px 22px;background:var(--white);">
+      <div style="padding:16px 22px;background:var(--navy);border-radius:0 0 var(--radius-lg) var(--radius-lg);">
         <button
           onclick="selectMenu(${m.id})"
           id="btn-select-menu-${m.id}"
           type="button"
-          style="width:100%;padding:13px;border-radius:40px;border:1.5px solid var(--cream-dark);background:transparent;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--text-mid);cursor:pointer;transition:all 0.2s;letter-spacing:0.02em;">
+          style="width:100%;padding:13px;border-radius:40px;border:1.5px solid rgba(201,168,76,0.35);background:transparent;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:rgba(250,246,239,0.7);cursor:pointer;transition:all 0.2s;letter-spacing:0.02em;">
           ${state.menu?.id === m.id ? '✓ Seleccionado' : 'Elegir este menú'}
         </button>
       </div>
@@ -2216,14 +2216,14 @@ function selectMenu(id) {
     if (!btn) return;
     if (menuId === id) {
       btn.textContent = '✓ Seleccionado';
-      btn.style.background = 'var(--gold-pale)';
+      btn.style.background = 'rgba(201,168,76,0.15)';
       btn.style.borderColor = 'var(--gold)';
-      btn.style.color = 'var(--navy)';
+      btn.style.color = 'var(--gold-light)';
     } else {
       btn.textContent = 'Elegir este menú';
       btn.style.background = 'transparent';
-      btn.style.borderColor = 'var(--cream-dark)';
-      btn.style.color = 'var(--text-mid)';
+      btn.style.borderColor = 'rgba(201,168,76,0.35)';
+      btn.style.color = 'rgba(250,246,239,0.7)';
     }
   });
 }
