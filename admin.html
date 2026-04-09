@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Celestia · Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --navy: #0D1B2A;
+    --navy-light: #1A2E42;
+    --gold: #C9A84C;
+    --gold-light: #E8C96A;
+    --cream: #FAF6EF;
+    --cream-dark: #EDE8DF;
+    --white: #FFFFFF;
+    --text-dark: #1A1A2E;
+    --text-mid: #4A4A6A;
+    --text-light: #8A8AAA;
+    --green: #2D7A4F;
+    --green-light: #E8F5EE;
+    --red: #9B2335;
+    --red-light: #FAE8EA;
+    --amber: #8B5E00;
+    --amber-light: #FFF3E0;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy);
+    min-height: 100vh;
+    color: var(--cream);
+  }
+
+  /* LOGIN */
+  #login-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .login-box {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 20px;
+    padding: 48px 40px;
+    width: 100%;
+    max-width: 380px;
+    text-align: center;
+  }
+  .login-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--gold-light);
+    margin-bottom: 6px;
+  }
+  .login-sub {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(250,246,239,0.4);
+    margin-bottom: 36px;
+  }
+  .login-input {
+    width: 100%;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--cream);
+    outline: none;
+    margin-bottom: 14px;
+    letter-spacing: 0.1em;
+    text-align: center;
+  }
+  .login-input:focus { border-color: var(--gold); }
+  .login-btn {
+    width: 100%;
+    background: var(--gold);
+    color: var(--navy);
+    border: none;
+    border-radius: 40px;
+    padding: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.04em;
+  }
+  .login-btn:hover { background: var(--gold-light); }
+  .login-error {
+    font-size: 12px;
+    color: #E87070;
+    margin-top: 12px;
+    display: none;
+  }
+
+  /* ADMIN */
+  #admin-screen { display: none; }
+
+  .admin-header {
+    background: rgba(0,0,0,0.3);
+    border-bottom: 1px solid rgba(201,168,76,0.15);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .admin-header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .admin-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: var(--gold-light);
+  }
+  .admin-badge {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(250,246,239,0.4);
+    border: 1px solid rgba(201,168,76,0.2);
+    padding: 3px 8px;
+    border-radius: 20px;
+  }
+  .admin-stats {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--gold-light);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 10px;
+    color: rgba(250,246,239,0.4);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .logout-btn {
+    background: transparent;
+    border: 1px solid rgba(250,246,239,0.15);
+    color: rgba(250,246,239,0.5);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .logout-btn:hover { border-color: rgba(250,246,239,0.4); color: var(--cream); }
+
+  .admin-body { padding: 32px; }
+
+  /* FILTROS */
+  .filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .filter-btn {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(201,168,76,0.15);
+    color: rgba(250,246,239,0.6);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 7px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.04em;
+  }
+  .filter-btn.active {
+    background: rgba(201,168,76,0.15);
+    border-color: var(--gold);
+    color: var(--gold-light);
+  }
+  .refresh-btn {
+    margin-left: auto;
+    background: transparent;
+    border: 1px solid rgba(201,168,76,0.3);
+    color: var(--gold);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    padding: 7px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .refresh-btn:hover { background: rgba(201,168,76,0.1); }
+
+  /* TABLA */
+  .reservas-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .reserva-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 20px 24px;
+    display: grid;
+    grid-template-columns: 140px 1fr 1fr 160px 180px;
+    gap: 20px;
+    align-items: center;
+    transition: all 0.2s;
+  }
+  .reserva-card:hover { background: rgba(255,255,255,0.06); }
+  .reserva-card.estado-reservada { border-left: 3px solid var(--gold); }
+  .reserva-card.estado-confirmada { border-left: 3px solid #4CAF50; }
+  .reserva-card.estado-cancelada { border-left: 3px solid rgba(255,255,255,0.2); opacity: 0.5; }
+
+  .res-fecha {
+    font-family: 'DM Serif Display', serif;
+    font-size: 16px;
+    color: var(--cream);
+  }
+  .res-turno {
+    font-size: 11px;
+    color: rgba(250,246,239,0.5);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .res-ref {
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    margin-top: 4px;
+  }
+
+  .res-cliente { }
+  .res-nombre {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--cream);
+    margin-bottom: 3px;
+  }
+  .res-contacto {
+    font-size: 12px;
+    color: rgba(250,246,239,0.5);
+    font-weight: 300;
+  }
+
+  .res-detalle { }
+  .res-menu {
+    font-size: 13px;
+    color: rgba(250,246,239,0.8);
+    margin-bottom: 3px;
+  }
+  .res-personas {
+    font-size: 12px;
+    color: rgba(250,246,239,0.45);
+  }
+  .res-monto {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: var(--gold-light);
+    text-align: right;
+  }
+  .res-senia {
+    font-size: 11px;
+    color: rgba(250,246,239,0.4);
+    text-align: right;
+    margin-top: 2px;
+  }
+
+  /* ESTADO BADGE */
+  .estado-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-bottom: 8px;
+  }
+  .estado-badge.reservada { background: rgba(201,168,76,0.15); color: var(--gold-light); }
+  .estado-badge.confirmada { background: rgba(76,175,80,0.15); color: #81C784; }
+  .estado-badge.cancelada { background: rgba(255,255,255,0.06); color: rgba(250,246,239,0.4); }
+
+  /* ACCIONES */
+  .res-acciones {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .accion-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 7px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: 1px solid;
+    letter-spacing: 0.04em;
+    text-align: center;
+  }
+  .btn-confirmar {
+    background: rgba(76,175,80,0.1);
+    border-color: rgba(76,175,80,0.3);
+    color: #81C784;
+  }
+  .btn-confirmar:hover { background: rgba(76,175,80,0.2); }
+  .btn-cancelar {
+    background: rgba(155,35,53,0.1);
+    border-color: rgba(155,35,53,0.3);
+    color: #E57373;
+  }
+  .btn-cancelar:hover { background: rgba(155,35,53,0.2); }
+  .btn-whatsapp {
+    background: rgba(37,211,102,0.1);
+    border-color: rgba(37,211,102,0.3);
+    color: #25D166;
+  }
+  .btn-whatsapp:hover { background: rgba(37,211,102,0.2); }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: rgba(250,246,239,0.3);
+    font-size: 14px;
+  }
+  .empty-state-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+    opacity: 0.3;
+  }
+
+  .loading {
+    text-align: center;
+    padding: 40px;
+    color: rgba(250,246,239,0.4);
+    font-size: 13px;
+  }
+
+  @media (max-width: 900px) {
+    .reserva-card {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .res-monto { text-align: left; }
+    .res-senia { text-align: left; }
+    .admin-stats { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">Celestia · Chef Privado</div>
+    <div class="login-sub">Panel de administración</div>
+    <input type="password" class="login-input" id="pwd-input" placeholder="Contraseña" onkeydown="if(event.key==='Enter')login()">
+    <button class="login-btn" onclick="login()">Ingresar</button>
+    <div class="login-error" id="login-error">Contraseña incorrecta</div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="admin-screen">
+  <div class="admin-header">
+    <div class="admin-header-left">
+      <div class="admin-logo">Celestia</div>
+      <div class="admin-badge">Admin</div>
+    </div>
+    <div class="admin-stats">
+      <div class="stat">
+        <div class="stat-num" id="stat-total">—</div>
+        <div class="stat-label">Total</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="stat-reservadas">—</div>
+        <div class="stat-label">Reservadas</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="stat-confirmadas">—</div>
+        <div class="stat-label">Confirmadas</div>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="logout()">Salir</button>
+  </div>
+
+  <div class="admin-body">
+    <div class="filters">
+      <button class="filter-btn active" onclick="setFiltro('todas', this)">Todas</button>
+      <button class="filter-btn" onclick="setFiltro('reservada', this)">Reservadas</button>
+      <button class="filter-btn" onclick="setFiltro('confirmada', this)">Confirmadas</button>
+      <button class="filter-btn" onclick="setFiltro('cancelada', this)">Canceladas</button>
+      <button class="refresh-btn" onclick="cargarReservas()">↻ Actualizar</button>
+    </div>
+    <div class="reservas-grid" id="reservas-grid">
+      <div class="loading">Cargando reservas...</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SUPA_URL = 'https://qolpnuscpmzqeacshfvu.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvbHBudXNjcG16cWVhY3NoZnZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NjQ3OTQsImV4cCI6MjA5MTM0MDc5NH0.BJOz5Gwkeb1NqID_gkGKD5YlymifMtOwaf8iQMaBCx8';
+const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+const PWD = 'piko6969';
+let todasReservas = [];
+let filtroActual = 'todas';
+
+function login() {
+  const val = document.getElementById('pwd-input').value;
+  if (val === PWD) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-screen').style.display = 'block';
+    cargarReservas();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+  }
+}
+
+function logout() {
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('admin-screen').style.display = 'none';
+  document.getElementById('pwd-input').value = '';
+}
+
+function setFiltro(filtro, btn) {
+  filtroActual = filtro;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderReservas();
+}
+
+async function cargarReservas() {
+  document.getElementById('reservas-grid').innerHTML = '<div class="loading">Cargando...</div>';
+  const { data, error } = await supa
+    .from('reservas')
+    .select('*')
+    .order('fecha', { ascending: true });
+  if (error) {
+    document.getElementById('reservas-grid').innerHTML = '<div class="loading">Error al cargar reservas</div>';
+    return;
+  }
+  todasReservas = data;
+  actualizarStats();
+  renderReservas();
+}
+
+function actualizarStats() {
+  document.getElementById('stat-total').textContent = todasReservas.length;
+  document.getElementById('stat-reservadas').textContent = todasReservas.filter(r => r.estado === 'reservada').length;
+  document.getElementById('stat-confirmadas').textContent = todasReservas.filter(r => r.estado === 'confirmada').length;
+}
+
+function renderReservas() {
+  const reservas = filtroActual === 'todas'
+    ? todasReservas
+    : todasReservas.filter(r => r.estado === filtroActual);
+
+  if (reservas.length === 0) {
+    document.getElementById('reservas-grid').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">✦</div>
+        No hay reservas ${filtroActual !== 'todas' ? 'con estado ' + filtroActual : ''}
+      </div>`;
+    return;
+  }
+
+  const fmt = n => n ? '$' + Number(n).toLocaleString('es-AR') : '—';
+  const fmtFecha = f => {
+    if (!f) return '—';
+    const d = new Date(f + 'T12:00:00');
+    return d.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
+  };
+
+  document.getElementById('reservas-grid').innerHTML = reservas.map(r => `
+    <div class="reserva-card estado-${r.estado}" id="card-${r.id}">
+      <div>
+        <div class="res-fecha">${fmtFecha(r.fecha)}</div>
+        <div class="res-turno">${r.turno === 'almuerzo' ? '☀ Almuerzo' : '🌙 Cena'}</div>
+        <div class="res-ref">${r.ref}</div>
+      </div>
+      <div class="res-cliente">
+        <div class="res-nombre">${r.nombre || '—'}</div>
+        <div class="res-contacto">${r.tel || ''}<br>${r.email || ''}</div>
+        ${r.dir ? `<div class="res-contacto" style="margin-top:4px;">📍 ${r.dir}</div>` : ''}
+        ${r.notas ? `<div class="res-contacto" style="margin-top:4px;font-style:italic;">${r.notas}</div>` : ''}
+      </div>
+      <div class="res-detalle">
+        <div class="res-menu">${r.menu || '—'}</div>
+        <div class="res-personas">${r.personas} personas</div>
+        ${r.ocasion ? `<div class="res-contacto" style="margin-top:4px;">${r.ocasion}</div>` : ''}
+      </div>
+      <div>
+        <div class="res-monto">${fmt(r.total)}</div>
+        <div class="res-senia">Seña 50%: ${fmt(r.total ? Math.round(r.total * 0.5 / 100) * 100 : 0)}</div>
+        <div style="margin-top:8px;">
+          <span class="estado-badge ${r.estado}">${r.estado}</span>
+        </div>
+      </div>
+      <div class="res-acciones">
+        ${r.estado === 'reservada' ? `<button class="accion-btn btn-confirmar" onclick="cambiarEstado('${r.id}','confirmada')">✓ Confirmar</button>` : ''}
+        ${r.estado !== 'cancelada' ? `<button class="accion-btn btn-cancelar" onclick="cambiarEstado('${r.id}','cancelada')">✕ Cancelar</button>` : ''}
+        ${r.tel ? `<button class="accion-btn btn-whatsapp" onclick="abrirWA('${r.tel}','${r.nombre}','${r.ref}','${r.estado}')">WA Cliente</button>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+async function cambiarEstado(id, nuevoEstado) {
+  const { error } = await supa
+    .from('reservas')
+    .update({ estado: nuevoEstado })
+    .eq('id', id);
+  if (error) {
+    alert('Error al actualizar: ' + error.message);
+    return;
+  }
+  const r = todasReservas.find(r => r.id === id);
+  if (r) r.estado = nuevoEstado;
+  actualizarStats();
+  renderReservas();
+}
+
+function abrirWA(tel, nombre, ref, estado) {
+  const msg = estado === 'confirmada'
+    ? `Hola ${nombre}! Te confirmamos tu reserva Celestia (${ref}). Quedamos a tu disposición para cualquier consulta.`
+    : `Hola ${nombre}! Te escribimos de Celestia respecto a tu solicitud de reserva (${ref}).`;
+  const num = tel.replace(/\D/g, '');
+  window.open(`https://wa.me/${num.startsWith('54') ? num : '54' + num}?text=${encodeURIComponent(msg)}`, '_blank');
+}
+</script>
+</body>
+</html>
