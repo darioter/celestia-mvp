@@ -337,135 +337,177 @@
   .btn-whatsapp:hover { background: rgba(37,211,102,0.2); }
 
   /* AGENDA CALENDARIO */
-  .agenda-header {
+  .agenda-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+  /* MES GRANDE - izquierda */
+  .agenda-main {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 24px;
+  }
+  .agenda-main-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 20px;
   }
-  .agenda-mes {
+  .agenda-main-mes {
     font-family: 'DM Serif Display', serif;
     font-size: 22px;
     color: var(--cream);
   }
-  .agenda-nav {
-    display: flex;
-    gap: 8px;
+  .agenda-main-anio {
+    font-size: 12px;
+    color: rgba(250,246,239,0.4);
+    letter-spacing: 0.1em;
+    margin-top: 2px;
   }
+  .agenda-nav { display: flex; gap: 8px; }
   .agenda-nav-btn {
     background: rgba(255,255,255,0.06);
     border: 1px solid rgba(255,255,255,0.1);
     color: var(--cream);
-    width: 34px;
-    height: 34px;
+    width: 32px; height: 32px;
     border-radius: 50%;
-    font-size: 16px;
+    font-size: 15px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     transition: all 0.15s;
   }
   .agenda-nav-btn:hover { background: rgba(255,255,255,0.12); }
   .agenda-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 6px;
+    gap: 5px;
   }
   .agenda-dia-nombre {
     text-align: center;
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    color: rgba(250,246,239,0.35);
-    padding-bottom: 8px;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: rgba(250,246,239,0.3);
+    padding-bottom: 6px;
     text-transform: uppercase;
   }
   .agenda-dia {
     aspect-ratio: 1;
-    border-radius: 10px;
+    border-radius: 8px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
-    color: rgba(250,246,239,0.5);
+    color: rgba(250,246,239,0.4);
     background: rgba(255,255,255,0.03);
     border: 1px solid transparent;
-    cursor: default;
     position: relative;
-    gap: 3px;
-    padding: 4px 2px;
+    gap: 2px;
+    padding: 3px 2px;
   }
   .agenda-dia.vacio { background: transparent; border-color: transparent; }
-  .agenda-dia.hoy {
-    border-color: rgba(201,168,76,0.4);
-    color: var(--gold-light);
-  }
-  .agenda-dia.reservada {
-    background: rgba(201,168,76,0.12);
-    border-color: rgba(201,168,76,0.3);
-    color: var(--gold-light);
-    font-weight: 600;
-  }
-  .agenda-dia.confirmada {
-    background: rgba(76,175,80,0.12);
-    border-color: rgba(76,175,80,0.3);
-    color: #81C784;
-    font-weight: 600;
-  }
-  .agenda-dia.bloqueada {
-    background: rgba(155,35,53,0.1);
-    border-color: rgba(155,35,53,0.25);
-    color: rgba(229,115,115,0.7);
-  }
-  .agenda-dia.mixta {
-    background: linear-gradient(135deg, rgba(201,168,76,0.12) 50%, rgba(76,175,80,0.12) 50%);
-    border-color: rgba(201,168,76,0.3);
-    color: var(--cream);
-    font-weight: 600;
-  }
-  .agenda-dots {
-    display: flex;
-    gap: 3px;
-    justify-content: center;
-  }
-  .agenda-dot {
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-  }
+  .agenda-dia.hoy { border-color: rgba(201,168,76,0.5); color: var(--gold-light); }
+  .agenda-dia.reservada { background: rgba(201,168,76,0.14); border-color: rgba(201,168,76,0.35); color: var(--gold-light); font-weight: 600; }
+  .agenda-dia.confirmada { background: rgba(76,175,80,0.14); border-color: rgba(76,175,80,0.35); color: #81C784; font-weight: 600; }
+  .agenda-dia.bloqueada { background: rgba(155,35,53,0.1); border-color: rgba(155,35,53,0.25); color: rgba(229,115,115,0.7); }
+  .agenda-dia.mixta { background: linear-gradient(135deg, rgba(201,168,76,0.14) 50%, rgba(76,175,80,0.14) 50%); border-color: rgba(201,168,76,0.35); color: var(--cream); font-weight: 600; }
+  .agenda-dots { display: flex; gap: 2px; justify-content: center; }
+  .agenda-dot { width: 4px; height: 4px; border-radius: 50%; }
   .dot-reservada { background: var(--gold); }
   .dot-confirmada { background: #4CAF50; }
   .dot-bloqueada { background: #E57373; }
   .agenda-legend {
-    display: flex;
-    gap: 20px;
-    margin-top: 20px;
-    flex-wrap: wrap;
+    display: flex; gap: 16px; margin-top: 18px; flex-wrap: wrap;
   }
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 12px;
-    color: rgba(250,246,239,0.5);
-  }
-  .legend-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 3px;
-  }
-  .agenda-detalle {
-    margin-top: 24px;
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: rgba(250,246,239,0.45); }
+  .legend-dot { width: 9px; height: 9px; border-radius: 2px; }
+
+  /* MINI MESES - derecha */
+  .agenda-sidebar {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 12px;
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+  .agenda-sidebar::-webkit-scrollbar { width: 4px; }
+  .agenda-sidebar::-webkit-scrollbar-track { background: transparent; }
+  .agenda-sidebar::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.2); border-radius: 2px; }
+  .mini-mes {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .mini-mes:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.12); }
+  .mini-mes.activo {
+    border-color: rgba(201,168,76,0.4);
+    background: rgba(201,168,76,0.06);
+  }
+  .mini-mes-header {
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(250,246,239,0.6);
+    margin-bottom: 10px;
+    letter-spacing: 0.04em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .mini-mes.activo .mini-mes-header { color: var(--gold-light); }
+  .mini-mes-badge {
+    font-size: 10px;
+    background: rgba(201,168,76,0.15);
+    color: var(--gold);
+    padding: 2px 7px;
+    border-radius: 10px;
+  }
+  .mini-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+  }
+  .mini-dia-nombre {
+    text-align: center;
+    font-size: 8px;
+    color: rgba(250,246,239,0.25);
+    padding-bottom: 4px;
+    text-transform: uppercase;
+  }
+  .mini-dia {
+    aspect-ratio: 1;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    color: rgba(250,246,239,0.3);
+  }
+  .mini-dia.vacio { background: transparent; }
+  .mini-dia.hoy { color: var(--gold-light); font-weight: 700; }
+  .mini-dia.reservada { background: rgba(201,168,76,0.25); color: var(--gold-light); font-weight: 600; }
+  .mini-dia.confirmada { background: rgba(76,175,80,0.25); color: #81C784; font-weight: 600; }
+  .mini-dia.bloqueada { background: rgba(155,35,53,0.2); color: rgba(229,115,115,0.8); }
+  .mini-dia.mixta { background: linear-gradient(135deg, rgba(201,168,76,0.25) 50%, rgba(76,175,80,0.25) 50%); font-weight: 600; }
+
+  /* DETALLE */
+  .agenda-detalle {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
   }
   .agenda-detalle-item {
     background: rgba(255,255,255,0.04);
     border-radius: 10px;
-    padding: 12px 16px;
+    padding: 10px 14px;
     display: flex;
     align-items: center;
     gap: 14px;
@@ -474,8 +516,8 @@
   .agenda-detalle-item.reservada { border-left-color: var(--gold); }
   .agenda-detalle-item.confirmada { border-left-color: #4CAF50; }
   .agenda-detalle-item.bloqueada { border-left-color: #E57373; }
-  .agenda-detalle-fecha { font-size: 13px; font-weight: 500; color: var(--cream); min-width: 160px; }
-  .agenda-detalle-info { font-size: 12px; color: rgba(250,246,239,0.5); }
+  .agenda-detalle-fecha { font-size: 12px; font-weight: 500; color: var(--cream); min-width: 130px; }
+  .agenda-detalle-info { font-size: 11px; color: rgba(250,246,239,0.5); }
 
   .empty-state {
     text-align: center;
@@ -615,23 +657,31 @@
 
     <!-- SECCIÓN AGENDA -->
     <div id="seccion-agenda" style="display:none;">
-      <div class="agenda-header">
-        <div class="agenda-mes" id="agenda-mes-label">—</div>
-        <div class="agenda-nav">
-          <button class="agenda-nav-btn" onclick="agendaNav(-1)">‹</button>
-          <button class="agenda-nav-btn" onclick="agendaNav(1)">›</button>
+      <div class="agenda-layout">
+        <!-- MES GRANDE - izquierda -->
+        <div class="agenda-main">
+          <div class="agenda-main-header">
+            <div>
+              <div class="agenda-main-mes" id="agenda-mes-label">—</div>
+              <div class="agenda-main-anio" id="agenda-anio-label">—</div>
+            </div>
+            <div class="agenda-nav">
+              <button class="agenda-nav-btn" onclick="agendaNav(-1)">‹</button>
+              <button class="agenda-nav-btn" onclick="agendaNav(1)">›</button>
+            </div>
+          </div>
+          <div class="agenda-grid" id="agenda-grid"></div>
+          <div class="agenda-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:rgba(201,168,76,0.4);border:1px solid var(--gold);"></div>Reservada</div>
+            <div class="legend-item"><div class="legend-dot" style="background:rgba(76,175,80,0.4);border:1px solid #4CAF50;"></div>Confirmada</div>
+            <div class="legend-item"><div class="legend-dot" style="background:rgba(155,35,53,0.3);border:1px solid #E57373;"></div>Bloqueado</div>
+            <div class="legend-item"><div class="legend-dot" style="border:1px solid rgba(201,168,76,0.5);"></div>Hoy</div>
+          </div>
+          <div class="agenda-detalle" id="agenda-detalle"></div>
         </div>
+        <!-- MINI MESES - derecha -->
+        <div class="agenda-sidebar" id="agenda-sidebar"></div>
       </div>
-      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:24px;">
-        <div class="agenda-grid" id="agenda-grid"></div>
-        <div class="agenda-legend">
-          <div class="legend-item"><div class="legend-dot" style="background:rgba(201,168,76,0.5);border:1px solid var(--gold);"></div>Reservada</div>
-          <div class="legend-item"><div class="legend-dot" style="background:rgba(76,175,80,0.5);border:1px solid #4CAF50;"></div>Confirmada</div>
-          <div class="legend-item"><div class="legend-dot" style="background:rgba(155,35,53,0.5);border:1px solid #E57373;"></div>Bloqueado</div>
-          <div class="legend-item"><div class="legend-dot" style="border:1px solid rgba(201,168,76,0.4);"></div>Hoy</div>
-        </div>
-      </div>
-      <div class="agenda-detalle" id="agenda-detalle"></div>
     </div>
 
     <!-- SECCIÓN BLOQUEOS -->
@@ -678,12 +728,14 @@ const DIAS_SEMANA = ['Do','Lu','Ma','Mi','Ju','Vi','Sá'];
 let agendaYear = new Date().getFullYear();
 let agendaMonth = new Date().getMonth();
 let bloqueosDias = [];
+let agendaReservas = [];
 
 function agendaNav(dir) {
   agendaMonth += dir;
   if (agendaMonth > 11) { agendaMonth = 0; agendaYear++; }
   if (agendaMonth < 0) { agendaMonth = 11; agendaYear--; }
-  renderAgenda();
+  renderAgendaMain();
+  renderMiniMeses();
 }
 
 async function cargarDatosAgenda() {
@@ -692,92 +744,141 @@ async function cargarDatosAgenda() {
     supa.from('bloqueos').select('fecha, motivo')
   ]);
   bloqueosDias = resB.data || [];
-  return resR.data || [];
+  agendaReservas = resR.data || [];
 }
 
-async function renderAgenda() {
-  document.getElementById('agenda-mes-label').textContent = MESES[agendaMonth] + ' ' + agendaYear;
-  const grid = document.getElementById('agenda-grid');
-  const detalle = document.getElementById('agenda-detalle');
-  grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;color:rgba(250,246,239,0.3);font-size:13px;">Cargando...</div>';
-
-  const reservas = await cargarDatosAgenda();
-
-  // Indexar por fecha
+function buildPorFecha() {
   const porFecha = {};
-  reservas.forEach(r => {
+  agendaReservas.forEach(r => {
     if (!porFecha[r.fecha]) porFecha[r.fecha] = [];
     porFecha[r.fecha].push(r);
   });
-  const bloqueosSet = new Set(bloqueosDias.map(b => b.fecha));
+  return porFecha;
+}
 
-  // Render grid
-  const firstDay = new Date(agendaYear, agendaMonth, 1).getDay();
-  const daysInMonth = new Date(agendaYear, agendaMonth + 1, 0).getDate();
+function claseDia(dateStr, porFecha, bloqueosSet) {
+  if (bloqueosSet.has(dateStr)) return 'bloqueada';
+  const res = porFecha[dateStr];
+  if (!res || res.length === 0) return '';
+  const estados = res.map(r => r.estado);
+  if (estados.includes('confirmada') && estados.includes('reservada')) return 'mixta';
+  if (estados.includes('confirmada')) return 'confirmada';
+  return 'reservada';
+}
+
+function renderGridMes(year, month, porFecha, bloqueosSet, clasePrefix, dotSize) {
   const hoy = new Date();
   const hoyStr = `${hoy.getFullYear()}-${String(hoy.getMonth()+1).padStart(2,'0')}-${String(hoy.getDate()).padStart(2,'0')}`;
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-  let html = DIAS_SEMANA.map(d => `<div class="agenda-dia-nombre">${d}</div>`).join('');
-
-  for (let i = 0; i < firstDay; i++) html += `<div class="agenda-dia vacio"></div>`;
-
-  const eventosMes = [];
+  let html = DIAS_SEMANA.map(d => `<div class="${clasePrefix}-dia-nombre">${d}</div>`).join('');
+  for (let i = 0; i < firstDay; i++) html += `<div class="${clasePrefix}-dia vacio"></div>`;
 
   for (let d = 1; d <= daysInMonth; d++) {
-    const dateStr = `${agendaYear}-${String(agendaMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const reservasDia = porFecha[dateStr] || [];
-    const esBloqueado = bloqueosSet.has(dateStr);
+    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const clase = claseDia(dateStr, porFecha, bloqueosSet);
     const esHoy = dateStr === hoyStr;
+    const clases = `${clasePrefix}-dia${clase ? ' ' + clase : ''}${esHoy ? ' hoy' : ''}`;
 
-    let clase = 'agenda-dia';
     let dots = '';
-
-    if (esBloqueado) {
-      clase += ' bloqueada';
-      dots = '<div class="agenda-dots"><div class="agenda-dot dot-bloqueada"></div></div>';
-      eventosMes.push({ fecha: dateStr, tipo: 'bloqueada', label: 'Día bloqueado', motivo: bloqueosDias.find(b=>b.fecha===dateStr)?.motivo || '' });
-    } else if (reservasDia.length > 0) {
-      const estados = reservasDia.map(r => r.estado);
-      const tieneConfirmada = estados.includes('confirmada');
-      const tieneReservada = estados.includes('reservada');
-      if (tieneConfirmada && tieneReservada) clase += ' mixta';
-      else if (tieneConfirmada) clase += ' confirmada';
-      else clase += ' reservada';
-
-      const dotHtml = estados.map(e => `<div class="agenda-dot dot-${e}"></div>`).join('');
-      dots = `<div class="agenda-dots">${dotHtml}</div>`;
-      reservasDia.forEach(r => eventosMes.push({ fecha: dateStr, tipo: r.estado, label: r.nombre, info: `${r.turno === 'almuerzo' ? '☀' : '🌙'} ${r.turno} · ${r.personas}p · ${r.menu}` }));
+    if (clase && clase !== 'bloqueada') {
+      const res = porFecha[dateStr] || [];
+      dots = `<div class="agenda-dots">${res.map(r => `<div class="agenda-dot dot-${r.estado}" style="width:${dotSize}px;height:${dotSize}px;"></div>`).join('')}</div>`;
+    } else if (clase === 'bloqueada') {
+      dots = `<div class="agenda-dots"><div class="agenda-dot dot-bloqueada" style="width:${dotSize}px;height:${dotSize}px;"></div></div>`;
     }
 
-    if (esHoy) clase += ' hoy';
-
-    html += `<div class="${clase}">${d}${dots}</div>`;
+    html += `<div class="${clases}">${d}${dots}</div>`;
   }
+  return html;
+}
 
-  grid.innerHTML = html;
+function renderAgendaMain() {
+  document.getElementById('agenda-mes-label').textContent = MESES[agendaMonth];
+  document.getElementById('agenda-anio-label').textContent = agendaYear;
+
+  const porFecha = buildPorFecha();
+  const bloqueosSet = new Set(bloqueosDias.map(b => b.fecha));
+
+  document.getElementById('agenda-grid').innerHTML = renderGridMes(agendaYear, agendaMonth, porFecha, bloqueosSet, 'agenda', 4);
 
   // Detalle del mes
-  if (eventosMes.length === 0) {
-    detalle.innerHTML = '';
-    return;
+  const eventosMes = [];
+  const hoy = new Date();
+  const daysInMonth = new Date(agendaYear, agendaMonth + 1, 0).getDate();
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = `${agendaYear}-${String(agendaMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    if (bloqueosSet.has(dateStr)) {
+      eventosMes.push({ fecha: dateStr, tipo: 'bloqueada', label: 'Día bloqueado', info: bloqueosDias.find(b=>b.fecha===dateStr)?.motivo || '' });
+    }
+    (porFecha[dateStr] || []).forEach(r => {
+      eventosMes.push({ fecha: dateStr, tipo: r.estado, label: r.nombre || '—', info: `${r.turno === 'almuerzo' ? '☀' : '🌙'} ${r.turno} · ${r.personas}p · ${r.menu}` });
+    });
   }
 
-  const fmtFecha = f => {
-    const d = new Date(f + 'T12:00:00');
-    return d.toLocaleDateString('es-AR', { weekday: 'short', day: 'numeric', month: 'short' });
-  };
+  const fmtFecha = f => new Date(f + 'T12:00:00').toLocaleDateString('es-AR', { weekday: 'short', day: 'numeric', month: 'short' });
 
-  detalle.innerHTML = `<div class="section-title" style="margin-top:8px;">Eventos del mes</div>` +
-    eventosMes.sort((a,b) => a.fecha.localeCompare(b.fecha)).map(e => `
-    <div class="agenda-detalle-item ${e.tipo}">
-      <div class="agenda-detalle-fecha">${fmtFecha(e.fecha)}</div>
-      <div>
-        <div style="font-size:13px;color:var(--cream);font-weight:500;">${e.label}</div>
-        ${e.info ? `<div class="agenda-detalle-info">${e.info}</div>` : ''}
-        ${e.motivo ? `<div class="agenda-detalle-info">${e.motivo}</div>` : ''}
-      </div>
-    </div>
-  `).join('');
+  const detalle = document.getElementById('agenda-detalle');
+  detalle.innerHTML = eventosMes.length === 0 ? '' :
+    `<div class="section-title" style="margin-top:16px;font-size:13px;">Eventos del mes</div>` +
+    eventosMes.map(e => `
+      <div class="agenda-detalle-item ${e.tipo}">
+        <div class="agenda-detalle-fecha">${fmtFecha(e.fecha)}</div>
+        <div>
+          <div style="font-size:12px;color:var(--cream);font-weight:500;">${e.label}</div>
+          ${e.info ? `<div class="agenda-detalle-info">${e.info}</div>` : ''}
+        </div>
+      </div>`).join('');
+}
+
+function renderMiniMeses() {
+  const porFecha = buildPorFecha();
+  const bloqueosSet = new Set(bloqueosDias.map(b => b.fecha));
+  const sidebar = document.getElementById('agenda-sidebar');
+  let html = '';
+
+  // Mostrar 8 meses desde el actual
+  for (let offset = 0; offset < 8; offset++) {
+    let m = agendaMonth + offset;
+    let y = agendaYear;
+    if (m > 11) { m -= 12; y++; }
+
+    // Contar eventos del mes
+    const daysInMonth = new Date(y, m + 1, 0).getDate();
+    let eventos = 0;
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      if (bloqueosSet.has(dateStr) || (porFecha[dateStr] && porFecha[dateStr].length > 0)) eventos++;
+    }
+
+    const esActivo = (m === agendaMonth && y === agendaYear);
+    const badge = eventos > 0 ? `<span class="mini-mes-badge">${eventos}</span>` : '';
+
+    html += `
+      <div class="mini-mes${esActivo ? ' activo' : ''}" onclick="irAMes(${y},${m})">
+        <div class="mini-mes-header">${MESES[m]} ${y !== agendaYear ? y : ''}${badge}</div>
+        <div class="mini-grid">
+          ${renderGridMes(y, m, porFecha, bloqueosSet, 'mini', 3)}
+        </div>
+      </div>`;
+  }
+  sidebar.innerHTML = html;
+}
+
+function irAMes(year, month) {
+  agendaYear = year;
+  agendaMonth = month;
+  renderAgendaMain();
+  renderMiniMeses();
+}
+
+async function renderAgenda() {
+  document.getElementById('agenda-grid').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;color:rgba(250,246,239,0.3);font-size:13px;">Cargando...</div>';
+  document.getElementById('agenda-sidebar').innerHTML = '<div style="color:rgba(250,246,239,0.3);font-size:13px;padding:20px;">Cargando...</div>';
+  await cargarDatosAgenda();
+  renderAgendaMain();
+  renderMiniMeses();
 }
 
 function verSeccion(seccion, btn) {
