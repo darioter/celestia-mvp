@@ -485,7 +485,7 @@ async function guardarPerfil() {
 async function subirAvatar(input) {
   const file = input.files[0];
   if (!file) return;
-  if (file.size > 2 * 1024 * 1024) { showToast('La imagen no puede superar 2MB'); return; }
+  if (file.size > 5 * 1024 * 1024) { showToast('La imagen no puede superar 5MB'); return; }
   showToast('Subiendo foto...');
   const ext = file.name.split('.').pop().toLowerCase();
   const path = `${currentUser.id}/avatar.${ext}`;
