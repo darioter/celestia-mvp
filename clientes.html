@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Celestia · Mi perfil</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --navy: #0D1B2A;
+  --navy-light: #1A2E42;
+  --gold: #C9A84C;
+  --gold-light: #E8C96A;
+  --gold-pale: #FDF6E3;
+  --cream: #FAF6EF;
+  --cream-dark: #EDE8DF;
+  --text: #1A1A2E;
+  --text-mid: #4A4A6A;
+  --text-light: #8A8AAA;
+  --white: #FFFFFF;
+  --radius: 12px;
+  --radius-lg: 20px;
+  --shadow: 0 4px 20px rgba(0,0,0,0.08);
+  --green: #2D7A4F;
+  --green-light: #E8F5EE;
+}
+body { font-family:'DM Sans',sans-serif; background:var(--cream); min-height:100vh; color:var(--text); }
+
+/* ─── TOAST ─── */
+.toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--navy); color:var(--cream); padding:12px 24px; border-radius:40px; font-size:13px; opacity:0; transition:all 0.3s; z-index:9999; pointer-events:none; white-space:nowrap; }
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* ─── LOGIN ─── */
+#login-screen {
+  min-height:100vh; display:flex; align-items:center; justify-content:center;
+  background: linear-gradient(135deg, var(--navy) 0%, #1A2E42 100%);
+  padding:20px;
+}
+.login-box {
+  background:rgba(255,255,255,0.05); border:1px solid rgba(201,168,76,0.2);
+  border-radius:24px; padding:52px 44px; width:100%; max-width:420px; text-align:center;
+}
+.login-logo { font-family:'DM Serif Display',serif; font-size:28px; color:var(--gold-light); letter-spacing:0.02em; }
+.login-tagline { font-size:12px; letter-spacing:0.12em; text-transform:uppercase; color:rgba(250,246,239,0.35); margin:8px 0 40px; }
+.login-tabs { display:flex; gap:0; margin-bottom:28px; background:rgba(255,255,255,0.06); border-radius:10px; padding:4px; }
+.login-tab { flex:1; padding:9px; border:none; background:transparent; color:rgba(250,246,239,0.5); font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; cursor:pointer; border-radius:7px; transition:all 0.2s; }
+.login-tab.active { background:rgba(201,168,76,0.2); color:var(--gold-light); }
+.login-field { margin-bottom:14px; text-align:left; }
+.login-label { font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:rgba(250,246,239,0.4); margin-bottom:6px; display:block; }
+.login-input { width:100%; background:rgba(255,255,255,0.07); border:1px solid rgba(201,168,76,0.15); border-radius:10px; padding:13px 16px; font-family:'DM Sans',sans-serif; font-size:14px; color:var(--cream); outline:none; transition:border 0.2s; }
+.login-input:focus { border-color:rgba(201,168,76,0.45); }
+.login-input::placeholder { color:rgba(250,246,239,0.25); }
+.login-btn { width:100%; background:var(--gold); color:var(--navy); border:none; border-radius:40px; padding:15px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; cursor:pointer; transition:all 0.2s; margin-top:8px; letter-spacing:0.03em; }
+.login-btn:hover { background:var(--gold-light); }
+.login-error { font-size:12px; color:#E87070; margin-top:12px; min-height:18px; }
+.login-divider { display:flex; align-items:center; gap:12px; margin:20px 0; }
+.login-divider-line { flex:1; height:1px; background:rgba(255,255,255,0.08); }
+.login-divider-text { font-size:11px; color:rgba(250,246,239,0.3); }
+
+/* ─── PORTAL ─── */
+#portal-screen { display:none; min-height:100vh; }
+.portal-header {
+  background:var(--navy); padding:0 32px; height:64px;
+  display:flex; align-items:center; justify-content:space-between;
+  border-bottom:1px solid rgba(201,168,76,0.12);
+  position:sticky; top:0; z-index:100;
+}
+.portal-logo { font-family:'DM Serif Display',serif; font-size:18px; color:var(--gold-light); }
+.portal-user { display:flex; align-items:center; gap:12px; }
+.portal-avatar { width:36px; height:36px; border-radius:50%; background:rgba(201,168,76,0.2); border:1.5px solid rgba(201,168,76,0.35); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; color:var(--gold-light); }
+.portal-nombre { font-size:13px; font-weight:500; color:rgba(250,246,239,0.8); }
+.portal-salir { background:transparent; border:1px solid rgba(255,255,255,0.12); color:rgba(250,246,239,0.45); font-family:'DM Sans',sans-serif; font-size:12px; padding:6px 14px; border-radius:20px; cursor:pointer; transition:all 0.2s; }
+.portal-salir:hover { border-color:rgba(255,255,255,0.3); color:var(--cream); }
+
+.portal-body { max-width:900px; margin:0 auto; padding:40px 24px; }
+
+/* ─── TABS ─── */
+.portal-tabs { display:flex; gap:4px; margin-bottom:36px; background:var(--white); border-radius:14px; padding:6px; box-shadow:var(--shadow); }
+.portal-tab { flex:1; padding:11px 8px; border:none; background:transparent; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; color:var(--text-light); cursor:pointer; border-radius:10px; transition:all 0.2s; text-align:center; }
+.portal-tab.active { background:var(--navy); color:var(--cream); }
+
+/* ─── SECCIONES ─── */
+.seccion { display:none; }
+.seccion.activa { display:block; }
+.seccion-titulo { font-family:'DM Serif Display',serif; font-size:22px; color:var(--navy); margin-bottom:6px; }
+.seccion-sub { font-size:13px; color:var(--text-light); margin-bottom:28px; }
+
+/* ─── CARDS ─── */
+.card { background:var(--white); border-radius:var(--radius-lg); padding:28px; box-shadow:var(--shadow); margin-bottom:20px; }
+.card-titulo { font-size:13px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; color:var(--text-light); margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid var(--cream-dark); }
+
+/* ─── FORM ─── */
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.form-field { display:flex; flex-direction:column; gap:6px; }
+.form-field.full { grid-column:1/-1; }
+.form-label { font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-light); font-weight:500; }
+.form-input { background:var(--cream); border:1.5px solid var(--cream-dark); border-radius:10px; padding:12px 14px; font-family:'DM Sans',sans-serif; font-size:14px; color:var(--text); outline:none; transition:border 0.2s; }
+.form-input:focus { border-color:var(--gold); }
+.form-textarea { resize:vertical; min-height:80px; }
+
+/* ─── AVATAR ─── */
+.avatar-wrap { display:flex; align-items:center; gap:20px; margin-bottom:24px; }
+.avatar-big { width:72px; height:72px; border-radius:50%; background:var(--cream-dark); display:flex; align-items:center; justify-content:center; font-family:'DM Serif Display',serif; font-size:26px; color:var(--navy); border:2px solid var(--cream-dark); overflow:hidden; flex-shrink:0; }
+.avatar-big img { width:100%; height:100%; object-fit:cover; }
+.avatar-info { font-size:12px; color:var(--text-light); line-height:1.6; }
+
+/* ─── COCINA TIPO ─── */
+.tipo-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:24px; }
+.tipo-btn { border:1.5px solid var(--cream-dark); border-radius:12px; padding:14px 10px; background:var(--cream); cursor:pointer; text-align:center; transition:all 0.2s; font-family:'DM Sans',sans-serif; }
+.tipo-btn:hover { border-color:var(--gold); }
+.tipo-btn.sel { border-color:var(--gold); background:var(--gold-pale); }
+.tipo-btn.sel .tipo-icon { color:var(--gold); }
+.tipo-icon { font-size:22px; margin-bottom:6px; display:block; color:var(--text-mid); }
+.tipo-label { font-size:12px; font-weight:500; color:var(--text); }
+.tipo-check { display:none; }
+.tipo-btn.sel .tipo-check { display:inline; color:var(--gold); font-size:10px; }
+
+/* ─── CHECKBOXES ─── */
+.check-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+.check-item { display:flex; align-items:center; gap:10px; background:var(--cream); border:1.5px solid var(--cream-dark); border-radius:10px; padding:11px 14px; cursor:pointer; transition:all 0.15s; user-select:none; }
+.check-item:hover { border-color:var(--gold); }
+.check-item.sel { border-color:var(--gold); background:var(--gold-pale); }
+.check-box { width:18px; height:18px; border-radius:5px; border:1.5px solid var(--cream-dark); display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all 0.15s; font-size:11px; }
+.check-item.sel .check-box { background:var(--gold); border-color:var(--gold); color:var(--white); }
+.check-text { font-size:13px; color:var(--text); }
+
+/* ─── MIS RESERVAS ─── */
+.reserva-item { background:var(--white); border-radius:var(--radius); padding:18px 20px; margin-bottom:12px; border-left:3px solid transparent; box-shadow:var(--shadow); display:grid; grid-template-columns:1fr auto; gap:16px; align-items:center; }
+.reserva-item.reservada { border-left-color:var(--gold); }
+.reserva-item.confirmada { border-left-color:#2D7A4F; }
+.reserva-item.cancelada { border-left-color:var(--cream-dark); opacity:0.5; }
+.reserva-fecha { font-family:'DM Serif Display',serif; font-size:17px; color:var(--navy); margin-bottom:3px; }
+.reserva-detalle { font-size:12px; color:var(--text-light); }
+.reserva-estado { font-size:11px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; padding:5px 12px; border-radius:20px; }
+.reserva-estado.reservada { background:rgba(201,168,76,0.12); color:var(--gold); }
+.reserva-estado.confirmada { background:var(--green-light); color:var(--green); }
+.reserva-estado.cancelada { background:var(--cream-dark); color:var(--text-light); }
+.reserva-pago { margin-top:12px; padding-top:12px; border-top:1px solid var(--cream-dark); display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.pago-bloque-titulo { font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-light); margin-bottom:4px; }
+.pago-bloque-valor { font-family:'DM Serif Display',serif; font-size:16px; color:var(--navy); }
+.pago-bloque-estado { font-size:11px; margin-top:2px; }
+.pago-bloque-estado.cobrado { color:var(--green); }
+.pago-bloque-estado.pendiente { color:var(--gold); }
+
+/* ─── SAVE BTN ─── */
+.save-btn { background:var(--navy); color:var(--cream); border:none; border-radius:40px; padding:13px 32px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500; cursor:pointer; transition:all 0.2s; letter-spacing:0.03em; }
+.save-btn:hover { background:#1A2E42; }
+.save-btn:disabled { opacity:0.5; cursor:default; }
+
+.empty-state { text-align:center; padding:48px 20px; color:var(--text-light); font-size:14px; }
+.empty-icon { font-size:36px; margin-bottom:12px; opacity:0.4; }
+
+@media (max-width:640px) {
+  .portal-body { padding:20px 16px; }
+  .form-grid { grid-template-columns:1fr; }
+  .tipo-grid { grid-template-columns:repeat(2,1fr); }
+  .portal-tabs { gap:2px; }
+  .portal-tab { font-size:11px; padding:10px 4px; }
+}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">Celestia</div>
+    <div class="login-tagline">Portal de clientes</div>
+
+    <div class="login-tabs">
+      <button class="login-tab active" onclick="setTab('login')">Ingresar</button>
+      <button class="login-tab" onclick="setTab('register')">Registrarse</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div id="form-login">
+      <div class="login-field">
+        <label class="login-label">Email</label>
+        <input type="email" class="login-input" id="login-email" placeholder="tu@email.com">
+      </div>
+      <div class="login-field">
+        <label class="login-label">Contraseña</label>
+        <input type="password" class="login-input" id="login-pwd" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <button class="login-btn" onclick="doLogin()">Ingresar</button>
+      <div class="login-error" id="login-error"></div>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div id="form-register" style="display:none;">
+      <div class="login-field">
+        <label class="login-label">Nombre completo</label>
+        <input type="text" class="login-input" id="reg-nombre" placeholder="Tu nombre">
+      </div>
+      <div class="login-field">
+        <label class="login-label">Email</label>
+        <input type="email" class="login-input" id="reg-email" placeholder="tu@email.com">
+      </div>
+      <div class="login-field">
+        <label class="login-label">Contraseña</label>
+        <input type="password" class="login-input" id="reg-pwd" placeholder="Mínimo 6 caracteres">
+      </div>
+      <button class="login-btn" onclick="doRegister()">Crear cuenta</button>
+      <div class="login-error" id="reg-error"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PORTAL -->
+<div id="portal-screen">
+  <div class="portal-header">
+    <a href="/" style="text-decoration:none;"><div class="portal-logo">Celestia</div></a>
+    <div class="portal-user">
+      <div class="portal-avatar" id="portal-avatar">—</div>
+      <div class="portal-nombre" id="portal-nombre">—</div>
+      <button class="portal-salir" onclick="doLogout()">Salir</button>
+    </div>
+  </div>
+
+  <div class="portal-body">
+    <div class="portal-tabs">
+      <button class="portal-tab active" onclick="verTab('perfil',this)">Mis datos</button>
+      <button class="portal-tab" onclick="verTab('cocina',this)">Mi cocina</button>
+      <button class="portal-tab" onclick="verTab('reservas',this)">Mis reservas</button>
+    </div>
+
+    <!-- TAB: PERFIL -->
+    <div class="seccion activa" id="tab-perfil">
+      <div class="seccion-titulo">Mis datos</div>
+      <div class="seccion-sub">Esta información le permite a Daro preparar mejor cada experiencia para vos.</div>
+      <div class="card">
+        <div class="avatar-wrap">
+          <div class="avatar-big" id="avatar-display">?</div>
+          <div>
+            <div style="font-size:14px;font-weight:500;color:var(--text);" id="avatar-nombre-display">Tu nombre</div>
+            <div class="avatar-info">Tu foto de perfil se genera automáticamente<br>con tus iniciales por ahora.</div>
+          </div>
+        </div>
+        <div class="card-titulo">Información personal</div>
+        <div class="form-grid">
+          <div class="form-field">
+            <label class="form-label">Nombre completo</label>
+            <input type="text" class="form-input" id="p-nombre" placeholder="Tu nombre completo">
+          </div>
+          <div class="form-field">
+            <label class="form-label">Teléfono</label>
+            <input type="tel" class="form-input" id="p-tel" placeholder="+54 11 ...">
+          </div>
+          <div class="form-field full">
+            <label class="form-label">Dirección del servicio</label>
+            <input type="text" class="form-input" id="p-dir" placeholder="Calle, número">
+          </div>
+          <div class="form-field">
+            <label class="form-label">Barrio / Ciudad</label>
+            <input type="text" class="form-input" id="p-barrio" placeholder="Palermo, CABA">
+          </div>
+          <div class="form-field">
+            <label class="form-label">Piso / Depto (opcional)</label>
+            <input type="text" class="form-input" id="p-piso" placeholder="3° B">
+          </div>
+          <div class="form-field full">
+            <label class="form-label">Notas para el chef (alergias, preferencias, etc.)</label>
+            <textarea class="form-input form-textarea" id="p-notas" placeholder="Ej: soy celíaco, no consumo mariscos..."></textarea>
+          </div>
+        </div>
+        <div style="margin-top:24px; display:flex; justify-content:flex-end;">
+          <button class="save-btn" onclick="guardarPerfil()">Guardar datos</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: COCINA -->
+    <div class="seccion" id="tab-cocina">
+      <div class="seccion-titulo">Mi cocina</div>
+      <div class="seccion-sub">Ayudá a Daro a conocer tu espacio para planificar el servicio con lo que tenés disponible.</div>
+
+      <div class="card">
+        <div class="card-titulo">Tipo de cocina</div>
+        <div class="tipo-grid">
+          <div class="tipo-btn" onclick="selTipo('lineal')" id="tipo-lineal">
+            <span class="tipo-icon">🏠</span>
+            <div class="tipo-label">Lineal</div>
+            <span class="tipo-check">✦</span>
+          </div>
+          <div class="tipo-btn" onclick="selTipo('en_l')" id="tipo-en_l">
+            <span class="tipo-icon">📐</span>
+            <div class="tipo-label">En L</div>
+            <span class="tipo-check">✦</span>
+          </div>
+          <div class="tipo-btn" onclick="selTipo('en_u')" id="tipo-en_u">
+            <span class="tipo-icon">⬛</span>
+            <div class="tipo-label">En U</div>
+            <span class="tipo-check">✦</span>
+          </div>
+          <div class="tipo-btn" onclick="selTipo('con_isla')" id="tipo-con_isla">
+            <span class="tipo-icon">🏝</span>
+            <div class="tipo-label">Con isla</div>
+            <span class="tipo-check">✦</span>
+          </div>
+          <div class="tipo-btn" onclick="selTipo('isla_barra')" id="tipo-isla_barra">
+            <span class="tipo-icon">🍸</span>
+            <div class="tipo-label">Isla + barra</div>
+            <span class="tipo-check">✦</span>
+          </div>
+          <div class="tipo-btn" onclick="selTipo('isla_2barras')" id="tipo-isla_2barras">
+            <span class="tipo-icon">🪑</span>
+            <div class="tipo-label">Isla + 2 barras</div>
+            <span class="tipo-check">✦</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-titulo">Electrodomésticos disponibles</div>
+        <div class="check-grid" id="electro-grid"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-titulo">Vajilla disponible</div>
+        <div class="check-grid" id="vajilla-grid"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-titulo">Utensilios disponibles</div>
+        <div class="check-grid" id="utensilios-grid"></div>
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; margin-top:4px;">
+        <button class="save-btn" onclick="guardarCocina()">Guardar cocina</button>
+      </div>
+    </div>
+
+    <!-- TAB: RESERVAS -->
+    <div class="seccion" id="tab-reservas">
+      <div class="seccion-titulo">Mis reservas</div>
+      <div class="seccion-sub">Historial de experiencias con Celestia.</div>
+      <div id="reservas-lista">
+        <div class="empty-state"><div class="empty-icon">✦</div>Cargando tus reservas...</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const SUPA_URL = 'https://qolpnuscpmzqeacshfvu.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvbHBudXNjcG16cWVhY3NoZnZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1NzY0NzVdfQ.BJOz5Gwkeb1NqID_gkGKD5YlymifMtOwaf8iQMaBCx8';
+const SUPA_KEY_REAL = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvbHBudXNjcG16cWVhY3NoZnZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NjQ3OTQsImV4cCI6MjA5MTM0MDc5NH0.BJOz5Gwkeb1NqID_gkGKD5YlymifMtOwaf8iQMaBCx8';
+const supa = supabase.createClient(SUPA_URL, SUPA_KEY_REAL);
+
+let currentUser = null;
+let tipoSeleccionado = null;
+const electros = ['Horno','Anafe (gas)','Anafe (eléc.)','Inducción','Microondas','Procesadora','Batidora','Parrilla','Freezer','Heladera grande'];
+const vajillas = ['Platos playos','Platos hondos','Platos de postre','Cubiertos completos','Copas de vino','Copas de agua','Copas de champagne','Vasos'];
+const utensilios = ['Ollas grandes','Ollas medianas','Sartenes','Sartenes especiales','Wok','Mandolina','Termómetro','Soplete','Pinzas','Coladores'];
+
+// ─── TOAST ───────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ─── AUTH ─────────────────────────────────────────────────
+function setTab(tab) {
+  document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('form-register').style.display = tab === 'register' ? 'block' : 'none';
+  document.querySelectorAll('.login-tab').forEach((b,i) => b.classList.toggle('active', (i===0&&tab==='login')||(i===1&&tab==='register')));
+}
+
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pwd = document.getElementById('login-pwd').value;
+  document.getElementById('login-error').textContent = '';
+  const { data, error } = await supa.auth.signInWithPassword({ email, password: pwd });
+  if (error) { document.getElementById('login-error').textContent = 'Email o contraseña incorrectos'; return; }
+  currentUser = data.user;
+  mostrarPortal();
+}
+
+async function doRegister() {
+  const nombre = document.getElementById('reg-nombre').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const pwd = document.getElementById('reg-pwd').value;
+  document.getElementById('reg-error').textContent = '';
+  if (!nombre || !email || !pwd) { document.getElementById('reg-error').textContent = 'Completá todos los campos'; return; }
+  if (pwd.length < 6) { document.getElementById('reg-error').textContent = 'La contraseña debe tener al menos 6 caracteres'; return; }
+  const { data, error } = await supa.auth.signUp({ email, password: pwd });
+  if (error) { document.getElementById('reg-error').textContent = error.message; return; }
+  currentUser = data.user;
+  // Crear perfil inicial
+  await supa.from('clientes').insert([{ id: currentUser.id, nombre, email }]);
+  mostrarPortal();
+}
+
+async function doLogout() {
+  await supa.auth.signOut();
+  currentUser = null;
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('portal-screen').style.display = 'none';
+}
+
+// ─── PORTAL ───────────────────────────────────────────────
+async function mostrarPortal() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('portal-screen').style.display = 'block';
+  inicializarChecks();
+  await cargarPerfil();
+  await cargarCocina();
+}
+
+function verTab(tab, btn) {
+  document.querySelectorAll('.seccion').forEach(s => s.classList.remove('activa'));
+  document.getElementById('tab-'+tab).classList.add('activa');
+  document.querySelectorAll('.portal-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (tab === 'reservas') cargarReservas();
+}
+
+function iniciales(nombre) {
+  if (!nombre) return '?';
+  return nombre.split(' ').map(p=>p[0]).slice(0,2).join('').toUpperCase();
+}
+
+function actualizarAvatar(nombre) {
+  const ini = iniciales(nombre);
+  document.getElementById('portal-avatar').textContent = ini;
+  document.getElementById('avatar-display').textContent = ini;
+  document.getElementById('avatar-nombre-display').textContent = nombre || 'Tu nombre';
+  document.getElementById('portal-nombre').textContent = nombre?.split(' ')[0] || '';
+}
+
+// ─── PERFIL ───────────────────────────────────────────────
+async function cargarPerfil() {
+  const { data } = await supa.from('clientes').select('*').eq('id', currentUser.id).single();
+  if (!data) return;
+  document.getElementById('p-nombre').value = data.nombre || '';
+  document.getElementById('p-tel').value = data.telefono || '';
+  document.getElementById('p-dir').value = data.direccion || '';
+  document.getElementById('p-barrio').value = data.barrio || '';
+  document.getElementById('p-piso').value = data.piso || '';
+  document.getElementById('p-notas').value = data.notas || '';
+  actualizarAvatar(data.nombre);
+}
+
+async function guardarPerfil() {
+  const nombre = document.getElementById('p-nombre').value.trim();
+  const { error } = await supa.from('clientes').upsert({
+    id: currentUser.id,
+    nombre,
+    email: currentUser.email,
+    telefono: document.getElementById('p-tel').value.trim(),
+    direccion: document.getElementById('p-dir').value.trim(),
+    barrio: document.getElementById('p-barrio').value.trim(),
+    piso: document.getElementById('p-piso').value.trim(),
+    notas: document.getElementById('p-notas').value.trim()
+  });
+  if (error) { showToast('Error al guardar'); return; }
+  actualizarAvatar(nombre);
+  showToast('¡Datos guardados correctamente!');
+}
+
+// ─── COCINA ───────────────────────────────────────────────
+function inicializarChecks() {
+  const makeGrid = (items, containerId) => {
+    document.getElementById(containerId).innerHTML = items.map(item => `
+      <div class="check-item" id="chk-${containerId}-${item.replace(/[^a-zA-Z]/g,'')}" onclick="toggleCheck(this,'${containerId}','${item}')">
+        <div class="check-box"></div>
+        <span class="check-text">${item}</span>
+      </div>`).join('');
+  };
+  makeGrid(electros, 'electro-grid');
+  makeGrid(vajillas, 'vajilla-grid');
+  makeGrid(utensilios, 'utensilios-grid');
+}
+
+function toggleCheck(el, grid, item) {
+  el.classList.toggle('sel');
+}
+
+function selTipo(tipo) {
+  document.querySelectorAll('.tipo-btn').forEach(b => b.classList.remove('sel'));
+  document.getElementById('tipo-'+tipo).classList.add('sel');
+  tipoSeleccionado = tipo;
+}
+
+function getChecked(containerId) {
+  return [...document.querySelectorAll(`#${containerId} .check-item.sel`)].map(el => el.querySelector('.check-text').textContent);
+}
+
+function setChecked(containerId, items) {
+  if (!items) return;
+  document.querySelectorAll(`#${containerId} .check-item`).forEach(el => {
+    const txt = el.querySelector('.check-text').textContent;
+    if (items.includes(txt)) el.classList.add('sel');
+  });
+}
+
+async function cargarCocina() {
+  const { data } = await supa.from('cocinas').select('*').eq('cliente_id', currentUser.id).single();
+  if (!data) return;
+  if (data.tipo) selTipo(data.tipo);
+  setChecked('electro-grid', data.electrodomesticos);
+  setChecked('vajilla-grid', data.vajilla);
+  setChecked('utensilios-grid', data.utensilios);
+}
+
+async function guardarCocina() {
+  const { data: existing } = await supa.from('cocinas').select('id').eq('cliente_id', currentUser.id).single();
+  const cocina = {
+    cliente_id: currentUser.id,
+    tipo: tipoSeleccionado,
+    electrodomesticos: getChecked('electro-grid'),
+    vajilla: getChecked('vajilla-grid'),
+    utensilios: getChecked('utensilios-grid')
+  };
+  let error;
+  if (existing) {
+    ({ error } = await supa.from('cocinas').update(cocina).eq('id', existing.id));
+  } else {
+    ({ error } = await supa.from('cocinas').insert([cocina]));
+  }
+  if (error) { showToast('Error al guardar'); return; }
+  showToast('¡Cocina guardada correctamente!');
+}
+
+// ─── RESERVAS ─────────────────────────────────────────────
+async function cargarReservas() {
+  document.getElementById('reservas-lista').innerHTML = '<div class="empty-state"><div class="empty-icon">✦</div>Cargando...</div>';
+  const perfil = await supa.from('clientes').select('email,telefono').eq('id', currentUser.id).single();
+  if (!perfil.data) return;
+
+  // Buscar reservas por email o teléfono
+  const { data } = await supa.from('reservas').select('*')
+    .or(`email.eq.${perfil.data.email},tel.eq.${perfil.data.telefono}`)
+    .order('fecha', { ascending: false });
+
+  if (!data || data.length === 0) {
+    document.getElementById('reservas-lista').innerHTML = '<div class="empty-state"><div class="empty-icon">✦</div>Todavía no tenés reservas.<br><a href="/" style="color:var(--gold);text-decoration:none;font-weight:500;">Reservar una experiencia →</a></div>';
+    return;
+  }
+
+  const fmt = n => n ? '$' + Math.round(n).toLocaleString('es-AR') : '—';
+  const fmtFecha = f => new Date(f+'T12:00:00').toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+  document.getElementById('reservas-lista').innerHTML = data.map(r => {
+    const senia = Math.round((r.honorario||0) * 0.5);
+    const saldo = (r.honorario||0) - senia;
+    return `
+    <div class="reserva-item ${r.estado}">
+      <div>
+        <div class="reserva-fecha">${fmtFecha(r.fecha)}</div>
+        <div class="reserva-detalle">${r.turno==='almuerzo'?'☀ Almuerzo':'🌙 Cena'} · ${r.personas} personas · ${r.menu||''}</div>
+        <div style="font-size:11px;color:var(--text-light);margin-top:3px;">Ref: ${r.ref}</div>
+        <div class="reserva-pago">
+          <div>
+            <div class="pago-bloque-titulo">Seña</div>
+            <div class="pago-bloque-valor">${fmt(senia)}</div>
+            <div class="pago-bloque-estado ${r.senia_cobrada?'cobrado':'pendiente'}">${r.senia_cobrada?'✓ Abonada':'· Pendiente de pago'}</div>
+          </div>
+          <div>
+            <div class="pago-bloque-titulo">Saldo</div>
+            <div class="pago-bloque-valor">${fmt(saldo)}</div>
+            <div class="pago-bloque-estado ${r.saldo_cobrado?'cobrado':'pendiente'}">${r.saldo_cobrado?'✓ Abonado':'· A abonar el día del evento'}</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <span class="reserva-estado ${r.estado}">${r.estado}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── INIT ─────────────────────────────────────────────────
+(async () => {
+  const { data } = await supa.auth.getSession();
+  if (data.session) {
+    currentUser = data.session.user;
+    mostrarPortal();
+  }
+})();
+</script>
+</body>
+</html>
