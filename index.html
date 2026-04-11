@@ -1483,17 +1483,6 @@ textarea { resize: vertical; min-height: 80px; }
       </div>
       <div class="form-row full">
         <div class="form-group">
-          <label>Presencia del chef durante el servicio *</label>
-          <select id="f-visibilidad" onchange="checkForm4()" style="font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text-dark);background:var(--cream);border:1.5px solid var(--cream-dark);border-radius:10px;padding:12px 16px;outline:none;width:100%;transition:border-color 0.2s;">
-            <option value="">Seleccioná una opción...</option>
-            <option value="discreto">Discreta — cocinás y servís sin intervenir en la velada</option>
-            <option value="presente">Presente — presentás cada paso brevemente al servir</option>
-            <option value="interactivo">Interactiva — participás activamente de la experiencia con los invitados</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-row full">
-        <div class="form-group">
           <label>Restricciones alimentarias o notas</label>
           <textarea id="f-notas" placeholder="Vegetarianos, alergias, preferencias específicas..."></textarea>
         </div>
@@ -1855,16 +1844,14 @@ async function cargarPerfilEnFormulario() {
   const email = document.getElementById('f-email').value.trim();
   const dirVal = document.getElementById('f-dir').value.trim();
   const personas = document.getElementById('f-personas').value;
-  const visibilidad = document.getElementById('f-visibilidad').value;
-
-  if (nombre && tel && email && dirVal && personas && visibilidad) {
+  if (nombre && tel && email && dirVal && personas) {
     // Perfil completo → ir directo al paso 5
     state.nombre = nombre;
     state.tel = tel;
     state.email = email;
     state.dir = dirVal;
     state.personas = personas;
-    state.visibilidad = visibilidad;
+    state.visibilidad = '';
     state.notas = p.notas || '';
     goTo(5);
   }
@@ -2954,7 +2941,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function checkForm4() {
-  const ok = ['f-nombre','f-tel','f-email','f-dir','f-personas','f-visibilidad'].every(id => {
+  const ok = ['f-nombre','f-tel','f-email','f-dir','f-personas'].every(id => {
     return document.getElementById(id).value.trim() !== '';
   });
   document.getElementById('btn-next-4').disabled = !ok;
@@ -2967,7 +2954,7 @@ function collectForm4() {
   state.dir = document.getElementById('f-dir').value.trim();
   state.personas = document.getElementById('f-personas').value.trim();
   state.ocasion = document.getElementById('f-ocasion').value.trim();
-  state.visibilidad = document.getElementById('f-visibilidad').value.trim();
+  state.visibilidad = '';
   state.notas = document.getElementById('f-notas').value.trim();
 }
 
@@ -2983,12 +2970,6 @@ function renderResumen() {
   const ingredientes = calcIngredientes(state.menu, personas);
   const total = hon.total + (ingredientes || 0);
   const fmt = n => '$' + n.toLocaleString('es-AR');
-  const visLabels = {
-    'discreto': 'Discreta — sin intervenir en la velada',
-    'presente': 'Presente — presenta cada paso al servir',
-    'interactivo': 'Interactiva — participa con los invitados'
-  };
-
   document.getElementById('resumen-card').innerHTML = `
     <div class="resumen-title">✦ Detalle de tu reserva</div>
     <div class="resumen-row">
@@ -3022,7 +3003,7 @@ function renderResumen() {
     </div>` : ''}
     <div class="resumen-row">
       <div class="resumen-label">Presencia</div>
-      <div class="resumen-val">${visLabels[state.visibilidad] || state.visibilidad}</div>
+
     </div>
     <div class="resumen-row">
       <div class="resumen-label">Dirección</div>
@@ -3046,7 +3027,6 @@ function renderResumen() {
     `*Fecha:* ${fecha2}\n` +
     `*Turno:* ${state.turno === 'almuerzo' ? 'Almuerzo 12:00hs' : 'Cena 20:00hs'}\n` +
     `*Personas:* ${state.personas}\n` +
-    `*Presencia del chef:* ${state.visibilidad}\n` +
     `*Direccion:* ${state.dir}\n\n` +
     `*Honorario:* ${fmt(hon.base)}${hon.asistente > 0 ? ` + ${fmt(hon.asistente)} asistente` : ''}\n` +
     (ingredientes ? `*Ingredientes estimados (sujeto a menu final):* ${fmt(ingredientes)}\n*Total estimado:* ${fmt(total)}\n` : '') +
@@ -3242,7 +3222,7 @@ function resetFlow() {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
-  const vis = document.getElementById('f-visibilidad');
+  // f-visibilidad removed
   if (vis) vis.value = '';
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
