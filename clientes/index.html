@@ -188,7 +188,24 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); min-height:100
         <input type="password" class="login-input" id="login-pwd" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
       </div>
       <button class="login-btn" onclick="doLogin()">Ingresar</button>
+      <div style="text-align:center;margin-top:14px;">
+        <button onclick="setTab('reset')" type="button" style="background:none;border:none;color:rgba(250,246,239,0.4);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;text-decoration:underline;">Olvidé mi contraseña</button>
+      </div>
       <div class="login-error" id="login-error"></div>
+    </div>
+
+    <!-- RESET PASSWORD FORM -->
+    <div id="form-reset" style="display:none;">
+      <div class="login-field">
+        <label class="login-label">Email</label>
+        <input type="email" class="login-input" id="reset-email" placeholder="tu@email.com" onkeydown="if(event.key==='Enter')doReset()">
+      </div>
+      <button class="login-btn" onclick="doReset()">Enviar link de recuperación</button>
+      <div style="text-align:center;margin-top:14px;">
+        <button onclick="setTab('login')" type="button" style="background:none;border:none;color:rgba(250,246,239,0.4);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;text-decoration:underline;">← Volver al login</button>
+      </div>
+      <div class="login-error" id="reset-error"></div>
+      <div id="reset-ok" style="display:none;font-size:12px;color:#81C784;text-align:center;margin-top:12px;">✓ Te enviamos un link a tu email para restablecer tu contraseña.</div>
     </div>
 
     <!-- REGISTER FORM -->
@@ -368,7 +385,20 @@ function showToast(msg) {
 function setTab(tab) {
   document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none';
   document.getElementById('form-register').style.display = tab === 'register' ? 'block' : 'none';
+  document.getElementById('form-reset').style.display = tab === 'reset' ? 'block' : 'none';
   document.querySelectorAll('.login-tab').forEach((b,i) => b.classList.toggle('active', (i===0&&tab==='login')||(i===1&&tab==='register')));
+}
+
+async function doReset() {
+  const email = document.getElementById('reset-email').value.trim();
+  document.getElementById('reset-error').textContent = '';
+  document.getElementById('reset-ok').style.display = 'none';
+  if (!email) { document.getElementById('reset-error').textContent = 'Ingresá tu email'; return; }
+  const { error } = await supa.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + '/clientes'
+  });
+  if (error) { document.getElementById('reset-error').textContent = error.message; return; }
+  document.getElementById('reset-ok').style.display = 'block';
 }
 
 async function doLogin() {
