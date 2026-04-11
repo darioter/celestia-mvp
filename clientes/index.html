@@ -194,7 +194,22 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); min-height:100
       <div class="login-error" id="login-error"></div>
     </div>
 
-    <!-- RESET PASSWORD FORM -->
+    <!-- NUEVA CONTRASEÑA (desde link de email) -->
+    <div id="form-nueva-pwd" style="display:none;">
+      <div style="font-family:'DM Serif Display',serif;font-size:18px;color:var(--gold-light);margin-bottom:6px;">Nueva contraseña</div>
+      <div style="font-size:12px;color:rgba(250,246,239,0.4);margin-bottom:24px;">Ingresá tu nueva contraseña para continuar.</div>
+      <div class="login-field">
+        <label class="login-label">Nueva contraseña</label>
+        <input type="password" class="login-input" id="nueva-pwd" placeholder="Mínimo 6 caracteres">
+      </div>
+      <div class="login-field">
+        <label class="login-label">Repetir contraseña</label>
+        <input type="password" class="login-input" id="nueva-pwd2" placeholder="Repetí tu contraseña" onkeydown="if(event.key==='Enter')doNuevaPassword()">
+      </div>
+      <button class="login-btn" onclick="doNuevaPassword()">Guardar contraseña</button>
+      <div class="login-error" id="nueva-pwd-error"></div>
+      <div id="nueva-pwd-ok" style="display:none;font-size:12px;color:#81C784;text-align:center;margin-top:12px;">✓ Contraseña actualizada. Redirigiendo...</div>
+    </div>
     <div id="form-reset" style="display:none;">
       <div class="login-field">
         <label class="login-label">Email</label>
@@ -647,12 +662,49 @@ async function cargarReservas() {
 
 // ─── INIT ─────────────────────────────────────────────────
 (async () => {
+  // Detectar si viene de un link de reset de contraseña
+  const hash = window.location.hash;
+  if (hash.includes('type=recovery')) {
+    mostrarFormNuevaPassword();
+    return;
+  }
+
   const { data } = await supa.auth.getSession();
   if (data.session) {
     currentUser = data.session.user;
     mostrarPortal();
   }
 })();
+
+function mostrarFormNuevaPassword() {
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('admin-screen') && (document.getElementById('admin-screen').style.display = 'none');
+  // Ocultar tabs y mostrar solo el form de nueva contraseña
+  document.querySelector('.login-tabs').style.display = 'none';
+  document.getElementById('form-login').style.display = 'none';
+  document.getElementById('form-register').style.display = 'none';
+  document.getElementById('form-reset').style.display = 'none';
+  document.getElementById('form-nueva-pwd').style.display = 'block';
+}
+
+async function doNuevaPassword() {
+  const pwd = document.getElementById('nueva-pwd').value;
+  const pwd2 = document.getElementById('nueva-pwd2').value;
+  const errEl = document.getElementById('nueva-pwd-error');
+  const okEl = document.getElementById('nueva-pwd-ok');
+  errEl.textContent = '';
+  okEl.style.display = 'none';
+  if (pwd.length < 6) { errEl.textContent = 'La contraseña debe tener al menos 6 caracteres'; return; }
+  if (pwd !== pwd2) { errEl.textContent = 'Las contraseñas no coinciden'; return; }
+  const { error } = await supa.auth.updateUser({ password: pwd });
+  if (error) { errEl.textContent = error.message; return; }
+  okEl.style.display = 'block';
+  setTimeout(() => {
+    document.querySelector('.login-tabs').style.display = 'flex';
+    document.getElementById('form-nueva-pwd').style.display = 'none';
+    setTab('login');
+  }, 2000);
+}
 </script>
 </body>
 </html>
