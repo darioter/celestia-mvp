@@ -2161,25 +2161,15 @@ function renderMenus() {
     if (m.id === 3) {
       const waMsg = encodeURIComponent(`Hola Celestia, quiero consultar por un servicio corporativo o evento especial.\n\nNombre: \nEmpresa: \nCantidad de personas estimada: \nFecha tentativa: \nDescripcion del evento: \n\nQuedo a la espera. Muchas gracias.`);
       return `
-      <div class="menu-card-corpo" style="height:1200px;">
-        <div class="corpo-header">
+      <div class="menu-card-corpo" style="height:auto;min-height:unset;">
+        <div class="corpo-header" style="padding-bottom:16px;">
           <div class="corpo-tag">✦ ${m.tag}</div>
           <div class="corpo-nombre">${m.nombre}</div>
           <div class="corpo-personas">👥 ${m.personas}</div>
           <div class="corpo-desc">${m.desc}</div>
         </div>
-        <div class="corpo-items">
+        <div class="corpo-items" style="margin-bottom:16px;">
           ${m.cursos.map(c => `<div class="corpo-item">${c}</div>`).join('')}
-        </div>
-        <div style="flex:1;"></div>
-        <div style="padding:0 24px 16px;">
-          <img src="${IMG_CORPO}" alt="Corporativos y Grandes Grupos" style="width:100%;aspect-ratio:1/1;object-fit:cover;display:block;border-radius:var(--radius);">
-        </div>
-        <div style="padding:0 24px;margin-bottom:16px;">
-          <div style="background:rgba(201,168,76,0.08);border-radius:10px;padding:14px 16px;">
-            <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;">Cada evento es único</div>
-            <div style="font-size:12px;color:rgba(250,246,239,0.5);font-weight:300;line-height:1.6;">Sin precio base — cada propuesta se cotiza en función del evento, el espacio, el menú y el equipo necesario.</div>
-          </div>
         </div>
         <div style="flex:1;"></div>
         <a class="corpo-cta" href="https://wa.me/5491160410607?text=${waMsg}" target="_blank">Consultar disponibilidad →</a>
@@ -2191,39 +2181,36 @@ function renderMenus() {
 
     return `
     <div class="menu-card${isSelected ? ' selected' : ''}" id="menu-card-${m.id}"
-      style="height:1200px;min-height:unset;cursor:pointer;display:flex;flex-direction:column;"
+      style="height:auto;min-height:unset;cursor:pointer;"
       onclick="selectMenu(${m.id})">
+      <div class="menu-card-body" style="padding:18px 20px 0;">
 
-      <div class="menu-card-body" style="padding:20px 22px 0;flex:1;display:flex;flex-direction:column;">
-
-        <!-- Radio + tag -->
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-          <div id="radio-${m.id}" style="width:22px;height:22px;border-radius:50%;border:2px solid ${isSelected ? 'var(--gold)' : 'rgba(13,27,42,0.25)'};background:${isSelected ? 'var(--gold)' : 'transparent'};display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;">
+        <!-- Solo tilde a la derecha cuando está seleccionado -->
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;">
+          <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,0.35);padding:3px 10px;border-radius:20px;">${m.id === 1 ? '✦ Íntimo' : '✦ Degustación'}</div>
+          <div id="radio-${m.id}" style="width:22px;height:22px;border-radius:50%;border:2px solid ${isSelected ? 'var(--gold)' : 'var(--cream-dark)'};background:${isSelected ? 'var(--gold)' : 'transparent'};display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;margin-left:8px;">
             ${isSelected ? '<div style="width:8px;height:8px;border-radius:50%;background:var(--navy);"></div>' : ''}
           </div>
-          <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,0.35);padding:4px 10px;border-radius:20px;">${m.id === 1 ? '✦ Íntimo' : '✦ Degustación'}</div>
         </div>
 
-        <div class="menu-name" style="font-size:20px;">${m.nombre}</div>
-        <div class="menu-persons">👥 ${m.personas}</div>
-        <div class="menu-desc">${m.desc}</div>
-        <div style="font-size:12px;color:var(--text-light);font-style:italic;margin-bottom:16px;">Ideal para: ${m.ideal}</div>
-        <img src="${imgSrc}" alt="${m.nombre}" style="width:100%;aspect-ratio:1/1;object-fit:cover;display:block;border-radius:var(--radius);">
-        <div style="flex:1;"></div>
+        <div class="menu-name" style="font-size:18px;margin-bottom:4px;">${m.nombre}</div>
+        <div class="menu-persons" style="margin-bottom:8px;">👥 ${m.personas}</div>
+        <div class="menu-desc" style="font-size:13px;margin-bottom:0;">${m.desc}</div>
+      </div>
 
-        <!-- Botón elegir -->
-        <div style="padding:14px 0 16px;" onclick="event.stopPropagation()">
-          <button onclick="selectMenu(${m.id})" id="btn-select-menu-${m.id}" type="button"
-            style="width:100%;padding:13px;border-radius:40px;border:1.5px solid ${isSelected ? 'var(--gold)' : 'rgba(13,27,42,0.2)'};background:${isSelected ? 'var(--gold)' : 'var(--cream-dark)'};font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:${isSelected ? 'var(--navy)' : 'var(--text-mid)'};cursor:pointer;transition:all 0.2s;letter-spacing:0.02em;">
-            ${isSelected ? '✓ Seleccionado' : 'Elegir este menú'}
-          </button>
-        </div>
+      <!-- Botón elegir -->
+      <div style="padding:14px 20px 16px;" onclick="event.stopPropagation()">
+        <button onclick="selectMenu(${m.id})" id="btn-select-menu-${m.id}" type="button"
+          style="width:100%;padding:12px;border-radius:40px;border:1.5px solid ${isSelected ? 'var(--gold)' : 'rgba(13,27,42,0.15)'};background:${isSelected ? 'var(--gold)' : 'var(--cream-dark)'};font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:${isSelected ? 'var(--navy)' : 'var(--text-mid)'};cursor:pointer;transition:all 0.2s;letter-spacing:0.02em;">
+          ${isSelected ? '✓ Seleccionado' : 'Elegir este menú'}
+        </button>
       </div>
     </div>`;
   }).join('');
 
   document.getElementById('btn-next-2').disabled = !state.menu;
 }
+
 
 
 
