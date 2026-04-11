@@ -1810,6 +1810,71 @@ const SUPA_URL = 'https://qolpnuscpmzqeacshfvu.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvbHBudXNjcG16cWVhY3NoZnZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NjQ3OTQsImV4cCI6MjA5MTM0MDc5NH0.BJOz5Gwkeb1NqID_gkGKD5YlymifMtOwaf8iQMaBCx8';
 const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
 
+// ─── SESIÓN DEL CLIENTE ───────────────────────────────────
+let clientePerfil = null;
+
+async function iniciarSesion() {
+  const { data } = await supa.auth.getSession();
+  if (!data.session) return;
+  const { data: perfil } = await supa.from('clientes').select('*').eq('id', data.session.user.id).single();
+  if (!perfil) return;
+  clientePerfil = perfil;
+
+  // Mostrar indicador en header
+  const headerEl = document.querySelector('header');
+  if (headerEl) {
+    const tagline = headerEl.querySelector('.tagline');
+    if (tagline) {
+      tagline.innerHTML = `<a href="/clientes" style="color:var(--gold-light);text-decoration:none;font-size:12px;letter-spacing:0.06em;">
+        Hola, ${perfil.nombre?.split(' ')[0] || 'Cliente'} →
+      </a>`;
+    }
+  }
+}
+
+async function cargarPerfilEnFormulario() {
+  // Autocompletar personas desde la selección previa
+  const fPersonas = document.getElementById('f-personas');
+  if (fPersonas && state.calcPersonas && !fPersonas.value) {
+    fPersonas.value = state.calcPersonas;
+  }
+
+  if (!clientePerfil) { checkForm4(); return; }
+
+  const p = clientePerfil;
+  // Pre-cargar campos
+  if (p.nombre) document.getElementById('f-nombre').value = p.nombre;
+  if (p.telefono) document.getElementById('f-tel').value = p.telefono;
+  if (p.email) document.getElementById('f-email').value = p.email;
+  const dir = [p.direccion, p.piso, p.barrio].filter(Boolean).join(', ');
+  if (dir) document.getElementById('f-dir').value = dir;
+  if (p.notas) document.getElementById('f-notas').value = p.notas;
+  checkForm4();
+
+  // Si todos los campos obligatorios están completos → saltar al paso 5
+  const nombre = document.getElementById('f-nombre').value.trim();
+  const tel = document.getElementById('f-tel').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const dirVal = document.getElementById('f-dir').value.trim();
+  const personas = document.getElementById('f-personas').value;
+  const visibilidad = document.getElementById('f-visibilidad').value;
+
+  if (nombre && tel && email && dirVal && personas && visibilidad) {
+    // Perfil completo → ir directo al paso 5
+    state.nombre = nombre;
+    state.tel = tel;
+    state.email = email;
+    state.dir = dirVal;
+    state.personas = personas;
+    state.visibilidad = visibilidad;
+    state.notas = p.notas || '';
+    goTo(5);
+  }
+}
+
+// Iniciar sesión al cargar la página
+(async () => { await iniciarSesion(); })();
+
 // Fechas bloqueadas cargadas desde Supabase
 let fechasBloqueadas = {};
 let diasBloqueados = []; // bloqueos manuales del admin // { 'YYYY-MM-DD': 'reservada'|'confirmada' }
@@ -2120,12 +2185,8 @@ function goTo(step) {
     cargarFechasBloqueadas(); // actualizar con Supabase en background
   }
   if (step === 4) {
-    // Autocompletar personas desde la selección previa
-    const fPersonas = document.getElementById('f-personas');
-    if (fPersonas && state.calcPersonas && !fPersonas.value) {
-      fPersonas.value = state.calcPersonas;
-      checkForm4();
-    }
+    // Si hay sesión activa con perfil completo → saltear directo al paso 5
+    cargarPerfilEnFormulario();
   }
   if (step === 5) renderResumen();
 
