@@ -740,6 +740,57 @@
     font-size: 13px;
   }
 
+
+  /* MENSAJES M1-M6 */
+  .m-indicators { display: flex; gap: 5px; margin-bottom: 10px; flex-wrap: wrap; }
+  .m-dot {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: 700; letter-spacing: 0;
+    border: 1.5px solid; cursor: default; transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .m-dot.enviado { background: rgba(76,175,80,0.2); border-color: #4CAF50; color: #81C784; }
+  .m-dot.pendiente { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.15); color: rgba(250,246,239,0.3); }
+
+  /* PRECIO EDITABLE */
+  .precio-wrap { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+  .precio-input {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 8px; padding: 6px 10px; font-family: 'DM Serif Display', serif;
+    font-size: 15px; color: var(--gold-light); width: 130px; outline: none;
+  }
+  .precio-input:focus { border-color: var(--gold); }
+  .precio-ok-btn {
+    background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.3);
+    color: var(--gold); font-family: 'DM Sans', sans-serif; font-size: 11px;
+    padding: 5px 10px; border-radius: 6px; cursor: pointer;
+  }
+  .precio-ok-btn:hover { background: rgba(201,168,76,0.2); }
+
+  /* WA BUTTONS */
+  .wa-btns { display: flex; flex-direction: column; gap: 5px; }
+  .btn-wa-m {
+    font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500;
+    padding: 6px 10px; border-radius: 8px; cursor: pointer;
+    transition: all 0.15s; border: 1px solid; text-align: left;
+    display: flex; align-items: center; gap: 6px; width: 100%;
+  }
+  .btn-wa-m:hover { opacity: 0.85; }
+  .btn-wa-m.sent { opacity: 0.4; cursor: default; }
+  .btn-wa-active { background: rgba(37,209,102,0.1); border-color: rgba(37,209,102,0.3); color: #25D166; }
+  .btn-wa-inactive { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.1); color: rgba(250,246,239,0.35); cursor: not-allowed; }
+  .reserva-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 20px 24px;
+    display: grid;
+    grid-template-columns: 150px 1fr 1fr 140px 200px;
+    gap: 16px;
+    align-items: start;
+    transition: all 0.2s;
+  }
   @media (max-width: 900px) {
     .reserva-card {
       grid-template-columns: 1fr;
@@ -1294,52 +1345,124 @@ function renderReservas() {
 
   if (reservas.length === 0) {
     document.getElementById('reservas-grid').innerHTML = `
-      <div class="empty-state">
-        <div class="empty-state-icon">✦</div>
-        No hay reservas ${filtroActual !== 'todas' ? 'con estado ' + filtroActual : ''}
-      </div>`;
+      <div class="empty-state"><div class="empty-state-icon">✦</div>
+      No hay reservas ${filtroActual !== 'todas' ? 'con estado ' + filtroActual : ''}</div>`;
     return;
   }
 
   const fmt = n => n ? '$' + Number(n).toLocaleString('es-AR') : '—';
   const fmtFecha = f => {
     if (!f) return '—';
-    const d = new Date(f + 'T12:00:00');
-    return d.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
+    return new Date(f + 'T12:00:00').toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
   };
 
-  document.getElementById('reservas-grid').innerHTML = reservas.map(r => `
+  const MENSAJES = ['M2','M3','M4','M5','M6'];
+
+  document.getElementById('reservas-grid').innerHTML = reservas.map(r => {
+    const enviados = r.mensajes_enviados || [];
+    const honorario = r.honorario_final || r.honorario || 0;
+    const senia = Math.round(honorario * 0.5 / 100) * 100;
+    const turnoStr = r.turno === 'almuerzo' ? 'Almuerzo · 12:00hs' : 'Cena · 20:00hs';
+    const misePlaceHora = r.turno === 'almuerzo' ? '08:00hs' : '16:00hs';
+
+    // Indicadores M
+    const mDots = MENSAJES.map(m => {
+      const sent = enviados.includes(m);
+      return `<div class="m-dot ${sent ? 'enviado' : 'pendiente'}" title="${m} ${sent ? '✓ enviado' : 'pendiente'}">${m}</div>`;
+    }).join('');
+
+    // Botones WA según estado
+    const tel = r.tel ? r.tel.replace(/\D/g,'') : '';
+    const telWA = tel.startsWith('54') ? tel : '54' + tel;
+    const primerNombre = (r.nombre || '').split(' ')[0];
+    const fechaStr = fmtFecha(r.fecha);
+
+    const waBtn = (mKey, label, msg, activo) => {
+      const sent = enviados.includes(mKey);
+      const cls = sent ? 'btn-wa-m sent btn-wa-active' : (activo ? 'btn-wa-m btn-wa-active' : 'btn-wa-m btn-wa-inactive');
+      const onclick = (activo && !sent && r.tel) ? `onclick="enviarM('${r.id}','${mKey}','${telWA}',\`${msg.replace(/`/g,'\\`')}\`)"` : '';
+      return `<button class="${cls}" ${onclick} ${!activo || sent ? 'disabled' : ''}>${sent ? '✓' : '○'} ${label}</button>`;
+    };
+
+    const msgM2 = `Hola ${primerNombre} 👋\\n\\nRecibimos tu solicitud para una *${r.menu}* el *${fechaStr}* en turno *${turnoStr}* para *${r.personas} personas*.\\n\\nPara confirmar te enviamos en breve los datos de pago de la seña — esto reserva el turno exclusivamente para vos.\\n\\nCualquier consulta respondemos por acá.\\n\\n— Daro · Celestia Chef Privado\\n\\n_Política de cancelación: más de 15 días devolución total · entre 7 y 15 días 50% · menos de 7 días sin devolución._`;
+
+    const msgM3 = `Hola ${primerNombre}, confirmamos tu experiencia Celestia 🍽\\n\\n*${r.menu}* · ${fechaStr} · ${turnoStr} · ${r.personas} personas\\n\\nEl honorario acordado es de *${fmt(honorario)}*. La seña para confirmar la fecha es *${fmt(senia)}*.\\n\\nPodés transferir al alias: *daro.chef*\\n\\nUna vez acreditada, la fecha queda reservada exclusivamente para vos.\\n\\n— Daro · Celestia Chef Privado`;
+
+    const msgM4 = `Hola ${primerNombre} 👋 Tu experiencia Celestia es el *${fechaStr}*.\\n\\nTe confirmo los horarios aproximados: llegaré alrededor de las *${misePlaceHora}* para el mise en place. El servicio comienza a las *${r.turno === 'almuerzo' ? '12:00hs' : '20:00hs'}*.\\n\\nEn los días previos coordinamos los últimos detalles del menú por acá.\\n\\n¡Nos vemos pronto! — Daro · Celestia Chef Privado`;
+
+    const msgM5 = `Hola ${primerNombre} 👋 Mañana es tu experiencia Celestia.\\n\\n*${r.menu}* · ${turnoStr} · ${r.personas} personas · ${r.dir || ''}\\n\\nDaro llegará con anticipación para el mise en place. El saldo de *${fmt(honorario - senia)}* se abona al inicio del servicio.\\n\\nCualquier última consulta acá estamos. ¡Hasta mañana! — Daro · Celestia Chef Privado`;
+
+    const msgM6 = `Hola ${primerNombre}, fue un placer compartir la experiencia con vos y tus invitados 🙌\\n\\nEsperamos que haya sido una noche especial. Si tenés un momento, nos ayuda mucho una reseña en Google — es lo que permite que más personas conozcan Celestia.\\n\\nhttps://g.page/r/CelestiaChefPrivado/review\\n\\n¡Hasta la próxima! — Daro · Celestia Chef Privado`;
+
+    const m2Activo = true;
+    const m3Activo = true;
+    const m4Activo = enviados.includes('M3');
+    const m5Activo = enviados.includes('M3');
+    const m6Activo = r.saldo_cobrado;
+
+    return `
     <div class="reserva-card estado-${r.estado}" id="card-${r.id}">
       <div>
         <div class="res-fecha">${fmtFecha(r.fecha)}</div>
         <div class="res-turno">${r.turno === 'almuerzo' ? '☀ Almuerzo' : '🌙 Cena'}</div>
         <div class="res-ref">${r.ref}</div>
+        <div class="m-indicators" style="margin-top:10px;">${mDots}</div>
       </div>
       <div class="res-cliente">
         <div class="res-nombre">${r.nombre || '—'}</div>
         <div class="res-contacto">${r.tel || ''}<br>${r.email || ''}</div>
         ${r.dir ? `<div class="res-contacto" style="margin-top:4px;">📍 ${r.dir}</div>` : ''}
         ${r.notas ? `<div class="res-contacto" style="margin-top:4px;font-style:italic;">${r.notas}</div>` : ''}
-      </div>
-      <div class="res-detalle">
-        <div class="res-menu">${r.menu || '—'}</div>
-        <div class="res-personas">${r.personas} personas</div>
-        ${r.ocasion ? `<div class="res-contacto" style="margin-top:4px;">${r.ocasion}</div>` : ''}
+        ${r.ocasion ? `<div class="res-contacto" style="margin-top:4px;">🎉 ${r.ocasion}</div>` : ''}
       </div>
       <div>
-        <div class="res-monto">${fmt(r.total)}</div>
-        <div class="res-senia">Seña 50%: ${fmt(r.total ? Math.round(r.total * 0.5 / 100) * 100 : 0)}</div>
-        <div style="margin-top:8px;">
-          <span class="estado-badge ${r.estado}">${r.estado}</span>
+        <div class="res-menu">${r.menu || '—'}</div>
+        <div class="res-personas">${r.personas} personas</div>
+        <div class="pago-bloque-titulo" style="margin-top:10px;">Honorario</div>
+        <div class="precio-wrap">
+          <input class="precio-input" id="precio-${r.id}" value="${honorario}" type="number">
+          <button class="precio-ok-btn" onclick="guardarPrecio('${r.id}')">✓ OK</button>
         </div>
+        <div style="font-size:11px;color:rgba(250,246,239,0.35);margin-top:4px;">Seña: ${fmt(senia)}</div>
+        <div style="margin-top:8px;"><span class="estado-badge ${r.estado}">${r.estado}</span></div>
       </div>
       <div class="res-acciones">
         ${r.estado === 'reservada' ? `<button class="accion-btn btn-confirmar" onclick="cambiarEstado('${r.id}','confirmada')">✓ Confirmar</button>` : ''}
         ${r.estado !== 'cancelada' ? `<button class="accion-btn btn-cancelar" onclick="cambiarEstado('${r.id}','cancelada')">✕ Cancelar</button>` : `<button class="accion-btn btn-cancelar" onclick="eliminarDefinitivo('${r.id}','${r.nombre}')" style="background:rgba(155,35,53,0.25);border-color:rgba(155,35,53,0.5);">🗑 Eliminar</button>`}
-        ${r.tel ? `<button class="accion-btn btn-whatsapp" onclick="abrirWA('${r.tel}','${r.nombre}','${r.ref}','${r.estado}')">WA Cliente</button>` : ''}
       </div>
-    </div>
-  `).join('');
+      <div class="wa-btns">
+        ${waBtn('M2','M2 Bienvenida', msgM2, m2Activo)}
+        ${waBtn('M3','M3 Seña + pago', msgM3, m3Activo)}
+        ${waBtn('M4','M4 Coordinación previa', msgM4, m4Activo)}
+        ${waBtn('M5','M5 Recordatorio', msgM5, m5Activo)}
+        ${waBtn('M6','M6 Post evento', msgM6, m6Activo)}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function enviarM(id, mKey, telWA, msg) {
+  window.open(`https://wa.me/${telWA}?text=${encodeURIComponent(msg)}`, '_blank');
+  // Registrar mensaje como enviado
+  const r = todasReservas.find(r => r.id === id);
+  const enviados = [...(r.mensajes_enviados || [])];
+  if (!enviados.includes(mKey)) enviados.push(mKey);
+  const { error } = await supa.from('reservas').update({ mensajes_enviados: enviados }).eq('id', id);
+  if (!error) {
+    r.mensajes_enviados = enviados;
+    renderReservas();
+  }
+}
+
+async function guardarPrecio(id) {
+  const input = document.getElementById('precio-' + id);
+  const nuevo = parseInt(input.value);
+  if (!nuevo || nuevo < 0) return;
+  const { error } = await supa.from('reservas').update({ honorario_final: nuevo }).eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  const r = todasReservas.find(r => r.id === id);
+  if (r) r.honorario_final = nuevo;
+  renderReservas();
 }
 
 async function eliminarDefinitivo(id, nombre) {
@@ -1352,14 +1475,8 @@ async function eliminarDefinitivo(id, nombre) {
 }
 
 async function cambiarEstado(id, nuevoEstado) {
-  const { error } = await supa
-    .from('reservas')
-    .update({ estado: nuevoEstado })
-    .eq('id', id);
-  if (error) {
-    alert('Error al actualizar: ' + error.message);
-    return;
-  }
+  const { error } = await supa.from('reservas').update({ estado: nuevoEstado }).eq('id', id);
+  if (error) { alert('Error al actualizar: ' + error.message); return; }
   const r = todasReservas.find(r => r.id === id);
   if (r) r.estado = nuevoEstado;
   actualizarStats();
@@ -1367,9 +1484,7 @@ async function cambiarEstado(id, nuevoEstado) {
 }
 
 function abrirWA(tel, nombre, ref, estado) {
-  const msg = estado === 'confirmada'
-    ? `Hola ${nombre}! Te confirmamos tu reserva Celestia (${ref}). Quedamos a tu disposición para cualquier consulta.`
-    : `Hola ${nombre}! Te escribimos de Celestia respecto a tu solicitud de reserva (${ref}).`;
+  const msg = `Hola ${nombre}! Te escribimos de Celestia respecto a tu reserva (${ref}).`;
   const num = tel.replace(/\D/g, '');
   window.open(`https://wa.me/${num.startsWith('54') ? num : '54' + num}?text=${encodeURIComponent(msg)}`, '_blank');
 }
