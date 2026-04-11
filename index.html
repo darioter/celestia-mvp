@@ -1191,6 +1191,7 @@ textarea { resize: vertical; min-height: 80px; }
     <span style="font-size:12px;font-weight:300;color:rgba(250,246,239,0.45);font-family:'DM Sans',sans-serif;letter-spacing:0.04em;">by Daro Castello</span>
   </div>
   <div class="tagline">Buenos Aires</div>
+  <a id="header-acceder" href="/clientes" style="font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:rgba(250,246,239,0.7);text-decoration:none;border:1px solid rgba(201,168,76,0.3);padding:6px 14px;border-radius:20px;transition:all 0.2s;letter-spacing:0.04em;">Acceder →</a>
 </header>
 
 <!-- HERO (solo se ve en paso 0) -->
@@ -1820,15 +1821,12 @@ async function iniciarSesion() {
   if (!perfil) return;
   clientePerfil = perfil;
 
-  // Mostrar indicador en header
-  const headerEl = document.querySelector('header');
-  if (headerEl) {
-    const tagline = headerEl.querySelector('.tagline');
-    if (tagline) {
-      tagline.innerHTML = `<a href="/clientes" style="color:var(--gold-light);text-decoration:none;font-size:12px;letter-spacing:0.06em;">
-        Hola, ${perfil.nombre?.split(' ')[0] || 'Cliente'} →
-      </a>`;
-    }
+  // Actualizar botón en header
+  const accederBtn = document.getElementById('header-acceder');
+  if (accederBtn) {
+    accederBtn.textContent = `Hola, ${perfil.nombre?.split(' ')[0] || 'Mi perfil'} →`;
+    accederBtn.style.color = 'var(--gold-light)';
+    accederBtn.style.borderColor = 'rgba(201,168,76,0.5)';
   }
 }
 
