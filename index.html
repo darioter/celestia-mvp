@@ -133,7 +133,7 @@
           "name": "¿Qué incluye el servicio de chef privado?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "El honorario incluye planificación del menú, visita previa, compras de ingredientes, mise en place, servicio completo y cierre. Los ingredientes son un estimado orientativo y el menú definitivo se define con vos antes del evento."
+            "text": "El honorario incluye la planificación del menú, la visita previa a tu domicilio, la gestión de compras, el mise en place, el servicio completo y el cierre. Los ingredientes se cotizan por separado y su costo es orientativo — el menú definitivo y el desglose final se acuerdan con vos antes del evento. Las bebidas corren por cuenta del anfitrión; si lo deseás, Daro puede recomendar maridajes según el menú elegido."
           }
         },
         {
@@ -2167,8 +2167,8 @@ function renderMenus() {
     if (m.id === 3) {
       const waMsg = encodeURIComponent(`Hola Celestia, quiero consultar por un servicio corporativo o evento especial.\n\nNombre: \nEmpresa: \nCantidad de personas estimada: \nFecha tentativa: \nDescripcion del evento: \n\nQuedo a la espera. Muchas gracias.`);
       return `
-      <div class="menu-card-corpo" style="height:auto;min-height:unset;">
-        <div class="corpo-header" style="padding-bottom:16px;">
+      <div class="menu-card-corpo" style="height:auto;min-height:unset;display:flex;flex-direction:column;">
+        <div class="corpo-header" style="padding-bottom:12px;">
           <div class="corpo-tag">✦ ${m.tag}</div>
           <div class="corpo-nombre">${m.nombre}</div>
           <div class="corpo-personas">👥 ${m.personas}</div>
@@ -2177,7 +2177,9 @@ function renderMenus() {
         <div class="corpo-items" style="margin-bottom:16px;">
           ${m.cursos.map(c => `<div class="corpo-item">${c}</div>`).join('')}
         </div>
-        <div style="flex:1;"></div>
+        <div style="padding:0 20px 16px;flex:1;display:flex;align-items:flex-end;">
+          <img src="${IMG_CORPO}" alt="Corporativos" style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;display:block;">
+        </div>
         <a class="corpo-cta" href="https://wa.me/5491160410607?text=${waMsg}" target="_blank">Consultar disponibilidad →</a>
       </div>`;
     }
@@ -2187,11 +2189,11 @@ function renderMenus() {
 
     return `
     <div class="menu-card${isSelected ? ' selected' : ''}" id="menu-card-${m.id}"
-      style="height:auto;min-height:unset;cursor:pointer;"
+      style="height:auto;min-height:unset;cursor:pointer;display:flex;flex-direction:column;"
       onclick="selectMenu(${m.id})">
-      <div class="menu-card-body" style="padding:18px 20px 0;">
+      <div class="menu-card-body" style="padding:18px 20px 0;flex:1;display:flex;flex-direction:column;">
 
-        <!-- Solo tilde a la derecha cuando está seleccionado -->
+        <!-- Tag + círculo -->
         <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;">
           <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,0.35);padding:3px 10px;border-radius:20px;">${m.id === 1 ? '✦ Íntimo' : '✦ Degustación'}</div>
           <div id="radio-${m.id}" style="width:22px;height:22px;border-radius:50%;border:2px solid ${isSelected ? 'var(--gold)' : 'var(--cream-dark)'};background:${isSelected ? 'var(--gold)' : 'transparent'};display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;margin-left:8px;">
@@ -2201,11 +2203,16 @@ function renderMenus() {
 
         <div class="menu-name" style="font-size:18px;margin-bottom:4px;">${m.nombre}</div>
         <div class="menu-persons" style="margin-bottom:8px;">👥 ${m.personas}</div>
-        <div class="menu-desc" style="font-size:13px;margin-bottom:0;">${m.desc}</div>
+        <div class="menu-desc" style="font-size:13px;margin-bottom:14px;">${m.desc}</div>
+
+        <!-- Imagen con márgenes y bordes redondeados -->
+        <div style="padding:0;margin-bottom:0;flex:1;display:flex;align-items:flex-end;">
+          <img src="${imgSrc}" alt="${m.nombre}" style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;display:block;">
+        </div>
       </div>
 
       <!-- Botón elegir -->
-      <div style="padding:14px 20px 16px;" onclick="event.stopPropagation()">
+      <div style="padding:12px 20px 14px;" onclick="event.stopPropagation()">
         <button onclick="selectMenu(${m.id})" id="btn-select-menu-${m.id}" type="button"
           style="width:100%;padding:12px;border-radius:40px;border:1.5px solid ${isSelected ? 'var(--gold)' : 'rgba(13,27,42,0.15)'};background:${isSelected ? 'var(--gold)' : 'var(--cream-dark)'};font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:${isSelected ? 'var(--navy)' : 'var(--text-mid)'};cursor:pointer;transition:all 0.2s;letter-spacing:0.02em;">
           ${isSelected ? '✓ Seleccionado' : 'Elegir este menú'}
@@ -2217,14 +2224,6 @@ function renderMenus() {
   document.getElementById('btn-next-2').disabled = !state.menu;
 }
 
-
-
-
-const carruselIdx = {};
-function carruselNav(id, dir, total) {
-  carruselIdx[id] = ((carruselIdx[id] || 0) + dir + total) % total;
-  carruselGoTo(id, carruselIdx[id], total);
-}
 function carruselGoTo(id, idx, total) {
   carruselIdx[id] = idx;
   const track = document.getElementById(id + '-track');
@@ -2340,7 +2339,7 @@ function renderDesglose() {
         <span class="calc-total-value">${fmt(total)}</span>
       </div>
       <div class="calc-pp">~${fmt(Math.round(total / personas))} por persona</div>
-      <div class="calc-context">El honorario incluye planificación, visita previa, compras, mise en place, servicio y cierre. Los ingredientes son un estimado orientativo — el menú definitivo se define con vos antes del evento. Las bebidas están a cargo del anfitrión; si querés, Daro puede sugerir maridajes según el menú elegido.</div>
+      <div class="calc-context">El honorario incluye la planificación del menú, la visita previa a tu domicilio, la gestión de compras, el mise en place, el servicio completo y el cierre. Los ingredientes se cotizan por separado y su costo es orientativo — el menú definitivo y el desglose final se acuerdan con vos antes del evento. Las bebidas corren por cuenta del anfitrión; si lo deseás, Daro puede recomendar maridajes según el menú elegido.</div>
     </div>`;
 
   document.getElementById('desglose-content').innerHTML = html;
