@@ -3113,28 +3113,47 @@ function markSent() {
     if (tab) { tab.classList.remove('active'); tab.classList.add('done'); }
   });
 
-  // WA de seguimiento a Daro
+  // ─── M1: WA a Daro (seguimiento interno) ───────────────
   const msgDaro =
-    `*Nueva reserva Celestia*\n` +
+    `🍽 *Nueva reserva Celestia*\n` +
     `Ref: ${ref}\n\n` +
     `*Servicio:* ${state.menu.nombre}\n` +
     `*Fecha:* ${fechaStr}\n` +
     `*Turno:* ${turnoStr}\n` +
     `*Personas:* ${personas}\n` +
-    `*Direccion:* ${state.dir}\n\n` +
+    `*Dirección:* ${state.dir}\n\n` +
     `*Cliente:* ${state.nombre}\n` +
     `*Tel:* ${state.tel}\n` +
     `*Email:* ${state.email}` +
-    (state.ocasion ? `\n*Ocasion:* ${state.ocasion}` : '') +
+    (state.ocasion ? `\n*Ocasión:* ${state.ocasion}` : '') +
     (state.notas ? `\n*Notas:* ${state.notas}` : '') +
     `\n\n*Honorario:* ${fmt(hon.base + hon.asistente)}\n` +
     (ing ? `*Ingredientes est.:* ${fmt(ing)}\n` : '') +
     `*Total est.:* ${fmt(total)}\n` +
-    `*Senia sugerida (50%):* ${fmt(senia)}`;
+    `*Seña (50% honorario):* ${fmt(senia)}`;
 
   setTimeout(() => {
     window.open(`https://wa.me/5491160410607?text=${encodeURIComponent(msgDaro)}`, '_blank');
   }, 2000);
+
+  // ─── M2: WA automático al cliente ───────────────────────
+  const primerNombre = state.nombre?.split(' ')[0] || state.nombre;
+  const seniaHonorario = Math.round((hon.base + hon.asistente) * 0.5 / 100) * 100;
+  const msgCliente =
+    `Hola ${primerNombre} 👋\n\n` +
+    `Recibimos tu solicitud para una *${state.menu.nombre}* el *${fechaStr}* en turno *${state.turno === 'almuerzo' ? 'Almuerzo · 12:00hs' : 'Cena · 20:00hs'}* para *${personas} personas*.\n\n` +
+    `Para confirmar te enviamos en breve los datos de pago de la seña de *${fmt(seniaHonorario)}* — esto reserva el turno exclusivamente para vos.\n\n` +
+    `Cualquier consulta respondemos por acá.\n\n` +
+    `— Daro · Celestia Chef Privado\n\n` +
+    `_Política de cancelación: más de 15 días devolución total · entre 7 y 15 días 50% · menos de 7 días sin devolución._`;
+
+  if (state.tel) {
+    const telLimpio = state.tel.replace(/\D/g, '');
+    const telWA = telLimpio.startsWith('54') ? telLimpio : '54' + telLimpio;
+    setTimeout(() => {
+      window.open(`https://wa.me/${telWA}?text=${encodeURIComponent(msgCliente)}`, '_blank');
+    }, 4000);
+  }
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
   showToast('¡Reserva guardada!');
