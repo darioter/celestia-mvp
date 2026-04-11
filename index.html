@@ -2160,7 +2160,6 @@ function renderMenus() {
           ${m.cursos.map(c => `<div class="corpo-item">${c}</div>`).join('')}
         </div>
         <div style="flex:1;"></div>
-        <!-- Imagen corporativa -->
         <div style="padding:0 24px 16px;">
           <img src="${IMG_CORPO}" alt="Corporativos y Grandes Grupos" style="width:100%;aspect-ratio:1/1;object-fit:cover;display:block;border-radius:var(--radius);">
         </div>
@@ -2172,62 +2171,73 @@ function renderMenus() {
         </div>
         <div style="flex:1;"></div>
         <a class="corpo-cta" href="https://wa.me/5491160410607?text=${waMsg}" target="_blank">Consultar disponibilidad →</a>
-        
       </div>`;
     }
 
-    const carruselId = `car-${m.id}`;
-    const platos = m.ejemplo ? m.ejemplo.platos : [];
-
     const imgSrc = m.id === 1 ? IMG_3P : IMG_7P;
+    const isSelected = state.menu?.id === m.id;
+    const radioBg = isSelected ? 'var(--gold)' : 'transparent';
+    const radioBorder = isSelected ? 'var(--gold)' : 'rgba(255,255,255,0.2)';
+    const btnBorder = isSelected ? 'var(--gold)' : 'rgba(201,168,76,0.35)';
+    const btnBg = isSelected ? 'rgba(201,168,76,0.15)' : 'transparent';
+    const btnColor = isSelected ? 'var(--gold-light)' : 'rgba(250,246,239,0.7)';
+    const btnText = isSelected ? '✓ Seleccionado' : 'Elegir este menú';
 
     return `
-    <div class="menu-card${state.menu?.id === m.id ? ' selected' : ''}" id="menu-card-${m.id}">
-      <div class="menu-card-body" onclick="selectMenu(${m.id})" style="padding:20px 22px 16px;">
-        <div style="display:inline-block;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,0.35);padding:4px 10px;border-radius:20px;margin-bottom:12px;">${m.id === 1 ? '✦ Íntimo' : '✦ Degustación'}</div>
+    <div class="menu-card${isSelected ? ' selected' : ''}" id="menu-card-${m.id}" style="height:auto;min-height:unset;">
+
+      <!-- MOMENTO 1 -->
+      <div class="menu-card-body" style="padding:20px 22px 0;cursor:pointer;" onclick="selectMenu(${m.id})">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+          <div id="radio-${m.id}" style="width:22px;height:22px;border-radius:50%;border:2px solid ${radioBorder};background:${radioBg};display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;">
+            ${isSelected ? '<div style="width:8px;height:8px;border-radius:50%;background:var(--navy);"></div>' : ''}
+          </div>
+          <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,0.35);padding:4px 10px;border-radius:20px;">${m.id === 1 ? '✦ Íntimo' : '✦ Degustación'}</div>
+        </div>
         <div class="menu-name" style="font-size:20px;">${m.nombre}</div>
         <div class="menu-persons">👥 ${m.personas}</div>
         <div class="menu-desc">${m.desc}</div>
         <div style="font-size:12px;color:var(--text-light);font-style:italic;margin-bottom:16px;">Ideal para: ${m.ideal}</div>
         <img src="${imgSrc}" alt="${m.nombre}" style="width:100%;aspect-ratio:1/1;object-fit:cover;display:block;border-radius:var(--radius);">
+        <div style="padding:14px 0 4px;">
+          <button onclick="event.stopPropagation();selectMenu(${m.id})" id="btn-select-menu-${m.id}" type="button"
+            style="width:100%;padding:13px;border-radius:40px;border:1.5px solid ${btnBorder};background:${btnBg};font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:${btnColor};cursor:pointer;transition:all 0.2s;letter-spacing:0.02em;">
+            ${btnText}
+          </button>
+        </div>
       </div>
-      <div style="flex:1;"></div>
-      <div class="calc-wrap" onclick="event.stopPropagation()" style="margin:0;border-radius:0 0 0 0;">
-        <div class="calc-title">✦ Calculá tu experiencia</div>
-        <div class="calc-controls">
-          <div class="calc-control">
-            <label>Personas</label>
-            <select onchange="updateCalc(${m.id})" id="calc-pp-${m.id}">
-              ${[2,3,4,5,6,7,8,9,10,11,12].map(n => `<option value="${n}"${n===4?' selected':''}>${n} persona${n>1?'s':''}</option>`).join('')}
-            </select>
-          </div>
-          <div class="calc-control">
-            <label>Día del servicio</label>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-              <button type="button" onclick="selectDia(${m.id},'semana')" id="calc-dia-semana-${m.id}"
-                style="background:rgba(255,255,255,0.06);border:1.5px solid rgba(201,168,76,0.25);border-radius:10px;padding:10px 8px;cursor:pointer;text-align:center;transition:all 0.15s;">
-                <div style="font-size:11px;font-weight:500;color:var(--gold-light);letter-spacing:0.06em;margin-bottom:3px;">ENTRE SEMANA</div>
-                <div style="font-size:10px;color:rgba(250,246,239,0.5);line-height:1.4;">Lunes a viernes<br>mediodía</div>
-              </button>
-              <button type="button" onclick="selectDia(${m.id},'finde')" id="calc-dia-finde-${m.id}"
-                style="background:rgba(201,168,76,0.15);border:1.5px solid var(--gold);border-radius:10px;padding:10px 8px;cursor:pointer;text-align:center;transition:all 0.15s;">
-                <div style="font-size:11px;font-weight:500;color:var(--gold-light);letter-spacing:0.06em;margin-bottom:3px;">FIN DE SEMANA</div>
-                <div style="font-size:10px;color:rgba(250,246,239,0.5);line-height:1.4;">Viernes noche,<br>sábado y domingo</div>
-              </button>
+
+      <!-- MOMENTO 2: calculadora — aparece al seleccionar -->
+      <div id="calc-panel-${m.id}" style="display:${isSelected ? 'block' : 'none'};">
+        <div class="calc-wrap" onclick="event.stopPropagation()" style="margin:0;border-radius:0 0 var(--radius-lg) var(--radius-lg);">
+          <div class="calc-title">✦ Calculá tu experiencia</div>
+          <div class="calc-controls">
+            <div class="calc-control">
+              <label>Personas</label>
+              <select onchange="updateCalc(${m.id})" id="calc-pp-${m.id}">
+                ${[2,3,4,5,6,7,8,9,10,11,12].map(n => `<option value="${n}"${n===4?' selected':''}>${n} persona${n>1?'s':''}</option>`).join('')}
+              </select>
+            </div>
+            <div class="calc-control">
+              <label>Día del servicio</label>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <button type="button" onclick="selectDia(${m.id},'semana')" id="calc-dia-semana-${m.id}"
+                  style="background:rgba(255,255,255,0.06);border:1.5px solid rgba(201,168,76,0.25);border-radius:10px;padding:10px 8px;cursor:pointer;text-align:center;transition:all 0.15s;">
+                  <div style="font-size:11px;font-weight:500;color:var(--gold-light);letter-spacing:0.06em;margin-bottom:3px;">ENTRE SEMANA</div>
+                  <div style="font-size:10px;color:rgba(250,246,239,0.5);line-height:1.4;">Lunes a viernes<br>mediodía</div>
+                </button>
+                <button type="button" onclick="selectDia(${m.id},'finde')" id="calc-dia-finde-${m.id}"
+                  style="background:rgba(201,168,76,0.15);border:1.5px solid var(--gold);border-radius:10px;padding:10px 8px;cursor:pointer;text-align:center;transition:all 0.15s;">
+                  <div style="font-size:11px;font-weight:500;color:var(--gold-light);letter-spacing:0.06em;margin-bottom:3px;">FIN DE SEMANA</div>
+                  <div style="font-size:10px;color:rgba(250,246,239,0.5);line-height:1.4;">Viernes noche,<br>sábado y domingo</div>
+                </button>
+              </div>
             </div>
           </div>
+          <div class="calc-result" id="calc-result-${m.id}"></div>
         </div>
-        <div class="calc-result" id="calc-result-${m.id}"></div>
       </div>
-      <div style="padding:16px 22px;background:var(--navy);border-radius:0 0 var(--radius-lg) var(--radius-lg);">
-        <button
-          onclick="selectMenu(${m.id})"
-          id="btn-select-menu-${m.id}"
-          type="button"
-          style="width:100%;padding:13px;border-radius:40px;border:1.5px solid rgba(201,168,76,0.35);background:transparent;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:rgba(250,246,239,0.7);cursor:pointer;transition:all 0.2s;letter-spacing:0.02em;">
-          ${state.menu?.id === m.id ? '✓ Seleccionado' : 'Elegir este menú'}
-        </button>
-      </div>
+
     </div>`;
   }).join('');
 
@@ -2239,6 +2249,7 @@ function renderMenus() {
   });
   document.getElementById('btn-next-2').disabled = !state.menu;
 }
+
 
 const carruselIdx = {};
 function carruselNav(id, dir, total) {
@@ -2372,22 +2383,55 @@ function selectMenu(id) {
   document.getElementById('menu-card-' + id).classList.add('selected');
   document.getElementById('btn-next-2').disabled = false;
 
-  // Update all selection buttons
+  // Mostrar/ocultar calculadora
   [1, 2].forEach(menuId => {
+    const panel = document.getElementById('calc-panel-' + menuId);
+    const radio = document.getElementById('radio-' + menuId);
     const btn = document.getElementById('btn-select-menu-' + menuId);
-    if (!btn) return;
+    if (!panel) return;
+
     if (menuId === id) {
-      btn.textContent = '✓ Seleccionado';
-      btn.style.background = 'rgba(201,168,76,0.15)';
-      btn.style.borderColor = 'var(--gold)';
-      btn.style.color = 'var(--gold-light)';
+      // Mostrar calculadora
+      panel.style.display = 'block';
+      // Actualizar radio
+      if (radio) {
+        radio.style.background = 'var(--gold)';
+        radio.style.borderColor = 'var(--gold)';
+        radio.innerHTML = '<div style="width:8px;height:8px;border-radius:50%;background:var(--navy);"></div>';
+      }
+      // Actualizar botón
+      if (btn) {
+        btn.textContent = '✓ Seleccionado';
+        btn.style.background = 'rgba(201,168,76,0.15)';
+        btn.style.borderColor = 'var(--gold)';
+        btn.style.color = 'var(--gold-light)';
+      }
+      // Scroll suave a la calculadora
+      setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
     } else {
-      btn.textContent = 'Elegir este menú';
-      btn.style.background = 'transparent';
-      btn.style.borderColor = 'rgba(201,168,76,0.35)';
-      btn.style.color = 'rgba(250,246,239,0.7)';
+      // Ocultar calculadora
+      panel.style.display = 'none';
+      // Resetear radio
+      if (radio) {
+        radio.style.background = 'transparent';
+        radio.style.borderColor = 'rgba(255,255,255,0.2)';
+        radio.innerHTML = '';
+      }
+      // Resetear botón
+      if (btn) {
+        btn.textContent = 'Elegir este menú';
+        btn.style.background = 'transparent';
+        btn.style.borderColor = 'rgba(201,168,76,0.35)';
+        btn.style.color = 'rgba(250,246,239,0.7)';
+      }
     }
   });
+
+  // Actualizar calc con el menú seleccionado
+  if (!calcDiaState[id]) calcDiaState[id] = 'finde';
+  updateCalc(id);
+  state.calcPersonas = parseInt(document.getElementById('calc-pp-' + id)?.value) || 4;
+  state.calcDia = calcDiaState[id];
 }
 
 // ─── PASO 3: CALENDARIO ─────────────────────────────────
