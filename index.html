@@ -1363,12 +1363,11 @@ textarea { resize: vertical; min-height: 80px; }
     <p class="section-sub" id="menu-sub">Seleccioná la propuesta gastronómica para tu evento</p>
     <div class="menu-grid" id="menu-grid"></div>
     <!-- Botón flotante continuar -->
-    <div id="float-continuar" style="display:none;position:fixed;bottom:0;left:0;right:0;padding:16px 20px;background:linear-gradient(to top,var(--cream) 70%,transparent);z-index:200;text-align:center;">
-      <button class="btn-next" onclick="goTo(26)" style="width:100%;max-width:480px;padding:16px 32px;font-size:15px;">Continuar →</button>
-    </div>
-    <div class="nav-btns" style="opacity:0;pointer-events:none;height:0;margin:0;">
-      <button class="btn-back" onclick="goTo(1)">← Volver</button>
-      <button class="btn-next" id="btn-next-2" onclick="goTo(26)" disabled>Continuar →</button>
+    <div id="float-continuar" style="display:block;position:fixed;bottom:0;left:0;right:0;padding:16px 20px;background:linear-gradient(to top,var(--cream) 70%,transparent);z-index:200;">
+      <div style="max-width:600px;margin:0 auto;display:flex;gap:12px;">
+        <button class="btn-back" onclick="goTo(1)" style="flex-shrink:0;">← Volver</button>
+        <button class="btn-next" id="btn-next-2" onclick="goTo(26)" disabled style="flex:1;">Continuar →</button>
+      </div>
     </div>
   </div>
 
@@ -2072,7 +2071,7 @@ function goTo(step) {
 
   // Ocultar botón flotante si no estamos en screen-2
   const floatBtn = document.getElementById('float-continuar');
-  if (floatBtn) floatBtn.style.display = step === 2 && state.menu ? 'block' : 'none';
+  if (floatBtn) floatBtn.style.display = step === 2 ? 'block' : 'none';
 
   // Mostrar paso
   const screen = document.getElementById('screen-' + step);
@@ -2397,10 +2396,6 @@ function selectMenu(id) {
   document.querySelectorAll('.menu-card').forEach(el => el.classList.remove('selected'));
   document.getElementById('menu-card-' + id)?.classList.add('selected');
   document.getElementById('btn-next-2').disabled = false;
-
-  // Mostrar botón flotante
-  const floatBtn = document.getElementById('float-continuar');
-  if (floatBtn) floatBtn.style.display = 'block';
 
   [1, 2].forEach(menuId => {
     const radio = document.getElementById('radio-' + menuId);
