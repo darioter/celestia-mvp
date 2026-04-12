@@ -1191,9 +1191,11 @@ textarea { resize: vertical; min-height: 80px; }
   /* SOLAPAS mobile */
   .menu-grid { grid-template-columns: 1fr; gap: 14px; }
 
-  /* STEPS mobile */
-  .steps-bar { padding: 0 8px; gap: 0; }
-  .step-num { width: 26px; height: 26px; font-size: 11px; }
+  /* STEPS mobile - solo números */
+  .steps-bar { padding: 0 4px; justify-content: space-between; }
+  .step-item { padding: 12px 4px; font-size: 0; gap: 0; flex: 1; justify-content: center; }
+  .step-item .step-num { font-size: 11px; width: 28px; height: 28px; }
+  .step-divider { width: 8px; flex-shrink: 1; min-width: 4px; }
 
   /* FORM mobile */
   .form-wrap { padding: 0; }
@@ -1201,6 +1203,12 @@ textarea { resize: vertical; min-height: 80px; }
   /* CALENDAR mobile */
   .cal-day { font-size: 12px; }
   .turno-grid { grid-template-columns: 1fr; }
+
+  /* LANDING TABS mobile */
+  .landing-tab-grid {
+    grid-template-columns: 1fr !important;
+    gap: 28px !important;
+  }
 
   /* FOOTER mobile */
   #float-continuar { padding: 12px 14px; }
@@ -1255,7 +1263,7 @@ textarea { resize: vertical; min-height: 80px; }
 
     <!-- Panel: Chef privado -->
     <div id="tab-panel-chef">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;" class="landing-tab-grid">
         <div>
           <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;">✦ Cómo funciona</div>
           <h3 style="font-family:'DM Serif Display',serif;font-size:26px;color:var(--navy);margin-bottom:16px;line-height:1.2;">Una experiencia de restaurante, en la intimidad de tu casa</h3>
@@ -1305,7 +1313,7 @@ textarea { resize: vertical; min-height: 80px; }
 
     <!-- Panel: Meal prep -->
     <div id="tab-panel-meal" style="display:none;">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;" class="landing-tab-grid">
         <div>
           <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;">✦ Tu semana resuelta</div>
           <h3 style="font-family:'DM Serif Display',serif;font-size:26px;color:var(--navy);margin-bottom:16px;line-height:1.2;">Una o dos jornadas que dejan toda la semana lista</h3>
