@@ -2176,11 +2176,16 @@ async function cargarPerfilEnFormulario() {
   if (menuParam) {
     const menuId = parseInt(menuParam);
     if (menuId === 1 || menuId === 2) {
-      // Recuperar nombre del menú guardado si viene de clientes
       const menuNombre = sessionStorage.getItem('celestia_menu_guardado');
       if (menuNombre) {
         window._menuGuardadoNombre = menuNombre;
         sessionStorage.removeItem('celestia_menu_guardado');
+        // Extraer cantidad de personas del texto guardado
+        const matchPersonas = menuNombre.match(/para[:\s]+(\d+)\s*persona/i) || menuNombre.match(/(\d+)\s*persona/i);
+        if (matchPersonas) {
+          const n = parseInt(matchPersonas[1]);
+          if (n >= 2 && n <= 12) window._menuGuardadoPersonas = n;
+        }
       }
       setTimeout(() => {
         startFlow();
@@ -2737,6 +2742,7 @@ function renderCalcMenu() {
   if (!calcDiaState[m.id]) calcDiaState[m.id] = 'finde';
 
   const menuGuardadoNombre = window._menuGuardadoNombre || null;
+  const menuGuardadoPersonas = window._menuGuardadoPersonas || 4;
 
   document.getElementById('s26-content').innerHTML = `
     <div style="max-width:480px;margin:0 auto;">
@@ -2756,7 +2762,7 @@ function renderCalcMenu() {
           <div class="calc-control">
             <label>Personas</label>
             <select onchange="updateCalc(${m.id})" id="calc-pp-${m.id}">
-              ${[2,3,4,5,6,7,8,9,10,11,12].map(n => `<option value="${n}"${n===4?' selected':''}>${n} persona${n>1?'s':''}</option>`).join('')}
+              ${[2,3,4,5,6,7,8,9,10,11,12].map(n => `<option value="${n}"${n===menuGuardadoPersonas?' selected':''}>${n} persona${n>1?'s':''}</option>`).join('')}
             </select>
           </div>
           <div class="calc-control">
