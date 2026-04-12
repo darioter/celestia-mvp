@@ -259,6 +259,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); min-height:100
       <button class="portal-tab active" onclick="verTab('perfil',this)">Mis datos</button>
       <button class="portal-tab" onclick="verTab('cocina',this)">Mi cocina</button>
       <button class="portal-tab" onclick="verTab('reservas',this)">Mis reservas</button>
+      <button class="portal-tab" onclick="verTab('menus',this)">Mis menús</button>
     </div>
 
     <!-- TAB: PERFIL -->
@@ -374,6 +375,15 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); min-height:100
       </div>
     </div>
 
+    <!-- TAB: MIS MENÚS -->
+    <div class="seccion" id="tab-menus">
+      <div class="seccion-titulo">Mis menús guardados</div>
+      <div class="seccion-sub">Propuestas generadas con el asistente Celestia.</div>
+      <div id="menus-lista">
+        <div class="empty-state"><div class="empty-icon">✦</div>Cargando...</div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -463,6 +473,50 @@ function verTab(tab, btn) {
   document.querySelectorAll('.portal-tab').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   if (tab === 'reservas') cargarReservas();
+  if (tab === 'menus') cargarMenusGuardados();
+}
+
+async function cargarMenusGuardados() {
+  const el = document.getElementById('menus-lista');
+  el.innerHTML = '<div class="empty-state"><div class="empty-icon">✦</div>Cargando...</div>';
+  const { data, error } = await supa
+    .from('menus_guardados')
+    .select('*')
+    .eq('cliente_id', currentUser.id)
+    .order('created_at', { ascending: false });
+
+  if (error || !data || data.length === 0) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">✦</div>Todavía no guardaste ningún menú.<br><a href="/" style="color:var(--gold);text-decoration:none;font-size:13px;">Explorá el asistente →</a></div>`;
+    return;
+  }
+
+  el.innerHTML = data.map(m => {
+    const fecha = new Date(m.created_at).toLocaleDateString('es-AR', { day:'numeric', month:'long', year:'numeric' });
+    const preview = m.ultima_propuesta?.substring(0, 180) + '...';
+    return `
+    <div style="background:var(--white);border:1px solid var(--cream-dark);border-radius:14px;padding:20px 22px;margin-bottom:14px;">
+      <div style="font-size:11px;color:var(--text-light);letter-spacing:0.08em;margin-bottom:8px;text-transform:uppercase;">${fecha}</div>
+      <div style="font-size:13px;color:var(--text-mid);line-height:1.7;margin-bottom:14px;">${preview}</div>
+      <div style="display:flex;gap:10px;">
+        <button onclick="verMenuCompleto('${m.id}')" style="font-size:12px;color:var(--gold);background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);padding:6px 14px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;">Ver menú completo</button>
+        <button onclick="eliminarMenu('${m.id}')" style="font-size:12px;color:var(--text-light);background:transparent;border:1px solid var(--cream-dark);padding:6px 14px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;">Eliminar</button>
+      </div>
+      <div id="menu-full-${m.id}" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid var(--cream-dark);">
+        <pre style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text-mid);line-height:1.7;white-space:pre-wrap;">${m.ultima_propuesta}</pre>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function verMenuCompleto(id) {
+  const el = document.getElementById('menu-full-' + id);
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+async function eliminarMenu(id) {
+  if (!confirm('¿Eliminar este menú guardado?')) return;
+  await supa.from('menus_guardados').delete().eq('id', id);
+  cargarMenusGuardados();
 }
 
 function iniciales(nombre) {
