@@ -1907,6 +1907,34 @@ const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
 const iaHistorial = [];
 let iaEsperando = false;
 let iaMenuGuardado = null;
+const IA_LIMITE_DIARIO = 3;
+
+function iaGetKey() {
+  return 'celestia_ia_' + new Date().toISOString().slice(0,10);
+}
+function iaGetUsos() {
+  const data = localStorage.getItem(iaGetKey());
+  return data ? parseInt(data) : 0;
+}
+function iaIncrementarUsos() {
+  localStorage.setItem(iaGetKey(), iaGetUsos() + 1);
+}
+function iaVerificarLimite() {
+  const usos = iaGetUsos();
+  if (usos >= IA_LIMITE_DIARIO) {
+    // Bloquear input
+    const input = document.getElementById('ia-input');
+    const btn = document.getElementById('ia-send-btn');
+    if (input) { input.disabled = true; input.placeholder = 'Límite diario alcanzado — volvé mañana'; }
+    if (btn) { btn.disabled = true; btn.style.opacity = '0.3'; }
+    return false;
+  }
+  // Mostrar contador
+  const restantes = IA_LIMITE_DIARIO - usos;
+  const input = document.getElementById('ia-input');
+  if (input) input.placeholder = `Ej: cena íntima para 4... (${restantes} consulta${restantes !== 1 ? 's' : ''} disponible${restantes !== 1 ? 's' : ''} hoy)`;
+  return true;
+}
 
 const IA_SYSTEM = `Sos el asistente gastronómico de Celestia Chef Privado, un servicio de chef privado en Buenos Aires. Tu rol es ayudar a los clientes a explorar y definir ideas de menú para sus experiencias privadas.
 
@@ -1960,6 +1988,10 @@ function agregarTypingIA() {
 
 async function enviarMsgIA() {
   if (iaEsperando) return;
+  if (!iaVerificarLimite()) {
+    agregarMsgIA('assistant', 'Llegaste al límite de 3 consultas diarias. Si encontraste algo que te gustó, guardalo en tu perfil. ¡Volvé mañana para seguir explorando! 🌙');
+    return;
+  }
   const input = document.getElementById('ia-input');
   const texto = input.value.trim();
   if (!texto) return;
@@ -1968,6 +2000,7 @@ async function enviarMsgIA() {
   input.style.height = 'auto';
   iaEsperando = true;
   document.getElementById('ia-send-btn').style.opacity = '0.5';
+  iaIncrementarUsos();
 
   iaHistorial.push({ role: 'user', content: texto });
   agregarMsgIA('user', texto);
@@ -1985,11 +2018,13 @@ async function enviarMsgIA() {
       })
     });
     const data = await res.json();
+    console.log('API response:', data);
     const respuesta = data.content?.[0]?.text || 'Hubo un error. Intentá de nuevo.';
     iaHistorial.push({ role: 'assistant', content: respuesta });
     document.getElementById('ia-typing')?.remove();
     agregarMsgIA('assistant', respuesta);
   } catch(e) {
+    console.error('IA chat error:', e);
     document.getElementById('ia-typing')?.remove();
     agregarMsgIA('assistant', 'Hubo un problema de conexión. Intentá de nuevo en un momento.');
   }
@@ -2079,7 +2114,7 @@ async function cargarPerfilEnFormulario() {
 }
 
 // Iniciar sesión al cargar la página
-(async () => { await iniciarSesion(); })();
+(async () => { await iniciarSesion(); iaVerificarLimite(); })();
 
 // Fechas bloqueadas cargadas desde Supabase
 let fechasBloqueadas = {};
