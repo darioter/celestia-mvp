@@ -1220,6 +1220,10 @@ textarea { resize: vertical; min-height: 80px; }
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+@keyframes iaTyping {
+  0%, 60%, 100% { opacity: 0.3; transform: scale(0.8); }
+  30% { opacity: 1; transform: scale(1); }
+}
 </style>
 </head>
 <body>
@@ -1242,6 +1246,59 @@ textarea { resize: vertical; min-height: 80px; }
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
       <button class="cta-btn" onclick="startFlow()">Reservar una experiencia →</button>
       <button class="cta-btn" onclick="startMealPrep()" style="background:transparent;border:1.5px solid var(--gold);color:var(--gold-light);">Chef semanal →</button>
+    </div>
+  </div>
+
+  <!-- SECCIÓN CHAT IA MENÚ -->
+  <div id="seccion-menu-ia" style="background:var(--navy);border-top:1px solid rgba(201,168,76,0.12);padding:56px 20px 64px;">
+    <div style="max-width:680px;margin:0 auto;">
+
+      <!-- Header -->
+      <div style="text-align:center;margin-bottom:32px;">
+        <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;">✦ Asistente Celestia</div>
+        <h2 style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--cream);margin-bottom:12px;line-height:1.2;">Explorá tu menú ideal</h2>
+        <p style="font-size:14px;color:rgba(250,246,239,0.55);font-weight:300;line-height:1.7;max-width:480px;margin:0 auto;">Contame la ocasión, tus gustos o los de tus invitados y te armo una propuesta de menú para que Daro lleve a tu mesa.</p>
+        <div style="margin-top:12px;font-size:11px;color:rgba(250,246,239,0.3);font-style:italic;">Solo ideas y propuestas — la técnica y la magia las pone Daro.</div>
+      </div>
+
+      <!-- Chat window -->
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(201,168,76,0.15);border-radius:20px;overflow:hidden;">
+
+        <!-- Messages -->
+        <div id="ia-messages" style="height:360px;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:16px;scroll-behavior:smooth;">
+          <!-- Mensaje inicial -->
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="width:32px;height:32px;border-radius:50%;background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;">✦</div>
+            <div style="background:rgba(255,255,255,0.06);border-radius:4px 16px 16px 16px;padding:14px 16px;max-width:85%;">
+              <p style="font-size:13px;color:rgba(250,246,239,0.85);line-height:1.7;margin:0;">Hola! Soy el asistente de Celestia. Contame un poco sobre la ocasión — ¿cuántas personas son, qué tipo de evento es, tienen alguna preferencia o restricción? Con eso te armo una propuesta de menú personalizada.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Input -->
+        <div style="border-top:1px solid rgba(201,168,76,0.12);padding:16px 20px;display:flex;gap:12px;align-items:flex-end;background:rgba(0,0,0,0.15);">
+          <textarea id="ia-input" placeholder="Ej: cena íntima para 4, sin mariscos, algo sofisticado pero cálido..." 
+            style="flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--cream);resize:none;min-height:44px;max-height:120px;outline:none;line-height:1.6;"
+            rows="1"
+            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviarMsgIA();}"
+            oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px'"></textarea>
+          <button onclick="enviarMsgIA()" id="ia-send-btn"
+            style="width:44px;height:44px;border-radius:12px;background:var(--gold);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#0D1B2A" stroke-width="2.5" style="width:18px;height:18px;">
+              <path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Guardar menú -->
+      <div id="ia-guardar-wrap" style="display:none;margin-top:16px;text-align:center;">
+        <button onclick="guardarMenuIA()" style="font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--gold-light);background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);padding:10px 24px;border-radius:40px;cursor:pointer;transition:all 0.2s;">
+          ✦ Guardar este menú en mi perfil
+        </button>
+        <div style="font-size:11px;color:rgba(250,246,239,0.3);margin-top:8px;">Necesitás estar logueado para guardar</div>
+      </div>
+
     </div>
   </div>
 
@@ -1845,6 +1902,124 @@ textarea { resize: vertical; min-height: 80px; }
 const SUPA_URL = 'https://qolpnuscpmzqeacshfvu.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvbHBudXNjcG16cWVhY3NoZnZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NjQ3OTQsImV4cCI6MjA5MTM0MDc5NH0.BJOz5Gwkeb1NqID_gkGKD5YlymifMtOwaf8iQMaBCx8';
 const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+// ─── CHAT IA MENÚ ─────────────────────────────────────────
+const iaHistorial = [];
+let iaEsperando = false;
+let iaMenuGuardado = null;
+
+const IA_SYSTEM = `Sos el asistente gastronómico de Celestia Chef Privado, un servicio de chef privado en Buenos Aires. Tu rol es ayudar a los clientes a explorar y definir ideas de menú para sus experiencias privadas.
+
+Celestia ofrece dos formatos:
+- Menú de 3 pasos: entrada, principal y postre. Simple y memorable. Ideal para cenas íntimas.
+- Experiencia de 7 pasos: bienvenida, entrada fría, entrada caliente, intermedio, principal, quesos y postre.
+
+Tu tarea es: preguntar sobre la ocasión, cantidad de personas, preferencias y restricciones. Luego proponer nombres de platos evocadores y una idea rectora narrativa para el menú. Sugerir si el formato de 3 o 7 pasos se adapta mejor.
+
+NUNCA des recetas, técnicas ni procedimientos. Solo ideas, nombres y narrativa. La técnica es exclusiva del chef.
+
+Respondé en español rioplatense (vos, che). Sé conciso y evocador. Máximo 3-4 párrafos.`;
+
+function agregarMsgIA(rol, texto) {
+  const container = document.getElementById('ia-messages');
+  const isBot = rol === 'assistant';
+  const div = document.createElement('div');
+  div.style.cssText = 'display:flex;gap:12px;align-items:flex-start;' + (isBot ? '' : 'flex-direction:row-reverse;');
+  div.innerHTML = `
+    <div style="width:32px;height:32px;border-radius:50%;background:${isBot ? 'rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.3)' : 'rgba(255,255,255,0.1)'};display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:${isBot ? '14px' : '11px'};color:${isBot ? 'var(--gold)' : 'rgba(250,246,239,0.6)'};">${isBot ? '✦' : '◯'}</div>
+    <div style="background:${isBot ? 'rgba(255,255,255,0.06)' : 'rgba(201,168,76,0.12)'};border-radius:${isBot ? '4px 16px 16px 16px' : '16px 4px 16px 16px'};padding:14px 16px;max-width:85%;">
+      <p style="font-size:13px;color:rgba(250,246,239,0.85);line-height:1.7;margin:0;white-space:pre-wrap;">${texto.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>')}</p>
+    </div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+
+  const botMsgs = iaHistorial.filter(m => m.role === 'assistant').length;
+  if (isBot && botMsgs >= 1) {
+    document.getElementById('ia-guardar-wrap').style.display = 'block';
+    iaMenuGuardado = texto;
+  }
+}
+
+function agregarTypingIA() {
+  const container = document.getElementById('ia-messages');
+  const div = document.createElement('div');
+  div.id = 'ia-typing';
+  div.style.cssText = 'display:flex;gap:12px;align-items:flex-start;';
+  div.innerHTML = `
+    <div style="width:32px;height:32px;border-radius:50%;background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;color:var(--gold);">✦</div>
+    <div style="background:rgba(255,255,255,0.06);border-radius:4px 16px 16px 16px;padding:14px 16px;">
+      <div style="display:flex;gap:5px;align-items:center;height:16px;">
+        <span style="width:7px;height:7px;border-radius:50%;background:var(--gold);display:inline-block;animation:iaTyping 1.2s infinite 0s;"></span>
+        <span style="width:7px;height:7px;border-radius:50%;background:var(--gold);display:inline-block;animation:iaTyping 1.2s infinite 0.2s;"></span>
+        <span style="width:7px;height:7px;border-radius:50%;background:var(--gold);display:inline-block;animation:iaTyping 1.2s infinite 0.4s;"></span>
+      </div>
+    </div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+async function enviarMsgIA() {
+  if (iaEsperando) return;
+  const input = document.getElementById('ia-input');
+  const texto = input.value.trim();
+  if (!texto) return;
+
+  input.value = '';
+  input.style.height = 'auto';
+  iaEsperando = true;
+  document.getElementById('ia-send-btn').style.opacity = '0.5';
+
+  iaHistorial.push({ role: 'user', content: texto });
+  agregarMsgIA('user', texto);
+  agregarTypingIA();
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: IA_SYSTEM,
+        messages: iaHistorial
+      })
+    });
+    const data = await res.json();
+    const respuesta = data.content?.[0]?.text || 'Hubo un error. Intentá de nuevo.';
+    iaHistorial.push({ role: 'assistant', content: respuesta });
+    document.getElementById('ia-typing')?.remove();
+    agregarMsgIA('assistant', respuesta);
+  } catch(e) {
+    document.getElementById('ia-typing')?.remove();
+    agregarMsgIA('assistant', 'Hubo un problema de conexión. Intentá de nuevo en un momento.');
+  }
+
+  iaEsperando = false;
+  document.getElementById('ia-send-btn').style.opacity = '1';
+  input.focus();
+}
+
+async function guardarMenuIA() {
+  if (!iaMenuGuardado) return;
+  const { data } = await supa.auth.getSession();
+  if (!data.session) { window.location.href = '/clientes'; return; }
+  const resumen = iaHistorial.map(m => `${m.role === 'user' ? 'Cliente' : 'Celestia'}: ${m.content}`).join('\n\n');
+  const { error } = await supa.from('menus_guardados').insert([{
+    cliente_id: data.session.user.id,
+    conversacion: resumen,
+    ultima_propuesta: iaMenuGuardado,
+    created_at: new Date().toISOString()
+  }]);
+  const btn = document.querySelector('#ia-guardar-wrap button');
+  if (!error) {
+    btn.textContent = '✓ Menú guardado en tu perfil';
+    btn.style.color = '#81C784';
+    btn.style.borderColor = 'rgba(76,175,80,0.3)';
+    btn.disabled = true;
+  } else {
+    btn.textContent = 'Error al guardar — intentá de nuevo';
+  }
+}
 
 // ─── SESIÓN DEL CLIENTE ───────────────────────────────────
 let clientePerfil = null;
