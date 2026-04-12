@@ -476,6 +476,14 @@ function verTab(tab, btn) {
   if (tab === 'menus') cargarMenusGuardados();
 }
 
+function detectarUrlMenu(propuesta) {
+  if (!propuesta) return '/';
+  const texto = propuesta.toLowerCase();
+  const es7 = texto.includes('7 pasos') || texto.includes('siete pasos') || texto.includes('bienvenida') || texto.includes('7 momentos');
+  const menuId = es7 ? 2 : 1;
+  return `/?menu=${menuId}`;
+}
+
 async function cargarMenusGuardados() {
   const el = document.getElementById('menus-lista');
   el.innerHTML = '<div class="empty-state"><div class="empty-icon">✦</div>Cargando...</div>';
@@ -499,7 +507,7 @@ async function cargarMenusGuardados() {
       <div style="font-size:13px;color:var(--text-mid);line-height:1.7;margin-bottom:14px;">${preview}</div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;">
         <button onclick="verMenuCompleto('${m.id}')" style="font-size:12px;color:var(--gold);background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);padding:6px 14px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;">Ver menú completo</button>
-        <a href="/" style="font-size:12px;color:var(--white);background:var(--navy);border:1px solid var(--navy);padding:6px 14px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;font-weight:500;">Reservar este menú →</a>
+        <a href="${detectarUrlMenu(m.ultima_propuesta)}" style="font-size:12px;color:var(--white);background:var(--navy);border:1px solid var(--navy);padding:6px 14px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;font-weight:500;">Reservar este menú →</a>
         <button onclick="eliminarMenu('${m.id}')" style="font-size:12px;color:var(--text-light);background:transparent;border:1px solid var(--cream-dark);padding:6px 14px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;">Eliminar</button>
       </div>
       <div id="menu-full-${m.id}" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid var(--cream-dark);">

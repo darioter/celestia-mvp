@@ -2117,7 +2117,30 @@ async function cargarPerfilEnFormulario() {
 }
 
 // Iniciar sesión al cargar la página
-(async () => { await iniciarSesion(); iaVerificarLimite(); })();
+(async () => {
+  await iniciarSesion();
+  iaVerificarLimite();
+
+  // Pre-seleccionar menú desde URL (?menu=1 o ?menu=2)
+  const params = new URLSearchParams(window.location.search);
+  const menuParam = params.get('menu');
+  if (menuParam) {
+    const menuId = parseInt(menuParam);
+    if (menuId === 1 || menuId === 2) {
+      setTimeout(() => {
+        startFlow();
+        setTimeout(() => {
+          goTo(2);
+          setTimeout(() => {
+            selectMenu(menuId);
+            // Scroll a las cards
+            document.getElementById('menu-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 300);
+        }, 300);
+      }, 500);
+    }
+  }
+})();
 
 // Fechas bloqueadas cargadas desde Supabase
 let fechasBloqueadas = {};
