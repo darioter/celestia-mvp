@@ -1212,9 +1212,9 @@ async function cobrarSenia(id) {
     estado: 'confirmada'
   }).eq('id', id);
   if (error) { alert('Error: ' + error.message); return; }
-  // Actualizar también en todasReservas
   const r = todasReservas.find(r => r.id === id);
   if (r) { r.senia_cobrada = true; r.senia_fecha = hoy; r.estado = 'confirmada'; }
+  actualizarStats();
   cargarPagos();
 }
 
