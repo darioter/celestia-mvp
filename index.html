@@ -1246,6 +1246,7 @@ textarea { resize: vertical; min-height: 80px; }
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
       <button class="cta-btn" onclick="startFlow()">Reservar una experiencia →</button>
       <button class="cta-btn" onclick="startMealPrep()" style="background:transparent;border:1.5px solid var(--gold);color:var(--gold-light);">Chef semanal →</button>
+      <button class="cta-btn" onclick="toggleChatIA()" style="background:transparent;border:1.5px solid rgba(250,246,239,0.25);color:rgba(250,246,239,0.65);">✦ Explorá tu menú con IA</button>
     </div>
   </div>
 
@@ -1921,12 +1922,14 @@ function toggleChatIA() {
   const btn = document.getElementById('btn-toggle-chat');
   const visible = chat.style.display !== 'none';
   chat.style.display = visible ? 'none' : 'block';
-  btn.innerHTML = visible
+  if (btn) btn.innerHTML = visible
     ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Explorá tu menú con IA`
     : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M18 6L6 18M6 6l12 12"></path></svg> Cerrar asistente`;
   if (!visible) {
-    setTimeout(() => chat.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
-    document.getElementById('ia-input')?.focus();
+    setTimeout(() => {
+      chat.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(() => document.getElementById('ia-input')?.focus(), 400);
+    }, 100);
     iaVerificarLimite();
   }
 }
