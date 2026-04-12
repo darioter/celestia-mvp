@@ -484,6 +484,13 @@ function detectarUrlMenu(propuesta) {
   return `/?menu=${menuId}`;
 }
 
+function reservarMenuGuardado(propuesta) {
+  if (!propuesta) return;
+  // Guardar el texto del menú para mostrarlo en la calculadora
+  sessionStorage.setItem('celestia_menu_guardado', propuesta);
+  window.location.href = detectarUrlMenu(propuesta);
+}
+
 async function cargarMenusGuardados() {
   const el = document.getElementById('menus-lista');
   el.innerHTML = '<div class="empty-state"><div class="empty-icon">✦</div>Cargando...</div>';
@@ -510,7 +517,7 @@ async function cargarMenusGuardados() {
       <div style="font-size:13px;color:var(--text-mid);line-height:1.7;margin-bottom:14px;white-space:pre-line;">${preview}</div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;">
         <button onclick="verMenuCompleto('${m.id}')" style="font-size:12px;color:var(--gold);background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);padding:6px 14px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;">Ver menú completo</button>
-        <a href="${detectarUrlMenu(m.ultima_propuesta)}" style="font-size:12px;color:var(--white);background:var(--navy);border:1px solid var(--navy);padding:6px 14px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;font-weight:500;">Reservar este menú →</a>
+        <a onclick="reservarMenuGuardado('${m.ultima_propuesta?.replace(/'/g,"\\'")}');return false;" href="#" style="font-size:12px;color:var(--white);background:var(--navy);border:1px solid var(--navy);padding:6px 14px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;font-weight:500;">Reservar este menú →</a>
         <button onclick="eliminarMenu('${m.id}')" style="font-size:12px;color:var(--text-light);background:transparent;border:1px solid var(--cream-dark);padding:6px 14px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;">Eliminar</button>
       </div>
       <div id="menu-full-${m.id}" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid var(--cream-dark);">
