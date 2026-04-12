@@ -500,11 +500,14 @@ async function cargarMenusGuardados() {
 
   el.innerHTML = data.map(m => {
     const fecha = new Date(m.created_at).toLocaleDateString('es-AR', { day:'numeric', month:'long', year:'numeric' });
-    const preview = m.ultima_propuesta?.substring(0, 180) + '...';
+    const lineas = m.ultima_propuesta?.split('\n').filter(l => l.trim()) || [];
+    const titulo = lineas.find(l => l.includes('MENÚ CELESTIA')) || 'Propuesta de menú';
+    const preview = lineas.filter(l => !l.includes('---') && !l.includes('MENÚ CELESTIA')).slice(0,4).join('\n');
     return `
     <div style="background:var(--white);border:1px solid var(--cream-dark);border-radius:14px;padding:20px 22px;margin-bottom:14px;">
       <div style="font-size:11px;color:var(--text-light);letter-spacing:0.08em;margin-bottom:8px;text-transform:uppercase;">${fecha}</div>
-      <div style="font-size:13px;color:var(--text-mid);line-height:1.7;margin-bottom:14px;">${preview}</div>
+      <div style="font-size:14px;font-weight:500;color:var(--navy);margin-bottom:8px;">${titulo.replace('🍽 ','')}</div>
+      <div style="font-size:13px;color:var(--text-mid);line-height:1.7;margin-bottom:14px;white-space:pre-line;">${preview}</div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;">
         <button onclick="verMenuCompleto('${m.id}')" style="font-size:12px;color:var(--gold);background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);padding:6px 14px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;">Ver menú completo</button>
         <a href="${detectarUrlMenu(m.ultima_propuesta)}" style="font-size:12px;color:var(--white);background:var(--navy);border:1px solid var(--navy);padding:6px 14px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;font-weight:500;">Reservar este menú →</a>
