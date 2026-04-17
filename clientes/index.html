@@ -745,17 +745,24 @@ async function cargarReservas() {
 }
 
 // ─── INIT ─────────────────────────────────────────────────
-// Escuchar eventos de auth — incluyendo PASSWORD_RECOVERY
 supa.auth.onAuthStateChange((event, session) => {
   if (event === 'PASSWORD_RECOVERY') {
     mostrarFormNuevaPassword();
+  } else if (event === 'SIGNED_IN' && session) {
+    // Solo entrar al portal si NO es un recovery
+    const hash = window.location.hash;
+    const isRecovery = hash.includes('type=recovery') || hash.includes('type=passwordRecovery');
+    if (!isRecovery && !document.getElementById('form-nueva-pwd').style.display === 'block') {
+      currentUser = session.user;
+      mostrarPortal();
+    }
   }
 });
 
 (async () => {
-  // Detectar si viene de un link de reset (hash legacy)
   const hash = window.location.hash;
-  if (hash.includes('type=recovery')) {
+  // Si el hash tiene type=recovery → mostrar form nueva contraseña SIN entrar al portal
+  if (hash.includes('type=recovery') || hash.includes('type=passwordRecovery') || hash.includes('error_code=otp_expired')) {
     mostrarFormNuevaPassword();
     return;
   }
@@ -790,6 +797,8 @@ async function doNuevaPassword() {
   const { error } = await supa.auth.updateUser({ password: pwd });
   if (error) { errEl.textContent = error.message; return; }
   okEl.style.display = 'block';
+  // Limpiar hash de la URL
+  history.replaceState(null, '', window.location.pathname);
   setTimeout(() => {
     document.querySelector('.login-tabs').style.display = 'flex';
     document.getElementById('form-nueva-pwd').style.display = 'none';
