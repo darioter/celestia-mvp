@@ -745,8 +745,15 @@ async function cargarReservas() {
 }
 
 // ─── INIT ─────────────────────────────────────────────────
+// Escuchar eventos de auth — incluyendo PASSWORD_RECOVERY
+supa.auth.onAuthStateChange((event, session) => {
+  if (event === 'PASSWORD_RECOVERY') {
+    mostrarFormNuevaPassword();
+  }
+});
+
 (async () => {
-  // Detectar si viene de un link de reset de contraseña
+  // Detectar si viene de un link de reset (hash legacy)
   const hash = window.location.hash;
   if (hash.includes('type=recovery')) {
     mostrarFormNuevaPassword();
