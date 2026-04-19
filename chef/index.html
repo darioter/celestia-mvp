@@ -643,6 +643,8 @@ function actualizarUI() {
   // Mostrar badge si hay docs pendientes de validación
   const badge = document.getElementById('docs-estado-badge');
   if (badge) badge.style.display = chefPerfil.estado_docs === 'pendiente_revision' ? 'block' : 'none';
+  const nombreInput = document.getElementById('chef-nombre');
+  if (nombreInput) nombreInput.value = ((chefPerfil.nombre || '') + ' ' + (chefPerfil.apellido || '')).trim();
   document.getElementById('chef-esp').value = chefPerfil.especialidades?.[0] || chefPerfil.especialidad || '';
   document.getElementById('chef-tel').value = chefPerfil.telefono || '';
   document.getElementById('chef-bio').value = chefPerfil.bio || '';
