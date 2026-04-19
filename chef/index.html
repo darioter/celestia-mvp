@@ -663,6 +663,8 @@ async function subirDocChef(input, campo, btnId) {
   if (btn) { btn.textContent = '✓ Subido'; btn.style.color = '#5DBF87'; btn.style.borderColor = 'rgba(45,122,79,0.4)'; }
   showToast('¡Documento subido!');
 }
+
+async function subirAvatarChef(input) {
   const file = input.files[0];
   if (!file) return;
   if (file.size > 5 * 1024 * 1024) { showToast('Máximo 5MB'); return; }
