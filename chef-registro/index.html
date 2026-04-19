@@ -446,20 +446,25 @@ async function enviarSolicitud() {
     }
 
     // Guardar en tabla chefs
-    const { error } = await supa.from('chefs').upsert({
+    const nombreParts = document.getElementById('f-nombre').value.trim().split(' ');
+    const nombre = nombreParts[0] || '';
+    const apellido = nombreParts.slice(1).join(' ') || '';
+    const esp = document.getElementById('f-especialidad').value.trim();
+
+    const { error } = await supa.from('chefs').insert({
       id: uid,
-      nombre: document.getElementById('f-nombre').value.trim(),
-      email: currentUser.email,
+      slug: uid.substring(0, 8) + '-' + nombre.toLowerCase().replace(/\s+/g,'-'),
+      nombre,
+      apellido,
+      especialidades: esp ? [esp] : [],
       telefono: document.getElementById('f-tel').value.trim(),
-      especialidad: document.getElementById('f-especialidad').value.trim(),
       bio: document.getElementById('f-bio').value.trim(),
-      avatar_url: avatarUrl,
+      foto_url: avatarUrl,
       cv_url: cvUrl,
       dni_frente_url: dniFUrl,
       dni_dorso_url: dniDUrl,
       estado: 'pendiente',
       fecha_solicitud: new Date().toISOString(),
-      activo: false
     });
 
     if (error) throw error;
