@@ -391,6 +391,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--navy);min-height:100vh;co
 
       <div class="perfil-card" style="margin-top:16px;">
         <div class="perfil-card-title">Documentación profesional</div>
+        <div id="docs-estado-badge" style="display:none;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:var(--gold);">
+          ⏳ Documentación enviada — pendiente de validación por Celestia
+        </div>
         <p style="font-size:12px;color:rgba(250,246,239,0.35);margin-bottom:20px;font-weight:300;">Toda la documentación es confidencial y solo visible para el equipo de Celestia.</p>
 
         <div class="form-group">
@@ -642,6 +645,9 @@ function actualizarUI() {
       btn.style.borderColor = 'rgba(201,168,76,0.25)';
     }
   });
+  // Mostrar badge si hay docs pendientes de validación
+  const badge = document.getElementById('docs-estado-badge');
+  if (badge) badge.style.display = chefPerfil.estado_docs === 'pendiente_revision' ? 'block' : 'none';
   document.getElementById('chef-esp').value = chefPerfil.especialidades?.[0] || chefPerfil.especialidad || '';
   document.getElementById('chef-tel').value = chefPerfil.telefono || '';
   document.getElementById('chef-bio').value = chefPerfil.bio || '';
@@ -660,6 +666,7 @@ async function guardarPerfilChef() {
     bio: document.getElementById('chef-bio').value.trim(),
   };
   const { error } = await supa.from('chefs').update(perfil).eq('id', currentUser.id);
+  if (error) { showToast('Error: ' + error.message); console.error(error); return; }
   if (error) { showToast('Error: ' + error.message); console.error(error); return; }
   chefPerfil = { ...chefPerfil, ...perfil };
   actualizarUI();
@@ -680,11 +687,19 @@ async function subirDocChef(input, campo, btnId) {
   if (error) { showToast('Error: ' + error.message); if (btn) { btn.textContent = 'Reintentar'; btn.style.opacity = '1'; } return; }
   const { data: urlData } = supa.storage.from('avatares').getPublicUrl(path);
   const url = urlData.publicUrl + '?t=' + Date.now();
-  const { error: dbErr } = await supa.from('chefs').update({ [campo]: url }).eq('id', currentUser.id);
+  const { error: dbErr } = await supa.from('chefs').update({ 
+    [campo]: url,
+    estado_docs: 'pendiente_revision'
+  }).eq('id', currentUser.id);
   if (dbErr) { showToast('Error DB: ' + dbErr.message); console.error(dbErr); return; }
   chefPerfil[campo] = url;
+  chefPerfil.estado_docs = 'pendiente_revision';
   if (btn) { btn.textContent = '✓ Actualizar'; btn.style.color = '#5DBF87'; btn.style.borderColor = 'rgba(45,122,79,0.4)'; btn.style.opacity = '1'; }
-  showToast('¡Documento guardado!');
+  // Mostrar aviso de revalidación
+  showToast('¡Documento enviado! Pendiente de validación.');
+  // Mostrar badge en UI
+  const badgeEl = document.getElementById('docs-estado-badge');
+  if (badgeEl) { badgeEl.style.display = 'block'; }
 }
 
 async function subirAvatarChef(input) {

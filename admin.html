@@ -1295,6 +1295,7 @@ async function cargarChefs() {
             border:1px solid ${c.estado==='pendiente'?'rgba(201,168,76,0.3)':c.estado==='activo'?'rgba(45,122,79,0.3)':'rgba(155,35,53,0.3)'};">
             ${c.estado || 'pendiente'}
           </span>
+          ${c.estado_docs === 'pendiente_revision' ? `<div style="margin-top:6px;font-size:11px;color:var(--gold);">⏳ Docs pendientes</div>` : ''}
           <div style="font-size:11px;color:rgba(250,246,239,0.25);margin-top:4px;">${fmtFecha(c.fecha_solicitud)}</div>
         </div>
       </div>
@@ -1315,10 +1316,31 @@ async function cargarChefs() {
         <button onclick="aprobarChef('${c.id}','${c.nombre||''}','${c.email||''}')" style="flex:1;padding:10px;border-radius:40px;border:none;background:var(--gold);color:var(--navy);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">✓ Aprobar chef</button>
         <button onclick="rechazarChef('${c.id}')" style="padding:10px 20px;border-radius:40px;border:1px solid rgba(155,35,53,0.4);background:rgba(155,35,53,0.1);color:#E67E8A;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;">Rechazar</button>
       </div>` : c.estado === 'activo' ? `
-      <div style="margin-top:14px;border-top:1px solid rgba(255,255,255,0.06);padding-top:14px;">
-        <button onclick="rechazarChef('${c.id}')" style="padding:8px 16px;border-radius:40px;border:1px solid rgba(155,35,53,0.3);background:transparent;color:rgba(230,126,138,0.6);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;">Revocar acceso</button>
+      <div style="margin-top:14px;border-top:1px solid rgba(255,255,255,0.06);padding-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
+        ${c.estado_docs === 'pendiente_revision' ? `
+        <div style="width:100%;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:10px 14px;margin-bottom:8px;font-size:12px;color:var(--gold);">
+          ⏳ Documentación actualizada — pendiente de validación
+        </div>
+        <button onclick="validarDocs('${c.id}')" style="flex:1;padding:9px;border-radius:40px;border:none;background:var(--gold);color:var(--navy);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;">✓ Validar documentación</button>
+        <button onclick="rechazarDocs('${c.id}')" style="padding:9px 16px;border-radius:40px;border:1px solid rgba(155,35,53,0.4);background:rgba(155,35,53,0.1);color:#E67E8A;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;">Rechazar docs</button>
+        ` : `<span style="font-size:12px;color:rgba(250,246,239,0.3);">Documentación validada ✓</span>`}
+        <button onclick="rechazarChef('${c.id}')" style="padding:8px 16px;border-radius:40px;border:1px solid rgba(155,35,53,0.3);background:transparent;color:rgba(230,126,138,0.6);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;margin-left:auto;">Suspender</button>
       </div>` : ''}
     </div>`).join('');
+}
+
+async function validarDocs(id) {
+  const { error } = await supa.from('chefs').update({ estado_docs: 'validado' }).eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  showToast('Documentación validada ✓');
+  cargarChefs();
+}
+
+async function rechazarDocs(id) {
+  const motivo = prompt('Motivo del rechazo (opcional):') || 'Documentación rechazada';
+  await supa.from('chefs').update({ estado_docs: 'rechazado' }).eq('id', id);
+  showToast('Documentación rechazada');
+  cargarChefs();
 }
 
 async function aprobarChef(id, nombre, email) {
