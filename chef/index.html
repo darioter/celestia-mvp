@@ -405,7 +405,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--navy);min-height:100vh;co
                 Subir
               </button>
             </div>
-            <input type="file" id="file-titulo" accept=".pdf,image/*" style="display:none" onchange="subirDocChef(this,'titulo_url','btn-titulo')">
+            <input type="file" id="file-titulo" accept=".pdf,image/*" style="display:none" onchange="subirDocChef(this,'cv_url','btn-titulo')">
           </div>
         </div>
 
@@ -453,7 +453,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--navy);min-height:100vh;co
                 Subir
               </button>
             </div>
-            <input type="file" id="file-manipulacion" accept=".pdf,image/*" style="display:none" onchange="subirDocChef(this,'cv_url','btn-manipulacion')">
+            <input type="file" id="file-manipulacion" accept=".pdf,image/*" style="display:none" onchange="subirDocChef(this,'dni_dorso_url','btn-manipulacion')">
           </div>
         </div>
 
@@ -612,7 +612,7 @@ function actualizarUI() {
   });
 
   // Mostrar estado de documentos ya subidos
-  const docs = { 'titulo_url': 'btn-titulo', 'dni_frente_url': 'btn-dni-f', 'dni_dorso_url': 'btn-dni-d', 'cv_url': 'btn-manipulacion' };
+  const docs = { 'cv_url': 'btn-titulo', 'dni_frente_url': 'btn-dni-f', 'dni_dorso_url': 'btn-dni-d' };
   Object.entries(docs).forEach(([campo, btnId]) => {
     const btn = document.getElementById(btnId);
     if (btn && chefPerfil[campo]) {
