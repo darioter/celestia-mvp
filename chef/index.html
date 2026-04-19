@@ -528,11 +528,11 @@ function actualizarUI() {
   const iniciales = nombre.split(' ').map(p => p[0]).slice(0,2).join('').toUpperCase() || '?';
 
   document.getElementById('welcome-nombre').textContent = nombre.split(' ')[0] ? `Hola, ${nombre.split(' ')[0]}` : 'Hola, chef';
-  document.getElementById('welcome-esp').textContent = chefPerfil.especialidad || 'Celestia Chef Privado';
+  document.getElementById('welcome-esp').textContent = (chefPerfil.especialidades?.[0] || chefPerfil.especialidad || 'Celestia Chef Privado');
   document.getElementById('stat-servicios').textContent = chefPerfil.servicios_completados || 0;
   document.getElementById('stat-rating').textContent = chefPerfil.rating ? chefPerfil.rating.toFixed(1) : '—';
 
-  const avatarUrl = chefPerfil.avatar_url || (currentUser?.user_metadata?.avatar_url || null);
+  const avatarUrl = chefPerfil.foto_url || (currentUser?.user_metadata?.avatar_url || null);
   ['welcome-avatar','perfil-avatar-display','header-avatar'].forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
@@ -541,21 +541,26 @@ function actualizarUI() {
   });
 
   // Formulario perfil
-  document.getElementById('chef-nombre').value = chefPerfil.nombre || '';
-  document.getElementById('chef-esp').value = chefPerfil.especialidad || '';
+  document.getElementById('chef-nombre').value = ((chefPerfil.nombre || '') + ' ' + (chefPerfil.apellido || '')).trim();
+  document.getElementById('chef-esp').value = chefPerfil.especialidades?.[0] || chefPerfil.especialidad || '';
   document.getElementById('chef-tel').value = chefPerfil.telefono || '';
   document.getElementById('chef-bio').value = chefPerfil.bio || '';
 }
 
 async function guardarPerfilChef() {
+  const nombreCompleto = document.getElementById('chef-nombre').value.trim().split(' ');
+  const nombre = nombreCompleto[0] || '';
+  const apellido = nombreCompleto.slice(1).join(' ') || '';
+  const esp = document.getElementById('chef-esp').value.trim();
   const perfil = {
-    nombre: document.getElementById('chef-nombre').value.trim(),
-    especialidad: document.getElementById('chef-esp').value.trim(),
+    nombre,
+    apellido,
+    especialidades: esp ? [esp] : [],
     telefono: document.getElementById('chef-tel').value.trim(),
     bio: document.getElementById('chef-bio').value.trim(),
   };
   const { error } = await supa.from('chefs').update(perfil).eq('id', currentUser.id);
-  if (error) { showToast('Error al guardar'); return; }
+  if (error) { showToast('Error: ' + error.message); console.error(error); return; }
   chefPerfil = { ...chefPerfil, ...perfil };
   actualizarUI();
   showToast('¡Perfil guardado!');
@@ -573,8 +578,8 @@ async function subirAvatarChef(input) {
   if (error) { showToast('Error: ' + error.message); return; }
   const { data: urlData } = supa.storage.from('avatares').getPublicUrl(path);
   const url = urlData.publicUrl + '?t=' + Date.now();
-  await supa.from('chefs').update({ avatar_url: url }).eq('id', currentUser.id);
-  chefPerfil.avatar_url = url;
+  await supa.from('chefs').update({ foto_url: url }).eq('id', currentUser.id);
+  chefPerfil.foto_url = url;
   actualizarUI();
   showToast('¡Foto actualizada!');
 }
