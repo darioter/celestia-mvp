@@ -405,7 +405,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--navy);min-height:100vh;co
                 Subir
               </button>
             </div>
-            <input type="file" id="file-titulo" accept=".pdf,image/*" style="display:none" onchange="subirDocChef(this,'cv_url','btn-titulo')">
+            <input type="file" id="file-titulo" accept=".pdf,image/*" style="display:none" onchange="subirDocChef(this,'titulo_url','btn-titulo')">
           </div>
         </div>
 
@@ -442,6 +442,22 @@ body{font-family:'DM Sans',sans-serif;background:var(--navy);min-height:100vh;co
         </div>
 
         <div class="form-group">
+          <label class="form-label">CV profesional</label>
+          <div class="upload-doc">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div>
+                <div style="font-size:13px;color:var(--cream);font-weight:500;">Currículum vitae</div>
+                <div style="font-size:11px;color:rgba(250,246,239,0.35);margin-top:2px;">PDF · Máx 10MB</div>
+              </div>
+              <button onclick="document.getElementById('file-cv').click()" style="font-size:12px;color:var(--gold);background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);padding:6px 14px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;" id="btn-cv">
+                Subir
+              </button>
+            </div>
+            <input type="file" id="file-cv" accept=".pdf" style="display:none" onchange="subirDocChef(this,'cv_url','btn-cv')">
+          </div>
+        </div>
+
+        <div class="form-group">
           <label class="form-label">Curso de manipulación de alimentos</label>
           <div class="upload-doc">
             <div style="display:flex;align-items:center;justify-content:space-between;">
@@ -453,7 +469,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--navy);min-height:100vh;co
                 Subir
               </button>
             </div>
-            <input type="file" id="file-manipulacion" accept=".pdf,image/*" style="display:none" onchange="subirDocChef(this,'dni_dorso_url','btn-manipulacion')">
+            <input type="file" id="file-manipulacion" accept=".pdf,image/*" style="display:none" onchange="subirDocChef(this,'manipulacion_url','btn-manipulacion')">
           </div>
         </div>
 
@@ -612,7 +628,7 @@ function actualizarUI() {
   });
 
   // Mostrar estado de documentos ya subidos
-  const docs = { 'cv_url': 'btn-titulo', 'dni_frente_url': 'btn-dni-f', 'dni_dorso_url': 'btn-dni-d' };
+  const docs = { 'titulo_url': 'btn-titulo', 'cv_url': 'btn-cv', 'dni_frente_url': 'btn-dni-f', 'dni_dorso_url': 'btn-dni-d', 'manipulacion_url': 'btn-manipulacion' };
   Object.entries(docs).forEach(([campo, btnId]) => {
     const btn = document.getElementById(btnId);
     if (btn && chefPerfil[campo]) {
