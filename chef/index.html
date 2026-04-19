@@ -631,10 +631,15 @@ function actualizarUI() {
   const docs = { 'titulo_url': 'btn-titulo', 'cv_url': 'btn-cv', 'dni_frente_url': 'btn-dni-f', 'dni_dorso_url': 'btn-dni-d', 'manipulacion_url': 'btn-manipulacion' };
   Object.entries(docs).forEach(([campo, btnId]) => {
     const btn = document.getElementById(btnId);
-    if (btn && chefPerfil[campo]) {
-      btn.textContent = '✓ Subido';
+    if (!btn) return;
+    if (chefPerfil[campo]) {
+      btn.textContent = '✓ Actualizar';
       btn.style.color = '#5DBF87';
       btn.style.borderColor = 'rgba(45,122,79,0.4)';
+    } else {
+      btn.textContent = 'Subir';
+      btn.style.color = 'var(--gold)';
+      btn.style.borderColor = 'rgba(201,168,76,0.25)';
     }
   });
   document.getElementById('chef-esp').value = chefPerfil.especialidades?.[0] || chefPerfil.especialidad || '';
@@ -665,19 +670,21 @@ async function subirDocChef(input, campo, btnId) {
   const file = input.files[0];
   if (!file) return;
   if (file.size > 10 * 1024 * 1024) { showToast('Máximo 10MB'); return; }
+  const btn = document.getElementById(btnId);
+  if (btn) { btn.textContent = 'Subiendo...'; btn.style.opacity = '0.6'; }
   showToast('Subiendo documento...');
   const ext = file.name.split('.').pop().toLowerCase();
   const path = `chefs/${currentUser.id}/${campo}.${ext}`;
   await supa.storage.from('avatares').remove([path]);
   const { error } = await supa.storage.from('avatares').upload(path, file, { contentType: file.type, upsert: true });
-  if (error) { showToast('Error: ' + error.message); return; }
+  if (error) { showToast('Error: ' + error.message); if (btn) { btn.textContent = 'Reintentar'; btn.style.opacity = '1'; } return; }
   const { data: urlData } = supa.storage.from('avatares').getPublicUrl(path);
   const url = urlData.publicUrl + '?t=' + Date.now();
-  await supa.from('chefs').update({ [campo]: url }).eq('id', currentUser.id);
+  const { error: dbErr } = await supa.from('chefs').update({ [campo]: url }).eq('id', currentUser.id);
+  if (dbErr) { showToast('Error DB: ' + dbErr.message); console.error(dbErr); return; }
   chefPerfil[campo] = url;
-  const btn = document.getElementById(btnId);
-  if (btn) { btn.textContent = '✓ Subido'; btn.style.color = '#5DBF87'; btn.style.borderColor = 'rgba(45,122,79,0.4)'; }
-  showToast('¡Documento subido!');
+  if (btn) { btn.textContent = '✓ Actualizar'; btn.style.color = '#5DBF87'; btn.style.borderColor = 'rgba(45,122,79,0.4)'; btn.style.opacity = '1'; }
+  showToast('¡Documento guardado!');
 }
 
 async function subirAvatarChef(input) {

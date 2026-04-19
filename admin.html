@@ -1302,9 +1302,11 @@ async function cargarChefs() {
       ${c.bio ? `<div style="margin-top:14px;padding:12px 14px;background:rgba(255,255,255,0.03);border-radius:10px;font-size:13px;color:rgba(250,246,239,0.55);line-height:1.6;font-weight:300;">${c.bio}</div>` : ''}
 
       <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
-        ${c.cv_url ? `<a href="${c.cv_url}" target="_blank" style="font-size:12px;color:var(--gold);background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);padding:6px 14px;border-radius:20px;text-decoration:none;">📄 Ver CV</a>` : '<span style="font-size:12px;color:rgba(250,246,239,0.2);">Sin CV</span>'}
+        ${c.titulo_url ? `<a href="${c.titulo_url}" target="_blank" style="font-size:12px;color:var(--gold);background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);padding:6px 14px;border-radius:20px;text-decoration:none;">🎓 Título</a>` : '<span style="font-size:12px;color:rgba(250,246,239,0.2);">Sin título</span>'}
+        ${c.cv_url ? `<a href="${c.cv_url}" target="_blank" style="font-size:12px;color:var(--gold);background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);padding:6px 14px;border-radius:20px;text-decoration:none;">📄 CV</a>` : '<span style="font-size:12px;color:rgba(250,246,239,0.2);">Sin CV</span>'}
         ${c.dni_frente_url ? `<a href="${c.dni_frente_url}" target="_blank" style="font-size:12px;color:rgba(250,246,239,0.5);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);padding:6px 14px;border-radius:20px;text-decoration:none;">🪪 DNI frente</a>` : ''}
         ${c.dni_dorso_url ? `<a href="${c.dni_dorso_url}" target="_blank" style="font-size:12px;color:rgba(250,246,239,0.5);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);padding:6px 14px;border-radius:20px;text-decoration:none;">🪪 DNI dorso</a>` : ''}
+        ${c.manipulacion_url ? `<a href="${c.manipulacion_url}" target="_blank" style="font-size:12px;color:rgba(250,246,239,0.5);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);padding:6px 14px;border-radius:20px;text-decoration:none;">🧑‍🍳 Manipulación</a>` : '<span style="font-size:12px;color:rgba(250,246,239,0.2);">Sin cert. manipulación</span>'}
         ${c.telefono ? `<a href="https://wa.me/${c.telefono.replace(/\D/g,'')}" target="_blank" style="font-size:12px;color:#5DBF87;background:rgba(45,122,79,0.08);border:1px solid rgba(45,122,79,0.25);padding:6px 14px;border-radius:20px;text-decoration:none;">WA ${c.telefono}</a>` : ''}
       </div>
 
