@@ -240,7 +240,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--navy);min-height:100vh;co
 .empty-icon{font-size:32px;margin-bottom:16px;opacity:0.3;}
 .empty-text{font-size:14px;color:rgba(250,246,239,0.35);font-weight:300;}
 
-/* ─── MOBILE ─── */
+.upload-doc {
+  background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);
+  border-radius:12px;padding:14px 16px;
+}
+.upload-doc.done { border-color:rgba(45,122,79,0.4);background:rgba(45,122,79,0.05); }
 @media(max-width:600px){
   .welcome-card{flex-direction:column;gap:16px;}
   .welcome-stats{margin-left:0;}
@@ -386,7 +390,74 @@ body{font-family:'DM Sans',sans-serif;background:var(--navy);min-height:100vh;co
       </div>
 
       <div class="perfil-card" style="margin-top:16px;">
-        <div class="perfil-card-title">Disponibilidad</div>
+        <div class="perfil-card-title">Documentación profesional</div>
+        <p style="font-size:12px;color:rgba(250,246,239,0.35);margin-bottom:20px;font-weight:300;">Toda la documentación es confidencial y solo visible para el equipo de Celestia.</p>
+
+        <div class="form-group">
+          <label class="form-label">Título habilitante</label>
+          <div class="upload-doc" id="doc-titulo">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div>
+                <div style="font-size:13px;color:var(--cream);font-weight:500;">Título o certificado culinario</div>
+                <div style="font-size:11px;color:rgba(250,246,239,0.35);margin-top:2px;">PDF o imagen · Máx 10MB</div>
+              </div>
+              <button onclick="document.getElementById('file-titulo').click()" style="font-size:12px;color:var(--gold);background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);padding:6px 14px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;" id="btn-titulo">
+                Subir
+              </button>
+            </div>
+            <input type="file" id="file-titulo" accept=".pdf,image/*" style="display:none" onchange="subirDocChef(this,'titulo_url','btn-titulo')">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">DNI — Frente</label>
+          <div class="upload-doc">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div>
+                <div style="font-size:13px;color:var(--cream);font-weight:500;">Frente del documento</div>
+                <div style="font-size:11px;color:rgba(250,246,239,0.35);margin-top:2px;">JPG o PNG · Máx 5MB</div>
+              </div>
+              <button onclick="document.getElementById('file-dni-f').click()" style="font-size:12px;color:var(--gold);background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);padding:6px 14px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;" id="btn-dni-f">
+                Subir
+              </button>
+            </div>
+            <input type="file" id="file-dni-f" accept="image/*" style="display:none" onchange="subirDocChef(this,'dni_frente_url','btn-dni-f')">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">DNI — Dorso</label>
+          <div class="upload-doc">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div>
+                <div style="font-size:13px;color:var(--cream);font-weight:500;">Dorso del documento</div>
+                <div style="font-size:11px;color:rgba(250,246,239,0.35);margin-top:2px;">JPG o PNG · Máx 5MB</div>
+              </div>
+              <button onclick="document.getElementById('file-dni-d').click()" style="font-size:12px;color:var(--gold);background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);padding:6px 14px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;" id="btn-dni-d">
+                Subir
+              </button>
+            </div>
+            <input type="file" id="file-dni-d" accept="image/*" style="display:none" onchange="subirDocChef(this,'dni_dorso_url','btn-dni-d')">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Curso de manipulación de alimentos</label>
+          <div class="upload-doc">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div>
+                <div style="font-size:13px;color:var(--cream);font-weight:500;">Certificado de manipulación</div>
+                <div style="font-size:11px;color:rgba(250,246,239,0.35);margin-top:2px;">PDF o imagen · Máx 10MB</div>
+              </div>
+              <button onclick="document.getElementById('file-manipulacion').click()" style="font-size:12px;color:var(--gold);background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);padding:6px 14px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;" id="btn-manipulacion">
+                Subir
+              </button>
+            </div>
+            <input type="file" id="file-manipulacion" accept=".pdf,image/*" style="display:none" onchange="subirDocChef(this,'cv_url','btn-manipulacion')">
+          </div>
+        </div>
+
+      </div>
         <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;">
           <div>
             <div style="font-size:14px;color:var(--cream);font-weight:500;">Recibir nuevas solicitudes</div>
@@ -540,8 +611,16 @@ function actualizarUI() {
     else el.textContent = iniciales;
   });
 
-  // Formulario perfil
-  document.getElementById('chef-nombre').value = ((chefPerfil.nombre || '') + ' ' + (chefPerfil.apellido || '')).trim();
+  // Mostrar estado de documentos ya subidos
+  const docs = { 'titulo_url': 'btn-titulo', 'dni_frente_url': 'btn-dni-f', 'dni_dorso_url': 'btn-dni-d', 'cv_url': 'btn-manipulacion' };
+  Object.entries(docs).forEach(([campo, btnId]) => {
+    const btn = document.getElementById(btnId);
+    if (btn && chefPerfil[campo]) {
+      btn.textContent = '✓ Subido';
+      btn.style.color = '#5DBF87';
+      btn.style.borderColor = 'rgba(45,122,79,0.4)';
+    }
+  });
   document.getElementById('chef-esp').value = chefPerfil.especialidades?.[0] || chefPerfil.especialidad || '';
   document.getElementById('chef-tel').value = chefPerfil.telefono || '';
   document.getElementById('chef-bio').value = chefPerfil.bio || '';
@@ -566,7 +645,24 @@ async function guardarPerfilChef() {
   showToast('¡Perfil guardado!');
 }
 
-async function subirAvatarChef(input) {
+async function subirDocChef(input, campo, btnId) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 10 * 1024 * 1024) { showToast('Máximo 10MB'); return; }
+  showToast('Subiendo documento...');
+  const ext = file.name.split('.').pop().toLowerCase();
+  const path = `chefs/${currentUser.id}/${campo}.${ext}`;
+  await supa.storage.from('avatares').remove([path]);
+  const { error } = await supa.storage.from('avatares').upload(path, file, { contentType: file.type, upsert: true });
+  if (error) { showToast('Error: ' + error.message); return; }
+  const { data: urlData } = supa.storage.from('avatares').getPublicUrl(path);
+  const url = urlData.publicUrl + '?t=' + Date.now();
+  await supa.from('chefs').update({ [campo]: url }).eq('id', currentUser.id);
+  chefPerfil[campo] = url;
+  const btn = document.getElementById(btnId);
+  if (btn) { btn.textContent = '✓ Subido'; btn.style.color = '#5DBF87'; btn.style.borderColor = 'rgba(45,122,79,0.4)'; }
+  showToast('¡Documento subido!');
+}
   const file = input.files[0];
   if (!file) return;
   if (file.size > 5 * 1024 * 1024) { showToast('Máximo 5MB'); return; }

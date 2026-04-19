@@ -927,10 +927,11 @@
     <div id="seccion-chefs" style="display:none;">
       <div class="section-title">✦ Gestión de chefs</div>
       <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
-        <button class="filter-btn active" id="chef-filtro-pendiente" onclick="setChefFiltro('pendiente',this)">Pendientes</button>
-        <button class="filter-btn" id="chef-filtro-aprobado" onclick="setChefFiltro('activo',this)">Aprobados</button>
-        <button class="filter-btn" id="chef-filtro-rechazado" onclick="setChefFiltro('rechazado',this)">Rechazados</button>
-        <button class="filter-btn" onclick="setChefFiltro('todos',this)">Todos</button>
+        <button class="filter-btn" onclick="setChefFiltro('pendiente',this)">Pendientes</button>
+        <button class="filter-btn" onclick="setChefFiltro('activo',this)">Activos</button>
+        <button class="filter-btn" onclick="setChefFiltro('inactivo',this)">Inactivos</button>
+        <button class="filter-btn" onclick="setChefFiltro('suspendido',this)">Suspendidos</button>
+        <button class="filter-btn active" onclick="setChefFiltro('todos',this)">Todos</button>
       </div>
       <div id="chefs-grid" style="display:flex;flex-direction:column;gap:16px;">
         <div class="loading">Cargando chefs...</div>
@@ -1254,7 +1255,7 @@ function waRecordatorio(tel, nombre, ref, senia, esSenia) {
 }
 
 // ─── CHEFS ───────────────────────────────────────────────
-let chefFiltroActual = 'pendiente';
+let chefFiltroActual = 'todos';
 
 function setChefFiltro(filtro, btn) {
   chefFiltroActual = filtro;
