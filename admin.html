@@ -1347,7 +1347,6 @@ async function aprobarChef(id, nombre, email) {
   if (!confirm(`¿Aprobar a ${nombre} como chef de Celestia?`)) return;
   const { error } = await supa.from('chefs').update({
     estado: 'activo',
-    activo: true,
     fecha_aprobacion: new Date().toISOString()
   }).eq('id', id);
   if (error) { alert('Error: ' + error.message); return; }
@@ -1365,7 +1364,7 @@ async function aprobarChef(id, nombre, email) {
 
 async function rechazarChef(id) {
   if (!confirm('¿Rechazar esta solicitud?')) return;
-  await supa.from('chefs').update({ estado: 'rechazado', activo: false }).eq('id', id);
+  await supa.from('chefs').update({ estado: 'inactivo' }).eq('id', id);
   showToast('Solicitud rechazada');
   cargarChefs();
 }
