@@ -845,6 +845,7 @@
       <button class="filter-btn" onclick="verSeccion('agenda',this)">Agenda</button>
       <button class="filter-btn" onclick="verSeccion('pagos',this)">Pagos</button>
       <button class="filter-btn" onclick="verSeccion('bloqueos',this)">Bloquear días</button>
+      <button class="filter-btn" onclick="verSeccion('chefs',this)">Chefs</button>
     </div>
 
     <!-- SECCIÓN PAGOS -->
@@ -919,6 +920,20 @@
       </div>
       <div id="bloqueos-grid" style="display:flex;flex-direction:column;gap:8px;">
         <div class="loading">Cargando bloqueos...</div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN CHEFS -->
+    <div id="seccion-chefs" style="display:none;">
+      <div class="section-title">✦ Gestión de chefs</div>
+      <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
+        <button class="filter-btn active" id="chef-filtro-pendiente" onclick="setChefFiltro('pendiente',this)">Pendientes</button>
+        <button class="filter-btn" id="chef-filtro-aprobado" onclick="setChefFiltro('activo',this)">Aprobados</button>
+        <button class="filter-btn" id="chef-filtro-rechazado" onclick="setChefFiltro('rechazado',this)">Rechazados</button>
+        <button class="filter-btn" onclick="setChefFiltro('todos',this)">Todos</button>
+      </div>
+      <div id="chefs-grid" style="display:flex;flex-direction:column;gap:16px;">
+        <div class="loading">Cargando chefs...</div>
       </div>
     </div>
 
@@ -1238,8 +1253,100 @@ function waRecordatorio(tel, nombre, ref, senia, esSenia) {
   window.open(`https://wa.me/${num.startsWith('54')?num:'54'+num}?text=${encodeURIComponent(msg)}`,'_blank');
 }
 
+// ─── CHEFS ───────────────────────────────────────────────
+let chefFiltroActual = 'pendiente';
+
+function setChefFiltro(filtro, btn) {
+  chefFiltroActual = filtro;
+  document.querySelectorAll('#seccion-chefs .filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  cargarChefs();
+}
+
+async function cargarChefs() {
+  document.getElementById('chefs-grid').innerHTML = '<div class="loading">Cargando...</div>';
+  let query = supa.from('chefs').select('*').order('fecha_solicitud', { ascending: false });
+  if (chefFiltroActual !== 'todos') query = query.eq('estado', chefFiltroActual);
+  const { data, error } = await query;
+
+  if (error || !data || data.length === 0) {
+    document.getElementById('chefs-grid').innerHTML = `<div class="loading">No hay chefs ${ chefFiltroActual !== 'todos' ? chefFiltroActual + 's' : ''}</div>`;
+    return;
+  }
+
+  const fmtFecha = f => f ? new Date(f).toLocaleDateString('es-AR', {day:'numeric',month:'long',year:'numeric'}) : '—';
+
+  document.getElementById('chefs-grid').innerHTML = data.map(c => `
+    <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:20px 24px;">
+      <div style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;">
+        <div style="width:56px;height:56px;border-radius:50%;background:rgba(201,168,76,0.15);border:1.5px solid rgba(201,168,76,0.3);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:20px;color:var(--gold);">
+          ${c.avatar_url ? `<img src="${c.avatar_url}" style="width:100%;height:100%;object-fit:cover;">` : (c.nombre?c.nombre[0].toUpperCase():'?')}
+        </div>
+        <div style="flex:1;min-width:200px;">
+          <div style="font-size:16px;font-weight:500;color:var(--cream);margin-bottom:2px;">${c.nombre || '—'}</div>
+          <div style="font-size:13px;color:rgba(250,246,239,0.45);">${c.email || ''}</div>
+          <div style="font-size:12px;color:var(--gold);margin-top:4px;">${c.especialidad || ''}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0;">
+          <span style="display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:500;
+            background:${c.estado==='pendiente'?'rgba(201,168,76,0.15)':c.estado==='activo'?'rgba(45,122,79,0.15)':'rgba(155,35,53,0.15)'};
+            color:${c.estado==='pendiente'?'var(--gold)':c.estado==='activo'?'#5DBF87':'#E67E8A'};
+            border:1px solid ${c.estado==='pendiente'?'rgba(201,168,76,0.3)':c.estado==='activo'?'rgba(45,122,79,0.3)':'rgba(155,35,53,0.3)'};">
+            ${c.estado || 'pendiente'}
+          </span>
+          <div style="font-size:11px;color:rgba(250,246,239,0.25);margin-top:4px;">${fmtFecha(c.fecha_solicitud)}</div>
+        </div>
+      </div>
+
+      ${c.bio ? `<div style="margin-top:14px;padding:12px 14px;background:rgba(255,255,255,0.03);border-radius:10px;font-size:13px;color:rgba(250,246,239,0.55);line-height:1.6;font-weight:300;">${c.bio}</div>` : ''}
+
+      <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
+        ${c.cv_url ? `<a href="${c.cv_url}" target="_blank" style="font-size:12px;color:var(--gold);background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);padding:6px 14px;border-radius:20px;text-decoration:none;">📄 Ver CV</a>` : '<span style="font-size:12px;color:rgba(250,246,239,0.2);">Sin CV</span>'}
+        ${c.dni_frente_url ? `<a href="${c.dni_frente_url}" target="_blank" style="font-size:12px;color:rgba(250,246,239,0.5);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);padding:6px 14px;border-radius:20px;text-decoration:none;">🪪 DNI frente</a>` : ''}
+        ${c.dni_dorso_url ? `<a href="${c.dni_dorso_url}" target="_blank" style="font-size:12px;color:rgba(250,246,239,0.5);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);padding:6px 14px;border-radius:20px;text-decoration:none;">🪪 DNI dorso</a>` : ''}
+        ${c.telefono ? `<a href="https://wa.me/${c.telefono.replace(/\D/g,'')}" target="_blank" style="font-size:12px;color:#5DBF87;background:rgba(45,122,79,0.08);border:1px solid rgba(45,122,79,0.25);padding:6px 14px;border-radius:20px;text-decoration:none;">WA ${c.telefono}</a>` : ''}
+      </div>
+
+      ${c.estado === 'pendiente' ? `
+      <div style="display:flex;gap:10px;margin-top:14px;border-top:1px solid rgba(255,255,255,0.06);padding-top:14px;">
+        <button onclick="aprobarChef('${c.id}','${c.nombre||''}','${c.email||''}')" style="flex:1;padding:10px;border-radius:40px;border:none;background:var(--gold);color:var(--navy);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">✓ Aprobar chef</button>
+        <button onclick="rechazarChef('${c.id}')" style="padding:10px 20px;border-radius:40px;border:1px solid rgba(155,35,53,0.4);background:rgba(155,35,53,0.1);color:#E67E8A;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;">Rechazar</button>
+      </div>` : c.estado === 'activo' ? `
+      <div style="margin-top:14px;border-top:1px solid rgba(255,255,255,0.06);padding-top:14px;">
+        <button onclick="rechazarChef('${c.id}')" style="padding:8px 16px;border-radius:40px;border:1px solid rgba(155,35,53,0.3);background:transparent;color:rgba(230,126,138,0.6);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;">Revocar acceso</button>
+      </div>` : ''}
+    </div>`).join('');
+}
+
+async function aprobarChef(id, nombre, email) {
+  if (!confirm(`¿Aprobar a ${nombre} como chef de Celestia?`)) return;
+  const { error } = await supa.from('chefs').update({
+    estado: 'activo',
+    activo: true,
+    fecha_aprobacion: new Date().toISOString()
+  }).eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  showToast('Chef aprobado ✓');
+  // Notificar por WA
+  const msg = `Hola ${nombre}! 🎉 Tu solicitud para ser chef de Celestia fue aprobada. Ya podés ingresar al portal en chefprivado.ar/chef — ¡Bienvenido al equipo!`;
+  setTimeout(() => {
+    if (confirm('¿Enviar notificación al chef por WhatsApp?')) {
+      const tel = prompt('Teléfono del chef:');
+      if (tel) window.open(`https://wa.me/${tel.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+  }, 500);
+  cargarChefs();
+}
+
+async function rechazarChef(id) {
+  if (!confirm('¿Rechazar esta solicitud?')) return;
+  await supa.from('chefs').update({ estado: 'rechazado', activo: false }).eq('id', id);
+  showToast('Solicitud rechazada');
+  cargarChefs();
+}
+
 function verSeccion(seccion, btn) {
-  ['reservas','agenda','pagos','bloqueos'].forEach(s => {
+  ['reservas','agenda','pagos','bloqueos','chefs'].forEach(s => {
     const el = document.getElementById('seccion-'+s);
     if (el) el.style.display = seccion === s ? 'block' : 'none';
   });
@@ -1248,6 +1355,7 @@ function verSeccion(seccion, btn) {
   if (seccion === 'bloqueos') cargarBloqueos();
   if (seccion === 'agenda') renderAgenda();
   if (seccion === 'pagos') cargarPagos();
+  if (seccion === 'chefs') cargarChefs();
 }
 
 async function cargarBloqueos() {
