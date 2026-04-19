@@ -596,16 +596,11 @@ function verTab(tab, btn) {
 
 // ─── PERFIL CHEF ──────────────────────────────────────────
 async function cargarPerfilChef() {
-  const { data } = await supa.from('chefs').select('*').eq('id', currentUser.id).single();
+  const { data, error } = await supa.from('chefs').select('*').eq('id', currentUser.id).single();
   if (!data) {
-    // Crear perfil básico
-    await supa.from('chefs').insert([{
-      id: currentUser.id,
-      nombre: currentUser.user_metadata?.full_name || '',
-      email: currentUser.email,
-      avatar_url: currentUser.user_metadata?.avatar_url || null
-    }]);
-    chefPerfil = { nombre: currentUser.user_metadata?.full_name || '', servicios_completados: 0, rating: 0 };
+    // El registro ya existe (creado via SQL) pero no tiene datos — no insertar
+    console.log('Chef data not found:', error);
+    chefPerfil = { id: currentUser.id, nombre: '', apellido: '', servicios_completados: 0, rating_promedio: 0 };
   } else {
     chefPerfil = data;
   }
@@ -619,8 +614,8 @@ function actualizarUI() {
 
   document.getElementById('welcome-nombre').textContent = nombre.split(' ')[0] ? `Hola, ${nombre.split(' ')[0]}` : 'Hola, chef';
   document.getElementById('welcome-esp').textContent = (chefPerfil.especialidades?.[0] || chefPerfil.especialidad || 'Celestia Chef Privado');
-  document.getElementById('stat-servicios').textContent = chefPerfil.servicios_completados || 0;
-  document.getElementById('stat-rating').textContent = chefPerfil.rating ? chefPerfil.rating.toFixed(1) : '—';
+  document.getElementById('stat-servicios').textContent = chefPerfil.total_servicios || 0;
+  document.getElementById('stat-rating').textContent = chefPerfil.rating_promedio ? chefPerfil.rating_promedio.toFixed(1) : '—';
 
   const avatarUrl = chefPerfil.foto_url || (currentUser?.user_metadata?.avatar_url || null);
   ['welcome-avatar','perfil-avatar-display','header-avatar'].forEach(id => {
@@ -666,7 +661,6 @@ async function guardarPerfilChef() {
     bio: document.getElementById('chef-bio').value.trim(),
   };
   const { error } = await supa.from('chefs').update(perfil).eq('id', currentUser.id);
-  if (error) { showToast('Error: ' + error.message); console.error(error); return; }
   if (error) { showToast('Error: ' + error.message); console.error(error); return; }
   chefPerfil = { ...chefPerfil, ...perfil };
   actualizarUI();
