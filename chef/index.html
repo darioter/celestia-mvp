@@ -599,13 +599,17 @@ async function doLogout() {
 
 supa.auth.onAuthStateChange(async (event, session) => {
   if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && session) {
+    // Evitar doble ejecución si ya estamos en el portal
+    if (document.getElementById('portal-screen').style.display === 'block') return;
     currentUser = session.user;
     await cargarPortal();
   }
 });
 
-// Chequear sesión activa al cargar la página
+// Chequear sesión existente al cargar (para cuando ya estaba logueado antes)
 (async () => {
+  // Dar tiempo a que Supabase procese el hash del redirect OAuth
+  await new Promise(r => setTimeout(r, 100));
   const { data } = await supa.auth.getSession();
   if (data.session) {
     currentUser = data.session.user;
