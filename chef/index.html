@@ -807,7 +807,7 @@ async function cargarSolicitudes() {
   const { data, error } = await supa
     .from('reservas')
     .select('*, menu_definitivo, menu_definitivo_ok, lista_compras, lista_compras_generada, recetas')
-    .in('estado', ['reservada','confirmada'])
+    .in('estado', ['ofrecida','confirmada'])
     .order('fecha', { ascending: true });
 
   if (error || !data || data.length === 0) {
@@ -822,14 +822,15 @@ async function cargarSolicitudes() {
   const fmt = n => n ? '$' + Number(n).toLocaleString('es-AR') : '—';
   const fmtFecha = f => new Date(f + 'T12:00:00').toLocaleDateString('es-AR', { weekday:'long', day:'numeric', month:'long' });
 
-  // Buscar servicio activo — incluye estado 'aceptado' y cualquier paso del checklist
+  // Buscar servicio activo — aceptado por este chef
   const activo = data.find(r => r.chef_id === currentUser.id && r.estado_servicio && r.estado_servicio !== 'pendiente' && r.estado_servicio !== 'completado');
   if (activo) {
     servicioActivo = activo;
     renderServicioActivo(activo);
   }
 
-  const pendientes = data.filter(r => r.estado === 'reservada' || (r.estado === 'confirmada' && !r.chef_id));
+  // Solo mostrar ofrecidas sin chef asignado todavía
+  const pendientes = data.filter(r => r.estado === 'ofrecida' && !r.chef_id);
 
   if (pendientes.length === 0) {
     document.getElementById('solicitudes-lista').innerHTML = `
@@ -1207,7 +1208,7 @@ Generá un menú definitivo para este servicio:
 Escribí SOLO el menú en formato claro, plato por plato, con nombre y descripción breve. Sin introducción ni cierre. Máximo 200 palabras.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -1257,7 +1258,7 @@ Respondé SOLO con un JSON válido, sin markdown, con esta estructura exacta:
 Categorías posibles: Carnes y proteínas, Verduras y frutas, Lácteos, Almacén/secos, Especias y condimentos, Otros.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -1306,7 +1307,7 @@ Respondé SOLO con un JSON válido, sin markdown:
 }`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

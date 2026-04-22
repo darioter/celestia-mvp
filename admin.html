@@ -224,6 +224,7 @@
   }
   .reserva-card:hover { background: rgba(255,255,255,0.06); }
   .reserva-card.estado-reservada { border-left: 3px solid var(--gold); }
+  .reserva-card.estado-ofrecida  { border-left: 3px solid #7C9EBF; }
   .reserva-card.estado-confirmada { border-left: 3px solid #4CAF50; }
   .reserva-card.estado-cancelada { border-left: 3px solid rgba(255,255,255,0.2); opacity: 0.5; }
 
@@ -296,6 +297,7 @@
     margin-bottom: 8px;
   }
   .estado-badge.reservada { background: rgba(201,168,76,0.15); color: var(--gold-light); }
+  .estado-badge.ofrecida  { background: rgba(124,158,191,0.15); color: #7C9EBF; }
   .estado-badge.confirmada { background: rgba(76,175,80,0.15); color: #81C784; }
   .estado-badge.cancelada { background: rgba(255,255,255,0.06); color: rgba(250,246,239,0.4); }
 
@@ -943,6 +945,7 @@
     <div class="filters">
       <button class="filter-btn active" onclick="setFiltro('todas', this)">Todas</button>
       <button class="filter-btn" onclick="setFiltro('reservada', this)">Reservadas</button>
+      <button class="filter-btn" onclick="setFiltro('ofrecida', this)">Ofrecidas</button>
       <button class="filter-btn" onclick="setFiltro('confirmada', this)">Confirmadas</button>
       <button class="filter-btn" onclick="setFiltro('cancelada', this)">Canceladas</button>
       <button class="refresh-btn" onclick="cargarReservas()">↻ Actualizar</button>
@@ -1468,6 +1471,10 @@ function actualizarStats() {
   document.getElementById('stat-total').textContent = todasReservas.length;
   document.getElementById('stat-reservadas').textContent = todasReservas.filter(r => r.estado === 'reservada').length;
   document.getElementById('stat-confirmadas').textContent = todasReservas.filter(r => r.estado === 'confirmada').length;
+  // Mostrar ofrecidas en badge si las hay
+  const ofrecidas = todasReservas.filter(r => r.estado === 'ofrecida').length;
+  const elOfrec = document.getElementById('stat-ofrecidas');
+  if (elOfrec) elOfrec.textContent = ofrecidas;
 }
 
 function renderReservas() {
@@ -1559,7 +1566,9 @@ function renderReservas() {
         <div style="margin-top:8px;"><span class="estado-badge ${r.estado}">${r.estado}</span></div>
       </div>
       <div class="res-acciones">
-        ${r.estado === 'reservada' ? `<button class="accion-btn btn-confirmar" onclick="cambiarEstado('${r.id}','confirmada')">✓ Confirmar</button>` : ''}
+        ${r.estado === 'reservada' ? `<button class="accion-btn btn-confirmar" style="background:rgba(124,158,191,0.15);border-color:rgba(124,158,191,0.4);color:#7C9EBF;" onclick="ofrecerAChefs('${r.id}')">👨‍🍳 Ofrecer a chefs</button>` : ''}
+        ${r.estado === 'ofrecida' && !r.chef_id ? `<div style="font-size:11px;color:rgba(124,158,191,0.7);padding:6px 0;letter-spacing:0.06em;">⏳ Esperando que un chef acepte...</div>` : ''}
+        ${r.estado === 'ofrecida' && r.chef_id ? `<button class="accion-btn btn-confirmar" onclick="cambiarEstado('${r.id}','confirmada')">✓ Confirmar seña cobrada</button>` : ''}
         ${r.estado !== 'cancelada' ? `<button class="accion-btn btn-cancelar" onclick="cambiarEstado('${r.id}','cancelada')">✕ Cancelar</button>` : `<button class="accion-btn btn-cancelar" onclick="eliminarDefinitivo('${r.id}','${r.nombre}')" style="background:rgba(155,35,53,0.25);border-color:rgba(155,35,53,0.5);">🗑 Eliminar</button>`}
       </div>
       <div class="wa-btns">
@@ -1602,6 +1611,19 @@ async function eliminarDefinitivo(id, nombre) {
   const { error } = await supa.from('reservas').delete().eq('id', id);
   if (error) { alert('Error: ' + error.message); return; }
   todasReservas = todasReservas.filter(r => r.id !== id);
+  actualizarStats();
+  renderReservas();
+}
+
+async function ofrecerAChefs(id) {
+  if (!confirm('¿Ofrecer esta reserva a los chefs disponibles?')) return;
+  const { error } = await supa.from('reservas').update({
+    estado: 'ofrecida',
+    ofrecida_at: new Date().toISOString()
+  }).eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  const r = todasReservas.find(r => r.id === id);
+  if (r) { r.estado = 'ofrecida'; r.ofrecida_at = new Date().toISOString(); }
   actualizarStats();
   renderReservas();
 }
