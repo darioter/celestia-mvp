@@ -765,10 +765,12 @@ async function verificarServicioActivo() {
   const { data } = await supa.from('reservas')
     .select('*, chefs(id, nombre, foto_url, especialidad, rating_promedio)')
     .or(`email.eq.${perfil.data.email},tel.eq.${perfil.data.telefono}`)
-    .eq('estado','confirmada')
+    .not('estado','eq','cancelada')
     .not('estado_servicio','is',null)
     .not('estado_servicio','eq','pendiente')
     .not('estado_servicio','eq','completado')
+    .order('fecha', { ascending: true })
+    .limit(1)
     .maybeSingle();
 
   if (data) {
