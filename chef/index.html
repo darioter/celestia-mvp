@@ -826,9 +826,22 @@ let realtimeChannel = null;
 let pollingInterval = null;
 let _prevOfertasIds = new Set();
 
+let _audioCtx = null;
+
+function getAudioCtx() {
+  if (!_audioCtx) {
+    _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (_audioCtx.state === 'suspended') _audioCtx.resume();
+  return _audioCtx;
+}
+
+// Inicializar audio en el primer click del usuario
+document.addEventListener('click', () => { try { getAudioCtx(); } catch(e) {} }, { once: true });
+
 function sonarAlarma() {
   try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const ctx = getAudioCtx();
     [0, 150, 300].forEach(delay => {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
@@ -1054,11 +1067,18 @@ async function aceptarServicio(id) {
 
 async function rechazarServicio(id) {
   if (!confirm('¿Rechazar este servicio?')) return;
+  // Quitar del DOM inmediatamente
+  const card = document.getElementById(`sol-${id}`);
+  if (card) card.remove();
+  // Quitar del set local
+  _prevOfertasIds.delete(id);
+  // Actualizar badge
+  const restantes = _prevOfertasIds.size;
+  if (restantes > 0) actualizarBadgeOfertas(restantes);
+  else limpiarAlertaOferta();
+  // Persistir en Supabase
   await supa.from('reservas').update({ chef_id: null, estado_servicio: 'pendiente' }).eq('id', id);
   showToast('Servicio rechazado');
-  // Quitar del set local para que no vuelva a aparecer en este ciclo
-  _prevOfertasIds.delete(id);
-  await cargarSolicitudes();
 }
 
 // ─── SERVICIO ACTIVO + CHECKLIST ──────────────────────────
@@ -1557,25 +1577,36 @@ Respondé SOLO con un JSON válido, sin markdown:
 
 // ─── HISTORIAL ────────────────────────────────────────────
 async function cargarHistorial() {
-  const { data } = await supa.from('reservas')
-    .select('*')
-    .eq('chef_id', currentUser.id)
-    .eq('estado_servicio', 'completado')
-    .order('fecha', { ascending: false });
-
   const fmt = n => n ? '$' + Number(n).toLocaleString('es-AR') : '—';
   const fmtFecha = f => new Date(f + 'T12:00:00').toLocaleDateString('es-AR', { day:'numeric', month:'long', year:'numeric' });
 
+  // Todos los servicios relacionados al chef: confirmados, cancelados, completados
+  const { data } = await supa.from('reservas')
+    .select('*')
+    .eq('chef_id', currentUser.id)
+    .order('fecha', { ascending: false });
+
   if (!data || data.length === 0) {
-    document.getElementById('historial-lista').innerHTML = `<div class="empty-state"><div class="empty-icon">✦</div><div class="empty-text">Todavía no completaste servicios.</div></div>`;
+    document.getElementById('historial-lista').innerHTML = `<div class="empty-state"><div class="empty-icon">✦</div><div class="empty-text">Todavía no tenés servicios registrados.</div></div>`;
     return;
   }
 
+  const badgeEstado = r => {
+    if (r.estado === 'cancelada') return `<span style="font-size:10px;padding:3px 8px;border-radius:20px;background:rgba(155,35,53,0.2);color:#E67E8A;border:1px solid rgba(155,35,53,0.3);">Cancelado</span>`;
+    if (r.estado_servicio === 'completado') return `<span style="font-size:10px;padding:3px 8px;border-radius:20px;background:rgba(93,191,135,0.15);color:#5DBF87;border:1px solid rgba(93,191,135,0.3);">Completado</span>`;
+    return `<span style="font-size:10px;padding:3px 8px;border-radius:20px;background:rgba(201,168,76,0.15);color:var(--gold-light);border:1px solid rgba(201,168,76,0.3);">Aceptado</span>`;
+  };
+
   document.getElementById('historial-lista').innerHTML = data.map(r => `
     <div class="historial-item">
-      <div>
-        <div class="hist-fecha">${r.menu || 'Servicio Celestia'}</div>
+      <div style="flex:1;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+          <div class="hist-fecha">${r.menu || 'Servicio Celestia'}</div>
+          ${badgeEstado(r)}
+        </div>
         <div class="hist-sub">${fmtFecha(r.fecha)} · ${r.personas} personas</div>
+        ${r.estado === 'cancelada' && r.cancelacion_motivo ? `<div style="font-size:11px;color:rgba(230,126,138,0.7);margin-top:3px;">Motivo: ${r.cancelacion_motivo}</div>` : ''}
+        ${r.calificacion ? `<div style="font-size:11px;color:var(--gold);margin-top:3px;">${'★'.repeat(r.calificacion)}${'☆'.repeat(5-r.calificacion)}</div>` : ''}
       </div>
       <div class="hist-monto">${fmt(r.honorario_final || r.honorario)}</div>
     </div>`).join('');
