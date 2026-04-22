@@ -1472,6 +1472,9 @@ REGLAS ESTRICTAS:
     if (!texto) { showToast('Sin respuesta — intentá de nuevo'); return; }
     const input = document.getElementById(`menu-definitivo-input-${reservaId}`);
     if (input) input.value = texto;
+    // Guardar en BD inmediatamente para que el polling no lo borre
+    await supa.from('reservas').update({ menu_definitivo: texto }).eq('id', reservaId);
+    if (servicioActivo?.id === reservaId) servicioActivo.menu_definitivo = texto;
     showToast('✦ Menú generado — revisalo y confirmá');
   } catch(e) {
     showToast('Error de conexión — revisá tu red');
