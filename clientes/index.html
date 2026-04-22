@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
-/* ─── RESET & TOKENS ──────────────────────────────────── */
+/* ─── RESET & TOKENS ─────────────────────────────────── */
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 :root {
   --navy:       #0D1B2A;
@@ -31,562 +31,303 @@
   --radius-lg:  20px;
   --shadow:     0 4px 24px rgba(13,27,42,0.08);
   --shadow-lg:  0 8px 48px rgba(13,27,42,0.16);
-  --transition: 0.22s cubic-bezier(0.4,0,0.2,1);
+  --t:          0.22s cubic-bezier(0.4,0,0.2,1);
 }
+html { scroll-behavior:smooth; }
+body { font-family:'DM Sans',sans-serif; background:var(--cream); min-height:100vh; color:var(--text); -webkit-font-smoothing:antialiased; }
 
-html { scroll-behavior: smooth; }
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--cream);
-  min-height: 100vh;
-  color: var(--text);
-  -webkit-font-smoothing: antialiased;
-}
+/* ─── TOAST ──────────────────────────────────────────── */
+.toast { position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(16px); background:var(--navy); color:var(--cream); padding:13px 28px; border-radius:40px; font-size:13px; opacity:0; transition:all 0.32s cubic-bezier(0.4,0,0.2,1); z-index:9999; pointer-events:none; white-space:nowrap; border:1px solid rgba(201,168,76,0.2); }
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
-/* ─── TOAST ───────────────────────────────────────────── */
-.toast {
-  position: fixed; bottom: 28px; left: 50%;
-  transform: translateX(-50%) translateY(16px);
-  background: var(--navy); color: var(--cream);
-  padding: 13px 28px; border-radius: 40px;
-  font-size: 13px; font-weight: 400; letter-spacing: 0.01em;
-  opacity: 0; transition: all 0.32s cubic-bezier(0.4,0,0.2,1);
-  z-index: 9999; pointer-events: none; white-space: nowrap;
-  border: 1px solid rgba(201,168,76,0.2);
-}
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+/* ─── LOGIN ──────────────────────────────────────────── */
+#login-screen { min-height:100vh; display:flex; align-items:center; justify-content:center; background:linear-gradient(155deg, var(--navy) 0%, #1A2E42 55%, #0D1B2A 100%); padding:20px; position:relative; overflow:hidden; }
+#login-screen::before { content:''; position:absolute; top:-30%; right:-20%; width:600px; height:600px; border-radius:50%; background:radial-gradient(ellipse, rgba(201,168,76,0.10) 0%, transparent 70%); pointer-events:none; }
+#login-screen::after  { content:''; position:absolute; bottom:-20%; left:-15%; width:400px; height:400px; border-radius:50%; background:radial-gradient(ellipse, rgba(201,168,76,0.06) 0%, transparent 70%); pointer-events:none; }
+.login-box { background:rgba(255,255,255,0.04); border:1px solid rgba(201,168,76,0.18); border-radius:28px; padding:52px 48px 44px; width:100%; max-width:420px; text-align:center; position:relative; z-index:1; backdrop-filter:blur(12px); }
+.login-logo { font-family:'DM Serif Display',serif; font-size:30px; color:var(--gold-light); letter-spacing:0.02em; margin-bottom:4px; }
+.login-tagline { font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:rgba(250,246,239,0.3); margin-bottom:44px; }
+.login-tabs { display:flex; margin-bottom:32px; background:rgba(255,255,255,0.05); border-radius:12px; padding:4px; }
+.login-tab { flex:1; padding:10px; border:none; background:transparent; color:rgba(250,246,239,0.45); font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; cursor:pointer; border-radius:9px; transition:all var(--t); }
+.login-tab.active { background:rgba(201,168,76,0.18); color:var(--gold-light); }
+.login-field { margin-bottom:14px; text-align:left; }
+.login-label { font-size:11px; letter-spacing:0.09em; text-transform:uppercase; color:rgba(250,246,239,0.38); margin-bottom:7px; display:block; }
+.login-input { width:100%; background:rgba(255,255,255,0.06); border:1px solid rgba(201,168,76,0.14); border-radius:11px; padding:14px 16px; font-family:'DM Sans',sans-serif; font-size:14px; color:var(--cream); outline:none; transition:border var(--t); }
+.login-input:focus { border-color:rgba(201,168,76,0.42); }
+.login-input::placeholder { color:rgba(250,246,239,0.22); }
+.login-btn { width:100%; background:var(--gold); color:var(--navy); border:none; border-radius:40px; padding:15px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; cursor:pointer; transition:all var(--t); margin-top:8px; letter-spacing:0.03em; }
+.login-btn:hover { background:var(--gold-light); transform:translateY(-1px); }
+.login-error { font-size:12px; color:#F08080; margin-top:12px; min-height:18px; }
+.login-link { background:none; border:none; color:rgba(250,246,239,0.38); font-family:'DM Sans',sans-serif; font-size:12px; cursor:pointer; text-decoration:underline; transition:color var(--t); }
+.login-link:hover { color:rgba(250,246,239,0.65); }
+.login-divider { display:flex; align-items:center; gap:14px; margin:20px 0; }
+.login-divider-line { flex:1; height:1px; background:rgba(255,255,255,0.07); }
+.login-divider-text { font-size:11px; color:rgba(250,246,239,0.25); }
 
-/* ─── LOGIN SCREEN ────────────────────────────────────── */
-#login-screen {
-  min-height: 100vh;
-  display: flex; align-items: center; justify-content: center;
-  background: linear-gradient(155deg, var(--navy) 0%, #1A2E42 55%, #0D1B2A 100%);
-  padding: 20px;
-  position: relative; overflow: hidden;
-}
-#login-screen::before {
-  content: '';
-  position: absolute; top: -30%; right: -20%;
-  width: 600px; height: 600px; border-radius: 50%;
-  background: radial-gradient(ellipse, rgba(201,168,76,0.10) 0%, transparent 70%);
-  pointer-events: none;
-}
-#login-screen::after {
-  content: '';
-  position: absolute; bottom: -20%; left: -15%;
-  width: 400px; height: 400px; border-radius: 50%;
-  background: radial-gradient(ellipse, rgba(201,168,76,0.06) 0%, transparent 70%);
-  pointer-events: none;
-}
+/* ─── PORTAL LAYOUT ──────────────────────────────────── */
+#portal-screen { display:none; min-height:100vh; }
+.portal-header { background:var(--navy); padding:0 36px; height:66px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid rgba(201,168,76,0.10); position:sticky; top:0; z-index:200; }
+.portal-header-left { display:flex; align-items:center; gap:12px; }
+.portal-logo { font-family:'DM Serif Display',serif; font-size:19px; color:var(--gold-light); letter-spacing:0.02em; text-decoration:none; }
+.portal-label { font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:rgba(250,246,239,0.25); padding-left:12px; border-left:1px solid rgba(255,255,255,0.10); }
+.portal-user { display:flex; align-items:center; gap:14px; }
+.portal-avatar { width:36px; height:36px; border-radius:50%; background:rgba(201,168,76,0.15); border:1.5px solid rgba(201,168,76,0.3); display:flex; align-items:center; justify-content:center; font-family:'DM Serif Display',serif; font-size:13px; font-weight:600; color:var(--gold-light); overflow:hidden; flex-shrink:0; }
+.portal-nombre { font-size:13px; color:rgba(250,246,239,0.72); }
+.btn-salir { background:transparent; border:1px solid rgba(255,255,255,0.10); color:rgba(250,246,239,0.38); font-family:'DM Sans',sans-serif; font-size:12px; padding:7px 16px; border-radius:20px; cursor:pointer; transition:all var(--t); }
+.btn-salir:hover { border-color:rgba(255,255,255,0.25); color:rgba(250,246,239,0.8); }
+.portal-body { max-width:880px; margin:0 auto; padding:48px 28px 80px; }
 
-.login-box {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(201,168,76,0.18);
-  border-radius: 28px;
-  padding: 52px 48px 44px;
-  width: 100%; max-width: 420px;
-  text-align: center;
-  position: relative; z-index: 1;
-  backdrop-filter: blur(12px);
-}
-.login-logo {
-  font-family: 'DM Serif Display', serif;
-  font-size: 30px; color: var(--gold-light);
-  letter-spacing: 0.02em; margin-bottom: 4px;
-}
-.login-tagline {
-  font-size: 11px; letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(250,246,239,0.3);
-  margin-bottom: 44px;
-}
-.login-divider {
-  display: flex; align-items: center; gap: 14px; margin: 22px 0;
-}
-.login-divider-line { flex: 1; height: 1px; background: rgba(255,255,255,0.07); }
-.login-divider-text { font-size: 11px; color: rgba(250,246,239,0.25); }
+/* ─── NAV ────────────────────────────────────────────── */
+.portal-nav { display:flex; margin-bottom:44px; border-bottom:1px solid var(--cream-dark); position:relative; }
+.portal-nav-btn { padding:12px 22px; border:none; background:transparent; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; color:var(--text-light); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; transition:all var(--t); display:flex; align-items:center; gap:7px; white-space:nowrap; }
+.portal-nav-btn:hover { color:var(--text); }
+.portal-nav-btn.active { color:var(--navy); border-bottom-color:var(--gold); }
+.portal-nav-btn svg { opacity:0.5; transition:opacity var(--t); }
+.portal-nav-btn.active svg, .portal-nav-btn:hover svg { opacity:1; }
+/* badge de alerta en tab */
+.nav-badge { background:var(--gold); color:var(--navy); font-size:10px; font-weight:700; border-radius:20px; padding:1px 6px; margin-left:2px; display:none; }
+.nav-badge.visible { display:inline; }
 
-/* Tabs login */
-.login-tabs {
-  display: flex; gap: 0; margin-bottom: 32px;
-  background: rgba(255,255,255,0.05);
-  border-radius: 12px; padding: 4px;
-}
-.login-tab {
-  flex: 1; padding: 10px;
-  border: none; background: transparent;
-  color: rgba(250,246,239,0.45);
-  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
-  cursor: pointer; border-radius: 9px;
-  transition: all var(--transition);
-}
-.login-tab.active {
-  background: rgba(201,168,76,0.18);
-  color: var(--gold-light);
-}
+/* ─── SECTIONS ───────────────────────────────────────── */
+.seccion { display:none; animation:fadeIn 0.24s ease; }
+.seccion.activa { display:block; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+.seccion-header { margin-bottom:32px; }
+.seccion-titulo { font-family:'DM Serif Display',serif; font-size:26px; color:var(--navy); margin-bottom:6px; }
+.seccion-sub { font-size:14px; color:var(--text-light); line-height:1.6; }
 
-/* Fields */
-.login-field { margin-bottom: 14px; text-align: left; }
-.login-label {
-  font-size: 11px; letter-spacing: 0.09em;
-  text-transform: uppercase;
-  color: rgba(250,246,239,0.38); margin-bottom: 7px; display: block;
-}
-.login-input {
-  width: 100%;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(201,168,76,0.14);
-  border-radius: 11px; padding: 14px 16px;
-  font-family: 'DM Sans', sans-serif; font-size: 14px;
-  color: var(--cream); outline: none;
-  transition: border var(--transition);
-}
-.login-input:focus { border-color: rgba(201,168,76,0.42); }
-.login-input::placeholder { color: rgba(250,246,239,0.22); }
+/* ─── CARDS BASE ─────────────────────────────────────── */
+.card { background:var(--white); border-radius:var(--radius-lg); padding:30px 32px; box-shadow:var(--shadow); margin-bottom:20px; border:1px solid rgba(13,27,42,0.04); }
+.card-titulo { font-size:11px; font-weight:600; letter-spacing:0.10em; text-transform:uppercase; color:var(--text-light); margin-bottom:22px; padding-bottom:14px; border-bottom:1px solid var(--cream-mid); }
 
-.login-btn {
-  width: 100%; background: var(--gold);
-  color: var(--navy); border: none;
-  border-radius: 40px; padding: 15px;
-  font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600;
-  cursor: pointer; transition: all var(--transition);
-  margin-top: 8px; letter-spacing: 0.03em;
-}
-.login-btn:hover { background: var(--gold-light); transform: translateY(-1px); }
-.login-btn:active { transform: translateY(0); }
-
-.login-error { font-size: 12px; color: #F08080; margin-top: 12px; min-height: 18px; }
-.login-link {
-  background: none; border: none;
-  color: rgba(250,246,239,0.38);
-  font-family: 'DM Sans', sans-serif; font-size: 12px;
-  cursor: pointer; text-decoration: underline;
-  transition: color var(--transition);
-}
-.login-link:hover { color: rgba(250,246,239,0.65); }
-
-/* ─── PORTAL LAYOUT ───────────────────────────────────── */
-#portal-screen { display: none; min-height: 100vh; }
-
-/* Header */
-.portal-header {
+/* ─── SERVICIO ACTIVO ────────────────────────────────── */
+.servicio-card {
   background: var(--navy);
-  padding: 0 36px; height: 66px;
-  display: flex; align-items: center; justify-content: space-between;
-  border-bottom: 1px solid rgba(201,168,76,0.10);
-  position: sticky; top: 0; z-index: 200;
-}
-.portal-header-left { display: flex; align-items: center; gap: 12px; }
-.portal-logo {
-  font-family: 'DM Serif Display', serif;
-  font-size: 19px; color: var(--gold-light);
-  letter-spacing: 0.02em; text-decoration: none;
-}
-.portal-label {
-  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
-  color: rgba(250,246,239,0.25);
-  padding-left: 12px;
-  border-left: 1px solid rgba(255,255,255,0.10);
-}
-
-.portal-user { display: flex; align-items: center; gap: 14px; }
-.portal-avatar {
-  width: 36px; height: 36px; border-radius: 50%;
-  background: rgba(201,168,76,0.15);
-  border: 1.5px solid rgba(201,168,76,0.3);
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'DM Serif Display', serif;
-  font-size: 13px; font-weight: 600; color: var(--gold-light);
-  overflow: hidden; flex-shrink: 0;
-}
-.portal-nombre {
-  font-size: 13px; font-weight: 400;
-  color: rgba(250,246,239,0.72);
-}
-.btn-salir {
-  background: transparent;
-  border: 1px solid rgba(255,255,255,0.10);
-  color: rgba(250,246,239,0.38);
-  font-family: 'DM Sans', sans-serif; font-size: 12px;
-  padding: 7px 16px; border-radius: 20px;
-  cursor: pointer; transition: all var(--transition);
-}
-.btn-salir:hover {
-  border-color: rgba(255,255,255,0.25);
-  color: rgba(250,246,239,0.8);
-}
-
-/* Body */
-.portal-body { max-width: 880px; margin: 0 auto; padding: 48px 28px 80px; }
-
-/* ─── NAV TABS ────────────────────────────────────────── */
-.portal-nav {
-  display: flex; gap: 0; margin-bottom: 44px;
-  border-bottom: 1px solid var(--cream-dark);
-}
-.portal-nav-btn {
-  padding: 12px 22px; border: none; background: transparent;
-  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
-  color: var(--text-light); cursor: pointer;
-  border-bottom: 2px solid transparent;
-  margin-bottom: -1px;
-  transition: all var(--transition);
-  display: flex; align-items: center; gap: 7px;
-}
-.portal-nav-btn:hover { color: var(--text); }
-.portal-nav-btn.active {
-  color: var(--navy); border-bottom-color: var(--gold);
-}
-.portal-nav-btn svg { opacity: 0.5; transition: opacity var(--transition); }
-.portal-nav-btn.active svg, .portal-nav-btn:hover svg { opacity: 1; }
-
-/* ─── SECTIONS ────────────────────────────────────────── */
-.seccion { display: none; animation: fadeIn 0.24s ease; }
-.seccion.activa { display: block; }
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.seccion-header { margin-bottom: 32px; }
-.seccion-titulo {
-  font-family: 'DM Serif Display', serif;
-  font-size: 26px; color: var(--navy);
-  margin-bottom: 6px; line-height: 1.2;
-}
-.seccion-sub { font-size: 14px; color: var(--text-light); line-height: 1.6; }
-
-/* ─── CARDS ───────────────────────────────────────────── */
-.card {
-  background: var(--white);
   border-radius: var(--radius-lg);
-  padding: 30px 32px;
-  box-shadow: var(--shadow);
-  margin-bottom: 20px;
-  border: 1px solid rgba(13,27,42,0.04);
-}
-.card-titulo {
-  font-size: 11px; font-weight: 600;
-  letter-spacing: 0.10em; text-transform: uppercase;
-  color: var(--text-light);
-  margin-bottom: 22px; padding-bottom: 14px;
-  border-bottom: 1px solid var(--cream-mid);
-}
-
-/* ─── AVATAR SECTION ──────────────────────────────────── */
-.avatar-section {
-  display: flex; align-items: center; gap: 24px;
-  padding: 0 0 28px;
+  overflow: hidden;
   margin-bottom: 24px;
-  border-bottom: 1px solid var(--cream-mid);
+  box-shadow: 0 8px 40px rgba(13,27,42,0.22);
+  position: relative;
 }
-.avatar-big {
-  width: 76px; height: 76px; border-radius: 50%;
-  background: var(--cream-mid);
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'DM Serif Display', serif;
-  font-size: 26px; color: var(--navy-mid);
-  border: 2px solid var(--cream-dark);
-  overflow: hidden; flex-shrink: 0;
-  cursor: pointer; position: relative;
-  transition: border-color var(--transition);
+.servicio-card::before {
+  content:'';
+  position:absolute; top:0; right:0;
+  width:320px; height:320px; border-radius:50%;
+  background: radial-gradient(ellipse, rgba(201,168,76,0.08) 0%, transparent 70%);
+  pointer-events:none;
 }
-.avatar-big:hover { border-color: var(--gold); }
-.avatar-big:hover::after {
-  content: '↑'; position: absolute;
-  font-size: 18px; font-family: 'DM Sans', sans-serif;
-  background: rgba(13,27,42,0.55);
-  width: 100%; height: 100%;
-  display: flex; align-items: center; justify-content: center;
-  border-radius: 50%; color: var(--cream);
+.servicio-header {
+  padding: 28px 32px 24px;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
 }
-.avatar-big img { width: 100%; height: 100%; object-fit: cover; }
-.avatar-info h3 {
-  font-family: 'DM Serif Display', serif;
-  font-size: 18px; color: var(--navy);
-  margin-bottom: 4px;
+.servicio-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.3);
+  border-radius: 40px; padding: 5px 14px;
+  font-size: 11px; letter-spacing: 0.10em; text-transform: uppercase;
+  color: var(--gold-light); margin-bottom: 14px;
 }
-.avatar-info p { font-size: 12px; color: var(--text-light); line-height: 1.6; }
-.avatar-change-btn {
-  margin-top: 10px; font-size: 11px; color: var(--gold);
-  background: transparent; border: 1px solid rgba(201,168,76,0.28);
-  border-radius: 20px; padding: 5px 13px;
-  cursor: pointer; font-family: 'DM Sans', sans-serif;
-  transition: all var(--transition);
-}
-.avatar-change-btn:hover { background: var(--gold-faint); }
+.servicio-badge::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--gold); animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+.servicio-menu { font-family:'DM Serif Display',serif; font-size:22px; color:var(--cream); margin-bottom:8px; line-height:1.2; }
+.servicio-meta { font-size:13px; color:rgba(250,246,239,0.5); line-height:1.7; }
+.servicio-chef-mini { display:flex; align-items:center; gap:12px; }
+.chef-avatar-mini { width:48px; height:48px; border-radius:50%; background:rgba(201,168,76,0.15); border:2px solid rgba(201,168,76,0.3); display:flex; align-items:center; justify-content:center; font-family:'DM Serif Display',serif; font-size:16px; color:var(--gold-light); overflow:hidden; flex-shrink:0; }
+.chef-avatar-mini img { width:100%; height:100%; object-fit:cover; }
+.chef-mini-nombre { font-size:14px; font-weight:500; color:var(--cream); }
+.chef-mini-esp { font-size:12px; color:rgba(250,246,239,0.45); margin-top:2px; }
+.chef-mini-rating { display:flex; align-items:center; gap:4px; font-size:12px; color:var(--gold); margin-top:3px; }
 
-/* ─── FORM ────────────────────────────────────────────── */
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-.form-field { display: flex; flex-direction: column; gap: 7px; }
-.form-field.full { grid-column: 1 / -1; }
-.form-label {
-  font-size: 11px; letter-spacing: 0.08em;
-  text-transform: uppercase; color: var(--text-light); font-weight: 500;
+/* Tracking */
+.tracking-wrap { padding: 24px 32px; border-bottom:1px solid rgba(255,255,255,0.07); }
+.tracking-label { font-size:11px; letter-spacing:0.10em; text-transform:uppercase; color:rgba(250,246,239,0.3); margin-bottom:20px; }
+.tracking-steps { display:flex; align-items:center; gap:0; position:relative; }
+.tracking-step {
+  flex: 1; display:flex; flex-direction:column; align-items:center; gap:8px;
+  position: relative; z-index: 1;
 }
-.form-input {
-  background: var(--cream);
-  border: 1.5px solid var(--cream-dark);
-  border-radius: 10px; padding: 12px 15px;
-  font-family: 'DM Sans', sans-serif; font-size: 14px;
-  color: var(--text); outline: none;
-  transition: border-color var(--transition), box-shadow var(--transition);
+.tracking-step-dot {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.05);
+  display: flex; align-items:center; justify-content:center;
+  font-size: 13px; transition: all 0.4s ease;
+  position: relative; z-index: 2;
 }
-.form-input:focus {
-  border-color: var(--gold);
-  box-shadow: 0 0 0 3px rgba(201,168,76,0.10);
+.tracking-step.done .tracking-step-dot { background:var(--gold); border-color:var(--gold); }
+.tracking-step.active .tracking-step-dot { background:rgba(201,168,76,0.2); border-color:var(--gold); box-shadow: 0 0 0 4px rgba(201,168,76,0.15); animation: stepPulse 2s infinite; }
+@keyframes stepPulse { 0%,100%{box-shadow:0 0 0 4px rgba(201,168,76,0.15);} 50%{box-shadow:0 0 0 8px rgba(201,168,76,0.05);} }
+.tracking-step-label { font-size:10px; color:rgba(250,246,239,0.35); text-align:center; line-height:1.3; letter-spacing:0.02em; }
+.tracking-step.done .tracking-step-label { color:rgba(250,246,239,0.6); }
+.tracking-step.active .tracking-step-label { color:var(--gold-light); }
+.tracking-line {
+  position:absolute; top:16px; left:0; right:0; height:2px;
+  background: rgba(255,255,255,0.08); z-index:0;
 }
-.form-input::placeholder { color: var(--text-light); }
-.form-textarea { resize: vertical; min-height: 88px; }
-
-.form-footer {
-  display: flex; justify-content: flex-end;
-  margin-top: 28px; padding-top: 22px;
-  border-top: 1px solid var(--cream-mid);
+.tracking-line-fill {
+  height:100%; background:var(--gold);
+  transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
 }
 
-/* ─── SAVE BTN ────────────────────────────────────────── */
-.save-btn {
-  background: var(--navy); color: var(--cream);
-  border: none; border-radius: 40px;
-  padding: 13px 34px;
-  font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
-  cursor: pointer; transition: all var(--transition);
-  letter-spacing: 0.03em;
+/* Maps link */
+.servicio-maps { padding:20px 32px; border-bottom:1px solid rgba(255,255,255,0.07); }
+.maps-btn {
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(201,168,76,0.10); border:1px solid rgba(201,168,76,0.25);
+  color:var(--gold-light); border-radius:40px; padding:10px 20px;
+  font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500;
+  cursor:pointer; text-decoration:none; transition:all var(--t);
 }
-.save-btn:hover { background: var(--navy-mid); transform: translateY(-1px); }
-.save-btn:active { transform: translateY(0); }
-.save-btn:disabled { opacity: 0.45; cursor: default; transform: none; }
+.maps-btn:hover { background:rgba(201,168,76,0.18); }
 
-/* ─── COCINA TIPO ─────────────────────────────────────── */
-.tipo-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 10px; margin-bottom: 6px;
+/* Calificación */
+.calificacion-wrap { padding:24px 32px; }
+.cal-titulo { font-size:13px; font-weight:500; color:rgba(250,246,239,0.7); margin-bottom:16px; }
+.stars-row { display:flex; gap:8px; margin-bottom:16px; }
+.star-btn {
+  width:40px; height:40px; border-radius:50%;
+  border:2px solid rgba(255,255,255,0.10);
+  background:rgba(255,255,255,0.04);
+  display:flex; align-items:center; justify-content:center;
+  font-size:18px; cursor:pointer; transition:all var(--t);
+  color:rgba(255,255,255,0.2);
 }
-.tipo-btn {
-  border: 1.5px solid var(--cream-dark);
-  border-radius: 12px; padding: 14px 10px;
-  background: var(--cream); cursor: pointer;
-  text-align: center; transition: all var(--transition);
-  font-family: 'DM Sans', sans-serif; position: relative;
+.star-btn:hover, .star-btn.sel { border-color:var(--gold); background:rgba(201,168,76,0.15); color:var(--gold); }
+.cal-nota-input {
+  width:100%; background:rgba(255,255,255,0.06); border:1px solid rgba(201,168,76,0.15);
+  border-radius:10px; padding:12px 16px; font-family:'DM Sans',sans-serif;
+  font-size:13px; color:var(--cream); outline:none; resize:none;
+  min-height:72px; margin-bottom:14px; transition:border var(--t);
 }
-.tipo-btn:hover { border-color: rgba(201,168,76,0.5); background: var(--gold-faint); }
-.tipo-btn.sel { border-color: var(--gold); background: var(--gold-pale); }
-.tipo-label { font-size: 12px; font-weight: 500; color: var(--text); }
-.tipo-check {
-  display: none; position: absolute; top: 7px; right: 9px;
-  color: var(--gold); font-size: 10px;
-}
-.tipo-btn.sel .tipo-check { display: block; }
+.cal-nota-input:focus { border-color:rgba(201,168,76,0.4); }
+.cal-nota-input::placeholder { color:rgba(250,246,239,0.22); }
+.cal-ok { font-size:13px; color:var(--gold-light); text-align:center; padding:8px 0; display:none; }
 
-/* ─── CHECKBOXES ──────────────────────────────────────── */
-.check-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-.check-item {
-  display: flex; align-items: center; gap: 10px;
-  background: var(--cream); border: 1.5px solid var(--cream-dark);
-  border-radius: 10px; padding: 11px 14px;
-  cursor: pointer; transition: all var(--transition);
-  user-select: none;
-}
-.check-item:hover { border-color: rgba(201,168,76,0.4); }
-.check-item.sel { border-color: var(--gold); background: var(--gold-pale); }
-.check-box {
-  width: 18px; height: 18px; border-radius: 5px;
-  border: 1.5px solid var(--cream-dark);
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; transition: all var(--transition);
-  font-size: 10px;
-}
-.check-item.sel .check-box {
-  background: var(--gold); border-color: var(--gold);
-  color: var(--white);
-}
-.check-text { font-size: 13px; color: var(--text); }
+/* ─── RESERVAS ───────────────────────────────────────── */
+.reserva-card { background:var(--white); border-radius:var(--radius-lg); margin-bottom:16px; box-shadow:var(--shadow); border:1px solid rgba(13,27,42,0.04); overflow:hidden; transition:box-shadow var(--t); }
+.reserva-card:hover { box-shadow:var(--shadow-lg); }
+.reserva-header { display:flex; align-items:center; justify-content:space-between; padding:22px 26px 18px; border-left:3px solid transparent; }
+.reserva-card.reservada  .reserva-header { border-left-color:var(--gold); }
+.reserva-card.confirmada .reserva-header { border-left-color:var(--green); }
+.reserva-card.cancelada  .reserva-header { border-left-color:var(--cream-dark); opacity:0.55; }
+.reserva-fecha { font-family:'DM Serif Display',serif; font-size:18px; color:var(--navy); margin-bottom:5px; }
+.reserva-info { font-size:12px; color:var(--text-light); line-height:1.7; }
+.reserva-ref  { font-size:11px; color:var(--text-light); margin-top:4px; letter-spacing:0.04em; }
+.reserva-badge { font-size:11px; font-weight:600; letter-spacing:0.07em; text-transform:uppercase; padding:5px 13px; border-radius:20px; white-space:nowrap; }
+.reserva-badge.reservada  { background:rgba(201,168,76,0.12); color:var(--gold); }
+.reserva-badge.confirmada { background:var(--green-light); color:var(--green); }
+.reserva-badge.cancelada  { background:var(--cream-mid); color:var(--text-light); }
+.reserva-badge.completada { background:rgba(13,27,42,0.07); color:var(--text-mid); }
+.reserva-pago { display:grid; grid-template-columns:1fr 1fr; border-top:1px solid var(--cream-mid); }
+.pago-bloque { padding:16px 26px; border-right:1px solid var(--cream-mid); }
+.pago-bloque:last-child { border-right:none; }
+.pago-titulo { font-size:10px; letter-spacing:0.09em; text-transform:uppercase; color:var(--text-light); margin-bottom:5px; }
+.pago-valor { font-family:'DM Serif Display',serif; font-size:18px; color:var(--navy); margin-bottom:3px; }
+.pago-estado { font-size:11px; }
+.pago-estado.cobrado  { color:var(--green); }
+.pago-estado.pendiente { color:var(--gold); }
 
-/* ─── RESERVAS ────────────────────────────────────────── */
-.reserva-card {
-  background: var(--white);
-  border-radius: var(--radius-lg);
-  margin-bottom: 16px;
-  box-shadow: var(--shadow);
-  border: 1px solid rgba(13,27,42,0.04);
-  overflow: hidden;
-  transition: box-shadow var(--transition);
-}
-.reserva-card:hover { box-shadow: var(--shadow-lg); }
+/* Historial */
+.hist-card { background:var(--white); border-radius:var(--radius); padding:18px 22px; margin-bottom:10px; border:1px solid var(--cream-mid); display:flex; align-items:center; justify-content:space-between; gap:16px; transition:box-shadow var(--t); }
+.hist-card:hover { box-shadow:var(--shadow); }
+.hist-menu { font-family:'DM Serif Display',serif; font-size:15px; color:var(--navy); margin-bottom:4px; }
+.hist-meta { font-size:12px; color:var(--text-light); }
+.hist-rating { display:flex; gap:2px; margin-top:5px; }
+.hist-star { font-size:12px; color:var(--cream-dark); }
+.hist-star.filled { color:var(--gold); }
+.hist-monto { font-family:'DM Serif Display',serif; font-size:17px; color:var(--navy); white-space:nowrap; }
 
-.reserva-header {
-  display: flex; align-items: center;
-  justify-content: space-between;
-  padding: 22px 26px 18px;
-  border-left: 3px solid transparent;
-}
-.reserva-card.reservada  .reserva-header { border-left-color: var(--gold); }
-.reserva-card.confirmada .reserva-header { border-left-color: var(--green); }
-.reserva-card.cancelada  .reserva-header { border-left-color: var(--cream-dark); opacity: 0.55; }
+/* ─── CHAT ───────────────────────────────────────────── */
+.chat-wrap { display:flex; flex-direction:column; height:480px; }
+.chat-messages { flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:12px; scroll-behavior:smooth; }
+.chat-messages::-webkit-scrollbar { width:4px; }
+.chat-messages::-webkit-scrollbar-track { background:transparent; }
+.chat-messages::-webkit-scrollbar-thumb { background:var(--cream-dark); border-radius:4px; }
+.msg-row { display:flex; gap:10px; max-width:80%; }
+.msg-row.mine { align-self:flex-end; flex-direction:row-reverse; }
+.msg-row.other { align-self:flex-start; }
+.msg-avatar-sm { width:28px; height:28px; border-radius:50%; background:var(--cream-dark); display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:600; color:var(--text-mid); flex-shrink:0; overflow:hidden; margin-top:2px; }
+.msg-avatar-sm img { width:100%; height:100%; object-fit:cover; }
+.msg-bubble { padding:10px 14px; border-radius:16px; font-size:13px; line-height:1.6; max-width:100%; }
+.msg-row.mine  .msg-bubble { background:var(--navy); color:var(--cream); border-bottom-right-radius:4px; }
+.msg-row.other .msg-bubble { background:var(--white); color:var(--text); border:1px solid var(--cream-dark); border-bottom-left-radius:4px; }
+.msg-time { font-size:10px; color:var(--text-light); margin-top:4px; text-align:right; }
+.msg-row.other .msg-time { text-align:left; }
+.msg-autor { font-size:10px; color:var(--text-light); margin-bottom:3px; }
+.chat-input-wrap { padding:16px 20px; border-top:1px solid var(--cream-mid); display:flex; gap:10px; align-items:flex-end; background:var(--white); }
+.chat-input { flex:1; background:var(--cream); border:1.5px solid var(--cream-dark); border-radius:12px; padding:10px 14px; font-family:'DM Sans',sans-serif; font-size:13px; color:var(--text); outline:none; resize:none; min-height:42px; max-height:120px; transition:border var(--t); line-height:1.5; }
+.chat-input:focus { border-color:var(--gold); }
+.chat-send-btn { width:40px; height:40px; background:var(--navy); border:none; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; transition:all var(--t); }
+.chat-send-btn:hover { background:var(--navy-mid); transform:scale(1.05); }
+.chat-send-btn svg { color:var(--cream); }
+.chat-empty { text-align:center; padding:40px 20px; color:var(--text-light); font-size:13px; }
 
-.reserva-fecha {
-  font-family: 'DM Serif Display', serif;
-  font-size: 18px; color: var(--navy); margin-bottom: 5px;
-}
-.reserva-info { font-size: 12px; color: var(--text-light); line-height: 1.7; }
-.reserva-ref { font-size: 11px; color: var(--text-light); margin-top: 4px; letter-spacing: 0.04em; }
+/* ─── PERFIL FORM ────────────────────────────────────── */
+.avatar-section { display:flex; align-items:center; gap:24px; padding:0 0 28px; margin-bottom:24px; border-bottom:1px solid var(--cream-mid); }
+.avatar-big { width:76px; height:76px; border-radius:50%; background:var(--cream-mid); display:flex; align-items:center; justify-content:center; font-family:'DM Serif Display',serif; font-size:26px; color:var(--navy-mid); border:2px solid var(--cream-dark); overflow:hidden; flex-shrink:0; cursor:pointer; position:relative; transition:border-color var(--t); }
+.avatar-big:hover { border-color:var(--gold); }
+.avatar-big:hover::after { content:'↑'; position:absolute; font-size:18px; font-family:'DM Sans',sans-serif; background:rgba(13,27,42,0.55); width:100%; height:100%; display:flex; align-items:center; justify-content:center; border-radius:50%; color:var(--cream); }
+.avatar-big img { width:100%; height:100%; object-fit:cover; }
+.avatar-info h3 { font-family:'DM Serif Display',serif; font-size:18px; color:var(--navy); margin-bottom:4px; }
+.avatar-info p { font-size:12px; color:var(--text-light); line-height:1.6; }
+.avatar-change-btn { margin-top:10px; font-size:11px; color:var(--gold); background:transparent; border:1px solid rgba(201,168,76,0.28); border-radius:20px; padding:5px 13px; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all var(--t); }
+.avatar-change-btn:hover { background:var(--gold-faint); }
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+.form-field { display:flex; flex-direction:column; gap:7px; }
+.form-field.full { grid-column:1/-1; }
+.form-label { font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-light); font-weight:500; }
+.form-input { background:var(--cream); border:1.5px solid var(--cream-dark); border-radius:10px; padding:12px 15px; font-family:'DM Sans',sans-serif; font-size:14px; color:var(--text); outline:none; transition:border-color var(--t), box-shadow var(--t); }
+.form-input:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,168,76,0.10); }
+.form-input::placeholder { color:var(--text-light); }
+.form-textarea { resize:vertical; min-height:88px; }
+.form-footer { display:flex; justify-content:flex-end; margin-top:28px; padding-top:22px; border-top:1px solid var(--cream-mid); }
 
-.reserva-badge {
-  font-size: 11px; font-weight: 600;
-  letter-spacing: 0.07em; text-transform: uppercase;
-  padding: 5px 13px; border-radius: 20px;
-  white-space: nowrap;
-}
-.reserva-badge.reservada  { background: rgba(201,168,76,0.12); color: var(--gold); }
-.reserva-badge.confirmada { background: var(--green-light); color: var(--green); }
-.reserva-badge.cancelada  { background: var(--cream-mid); color: var(--text-light); }
+/* ─── COCINA ─────────────────────────────────────────── */
+.tipo-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.tipo-btn { border:1.5px solid var(--cream-dark); border-radius:12px; padding:14px 10px; background:var(--cream); cursor:pointer; text-align:center; transition:all var(--t); font-family:'DM Sans',sans-serif; position:relative; }
+.tipo-btn:hover { border-color:rgba(201,168,76,0.5); background:var(--gold-faint); }
+.tipo-btn.sel { border-color:var(--gold); background:var(--gold-pale); }
+.tipo-label { font-size:12px; font-weight:500; color:var(--text); }
+.tipo-check { display:none; position:absolute; top:7px; right:9px; color:var(--gold); font-size:10px; }
+.tipo-btn.sel .tipo-check { display:block; }
+.check-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+.check-item { display:flex; align-items:center; gap:10px; background:var(--cream); border:1.5px solid var(--cream-dark); border-radius:10px; padding:11px 14px; cursor:pointer; transition:all var(--t); user-select:none; }
+.check-item:hover { border-color:rgba(201,168,76,0.4); }
+.check-item.sel { border-color:var(--gold); background:var(--gold-pale); }
+.check-box { width:18px; height:18px; border-radius:5px; border:1.5px solid var(--cream-dark); display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all var(--t); font-size:10px; }
+.check-item.sel .check-box { background:var(--gold); border-color:var(--gold); color:var(--white); }
+.check-text { font-size:13px; color:var(--text); }
 
-.reserva-pago {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 0;
-  border-top: 1px solid var(--cream-mid);
-}
-.pago-bloque {
-  padding: 16px 26px;
-  border-right: 1px solid var(--cream-mid);
-}
-.pago-bloque:last-child { border-right: none; }
-.pago-titulo {
-  font-size: 10px; letter-spacing: 0.09em;
-  text-transform: uppercase; color: var(--text-light);
-  margin-bottom: 5px;
-}
-.pago-valor {
-  font-family: 'DM Serif Display', serif;
-  font-size: 18px; color: var(--navy);
-  margin-bottom: 3px;
-}
-.pago-estado { font-size: 11px; }
-.pago-estado.cobrado { color: var(--green); }
-.pago-estado.pendiente { color: var(--gold); }
+/* ─── SAVE BTN ───────────────────────────────────────── */
+.save-btn { background:var(--navy); color:var(--cream); border:none; border-radius:40px; padding:13px 34px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500; cursor:pointer; transition:all var(--t); letter-spacing:0.03em; }
+.save-btn:hover { background:var(--navy-mid); transform:translateY(-1px); }
+.save-btn:disabled { opacity:0.45; cursor:default; transform:none; }
 
-/* ─── MENÚS GUARDADOS ─────────────────────────────────── */
-.menu-guardado-card {
-  background: var(--white);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--cream-dark);
-  margin-bottom: 16px;
-  overflow: hidden;
-  transition: box-shadow var(--transition), border-color var(--transition);
-}
-.menu-guardado-card:hover {
-  box-shadow: var(--shadow);
-  border-color: rgba(201,168,76,0.3);
-}
-.menu-card-header {
-  padding: 22px 26px 18px;
-  display: flex; justify-content: space-between; align-items: flex-start;
-}
-.menu-card-fecha {
-  font-size: 11px; letter-spacing: 0.09em;
-  text-transform: uppercase; color: var(--text-light);
-  margin-bottom: 7px;
-}
-.menu-card-titulo {
-  font-family: 'DM Serif Display', serif;
-  font-size: 17px; color: var(--navy); margin-bottom: 8px;
-}
-.menu-card-preview {
-  font-size: 13px; color: var(--text-mid);
-  line-height: 1.75; white-space: pre-line;
-}
-.menu-card-actions {
-  padding: 14px 26px 18px;
-  display: flex; gap: 8px; flex-wrap: wrap;
-  border-top: 1px solid var(--cream-mid);
-}
+/* ─── EMPTY STATE ────────────────────────────────────── */
+.empty-state { text-align:center; padding:64px 24px; color:var(--text-light); font-size:14px; line-height:1.8; }
+.empty-icon { font-size:28px; margin-bottom:16px; opacity:0.3; display:block; font-family:'DM Serif Display',serif; color:var(--gold); }
+.empty-link { color:var(--gold); text-decoration:none; font-weight:500; font-size:13px; border-bottom:1px solid rgba(201,168,76,0.3); padding-bottom:1px; transition:border-color var(--t); }
+.empty-link:hover { border-color:var(--gold); }
 
-.btn-menu {
-  font-size: 12px; padding: 7px 16px;
-  border-radius: 20px; cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 500; transition: all var(--transition);
-  border: none;
-}
-.btn-menu-primary {
-  background: var(--navy); color: var(--cream);
-}
-.btn-menu-primary:hover { background: var(--navy-mid); }
-.btn-menu-secondary {
-  background: var(--gold-faint); color: var(--gold);
-  border: 1px solid rgba(201,168,76,0.25) !important;
-}
-.btn-menu-secondary:hover { background: rgba(201,168,76,0.14); }
-.btn-menu-ghost {
-  background: transparent; color: var(--text-light);
-  border: 1px solid var(--cream-dark) !important;
-}
-.btn-menu-ghost:hover { color: var(--text); border-color: var(--text-light) !important; }
-
-.menu-full-content {
-  display: none;
-  padding: 20px 26px 22px;
-  border-top: 1px solid var(--cream-mid);
-  background: var(--cream);
-}
-.menu-full-content pre {
-  font-family: 'DM Sans', sans-serif; font-size: 13px;
-  color: var(--text-mid); line-height: 1.8;
-  white-space: pre-wrap;
-}
-
-/* ─── EMPTY STATE ─────────────────────────────────────── */
-.empty-state {
-  text-align: center; padding: 64px 24px;
-  color: var(--text-light); font-size: 14px;
-  line-height: 1.8;
-}
-.empty-icon {
-  font-size: 28px; margin-bottom: 16px;
-  opacity: 0.3; display: block;
-  font-family: 'DM Serif Display', serif;
-  color: var(--gold);
-}
-.empty-link {
-  color: var(--gold); text-decoration: none;
-  font-weight: 500; font-size: 13px;
-  border-bottom: 1px solid rgba(201,168,76,0.3);
-  padding-bottom: 1px;
-  transition: border-color var(--transition);
-}
-.empty-link:hover { border-color: var(--gold); }
-
-/* ─── NUEVA CONTRASEÑA ────────────────────────────────── */
-.form-pwd-title {
-  font-family: 'DM Serif Display', serif;
-  font-size: 20px; color: var(--gold-light);
-  margin-bottom: 6px;
-}
-.form-pwd-sub {
-  font-size: 12px; color: rgba(250,246,239,0.38);
-  margin-bottom: 28px; line-height: 1.6;
-}
-
-/* ─── RESPONSIVE ──────────────────────────────────────── */
-@media (max-width: 680px) {
-  .portal-header { padding: 0 20px; }
-  .portal-label { display: none; }
-  .portal-nombre { display: none; }
-  .portal-body { padding: 28px 16px 72px; }
-
-  .portal-nav { overflow-x: auto; scrollbar-width: none; }
-  .portal-nav::-webkit-scrollbar { display: none; }
-  .portal-nav-btn { padding: 12px 16px; white-space: nowrap; }
-
-  .card { padding: 22px 20px; }
-  .login-box { padding: 40px 26px 36px; }
-  .form-grid { grid-template-columns: 1fr; }
-  .tipo-grid { grid-template-columns: repeat(2, 1fr); }
-  .check-grid { grid-template-columns: 1fr; }
-  .reserva-pago { grid-template-columns: 1fr 1fr; }
-  .menu-card-header { flex-direction: column; gap: 12px; }
+/* ─── RESPONSIVE ─────────────────────────────────────── */
+@media (max-width:680px) {
+  .portal-header { padding:0 20px; }
+  .portal-label, .portal-nombre { display:none; }
+  .portal-body { padding:24px 16px 72px; }
+  .portal-nav { overflow-x:auto; scrollbar-width:none; }
+  .portal-nav::-webkit-scrollbar { display:none; }
+  .portal-nav-btn { padding:12px 14px; font-size:12px; }
+  .card { padding:20px 18px; }
+  .login-box { padding:36px 22px 32px; }
+  .form-grid { grid-template-columns:1fr; }
+  .tipo-grid { grid-template-columns:repeat(2,1fr); }
+  .check-grid { grid-template-columns:1fr; }
+  .servicio-header { flex-direction:column; }
+  .tracking-step-label { font-size:9px; }
+  .servicio-header, .tracking-wrap, .servicio-maps, .calificacion-wrap { padding-left:20px; padding-right:20px; }
+  .chat-wrap { height:380px; }
+  .msg-row { max-width:90%; }
 }
 </style>
 </head>
@@ -594,9 +335,7 @@ body {
 
 <div class="toast" id="toast"></div>
 
-<!-- ═══════════════════════════════════════
-     LOGIN SCREEN
-═══════════════════════════════════════ -->
+<!-- ═══ LOGIN ═══════════════════════════════════════════ -->
 <div id="login-screen">
   <div class="login-box">
     <div class="login-logo">Celestia</div>
@@ -607,7 +346,6 @@ body {
       <button class="login-tab" onclick="setTab('register')">Registrarse</button>
     </div>
 
-    <!-- FORM: LOGIN -->
     <div id="form-login">
       <div class="login-field">
         <label class="login-label">Email</label>
@@ -619,55 +357,38 @@ body {
                onkeydown="if(event.key==='Enter')doLogin()" autocomplete="current-password">
       </div>
       <button class="login-btn" onclick="doLogin()">Ingresar</button>
-      <div class="login-divider">
-        <div class="login-divider-line"></div>
-        <span class="login-divider-text">o</span>
-        <div class="login-divider-line"></div>
-      </div>
-      <div style="text-align:center;">
-        <button class="login-link" onclick="setTab('reset')">Olvidé mi contraseña</button>
-      </div>
+      <div class="login-divider"><div class="login-divider-line"></div><span class="login-divider-text">o</span><div class="login-divider-line"></div></div>
+      <div style="text-align:center;"><button class="login-link" onclick="setTab('reset')">Olvidé mi contraseña</button></div>
       <div class="login-error" id="login-error"></div>
     </div>
 
-    <!-- FORM: RECUPERAR CONTRASEÑA -->
     <div id="form-reset" style="display:none;">
       <div class="login-field">
         <label class="login-label">Tu email</label>
-        <input type="email" class="login-input" id="reset-email" placeholder="tu@email.com"
-               onkeydown="if(event.key==='Enter')doReset()">
+        <input type="email" class="login-input" id="reset-email" placeholder="tu@email.com" onkeydown="if(event.key==='Enter')doReset()">
       </div>
       <button class="login-btn" onclick="doReset()">Enviar link de recuperación</button>
-      <div style="text-align:center;margin-top:16px;">
-        <button class="login-link" onclick="setTab('login')">← Volver</button>
-      </div>
+      <div style="text-align:center;margin-top:16px;"><button class="login-link" onclick="setTab('login')">← Volver</button></div>
       <div class="login-error" id="reset-error"></div>
-      <div id="reset-ok" style="display:none;font-size:12px;color:#81C784;text-align:center;margin-top:14px;line-height:1.6;">
-        ✓ Revisá tu email para continuar.
-      </div>
+      <div id="reset-ok" style="display:none;font-size:12px;color:#81C784;text-align:center;margin-top:14px;">✓ Revisá tu email para continuar.</div>
     </div>
 
-    <!-- FORM: NUEVA CONTRASEÑA (desde link email) -->
     <div id="form-nueva-pwd" style="display:none;">
-      <div class="form-pwd-title">Nueva contraseña</div>
-      <div class="form-pwd-sub">Ingresá tu nueva contraseña para acceder al portal.</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--gold-light);margin-bottom:6px;">Nueva contraseña</div>
+      <div style="font-size:12px;color:rgba(250,246,239,0.38);margin-bottom:28px;">Ingresá tu nueva contraseña para acceder al portal.</div>
       <div class="login-field">
         <label class="login-label">Nueva contraseña</label>
         <input type="password" class="login-input" id="nueva-pwd" placeholder="Mínimo 6 caracteres">
       </div>
       <div class="login-field">
         <label class="login-label">Repetir contraseña</label>
-        <input type="password" class="login-input" id="nueva-pwd2" placeholder="Repetí la contraseña"
-               onkeydown="if(event.key==='Enter')doNuevaPassword()">
+        <input type="password" class="login-input" id="nueva-pwd2" placeholder="Repetí la contraseña" onkeydown="if(event.key==='Enter')doNuevaPassword()">
       </div>
       <button class="login-btn" onclick="doNuevaPassword()">Guardar contraseña</button>
       <div class="login-error" id="nueva-pwd-error"></div>
-      <div id="nueva-pwd-ok" style="display:none;font-size:12px;color:#81C784;text-align:center;margin-top:14px;">
-        ✓ Contraseña actualizada. Redirigiendo...
-      </div>
+      <div id="nueva-pwd-ok" style="display:none;font-size:12px;color:#81C784;text-align:center;margin-top:14px;">✓ Contraseña actualizada. Redirigiendo...</div>
     </div>
 
-    <!-- FORM: REGISTRO -->
     <div id="form-register" style="display:none;">
       <div class="login-field">
         <label class="login-label">Nombre completo</label>
@@ -679,8 +400,7 @@ body {
       </div>
       <div class="login-field">
         <label class="login-label">Contraseña</label>
-        <input type="password" class="login-input" id="reg-pwd" placeholder="Mínimo 6 caracteres"
-               onkeydown="if(event.key==='Enter')doRegister()" autocomplete="new-password">
+        <input type="password" class="login-input" id="reg-pwd" placeholder="Mínimo 6 caracteres" onkeydown="if(event.key==='Enter')doRegister()" autocomplete="new-password">
       </div>
       <button class="login-btn" onclick="doRegister()">Crear cuenta</button>
       <div class="login-error" id="reg-error"></div>
@@ -688,13 +408,9 @@ body {
   </div>
 </div>
 
-
-<!-- ═══════════════════════════════════════
-     PORTAL SCREEN
-═══════════════════════════════════════ -->
+<!-- ═══ PORTAL ═══════════════════════════════════════════ -->
 <div id="portal-screen">
 
-  <!-- Header -->
   <div class="portal-header">
     <div class="portal-header-left">
       <a href="/" class="portal-logo">Celestia</a>
@@ -707,10 +423,7 @@ body {
     </div>
   </div>
 
-  <!-- Body -->
   <div class="portal-body">
-
-    <!-- Nav tabs -->
     <nav class="portal-nav">
       <button class="portal-nav-btn active" onclick="verTab('perfil',this)">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
@@ -720,9 +433,14 @@ body {
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v4M12 3v4M16 3v4M5 7h14l-1 13H6L5 7z"/></svg>
         Mi cocina
       </button>
+      <button class="portal-nav-btn" onclick="verTab('servicio',this)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Servicio activo
+        <span class="nav-badge" id="badge-servicio">●</span>
+      </button>
       <button class="portal-nav-btn" onclick="verTab('reservas',this)">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        Mis reservas
+        Historial
       </button>
       <button class="portal-nav-btn" onclick="verTab('menus',this)">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
@@ -730,13 +448,12 @@ body {
       </button>
     </nav>
 
-    <!-- ─── TAB: PERFIL ────────────────────────────────── -->
+    <!-- ─── TAB: PERFIL ──────────────────────────────── -->
     <div class="seccion activa" id="tab-perfil">
       <div class="seccion-header">
         <div class="seccion-titulo">Mis datos</div>
         <div class="seccion-sub">Compartí esta información para que Daro pueda preparar cada experiencia a tu medida.</div>
       </div>
-
       <div class="card">
         <div class="avatar-section">
           <div>
@@ -745,165 +462,125 @@ body {
           <input type="file" id="avatar-input" accept="image/*" style="display:none" onchange="subirAvatar(this)">
           <div class="avatar-info">
             <h3 id="avatar-nombre-display">Tu nombre</h3>
-            <p>Tu foto de perfil ayuda a<br>personalizar la experiencia.</p>
-            <button class="avatar-change-btn" onclick="document.getElementById('avatar-input').click()">
-              Cambiar foto
-            </button>
+            <p>Tu foto de perfil ayuda a personalizar la experiencia.</p>
+            <button class="avatar-change-btn" onclick="document.getElementById('avatar-input').click()">Cambiar foto</button>
           </div>
         </div>
-
         <div class="card-titulo">Información personal</div>
         <div class="form-grid">
-          <div class="form-field">
-            <label class="form-label">Nombre completo</label>
-            <input type="text" class="form-input" id="p-nombre" placeholder="Tu nombre completo">
-          </div>
-          <div class="form-field">
-            <label class="form-label">Teléfono</label>
-            <input type="tel" class="form-input" id="p-tel" placeholder="+54 11 xxxxxx">
-          </div>
-          <div class="form-field full">
-            <label class="form-label">Dirección del servicio</label>
-            <input type="text" class="form-input" id="p-dir" placeholder="Calle y número">
-          </div>
-          <div class="form-field">
-            <label class="form-label">Barrio / Ciudad</label>
-            <input type="text" class="form-input" id="p-barrio" placeholder="Palermo, CABA">
-          </div>
-          <div class="form-field">
-            <label class="form-label">Piso / Depto (opcional)</label>
-            <input type="text" class="form-input" id="p-piso" placeholder="3° B">
-          </div>
-          <div class="form-field full">
-            <label class="form-label">Notas para el chef</label>
-            <textarea class="form-input form-textarea" id="p-notas"
-              placeholder="Alergias, intolerancias, preferencias, contexto del evento..."></textarea>
-          </div>
+          <div class="form-field"><label class="form-label">Nombre completo</label><input type="text" class="form-input" id="p-nombre" placeholder="Tu nombre completo"></div>
+          <div class="form-field"><label class="form-label">Teléfono</label><input type="tel" class="form-input" id="p-tel" placeholder="+54 11 xxxxxx"></div>
+          <div class="form-field full"><label class="form-label">Dirección del servicio</label><input type="text" class="form-input" id="p-dir" placeholder="Calle y número"></div>
+          <div class="form-field"><label class="form-label">Barrio / Ciudad</label><input type="text" class="form-input" id="p-barrio" placeholder="Palermo, CABA"></div>
+          <div class="form-field"><label class="form-label">Piso / Depto (opcional)</label><input type="text" class="form-input" id="p-piso" placeholder="3° B"></div>
+          <div class="form-field full"><label class="form-label">Notas para el chef</label><textarea class="form-input form-textarea" id="p-notas" placeholder="Alergias, intolerancias, preferencias, contexto del evento..."></textarea></div>
         </div>
-        <div class="form-footer">
-          <button class="save-btn" onclick="guardarPerfil()">Guardar datos</button>
-        </div>
+        <div class="form-footer"><button class="save-btn" onclick="guardarPerfil()">Guardar datos</button></div>
       </div>
     </div>
 
-    <!-- ─── TAB: COCINA ────────────────────────────────── -->
+    <!-- ─── TAB: COCINA ──────────────────────────────── -->
     <div class="seccion" id="tab-cocina">
       <div class="seccion-header">
         <div class="seccion-titulo">Mi cocina</div>
-        <div class="seccion-sub">Ayudá a Daro a conocer tu espacio para planificar el servicio con lo que tenés disponible.</div>
+        <div class="seccion-sub">Ayudá a Daro a conocer tu espacio para planificar el servicio.</div>
       </div>
-
       <div class="card">
         <div class="card-titulo">Tipo de cocina</div>
         <div class="tipo-grid">
-          <div class="tipo-btn" onclick="selTipo('lineal')" id="tipo-lineal">
-            <div class="tipo-label">Lineal</div>
-            <span class="tipo-check">✦</span>
-          </div>
-          <div class="tipo-btn" onclick="selTipo('en_l')" id="tipo-en_l">
-            <div class="tipo-label">En L</div>
-            <span class="tipo-check">✦</span>
-          </div>
-          <div class="tipo-btn" onclick="selTipo('en_u')" id="tipo-en_u">
-            <div class="tipo-label">En U</div>
-            <span class="tipo-check">✦</span>
-          </div>
-          <div class="tipo-btn" onclick="selTipo('con_isla')" id="tipo-con_isla">
-            <div class="tipo-label">Con isla</div>
-            <span class="tipo-check">✦</span>
-          </div>
-          <div class="tipo-btn" onclick="selTipo('isla_barra')" id="tipo-isla_barra">
-            <div class="tipo-label">Isla + barra</div>
-            <span class="tipo-check">✦</span>
-          </div>
-          <div class="tipo-btn" onclick="selTipo('isla_2barras')" id="tipo-isla_2barras">
-            <div class="tipo-label">Isla + 2 barras</div>
-            <span class="tipo-check">✦</span>
-          </div>
+          <div class="tipo-btn" onclick="selTipo('lineal')"      id="tipo-lineal"><div class="tipo-label">Lineal</div><span class="tipo-check">✦</span></div>
+          <div class="tipo-btn" onclick="selTipo('en_l')"        id="tipo-en_l"><div class="tipo-label">En L</div><span class="tipo-check">✦</span></div>
+          <div class="tipo-btn" onclick="selTipo('en_u')"        id="tipo-en_u"><div class="tipo-label">En U</div><span class="tipo-check">✦</span></div>
+          <div class="tipo-btn" onclick="selTipo('con_isla')"    id="tipo-con_isla"><div class="tipo-label">Con isla</div><span class="tipo-check">✦</span></div>
+          <div class="tipo-btn" onclick="selTipo('isla_barra')"  id="tipo-isla_barra"><div class="tipo-label">Isla + barra</div><span class="tipo-check">✦</span></div>
+          <div class="tipo-btn" onclick="selTipo('isla_2barras')" id="tipo-isla_2barras"><div class="tipo-label">Isla + 2 barras</div><span class="tipo-check">✦</span></div>
         </div>
       </div>
+      <div class="card"><div class="card-titulo">Electrodomésticos disponibles</div><div class="check-grid" id="electro-grid"></div></div>
+      <div class="card"><div class="card-titulo">Vajilla disponible</div><div class="check-grid" id="vajilla-grid"></div></div>
+      <div class="card"><div class="card-titulo">Utensilios disponibles</div><div class="check-grid" id="utensilios-grid"></div></div>
+      <div class="form-footer" style="border:none;padding-top:0;"><button class="save-btn" onclick="guardarCocina()">Guardar cocina</button></div>
+    </div>
 
-      <div class="card">
-        <div class="card-titulo">Electrodomésticos disponibles</div>
-        <div class="check-grid" id="electro-grid"></div>
+    <!-- ─── TAB: SERVICIO ACTIVO ─────────────────────── -->
+    <div class="seccion" id="tab-servicio">
+      <div class="seccion-header">
+        <div class="seccion-titulo">Servicio activo</div>
+        <div class="seccion-sub">Estado en tiempo real de tu experiencia con Celestia.</div>
       </div>
-
-      <div class="card">
-        <div class="card-titulo">Vajilla disponible</div>
-        <div class="check-grid" id="vajilla-grid"></div>
-      </div>
-
-      <div class="card">
-        <div class="card-titulo">Utensilios disponibles</div>
-        <div class="check-grid" id="utensilios-grid"></div>
-      </div>
-
-      <div class="form-footer" style="border:none;padding-top:0;">
-        <button class="save-btn" onclick="guardarCocina()">Guardar cocina</button>
+      <div id="servicio-content">
+        <div class="empty-state"><span class="empty-icon">✦</span>Cargando...</div>
       </div>
     </div>
 
-    <!-- ─── TAB: RESERVAS ──────────────────────────────── -->
+    <!-- ─── TAB: HISTORIAL ───────────────────────────── -->
     <div class="seccion" id="tab-reservas">
       <div class="seccion-header">
-        <div class="seccion-titulo">Mis reservas</div>
-        <div class="seccion-sub">Historial de experiencias con Celestia.</div>
+        <div class="seccion-titulo">Historial</div>
+        <div class="seccion-sub">Tus experiencias pasadas con Celestia.</div>
       </div>
       <div id="reservas-lista">
-        <div class="empty-state">
-          <span class="empty-icon">✦</span>
-          Cargando tus reservas...
-        </div>
+        <div class="empty-state"><span class="empty-icon">✦</span>Cargando...</div>
       </div>
     </div>
 
-    <!-- ─── TAB: MENÚS ─────────────────────────────────── -->
+    <!-- ─── TAB: MENÚS ───────────────────────────────── -->
     <div class="seccion" id="tab-menus">
       <div class="seccion-header">
         <div class="seccion-titulo">Mis menús guardados</div>
         <div class="seccion-sub">Propuestas generadas con el asistente Celestia.</div>
       </div>
       <div id="menus-lista">
-        <div class="empty-state">
-          <span class="empty-icon">✦</span>
-          Cargando...
-        </div>
+        <div class="empty-state"><span class="empty-icon">✦</span>Cargando...</div>
       </div>
     </div>
 
-  </div><!-- /portal-body -->
-</div><!-- /portal-screen -->
-
+  </div>
+</div>
 
 <script>
-/* ═══════════════════════════════════════
-   INIT SUPABASE
-═══════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════
+   SUPABASE
+═══════════════════════════════════════════════════════ */
 const SUPA_URL = 'https://qolpnuscpmzqeacshfvu.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvbHBudXNjcG16cWVhY3NoZnZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NjQ3OTQsImV4cCI6MjA5MTM0MDc5NH0.BJOz5Gwkeb1NqID_gkGKD5YlymifMtOwaf8iQMaBCx8';
 const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
 
-let currentUser = null;
+let currentUser   = null;
 let tipoSeleccionado = null;
-const electros    = ['Horno','Anafe (gas)','Anafe (eléc.)','Inducción','Microondas','Procesadora','Batidora','Parrilla','Freezer','Heladera grande'];
-const vajillas    = ['Platos playos','Platos hondos','Platos de postre','Cubiertos completos','Copas de vino','Copas de agua','Copas de champagne','Vasos'];
-const utensilios  = ['Ollas grandes','Ollas medianas','Sartenes','Sartenes especiales','Wok','Mandolina','Termómetro','Soplete','Pinzas','Coladores'];
+let servicioActivo   = null;  // reserva con servicio en curso
+let realtimeSub      = null;  // canal realtime activo
+let chatSub          = null;  // canal chat realtime
+let calificacionSel  = 0;
+
+const electros   = ['Horno','Anafe (gas)','Anafe (eléc.)','Inducción','Microondas','Procesadora','Batidora','Parrilla','Freezer','Heladera grande'];
+const vajillas   = ['Platos playos','Platos hondos','Platos de postre','Cubiertos completos','Copas de vino','Copas de agua','Copas de champagne','Vasos'];
+const utensilios = ['Ollas grandes','Ollas medianas','Sartenes','Sartenes especiales','Wok','Mandolina','Termómetro','Soplete','Pinzas','Coladores'];
+
+const TRACKING_STEPS = [
+  { key:'compras',      label:'Compras',    icon:'🛒' },
+  { key:'salida',       label:'En camino',  icon:'🚗' },
+  { key:'llegada',      label:'Llegó',      icon:'📍' },
+  { key:'mise',         label:'Mise',       icon:'🔪' },
+  { key:'coccion',      label:'Cocción',    icon:'🍳' },
+  { key:'presentacion', label:'Presentación', icon:'✨' },
+];
 
 /* ─── TOAST ─────────────────────────────────────────── */
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
+  setTimeout(() => t.classList.remove('show'), 3200);
 }
 
 /* ─── AUTH ───────────────────────────────────────────── */
 function setTab(tab) {
-  document.getElementById('form-login').style.display    = tab === 'login'    ? 'block' : 'none';
-  document.getElementById('form-register').style.display = tab === 'register' ? 'block' : 'none';
-  document.getElementById('form-reset').style.display    = tab === 'reset'    ? 'block' : 'none';
+  ['login','register','reset'].forEach(t => {
+    document.getElementById('form-'+t).style.display = t===tab ? 'block' : 'none';
+  });
   document.querySelectorAll('.login-tab').forEach((b,i) =>
-    b.classList.toggle('active', (i===0 && tab==='login') || (i===1 && tab==='register'))
+    b.classList.toggle('active', (i===0&&tab==='login')||(i===1&&tab==='register'))
   );
 }
 
@@ -912,9 +589,7 @@ async function doReset() {
   document.getElementById('reset-error').textContent = '';
   document.getElementById('reset-ok').style.display = 'none';
   if (!email) { document.getElementById('reset-error').textContent = 'Ingresá tu email'; return; }
-  const { error } = await supa.auth.resetPasswordForEmail(email, {
-    redirectTo: window.location.origin + '/clientes'
-  });
+  const { error } = await supa.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin+'/clientes' });
   if (error) { document.getElementById('reset-error').textContent = error.message; return; }
   document.getElementById('reset-ok').style.display = 'block';
 }
@@ -934,8 +609,8 @@ async function doRegister() {
   const email  = document.getElementById('reg-email').value.trim();
   const pwd    = document.getElementById('reg-pwd').value;
   document.getElementById('reg-error').textContent = '';
-  if (!nombre || !email || !pwd) { document.getElementById('reg-error').textContent = 'Completá todos los campos'; return; }
-  if (pwd.length < 6) { document.getElementById('reg-error').textContent = 'La contraseña debe tener al menos 6 caracteres'; return; }
+  if (!nombre||!email||!pwd) { document.getElementById('reg-error').textContent = 'Completá todos los campos'; return; }
+  if (pwd.length<6) { document.getElementById('reg-error').textContent = 'Mínimo 6 caracteres'; return; }
   const { data, error } = await supa.auth.signUp({ email, password: pwd });
   if (error) { document.getElementById('reg-error').textContent = error.message; return; }
   currentUser = data.user;
@@ -944,71 +619,72 @@ async function doRegister() {
 }
 
 async function doLogout() {
+  if (realtimeSub) supa.removeChannel(realtimeSub);
+  if (chatSub)     supa.removeChannel(chatSub);
   await supa.auth.signOut();
-  currentUser = null;
+  currentUser = null; servicioActivo = null;
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('portal-screen').style.display = 'none';
 }
 
-/* ─── PORTAL ─────────────────────────────────────────── */
+/* ─── PORTAL INIT ────────────────────────────────────── */
 async function mostrarPortal() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('portal-screen').style.display = 'block';
   inicializarChecks();
-  await cargarPerfil();
-  await cargarCocina();
+  await Promise.all([cargarPerfil(), cargarCocina()]);
+  await verificarServicioActivo();
 }
 
 function verTab(tab, btn) {
   document.querySelectorAll('.seccion').forEach(s => s.classList.remove('activa'));
-  document.getElementById('tab-' + tab).classList.add('activa');
+  document.getElementById('tab-'+tab).classList.add('activa');
   document.querySelectorAll('.portal-nav-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  if (tab === 'reservas') cargarReservas();
-  if (tab === 'menus')    cargarMenusGuardados();
+  if (tab==='servicio') renderServicio();
+  if (tab==='reservas') cargarHistorial();
+  if (tab==='menus')    cargarMenusGuardados();
 }
 
 /* ─── AVATAR ─────────────────────────────────────────── */
-function iniciales(nombre) {
-  if (!nombre) return '?';
-  return nombre.split(' ').map(p => p[0]).slice(0, 2).join('').toUpperCase();
-}
+function iniciales(n) { if(!n)return'?'; return n.split(' ').map(p=>p[0]).slice(0,2).join('').toUpperCase(); }
 
 function actualizarAvatar(nombre, avatarUrl) {
-  const displayEl = document.getElementById('avatar-display');
-  const headerEl  = document.getElementById('portal-avatar');
+  const d = document.getElementById('avatar-display');
+  const h = document.getElementById('portal-avatar');
   if (avatarUrl) {
-    displayEl.innerHTML = `<img src="${avatarUrl}" alt="avatar">`;
-    headerEl.innerHTML  = `<img src="${avatarUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    d.innerHTML = `<img src="${avatarUrl}" alt="avatar">`;
+    h.innerHTML = `<img src="${avatarUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
   } else {
     const ini = iniciales(nombre);
-    displayEl.textContent = ini;
-    headerEl.textContent  = ini;
+    d.textContent = ini; h.textContent = ini;
   }
-  document.getElementById('avatar-nombre-display').textContent = nombre || 'Tu nombre';
-  document.getElementById('portal-nombre').textContent = nombre?.split(' ')[0] || '';
+  document.getElementById('avatar-nombre-display').textContent = nombre||'Tu nombre';
+  document.getElementById('portal-nombre').textContent = nombre?.split(' ')[0]||'';
 }
 
 /* ─── PERFIL ─────────────────────────────────────────── */
 async function cargarPerfil() {
   const { data } = await supa.from('clientes').select('*').eq('id', currentUser.id).single();
   if (!data) return;
-  document.getElementById('p-nombre').value = data.nombre    || '';
-  document.getElementById('p-tel').value    = data.telefono  || '';
-  document.getElementById('p-dir').value    = data.direccion || '';
-  document.getElementById('p-barrio').value = data.barrio    || '';
-  document.getElementById('p-piso').value   = data.piso      || '';
-  document.getElementById('p-notas').value  = data.notas     || '';
+  ['nombre','telefono','direccion','barrio','piso','notas'].forEach(f => {
+    const el = document.getElementById('p-'+({telefono:'tel',direccion:'dir',barrio:'barrio',piso:'piso',notas:'notas',nombre:'nombre'}[f]||f));
+    if (el) el.value = data[f]||'';
+  });
+  document.getElementById('p-nombre').value  = data.nombre   ||'';
+  document.getElementById('p-tel').value     = data.telefono ||'';
+  document.getElementById('p-dir').value     = data.direccion||'';
+  document.getElementById('p-barrio').value  = data.barrio   ||'';
+  document.getElementById('p-piso').value    = data.piso     ||'';
+  document.getElementById('p-notas').value   = data.notas    ||'';
   actualizarAvatar(data.nombre, data.avatar_url);
 }
 
 async function guardarPerfil() {
   const nombre = document.getElementById('p-nombre').value.trim();
-  const { data: existing } = await supa.from('clientes').select('id').eq('id', currentUser.id).single();
+  const { data: ex } = await supa.from('clientes').select('id').eq('id', currentUser.id).single();
   const perfil = {
-    id: currentUser.id,
-    nombre,
-    email:     currentUser.email,
+    id: currentUser.id, nombre, email: currentUser.email,
     telefono:  document.getElementById('p-tel').value.trim(),
     direccion: document.getElementById('p-dir').value.trim(),
     barrio:    document.getElementById('p-barrio').value.trim(),
@@ -1016,99 +692,390 @@ async function guardarPerfil() {
     notas:     document.getElementById('p-notas').value.trim()
   };
   let error;
-  if (existing) {
-    ({ error } = await supa.from('clientes').update(perfil).eq('id', currentUser.id));
-  } else {
-    ({ error } = await supa.from('clientes').insert([perfil]));
-  }
-  if (error) { showToast('Error: ' + error.message); return; }
+  if (ex) { ({ error } = await supa.from('clientes').update(perfil).eq('id', currentUser.id)); }
+  else    { ({ error } = await supa.from('clientes').insert([perfil])); }
+  if (error) { showToast('Error: '+error.message); return; }
   actualizarAvatar(nombre);
-  showToast('¡Datos guardados correctamente!');
+  showToast('¡Datos guardados!');
 }
 
 async function subirAvatar(input) {
-  const file = input.files[0];
-  if (!file) return;
-  if (file.size > 5 * 1024 * 1024) { showToast('La imagen no puede superar 5MB'); return; }
+  const file = input.files[0]; if (!file) return;
+  if (file.size > 5*1024*1024) { showToast('Máximo 5MB'); return; }
   showToast('Subiendo foto...');
   const ext  = file.name.split('.').pop().toLowerCase();
   const path = `${currentUser.id}/avatar.${ext}`;
   await supa.storage.from('avatares').remove([path]);
-  const { error: upError } = await supa.storage.from('avatares').upload(path, file, { contentType: file.type });
-  if (upError) { showToast('Error: ' + upError.message); return; }
+  const { error: upErr } = await supa.storage.from('avatares').upload(path, file, { contentType: file.type });
+  if (upErr) { showToast('Error: '+upErr.message); return; }
   const { data: urlData } = supa.storage.from('avatares').getPublicUrl(path);
-  const avatarUrl = urlData.publicUrl + '?t=' + Date.now();
-  const { error: dbError } = await supa.from('clientes').update({ avatar_url: avatarUrl }).eq('id', currentUser.id);
-  if (dbError) { showToast('Error guardando URL: ' + dbError.message); return; }
-  actualizarAvatar(document.getElementById('p-nombre').value, avatarUrl);
+  const url = urlData.publicUrl + '?t=' + Date.now();
+  await supa.from('clientes').update({ avatar_url: url }).eq('id', currentUser.id);
+  actualizarAvatar(document.getElementById('p-nombre').value, url);
   showToast('¡Foto actualizada!');
 }
 
 /* ─── COCINA ─────────────────────────────────────────── */
 function inicializarChecks() {
-  const makeGrid = (items, containerId) => {
-    document.getElementById(containerId).innerHTML = items.map(item => `
-      <div class="check-item" onclick="toggleCheck(this)">
-        <div class="check-box">✓</div>
-        <span class="check-text">${item}</span>
-      </div>`).join('');
+  const makeGrid = (items, id) => {
+    document.getElementById(id).innerHTML = items.map(item =>
+      `<div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><span class="check-text">${item}</span></div>`
+    ).join('');
   };
-  makeGrid(electros,   'electro-grid');
-  makeGrid(vajillas,   'vajilla-grid');
-  makeGrid(utensilios, 'utensilios-grid');
+  makeGrid(electros,'electro-grid'); makeGrid(vajillas,'vajilla-grid'); makeGrid(utensilios,'utensilios-grid');
 }
-
 function toggleCheck(el) { el.classList.toggle('sel'); }
-
 function selTipo(tipo) {
-  document.querySelectorAll('.tipo-btn').forEach(b => b.classList.remove('sel'));
-  document.getElementById('tipo-' + tipo).classList.add('sel');
+  document.querySelectorAll('.tipo-btn').forEach(b=>b.classList.remove('sel'));
+  document.getElementById('tipo-'+tipo).classList.add('sel');
   tipoSeleccionado = tipo;
 }
-
-function getChecked(containerId) {
-  return [...document.querySelectorAll(`#${containerId} .check-item.sel`)]
-    .map(el => el.querySelector('.check-text').textContent);
-}
-
-function setChecked(containerId, items) {
+function getChecked(id) { return [...document.querySelectorAll(`#${id} .check-item.sel`)].map(el=>el.querySelector('.check-text').textContent); }
+function setChecked(id, items) {
   if (!items) return;
-  document.querySelectorAll(`#${containerId} .check-item`).forEach(el => {
-    const txt = el.querySelector('.check-text').textContent;
-    if (items.includes(txt)) el.classList.add('sel');
+  document.querySelectorAll(`#${id} .check-item`).forEach(el => {
+    if (items.includes(el.querySelector('.check-text').textContent)) el.classList.add('sel');
   });
 }
-
 async function cargarCocina() {
   const { data } = await supa.from('cocinas').select('*').eq('cliente_id', currentUser.id).maybeSingle();
   if (!data) return;
   if (data.tipo) selTipo(data.tipo);
-  setChecked('electro-grid',    data.electrodomesticos);
-  setChecked('vajilla-grid',    data.vajilla);
+  setChecked('electro-grid', data.electrodomesticos);
+  setChecked('vajilla-grid', data.vajilla);
   setChecked('utensilios-grid', data.utensilios);
 }
-
 async function guardarCocina() {
-  const { data: existing } = await supa.from('cocinas').select('id').eq('cliente_id', currentUser.id).maybeSingle();
-  const cocina = {
-    cliente_id:      currentUser.id,
-    tipo:            tipoSeleccionado,
-    electrodomesticos: getChecked('electro-grid'),
-    vajilla:         getChecked('vajilla-grid'),
-    utensilios:      getChecked('utensilios-grid')
-  };
+  const { data: ex } = await supa.from('cocinas').select('id').eq('cliente_id', currentUser.id).maybeSingle();
+  const cocina = { cliente_id: currentUser.id, tipo: tipoSeleccionado, electrodomesticos: getChecked('electro-grid'), vajilla: getChecked('vajilla-grid'), utensilios: getChecked('utensilios-grid') };
   let error;
-  if (existing) {
-    ({ error } = await supa.from('cocinas').update(cocina).eq('id', existing.id));
-  } else {
-    ({ error } = await supa.from('cocinas').insert([cocina]));
-  }
-  if (error) { showToast('Error: ' + error.message); return; }
-  showToast('¡Cocina guardada correctamente!');
+  if (ex) { ({ error } = await supa.from('cocinas').update(cocina).eq('id', ex.id)); }
+  else    { ({ error } = await supa.from('cocinas').insert([cocina])); }
+  if (error) { showToast('Error: '+error.message); return; }
+  showToast('¡Cocina guardada!');
 }
 
-/* ─── RESERVAS ───────────────────────────────────────── */
-async function cargarReservas() {
+/* ═══════════════════════════════════════════════════════
+   SERVICIO ACTIVO — TRACKING EN TIEMPO REAL
+═══════════════════════════════════════════════════════ */
+async function verificarServicioActivo() {
+  const perfil = await supa.from('clientes').select('email,telefono').eq('id', currentUser.id).single();
+  if (!perfil.data) return;
+
+  const { data } = await supa.from('reservas')
+    .select('*, chefs(id, nombre, foto_url, especialidad, rating_promedio)')
+    .or(`email.eq.${perfil.data.email},tel.eq.${perfil.data.telefono}`)
+    .eq('estado','confirmada')
+    .not('estado_servicio','is',null)
+    .not('estado_servicio','eq','pendiente')
+    .not('estado_servicio','eq','completado')
+    .maybeSingle();
+
+  if (data) {
+    servicioActivo = data;
+    document.getElementById('badge-servicio').classList.add('visible');
+    suscribirRealtime(data.id);
+  }
+}
+
+function suscribirRealtime(reservaId) {
+  if (realtimeSub) supa.removeChannel(realtimeSub);
+  realtimeSub = supa.channel('reserva-'+reservaId)
+    .on('postgres_changes', {
+      event: 'UPDATE', schema: 'public', table: 'reservas',
+      filter: `id=eq.${reservaId}`
+    }, payload => {
+      servicioActivo = { ...servicioActivo, ...payload.new };
+      if (document.getElementById('tab-servicio').classList.contains('activa')) {
+        renderServicio();
+      }
+      // Notificar si el tab no está activo
+      if (!document.getElementById('tab-servicio').classList.contains('activa')) {
+        const step = estadoServicioLabel(payload.new.estado_servicio);
+        showToast(`Chef: ${step}`);
+      }
+      if (payload.new.estado_servicio === 'completado') {
+        document.getElementById('badge-servicio').classList.remove('visible');
+      }
+    })
+    .subscribe();
+}
+
+function estadoServicioLabel(es) {
+  const map = { compras:'haciendo las compras', en_camino:'en camino a tu casa', en_domicilio:'llegó al domicilio', mise_en_place:'en mise en place', coccion:'cocinando', presentacion:'en presentación final', completado:'servicio completado' };
+  return map[es]||es;
+}
+
+async function renderServicio() {
+  const el = document.getElementById('servicio-content');
+
+  // Si no hay servicio activo, buscar nuevamente
+  if (!servicioActivo) {
+    await verificarServicioActivo();
+  }
+
+  if (!servicioActivo) {
+    // Mostrar próxima reserva confirmada si existe
+    const perfil = await supa.from('clientes').select('email,telefono').eq('id', currentUser.id).single();
+    if (perfil.data) {
+      const { data: proxima } = await supa.from('reservas')
+        .select('*')
+        .or(`email.eq.${perfil.data.email},tel.eq.${perfil.data.telefono}`)
+        .in('estado',['reservada','confirmada'])
+        .gte('fecha', new Date().toISOString().split('T')[0])
+        .order('fecha', { ascending: true })
+        .limit(1)
+        .maybeSingle();
+
+      if (proxima) {
+        const fmtFecha = f => new Date(f+'T12:00:00').toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+        el.innerHTML = `
+          <div class="card" style="text-align:center;padding:40px 32px;">
+            <div style="font-family:'DM Serif Display',serif;font-size:15px;color:var(--text-light);margin-bottom:8px;letter-spacing:0.06em;text-transform:uppercase;">Próxima experiencia</div>
+            <div style="font-family:'DM Serif Display',serif;font-size:24px;color:var(--navy);margin-bottom:10px;">${proxima.menu||'Menú Celestia'}</div>
+            <div style="font-size:14px;color:var(--text-light);">${fmtFecha(proxima.fecha)} · ${proxima.turno==='almuerzo'?'Almuerzo':'Cena'} · ${proxima.personas} personas</div>
+            <div style="margin-top:20px;font-size:13px;color:var(--text-light);">El servicio activo aparecerá aquí cuando el chef inicie el tracking.</div>
+          </div>`;
+        return;
+      }
+    }
+    el.innerHTML = `<div class="empty-state"><span class="empty-icon">✦</span>No hay un servicio activo en este momento.<br><a href="/" class="empty-link" style="margin-top:8px;display:inline-block;">Reservar una experiencia →</a></div>`;
+    return;
+  }
+
+  const r     = servicioActivo;
+  const chef  = r.chefs || {};
+  const checklist = r.checklist || {};
+  const fmt   = n => n ? '$' + Math.round(n).toLocaleString('es-AR') : '—';
+  const fmtFecha = f => new Date(f+'T12:00:00').toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long'});
+  const dir   = r.dir || '';
+  const ya_califico = !!r.calificacion;
+
+  // Calcular paso activo
+  let pasoActivo = -1;
+  TRACKING_STEPS.forEach((s, i) => { if (checklist[s.key]) pasoActivo = i; });
+  const pct = pasoActivo < 0 ? 0 : Math.round(((pasoActivo+1)/TRACKING_STEPS.length)*100);
+
+  // Chef avatar
+  const chefAvatarHtml = chef.foto_url
+    ? `<img src="${chef.foto_url}" alt="${chef.nombre}">`
+    : `<span style="font-size:18px;">${iniciales(chef.nombre)}</span>`;
+
+  // Stars del chef
+  const rating = chef.rating_promedio ? parseFloat(chef.rating_promedio).toFixed(1) : null;
+  const starsHtml = rating
+    ? `<div class="chef-mini-rating">★ ${rating}</div>`
+    : '';
+
+  // Mostrar calificación o formulario
+  let calSection = '';
+  if (r.estado_servicio === 'completado' || r.estado_servicio === 'presentacion') {
+    if (ya_califico) {
+      const stars = '★'.repeat(r.calificacion) + '☆'.repeat(5-r.calificacion);
+      calSection = `
+        <div class="calificacion-wrap" style="border-top:1px solid rgba(255,255,255,0.07);">
+          <div class="cal-titulo">Tu calificación</div>
+          <div style="font-size:20px;color:var(--gold);letter-spacing:4px;">${stars}</div>
+          ${r.calificacion_nota ? `<div style="font-size:13px;color:rgba(250,246,239,0.5);margin-top:10px;">"${r.calificacion_nota}"</div>` : ''}
+        </div>`;
+    } else {
+      calSection = `
+        <div class="calificacion-wrap" style="border-top:1px solid rgba(255,255,255,0.07);">
+          <div class="cal-titulo">¿Cómo estuvo el servicio?</div>
+          <div class="stars-row" id="stars-row">
+            ${[1,2,3,4,5].map(n=>`<button class="star-btn" onclick="selStar(${n})" data-star="${n}">★</button>`).join('')}
+          </div>
+          <textarea class="cal-nota-input" id="cal-nota" placeholder="Dejá un comentario para el chef (opcional)..."></textarea>
+          <button class="save-btn" onclick="enviarCalificacion('${r.id}','${chef.id}')" style="width:100%;">Enviar calificación</button>
+          <div class="cal-ok" id="cal-ok">✓ ¡Gracias por tu calificación!</div>
+        </div>`;
+    }
+  }
+
+  el.innerHTML = `
+    <div class="servicio-card">
+      <div class="servicio-header">
+        <div>
+          <div class="servicio-badge">● Servicio en curso</div>
+          <div class="servicio-menu">${r.menu||'Menú Celestia'}</div>
+          <div class="servicio-meta">${fmtFecha(r.fecha)} · ${r.turno==='almuerzo'?'Almuerzo':'Cena'} · ${r.personas} personas</div>
+        </div>
+        ${chef.nombre ? `
+        <div class="servicio-chef-mini">
+          <div class="chef-avatar-mini">${chefAvatarHtml}</div>
+          <div>
+            <div class="chef-mini-nombre">${chef.nombre}</div>
+            <div class="chef-mini-esp">${chef.especialidad||'Chef Celestia'}</div>
+            ${starsHtml}
+          </div>
+        </div>` : ''}
+      </div>
+
+      <div class="tracking-wrap">
+        <div class="tracking-label">Estado del servicio</div>
+        <div class="tracking-steps" style="position:relative;">
+          <div class="tracking-line"><div class="tracking-line-fill" style="width:${pct}%;"></div></div>
+          ${TRACKING_STEPS.map((s,i) => {
+            const done   = checklist[s.key];
+            const active = !done && i === pasoActivo+1;
+            return `<div class="tracking-step ${done?'done':''} ${active?'active':''}">
+              <div class="tracking-step-dot">${done ? '✓' : s.icon}</div>
+              <div class="tracking-step-label">${s.label}</div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+
+      ${dir && r.estado_servicio === 'en_camino' ? `
+      <div class="servicio-maps">
+        <a class="maps-btn" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(dir)}" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Ver ruta en Google Maps
+        </a>
+      </div>` : ''}
+
+      ${calSection}
+    </div>
+
+    <!-- CHAT -->
+    <div class="card" style="padding:0;overflow:hidden;">
+      <div style="padding:20px 24px 16px;border-bottom:1px solid var(--cream-mid);">
+        <div class="card-titulo" style="margin-bottom:0;padding-bottom:0;border-bottom:none;">Chat con el chef</div>
+      </div>
+      <div class="chat-wrap">
+        <div class="chat-messages" id="chat-messages">
+          <div class="chat-empty">Cargando mensajes...</div>
+        </div>
+        <div class="chat-input-wrap">
+          <textarea class="chat-input" id="chat-input" placeholder="Escribí un mensaje..." rows="1"
+            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviarMensaje('${r.id}');}"></textarea>
+          <button class="chat-send-btn" onclick="enviarMensaje('${r.id}')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>`;
+
+  cargarChat(r.id);
+}
+
+/* ─── CALIFICACIÓN ───────────────────────────────────── */
+function selStar(n) {
+  calificacionSel = n;
+  document.querySelectorAll('.star-btn').forEach(b => {
+    b.classList.toggle('sel', parseInt(b.dataset.star) <= n);
+  });
+}
+
+async function enviarCalificacion(reservaId, chefId) {
+  if (!calificacionSel) { showToast('Seleccioná una calificación'); return; }
+  const nota = document.getElementById('cal-nota')?.value?.trim()||'';
+
+  await supa.from('reservas').update({
+    calificacion: calificacionSel,
+    calificacion_nota: nota,
+    calificacion_fecha: new Date().toISOString()
+  }).eq('id', reservaId);
+
+  // Actualizar rating promedio del chef
+  if (chefId) {
+    const { data: chefData } = await supa.from('chefs').select('rating_promedio, servicios_completados').eq('id', chefId).single();
+    if (chefData) {
+      const total = chefData.servicios_completados || 1;
+      const prev  = chefData.rating_promedio || 0;
+      const nuevo = ((prev * (total-1)) + calificacionSel) / total;
+      await supa.from('chefs').update({ rating_promedio: Math.round(nuevo*10)/10 }).eq('id', chefId);
+    }
+  }
+
+  document.getElementById('cal-ok').style.display = 'block';
+  showToast('¡Calificación enviada!');
+  setTimeout(() => { servicioActivo.calificacion = calificacionSel; renderServicio(); }, 1500);
+}
+
+/* ─── CHAT ───────────────────────────────────────────── */
+async function cargarChat(reservaId) {
+  const { data } = await supa.from('mensajes')
+    .select('*')
+    .eq('reserva_id', reservaId)
+    .order('created_at', { ascending: true });
+
+  renderMensajes(data||[]);
+
+  // Suscribir realtime chat
+  if (chatSub) supa.removeChannel(chatSub);
+  chatSub = supa.channel('chat-'+reservaId)
+    .on('postgres_changes', {
+      event: 'INSERT', schema: 'public', table: 'mensajes',
+      filter: `reserva_id=eq.${reservaId}`
+    }, payload => {
+      const el = document.getElementById('chat-messages');
+      if (!el) return;
+      const msgs = [...el.querySelectorAll('.msg-row')];
+      appendMensaje(payload.new);
+    })
+    .subscribe();
+}
+
+function renderMensajes(msgs) {
+  const el = document.getElementById('chat-messages');
+  if (!el) return;
+  if (!msgs.length) {
+    el.innerHTML = '<div class="chat-empty">Aún no hay mensajes. Podés escribirle al chef.</div>';
+    return;
+  }
+  el.innerHTML = msgs.map(m => mensajeHtml(m)).join('');
+  el.scrollTop = el.scrollHeight;
+}
+
+function appendMensaje(m) {
+  const el = document.getElementById('chat-messages');
+  if (!el) return;
+  const empty = el.querySelector('.chat-empty');
+  if (empty) empty.remove();
+  el.insertAdjacentHTML('beforeend', mensajeHtml(m));
+  el.scrollTop = el.scrollHeight;
+}
+
+function mensajeHtml(m) {
+  const esPropio = m.autor_id === currentUser.id;
+  const hora = new Date(m.created_at).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+  const avatarLabel = m.rol==='chef' ? 'CH' : m.rol==='admin' ? 'AD' : 'TÚ';
+  return `
+    <div class="msg-row ${esPropio?'mine':'other'}">
+      ${!esPropio ? `<div class="msg-avatar-sm">${avatarLabel}</div>` : ''}
+      <div>
+        ${!esPropio ? `<div class="msg-autor">${m.rol==='chef'?'Chef':'Celestia'}</div>` : ''}
+        <div class="msg-bubble">${escapeHtml(m.texto)}</div>
+        <div class="msg-time">${hora}</div>
+      </div>
+    </div>`;
+}
+
+async function enviarMensaje(reservaId) {
+  const input = document.getElementById('chat-input');
+  const texto = input?.value?.trim();
+  if (!texto) return;
+  input.value = '';
+  input.style.height = 'auto';
+
+  const { error } = await supa.from('mensajes').insert([{
+    reserva_id: reservaId,
+    autor_id:   currentUser.id,
+    rol:        'cliente',
+    texto
+  }]);
+  if (error) { showToast('Error al enviar mensaje'); console.error(error); }
+}
+
+function escapeHtml(t) {
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ═══════════════════════════════════════════════════════
+   HISTORIAL
+═══════════════════════════════════════════════════════ */
+async function cargarHistorial() {
   const el = document.getElementById('reservas-lista');
   el.innerHTML = '<div class="empty-state"><span class="empty-icon">✦</span>Cargando...</div>';
 
@@ -1119,67 +1086,94 @@ async function cargarReservas() {
     .or(`email.eq.${perfil.data.email},tel.eq.${perfil.data.telefono}`)
     .order('fecha', { ascending: false });
 
-  if (!data || data.length === 0) {
-    el.innerHTML = `
-      <div class="empty-state">
-        <span class="empty-icon">✦</span>
-        Todavía no tenés reservas.<br>
-        <a href="/" class="empty-link" style="margin-top:8px;display:inline-block;">Reservar una experiencia →</a>
-      </div>`;
+  if (!data || !data.length) {
+    el.innerHTML = `<div class="empty-state"><span class="empty-icon">✦</span>Todavía no tenés reservas.<br><a href="/" class="empty-link" style="margin-top:8px;display:inline-block;">Reservar una experiencia →</a></div>`;
     return;
   }
 
-  const fmt     = n => n ? '$' + Math.round(n).toLocaleString('es-AR') : '—';
-  const fmtFecha = f => new Date(f + 'T12:00:00').toLocaleDateString('es-AR', {
-    weekday:'long', day:'numeric', month:'long', year:'numeric'
-  });
+  const fmt      = n => n ? '$'+Math.round(n).toLocaleString('es-AR') : '—';
+  const fmtFecha = f => new Date(f+'T12:00:00').toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 
-  el.innerHTML = data.map(r => {
-    const senia = Math.round((r.honorario || 0) * 0.5);
-    const saldo = (r.honorario || 0) - senia;
-    const turnoLabel = r.turno === 'almuerzo' ? '☀ Almuerzo' : '🌙 Cena';
-    return `
-    <div class="reserva-card ${r.estado}">
-      <div class="reserva-header">
-        <div>
-          <div class="reserva-fecha">${fmtFecha(r.fecha)}</div>
-          <div class="reserva-info">${turnoLabel} · ${r.personas} personas${r.menu ? ' · ' + r.menu : ''}</div>
-          <div class="reserva-ref">Ref: ${r.ref}</div>
+  // Separar activas / completadas
+  const activas    = data.filter(r => r.estado_servicio !== 'completado' && r.estado !== 'cancelada');
+  const completadas = data.filter(r => r.estado_servicio === 'completado');
+  const canceladas  = data.filter(r => r.estado === 'cancelada');
+
+  let html = '';
+
+  if (activas.length) {
+    html += `<div class="card-titulo" style="margin-bottom:16px;">Próximas</div>`;
+    html += activas.map(r => `
+      <div class="reserva-card ${r.estado}">
+        <div class="reserva-header">
+          <div>
+            <div class="reserva-fecha">${fmtFecha(r.fecha)}</div>
+            <div class="reserva-info">${r.turno==='almuerzo'?'☀ Almuerzo':'🌙 Cena'} · ${r.personas} personas${r.menu?' · '+r.menu:''}</div>
+            <div class="reserva-ref">Ref: ${r.ref}</div>
+          </div>
+          <span class="reserva-badge ${r.estado}">${r.estado}</span>
         </div>
-        <span class="reserva-badge ${r.estado}">${r.estado}</span>
-      </div>
-      <div class="reserva-pago">
-        <div class="pago-bloque">
-          <div class="pago-titulo">Seña</div>
-          <div class="pago-valor">${fmt(senia)}</div>
-          <div class="pago-estado ${r.senia_cobrada ? 'cobrado' : 'pendiente'}">
-            ${r.senia_cobrada ? '✓ Abonada' : '· Pendiente de pago'}
+        <div class="reserva-pago">
+          <div class="pago-bloque">
+            <div class="pago-titulo">Seña</div>
+            <div class="pago-valor">${fmt(Math.round((r.honorario||0)*0.5))}</div>
+            <div class="pago-estado ${r.senia_cobrada?'cobrado':'pendiente'}">${r.senia_cobrada?'✓ Abonada':'· Pendiente'}</div>
+          </div>
+          <div class="pago-bloque">
+            <div class="pago-titulo">Saldo</div>
+            <div class="pago-valor">${fmt((r.honorario||0)-Math.round((r.honorario||0)*0.5))}</div>
+            <div class="pago-estado ${r.saldo_cobrado?'cobrado':'pendiente'}">${r.saldo_cobrado?'✓ Abonado':'· A abonar el día del evento'}</div>
           </div>
         </div>
-        <div class="pago-bloque">
-          <div class="pago-titulo">Saldo</div>
-          <div class="pago-valor">${fmt(saldo)}</div>
-          <div class="pago-estado ${r.saldo_cobrado ? 'cobrado' : 'pendiente'}">
-            ${r.saldo_cobrado ? '✓ Abonado' : '· A abonar el día del evento'}
+      </div>`).join('');
+  }
+
+  if (completadas.length) {
+    html += `<div class="card-titulo" style="margin:28px 0 16px;">Servicios anteriores</div>`;
+    html += completadas.map(r => {
+      const stars = r.calificacion ? '★'.repeat(r.calificacion)+'☆'.repeat(5-r.calificacion) : null;
+      return `
+        <div class="hist-card">
+          <div>
+            <div class="hist-menu">${r.menu||'Menú Celestia'}</div>
+            <div class="hist-meta">${fmtFecha(r.fecha)} · ${r.personas} personas</div>
+            ${stars ? `<div class="hist-rating">${[...stars].map((s,i)=>`<span class="hist-star ${i<r.calificacion?'filled':''}">${s}</span>`).join('')}</div>` : ''}
           </div>
+          <div class="hist-monto">${fmt(r.honorario_final||r.honorario)}</div>
+        </div>`;
+    }).join('');
+  }
+
+  if (canceladas.length) {
+    html += `<div class="card-titulo" style="margin:28px 0 16px;opacity:0.5;">Canceladas</div>`;
+    html += canceladas.map(r => `
+      <div class="reserva-card cancelada">
+        <div class="reserva-header">
+          <div>
+            <div class="reserva-fecha">${fmtFecha(r.fecha)}</div>
+            <div class="reserva-info">${r.turno==='almuerzo'?'☀ Almuerzo':'🌙 Cena'} · ${r.personas} personas</div>
+          </div>
+          <span class="reserva-badge cancelada">cancelada</span>
         </div>
-      </div>
-    </div>`;
-  }).join('');
+      </div>`).join('');
+  }
+
+  el.innerHTML = html;
 }
 
-/* ─── MENÚS GUARDADOS ────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════
+   MENÚS GUARDADOS
+═══════════════════════════════════════════════════════ */
 function detectarUrlMenu(propuesta) {
   if (!propuesta) return '/';
   const txt = propuesta.toLowerCase();
-  const es7 = txt.includes('7 pasos') || txt.includes('siete pasos') || txt.includes('bienvenida') || txt.includes('7 momentos');
-  return `/?menu=${es7 ? 2 : 1}`;
+  const es7 = txt.includes('7 pasos')||txt.includes('siete pasos')||txt.includes('bienvenida')||txt.includes('7 momentos');
+  return `/?menu=${es7?2:1}`;
 }
 
 function reservarMenuGuardado(id) {
-  const menus  = window._menusData || [];
-  const menu   = menus.find(m => m.id === id);
-  const propuesta = menu?.ultima_propuesta || '';
+  const m = (window._menusData||[]).find(m=>m.id===id);
+  const propuesta = m?.ultima_propuesta||'';
   if (propuesta) sessionStorage.setItem('celestia_menu_guardado', propuesta);
   window.location.href = detectarUrlMenu(propuesta);
 }
@@ -1187,96 +1181,73 @@ function reservarMenuGuardado(id) {
 async function cargarMenusGuardados() {
   const el = document.getElementById('menus-lista');
   el.innerHTML = '<div class="empty-state"><span class="empty-icon">✦</span>Cargando...</div>';
-
-  const { data, error } = await supa
-    .from('menus_guardados').select('*')
-    .eq('cliente_id', currentUser.id)
-    .order('created_at', { ascending: false });
-
-  if (error || !data || data.length === 0) {
-    el.innerHTML = `
-      <div class="empty-state">
-        <span class="empty-icon">✦</span>
-        Todavía no guardaste ningún menú.<br>
-        <a href="/" class="empty-link" style="margin-top:8px;display:inline-block;">Explorá el asistente →</a>
-      </div>`;
+  const { data, error } = await supa.from('menus_guardados').select('*').eq('cliente_id', currentUser.id).order('created_at',{ascending:false});
+  if (error||!data||!data.length) {
+    el.innerHTML = `<div class="empty-state"><span class="empty-icon">✦</span>Todavía no guardaste ningún menú.<br><a href="/" class="empty-link" style="margin-top:8px;display:inline-block;">Explorá el asistente →</a></div>`;
     return;
   }
-
   window._menusData = data;
-
   el.innerHTML = data.map(m => {
-    const fecha  = new Date(m.created_at).toLocaleDateString('es-AR', { day:'numeric', month:'long', year:'numeric' });
-    const lineas = m.ultima_propuesta?.split('\n').filter(l => l.trim()) || [];
-    const titulo  = lineas.find(l => l.includes('MENÚ CELESTIA')) || 'Propuesta de menú';
-    const preview = lineas
-      .filter(l => !l.includes('---') && !l.includes('MENÚ CELESTIA'))
-      .slice(0, 5).join('\n');
+    const fecha  = new Date(m.created_at).toLocaleDateString('es-AR',{day:'numeric',month:'long',year:'numeric'});
+    const lineas = m.ultima_propuesta?.split('\n').filter(l=>l.trim())||[];
+    const titulo = lineas.find(l=>l.includes('MENÚ CELESTIA'))||'Propuesta de menú';
+    const preview = lineas.filter(l=>!l.includes('---')&&!l.includes('MENÚ CELESTIA')).slice(0,5).join('\n');
     return `
-    <div class="menu-guardado-card">
-      <div class="menu-card-header">
-        <div>
-          <div class="menu-card-fecha">${fecha}</div>
-          <div class="menu-card-titulo">${titulo.replace('🍽 ','')}</div>
-          <div class="menu-card-preview">${preview}</div>
-        </div>
+    <div style="background:var(--white);border-radius:var(--radius-lg);border:1px solid var(--cream-dark);margin-bottom:16px;overflow:hidden;transition:box-shadow var(--t);" onmouseenter="this.style.boxShadow='var(--shadow)'" onmouseleave="this.style.boxShadow='none'">
+      <div style="padding:22px 26px 18px;">
+        <div style="font-size:11px;letter-spacing:0.09em;text-transform:uppercase;color:var(--text-light);margin-bottom:7px;">${fecha}</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:17px;color:var(--navy);margin-bottom:8px;">${titulo.replace('🍽 ','')}</div>
+        <div style="font-size:13px;color:var(--text-mid);line-height:1.75;white-space:pre-line;">${preview}</div>
       </div>
-      <div class="menu-card-actions">
-        <button class="btn-menu btn-menu-secondary" onclick="verMenuCompleto('${m.id}')">Ver menú completo</button>
-        <button class="btn-menu btn-menu-primary" onclick="reservarMenuGuardado('${m.id}')">Reservar este menú</button>
-        <button class="btn-menu btn-menu-ghost" onclick="eliminarMenu('${m.id}')">Eliminar</button>
+      <div style="padding:14px 26px 18px;display:flex;gap:8px;flex-wrap:wrap;border-top:1px solid var(--cream-mid);">
+        <button onclick="verMenuCompleto('${m.id}')" style="font-size:12px;padding:7px 16px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;background:var(--gold-faint);color:var(--gold);border:1px solid rgba(201,168,76,0.25);">Ver menú completo</button>
+        <button onclick="reservarMenuGuardado('${m.id}')" style="font-size:12px;padding:7px 16px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;background:var(--navy);color:var(--cream);border:none;">Reservar este menú</button>
+        <button onclick="eliminarMenu('${m.id}')" style="font-size:12px;padding:7px 16px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;background:transparent;color:var(--text-light);border:1px solid var(--cream-dark);">Eliminar</button>
       </div>
-      <div class="menu-full-content" id="menu-full-${m.id}">
-        <pre>${m.ultima_propuesta}</pre>
+      <div id="menu-full-${m.id}" style="display:none;padding:20px 26px 22px;border-top:1px solid var(--cream-mid);background:var(--cream);">
+        <pre style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text-mid);line-height:1.8;white-space:pre-wrap;">${m.ultima_propuesta}</pre>
       </div>
     </div>`;
   }).join('');
 }
 
 function verMenuCompleto(id) {
-  const el = document.getElementById('menu-full-' + id);
-  el.style.display = el.style.display === 'none' || !el.style.display ? 'block' : 'none';
+  const el = document.getElementById('menu-full-'+id);
+  el.style.display = el.style.display==='block' ? 'none' : 'block';
 }
 
 async function eliminarMenu(id) {
-  if (!confirm('¿Eliminar este menú guardado?')) return;
+  if (!confirm('¿Eliminar este menú?')) return;
   await supa.from('menus_guardados').delete().eq('id', id);
   cargarMenusGuardados();
 }
 
-/* ─── INIT ───────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════ */
 supa.auth.onAuthStateChange((event, session) => {
-  if (event === 'PASSWORD_RECOVERY') {
+  if (event==='PASSWORD_RECOVERY') {
     mostrarFormNuevaPassword();
-  } else if (event === 'SIGNED_IN' && session) {
+  } else if (event==='SIGNED_IN' && session) {
     const hash = window.location.hash;
-    const isRecovery = hash.includes('type=recovery') || hash.includes('type=passwordRecovery');
-    if (!isRecovery) {
-      currentUser = session.user;
-      mostrarPortal();
-    }
+    const isRecovery = hash.includes('type=recovery')||hash.includes('type=passwordRecovery');
+    if (!isRecovery) { currentUser = session.user; mostrarPortal(); }
   }
 });
 
 (async () => {
   const hash = window.location.hash;
-  if (hash.includes('type=recovery') || hash.includes('type=passwordRecovery') || hash.includes('error_code=otp_expired')) {
-    mostrarFormNuevaPassword();
-    return;
+  if (hash.includes('type=recovery')||hash.includes('type=passwordRecovery')||hash.includes('error_code=otp_expired')) {
+    mostrarFormNuevaPassword(); return;
   }
   const { data } = await supa.auth.getSession();
-  if (data.session) {
-    currentUser = data.session.user;
-    mostrarPortal();
-  }
+  if (data.session) { currentUser = data.session.user; mostrarPortal(); }
 })();
 
 function mostrarFormNuevaPassword() {
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('login-tabs-bar').style.display = 'none';
-  document.getElementById('form-login').style.display    = 'none';
-  document.getElementById('form-register').style.display = 'none';
-  document.getElementById('form-reset').style.display    = 'none';
+  ['login','register','reset'].forEach(t => document.getElementById('form-'+t).style.display='none');
   document.getElementById('form-nueva-pwd').style.display = 'block';
 }
 
@@ -1284,18 +1255,17 @@ async function doNuevaPassword() {
   const pwd  = document.getElementById('nueva-pwd').value;
   const pwd2 = document.getElementById('nueva-pwd2').value;
   const errEl = document.getElementById('nueva-pwd-error');
-  const okEl  = document.getElementById('nueva-pwd-ok');
   errEl.textContent = '';
-  okEl.style.display = 'none';
-  if (pwd.length < 6) { errEl.textContent = 'La contraseña debe tener al menos 6 caracteres'; return; }
-  if (pwd !== pwd2)   { errEl.textContent = 'Las contraseñas no coinciden'; return; }
+  document.getElementById('nueva-pwd-ok').style.display = 'none';
+  if (pwd.length<6) { errEl.textContent='Mínimo 6 caracteres'; return; }
+  if (pwd!==pwd2)   { errEl.textContent='Las contraseñas no coinciden'; return; }
   const { error } = await supa.auth.updateUser({ password: pwd });
-  if (error) { errEl.textContent = error.message; return; }
-  okEl.style.display = 'block';
-  history.replaceState(null, '', window.location.pathname);
+  if (error) { errEl.textContent=error.message; return; }
+  document.getElementById('nueva-pwd-ok').style.display = 'block';
+  history.replaceState(null,'',window.location.pathname);
   setTimeout(() => {
-    document.getElementById('login-tabs-bar').style.display = 'flex';
-    document.getElementById('form-nueva-pwd').style.display = 'none';
+    document.getElementById('login-tabs-bar').style.display='flex';
+    document.getElementById('form-nueva-pwd').style.display='none';
     setTab('login');
   }, 2000);
 }
