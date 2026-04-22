@@ -822,7 +822,7 @@ async function cargarSolicitudes() {
   const { data, error } = await supa
     .from('reservas')
     .select('*, menu_definitivo, menu_definitivo_ok, lista_compras, lista_compras_generada, recetas')
-    .in('estado', ['ofrecida','confirmada'])
+    .or(`estado.eq.ofrecida,and(estado.eq.confirmada,chef_id.eq.${currentUser.id})`)
     .order('fecha', { ascending: true });
 
   if (error || !data || data.length === 0) {
@@ -844,8 +844,12 @@ async function cargarSolicitudes() {
     renderServicioActivo(activo);
   }
 
-  // Solo mostrar ofrecidas sin chef asignado todavía
-  const pendientes = data.filter(r => r.estado === 'ofrecida' && !r.chef_id);
+  // Pendientes: ofrecidas sin chef asignado todavía
+  // + servicios que este chef ya aceptó (para que no desaparezcan)
+  const pendientes = data.filter(r =>
+    (r.estado === 'ofrecida' && !r.chef_id) ||
+    (r.chef_id === currentUser.id && r.estado_servicio === 'aceptado')
+  );
 
   if (pendientes.length === 0) {
     document.getElementById('solicitudes-lista').innerHTML = `
