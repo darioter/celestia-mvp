@@ -592,6 +592,8 @@ async function loginGoogle() {
 }
 
 async function doLogout() {
+  if (realtimeChannel) supa.removeChannel(realtimeChannel);
+  if (pollingInterval) clearInterval(pollingInterval);
   await supa.auth.signOut();
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('portal-screen').style.display = 'none';
@@ -820,17 +822,26 @@ function toggleDisponible() {
 
 // ─── SOLICITUDES ──────────────────────────────────────────
 let realtimeChannel = null;
+let pollingInterval = null;
 
 function suscribirRealtime() {
+  // Polling cada 8 segundos como base confiable
+  if (pollingInterval) clearInterval(pollingInterval);
+  pollingInterval = setInterval(() => {
+    cargarSolicitudes();
+  }, 8000);
+
+  // Realtime como complemento (requiere Replica Identity en Supabase)
   if (realtimeChannel) supa.removeChannel(realtimeChannel);
-  realtimeChannel = supa.channel('reservas-chef')
+  realtimeChannel = supa.channel('reservas-chef-' + Date.now())
     .on('postgres_changes', {
       event: '*', schema: 'public', table: 'reservas'
     }, payload => {
-      // Nueva oferta o cambio de estado → recargar
       cargarSolicitudes();
     })
-    .subscribe();
+    .subscribe((status) => {
+      console.log('Realtime status:', status);
+    });
 }
 
 async function cargarSolicitudes() {
@@ -862,7 +873,7 @@ async function cargarSolicitudes() {
     r.estado_servicio !== 'completado'
   );
 
-  // Servicios del chef que fueron cancelados recientemente (últimos 7 días)
+  // Servicios del chef cancelados recientemente (últimos 7 días)
   const cancelados = data.filter(r => {
     if (r.chef_id !== currentUser.id || r.estado !== 'cancelada') return false;
     const fecha = new Date(r.fecha + 'T12:00:00');
@@ -870,25 +881,11 @@ async function cargarSolicitudes() {
     return fecha >= hace7dias;
   });
 
-  // Notificar cancelaciones al chef
-  if (cancelados.length) {
-    cancelados.forEach(r => {
-      const el = document.getElementById('activo-content');
-      const aviso = document.createElement('div');
-      aviso.style.cssText = 'background:rgba(155,35,53,0.15);border:1px solid rgba(155,35,53,0.35);border-radius:12px;padding:14px 18px;margin-bottom:12px;';
-      aviso.innerHTML = `
-        <div style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#E67E8A;margin-bottom:6px;">⚠ Servicio cancelado</div>
-        <div style="font-size:14px;color:var(--cream);margin-bottom:4px;">${r.menu||'Servicio Celestia'} · ${new Date(r.fecha+'T12:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'long'})}</div>
-        <div style="font-size:13px;color:rgba(250,246,239,0.55);">Motivo: ${r.cancelacion_motivo||'Sin motivo especificado'}</div>`;
-      el.prepend(aviso);
-    });
-  }
-
-  if (activos.length) {
-    servicioActivo = activos[0];
-    renderServiciosActivos(activos);
+  if (activos.length || cancelados.length) {
+    servicioActivo = activos[0] || null;
+    renderServiciosActivos(activos, cancelados);
   } else {
-    renderServiciosActivos([]);
+    renderServiciosActivos([], []);
   }
 
   // Solo mostrar ofrecidas sin chef asignado todavía
@@ -1012,18 +1009,31 @@ const CHECKLIST_ITEMS = [
   { key:'presentacion', label:'Emplatado y presentación', sub:'El momento final del servicio' },
 ]
 
-function renderServiciosActivos(activos) {
+function renderServiciosActivos(activos, cancelados = []) {
   const el = document.getElementById('activo-content');
+
+  const avisosCancelados = cancelados.map(r => `
+    <div style="background:rgba(155,35,53,0.15);border:1px solid rgba(155,35,53,0.35);border-radius:12px;padding:14px 18px;margin-bottom:12px;">
+      <div style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#E67E8A;margin-bottom:6px;">⚠ Servicio cancelado</div>
+      <div style="font-size:14px;color:var(--cream);margin-bottom:4px;">${r.menu||'Servicio Celestia'} · ${new Date(r.fecha+'T12:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'long'})}</div>
+      <div style="font-size:13px;color:rgba(250,246,239,0.55);">Motivo: ${r.cancelacion_motivo||'Sin motivo especificado'}</div>
+    </div>`).join('');
+
   if (!activos.length) {
-    el.innerHTML = `<div class="empty-state"><div class="empty-icon">✦</div><div class="empty-text">No tenés un servicio activo en este momento.</div></div>`;
+    el.innerHTML = avisosCancelados + `<div class="empty-state"><div class="empty-icon">✦</div><div class="empty-text">No tenés un servicio activo en este momento.</div></div>`;
     return;
   }
   if (activos.length === 1) {
+    if (avisosCancelados) {
+      el.innerHTML = avisosCancelados;
+      const tmp = document.createElement('div');
+      el.appendChild(tmp);
+    }
     renderServicioActivo(activos[0]);
     return;
   }
   // Múltiples servicios activos — mostrar selector
-  el.innerHTML = `
+  el.innerHTML = avisosCancelados + `
     <div style="margin-bottom:16px;">
       <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(250,246,239,0.35);margin-bottom:10px;">
         ${activos.length} servicios activos
