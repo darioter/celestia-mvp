@@ -825,23 +825,23 @@ let realtimeChannel = null;
 let pollingInterval = null;
 
 function suscribirRealtime() {
-  // Polling cada 8 segundos como base confiable
+  // Polling cada 3 segundos para ofertas rápidas
   if (pollingInterval) clearInterval(pollingInterval);
   pollingInterval = setInterval(() => {
     cargarSolicitudes();
-  }, 8000);
+  }, 3000);
 
-  // Realtime como complemento (requiere Replica Identity en Supabase)
+  // Realtime instantáneo (requiere Replica Identity FULL en Supabase)
   if (realtimeChannel) supa.removeChannel(realtimeChannel);
   realtimeChannel = supa.channel('reservas-chef-' + Date.now())
     .on('postgres_changes', {
-      event: '*', schema: 'public', table: 'reservas'
-    }, payload => {
-      cargarSolicitudes();
-    })
-    .subscribe((status) => {
-      console.log('Realtime status:', status);
-    });
+      event: 'UPDATE', schema: 'public', table: 'reservas',
+      filter: 'estado=eq.ofrecida'
+    }, () => { cargarSolicitudes(); })
+    .on('postgres_changes', {
+      event: 'INSERT', schema: 'public', table: 'reservas'
+    }, () => { cargarSolicitudes(); })
+    .subscribe();
 }
 
 async function cargarSolicitudes() {
