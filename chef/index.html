@@ -1111,7 +1111,10 @@ function renderServicioActivo(r) {
       </div>
     </div>` : '';
 
+  const hayMultiples = (window._serviciosActivos||[]).length > 1;
+
   document.getElementById('activo-content').innerHTML = `
+    ${hayMultiples ? `<button onclick="renderServiciosActivos(window._serviciosActivos)" style="display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid rgba(255,255,255,0.12);color:rgba(250,246,239,0.5);font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 14px;border-radius:20px;cursor:pointer;margin-bottom:14px;transition:all 0.2s;" onmouseover="this.style.color='var(--cream)'" onmouseout="this.style.color='rgba(250,246,239,0.5)'">← Ver todos los servicios</button>` : ''}
     <div class="solicitud-card" style="border-color:rgba(201,168,76,0.3);">
       <div class="solicitud-header">
         <div>
