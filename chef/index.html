@@ -1292,29 +1292,6 @@ INSTRUCCIONES ESTRICTAS:
   }
 }
 
-  try {
-    const res = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 400,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-    const data = await res.json();
-    const texto = data.content?.[0]?.text || '';
-    const input = document.getElementById(`menu-definitivo-input-${reservaId}`);
-    if (input && texto) input.value = texto;
-    showToast('✦ Menú generado — revisalo y confirmá');
-  } catch(e) {
-    showToast('Error al generar — revisá tu conexión');
-  } finally {
-    if (btn) { btn.disabled = false; btn.style.display = 'inline-flex'; }
-    if (loading) loading.style.display = 'none';
-  }
-}
-
 async function generarListaCompras(reservaId) {
   const r = servicioActivo;
   const btn = document.getElementById(`btn-lista-${reservaId}`);
