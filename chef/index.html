@@ -943,7 +943,12 @@ async function cargarSolicitudes() {
 
   if (activos.length || cancelados.length) {
     servicioActivo = activos[0] || null;
-    renderServiciosActivos(activos, cancelados);
+    // No re-renderizar si el chef está escribiendo en el textarea de menú
+    const estaEditando = activos.some(r => {
+      const textarea = document.getElementById(`menu-definitivo-input-${r.id}`);
+      return textarea && document.activeElement === textarea;
+    });
+    if (!estaEditando) renderServiciosActivos(activos, cancelados);
   } else {
     renderServiciosActivos([], []);
   }
@@ -1174,8 +1179,8 @@ function renderServicioActivo(r) {
     </div>` : `
     <div class="menu-editor-wrap" id="menu-editor-wrap-${r.id}">
       <div class="menu-editor-label">Paso 0 — Menú definitivo del servicio</div>
-      <div style="font-size:12px;color:rgba(250,246,239,0.35);margin-bottom:10px;">Cargá o generá el menú acordado con el cliente antes de iniciar las compras.</div>
-      <textarea class="menu-editor-box" id="menu-definitivo-input-${r.id}" placeholder="Ej: Entrada: Burrata con tomates secos&#10;Principal: Risotto de hongos con trufa&#10;Postre: Panna cotta con frutos rojos">${r.menu_definitivo || r.menu || ''}</textarea>
+      <div style="font-size:12px;color:rgba(250,246,239,0.35);margin-bottom:10px;">Cargá o generá el menú acordado con el cliente antes de iniciar las compras. Podés editar el texto y agregar contexto para la IA.</div>
+      <textarea class="menu-editor-box" id="menu-definitivo-input-${r.id}" placeholder="Ej: Entrada: Burrata con tomates secos&#10;Principal: Risotto de hongos con trufa&#10;Postre: Panna cotta con frutos rojos" style="cursor:text;">${r.menu_definitivo || r.menu || ''}</textarea>
       <div class="menu-editor-actions">
         <button class="btn-menu-ia" onclick="generarMenuIA('${r.id}')" id="btn-generar-menu-${r.id}">
           ✦ Generar con IA
