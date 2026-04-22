@@ -1456,7 +1456,7 @@ async function cargarReservas() {
   document.getElementById('reservas-grid').innerHTML = '<div class="loading">Cargando...</div>';
   const { data, error } = await supa
     .from('reservas')
-    .select('*')
+    .select('*, chefs(nombre, foto_url)')
     .order('fecha', { ascending: true });
   if (error) {
     document.getElementById('reservas-grid').innerHTML = '<div class="loading">Error al cargar reservas</div>';
@@ -1568,7 +1568,12 @@ function renderReservas() {
       <div class="res-acciones">
         ${r.estado === 'reservada' ? `<button class="accion-btn btn-confirmar" style="background:rgba(124,158,191,0.15);border-color:rgba(124,158,191,0.4);color:#7C9EBF;" onclick="ofrecerAChefs('${r.id}')">👨‍🍳 Ofrecer a chefs</button>` : ''}
         ${r.estado === 'ofrecida' && !r.chef_id ? `<div style="font-size:11px;color:rgba(124,158,191,0.7);padding:6px 0;letter-spacing:0.06em;">⏳ Esperando que un chef acepte...</div>` : ''}
-        ${r.estado === 'ofrecida' && r.chef_id ? `<button class="accion-btn btn-confirmar" onclick="cambiarEstado('${r.id}','confirmada')">✓ Confirmar seña cobrada</button>` : ''}
+        ${(r.estado === 'ofrecida' || r.estado === 'confirmada') && r.chef_id ? `
+          <div style="display:flex;align-items:center;gap:8px;padding:6px 0;margin-bottom:6px;">
+            <span style="font-size:11px;color:#5DBF87;">👨‍🍳 Chef: <strong>${r.chefs?.nombre || 'Asignado'}</strong></span>
+          </div>
+          ${r.estado !== 'confirmada' ? `<button class="accion-btn btn-confirmar" onclick="cambiarEstado('${r.id}','confirmada')">✓ Confirmar seña cobrada</button>` : ''}
+        ` : ''}
         ${r.estado !== 'cancelada' ? `<button class="accion-btn btn-cancelar" onclick="cambiarEstado('${r.id}','cancelada')">✕ Cancelar</button>` : `<button class="accion-btn btn-cancelar" onclick="eliminarDefinitivo('${r.id}','${r.nombre}')" style="background:rgba(155,35,53,0.25);border-color:rgba(155,35,53,0.5);">🗑 Eliminar</button>`}
       </div>
       <div class="wa-btns">

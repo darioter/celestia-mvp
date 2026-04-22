@@ -917,7 +917,8 @@ async function aceptarServicio(id) {
 
   const { error } = await supa.from('reservas').update({
     chef_id: currentUser.id,
-    estado_servicio: 'aceptado'
+    estado_servicio: 'aceptado',
+    estado: 'confirmada'
   }).eq('id', id);
 
   if (error) {
