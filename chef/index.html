@@ -598,15 +598,26 @@ async function doLogout() {
 }
 
 supa.auth.onAuthStateChange(async (event, session) => {
-  if (session) {
+  if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && session) {
     currentUser = session.user;
     await cargarPortal();
   }
 });
 
+// Chequear sesión activa al cargar la página
+(async () => {
+  const { data } = await supa.auth.getSession();
+  if (data.session) {
+    currentUser = data.session.user;
+    await cargarPortal();
+  }
+})();
+
 // ─── PORTAL ───────────────────────────────────────────────
+const LOGO_SRC = document.querySelector('.login-logo img')?.src || '';
+
 async function cargarPortal() {
-  const { data: chefData } = await supa.from('chefs').select('id, estado').eq('id', currentUser.id).single();
+  const { data: chefData, error } = await supa.from('chefs').select('id, estado').eq('id', currentUser.id).single();
 
   // No existe en la tabla → redirigir al registro
   if (!chefData) {
@@ -618,7 +629,7 @@ async function cargarPortal() {
   if (chefData.estado === 'pendiente') {
     document.getElementById('login-screen').innerHTML = `
       <div class="login-box">
-        <div class="login-logo"><img src="${document.querySelector('.login-logo img').src}" alt="Celestia"></div>
+        <div class="login-logo">${LOGO_SRC ? `<img src="${LOGO_SRC}" alt="Celestia">` : '<span style="font-family:\'DM Serif Display\',serif;font-size:24px;color:var(--gold-light);">Celestia</span>'}</div>
         <div class="login-badge">⏳ En revisión</div>
         <div class="login-title" style="font-size:20px;">Solicitud pendiente</div>
         <div class="login-sub">Tu solicitud está siendo revisada. Te contactamos en menos de 48hs para darte novedades.</div>
@@ -633,7 +644,7 @@ async function cargarPortal() {
   if (chefData.estado === 'rechazado') {
     document.getElementById('login-screen').innerHTML = `
       <div class="login-box">
-        <div class="login-logo"><img src="${document.querySelector('.login-logo img').src}" alt="Celestia"></div>
+        <div class="login-logo">${LOGO_SRC ? `<img src="${LOGO_SRC}" alt="Celestia">` : '<span style="font-family:\'DM Serif Display\',serif;font-size:24px;color:var(--gold-light);">Celestia</span>'}</div>
         <div class="login-badge">❌ No aprobado</div>
         <div class="login-title" style="font-size:20px;">Solicitud no aprobada</div>
         <div class="login-sub">Tu solicitud no fue aprobada en esta oportunidad. Podés contactarnos para más información.</div>
@@ -1427,14 +1438,6 @@ async function cargarHistorial() {
     </div>`).join('');
 }
 
-// ─── INIT ─────────────────────────────────────────────────
-(async () => {
-  const { data } = await supa.auth.getSession();
-  if (data.session) {
-    currentUser = data.session.user;
-    await cargarPortal();
-  }
-})();
 </script>
 </body>
 </html>
