@@ -1180,7 +1180,7 @@ function renderServicioActivo(r) {
     <div class="menu-editor-wrap" id="menu-editor-wrap-${r.id}">
       <div class="menu-editor-label">Paso 0 — Menú definitivo del servicio</div>
       <div style="font-size:12px;color:rgba(250,246,239,0.35);margin-bottom:10px;">Cargá o generá el menú acordado con el cliente antes de iniciar las compras. Podés editar el texto y agregar contexto para la IA.</div>
-      <textarea class="menu-editor-box" id="menu-definitivo-input-${r.id}" placeholder="Ej: Entrada: Burrata con tomates secos&#10;Principal: Risotto de hongos con trufa&#10;Postre: Panna cotta con frutos rojos" style="cursor:text;">${r.menu_definitivo || r.menu || ''}</textarea>
+      <textarea class="menu-editor-box" id="menu-definitivo-input-${r.id}" placeholder="Escribí el pedido del cliente y tus ideas. Ej: el cliente pidió empanadas fritas de entrada y guiso de lentejas. Quiero darle un toque gourmet con..." style="cursor:text;">${r.menu_definitivo || r.menu || ''}</textarea>
       <div class="menu-editor-actions">
         <button class="btn-menu-ia" onclick="generarMenuIA('${r.id}')" id="btn-generar-menu-${r.id}">
           ✦ Generar con IA
@@ -1422,7 +1422,6 @@ async function generarMenuIA(reservaId) {
   if (btn) { btn.disabled = true; btn.style.display = 'none'; }
   if (loading) loading.style.display = 'flex';
 
-  // Leer datos frescos — no depender de servicioActivo (puede ser null si no aceptó aún)
   const r = (servicioActivo?.id === reservaId)
     ? servicioActivo
     : (await supa.from('reservas').select('*').eq('id', reservaId).single()).data;
@@ -1434,27 +1433,28 @@ async function generarMenuIA(reservaId) {
     return;
   }
 
-  // Leer también lo que el chef ya escribió en el textarea
-  const textoActual = document.getElementById(`menu-definitivo-input-${reservaId}`)?.value?.trim() || '';
+  const textoChef = document.getElementById(`menu-definitivo-input-${reservaId}`)?.value?.trim() || '';
+  const pedidoBase = r.menu || 'Menú a elección del chef';
 
   const prompt = `Sos Daro Castello, chef privado de Celestia Buenos Aires, especializado en cocina de autor y experiencias gastronómicas privadas.
 
-Desarrollá el menú definitivo para este servicio real:
+Generá el menú definitivo para este servicio:
 
-PEDIDO DEL CLIENTE: "${textoActual || r.menu || 'Menú a elección del chef'}"
+PEDIDO ORIGINAL DEL CLIENTE: "${pedidoBase}"
+IDEAS / CONTEXTO DEL CHEF: "${textoChef || '(sin notas adicionales)'}"
 PERSONAS: ${r.personas}
 TURNO: ${r.turno === 'almuerzo' ? 'Almuerzo' : 'Cena'}
 FECHA: ${r.fecha ? new Date(r.fecha + 'T12:00:00').toLocaleDateString('es-AR', {weekday:'long', day:'numeric', month:'long'}) : ''}
 NOTAS DEL CLIENTE: "${r.notas || 'Sin restricciones'}"
 OCASIÓN: "${r.ocasion || 'Experiencia privada'}"
 
-INSTRUCCIONES ESTRICTAS:
-- Usá EXACTAMENTE los platos que pidió el cliente. Si pidió empanadas fritas → van empanadas fritas. Si pidió guiso de lentejas → va guiso de lentejas.
-- Expandí cada plato con nombre elegante y descripción breve (ingredientes clave, técnica).
-- Si el pedido fue libre, creá un menú de autor acorde al turno y la ocasión.
-- Listá cada plato con su nombre y una línea de descripción.
-- Sin introducción, sin cierre, sin asteriscos, sin numeración. Solo los platos.
-- Máximo 180 palabras.`;
+REGLAS ESTRICTAS:
+1. Los platos del PEDIDO ORIGINAL son OBLIGATORIOS — no los omitás ni reemplaces.
+2. Si el chef agregó ideas, incorporalas para enriquecer cada plato.
+3. Escribí cada plato con nombre elegante + descripción breve de ingredientes y técnica.
+4. Si el pedido fue genérico ("menú de 3 pasos"), creá entrada, principal y postre de autor.
+5. Un plato por línea, nombre en mayúsculas seguido de guion y descripción. Sin intro ni cierre.
+6. Máximo 200 palabras.`;
 
   try {
     const res = await fetch('/api/chat', {
@@ -1462,22 +1462,26 @@ INSTRUCCIONES ESTRICTAS:
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
-        max_tokens: 500,
+        max_tokens: 600,
         messages: [{ role: 'user', content: prompt }]
       })
     });
+    if (!res.ok) { showToast(`Error API: ${res.status}`); return; }
     const data = await res.json();
     const texto = data.content?.[0]?.text || '';
+    if (!texto) { showToast('Sin respuesta — intentá de nuevo'); return; }
     const input = document.getElementById(`menu-definitivo-input-${reservaId}`);
-    if (input && texto) input.value = texto;
+    if (input) input.value = texto;
     showToast('✦ Menú generado — revisalo y confirmá');
   } catch(e) {
-    showToast('Error al generar — revisá tu conexión');
+    showToast('Error de conexión — revisá tu red');
+    console.error('generarMenuIA error:', e);
   } finally {
     if (btn) { btn.disabled = false; btn.style.display = 'inline-flex'; }
     if (loading) loading.style.display = 'none';
   }
 }
+
 
 async function generarListaCompras(reservaId) {
   const r = servicioActivo;
