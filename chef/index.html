@@ -621,7 +621,7 @@ supa.auth.onAuthStateChange(async (event, session) => {
 const LOGO_SRC = document.querySelector('.login-logo img')?.src || '';
 
 async function cargarPortal() {
-  const { data: chefData, error } = await supa.from('chefs').select('id, estado').eq('id', currentUser.id).single();
+  const { data: chefData, error } = await supa.from('chefs').select('id, estado').eq('user_id', currentUser.id).single();
 
   // No existe en la tabla → redirigir al registro
   if (!chefData) {
@@ -684,7 +684,7 @@ function verTab(tab, btn) {
 
 // ─── PERFIL CHEF ──────────────────────────────────────────
 async function cargarPerfilChef() {
-  const { data, error } = await supa.from('chefs').select('*').eq('id', currentUser.id).single();
+  const { data, error } = await supa.from('chefs').select('*').eq('user_id', currentUser.id).single();
   if (!data) {
     // El registro ya existe (creado via SQL) pero no tiene datos — no insertar
     console.log('Chef data not found:', error);
@@ -750,7 +750,7 @@ async function guardarPerfilChef() {
     telefono: document.getElementById('chef-tel').value.trim(),
     bio: document.getElementById('chef-bio').value.trim(),
   };
-  const { error } = await supa.from('chefs').update(perfil).eq('id', currentUser.id);
+  const { error } = await supa.from('chefs').update(perfil).eq('user_id', currentUser.id);
   if (error) { showToast('Error: ' + error.message); console.error(error); return; }
   chefPerfil = { ...chefPerfil, ...perfil };
   actualizarUI();
@@ -774,7 +774,7 @@ async function subirDocChef(input, campo, btnId) {
   const { error: dbErr } = await supa.from('chefs').update({ 
     [campo]: url,
     estado_docs: 'pendiente_revision'
-  }).eq('id', currentUser.id);
+  }).eq('user_id', currentUser.id);
   if (dbErr) { showToast('Error DB: ' + dbErr.message); console.error(dbErr); return; }
   chefPerfil[campo] = url;
   chefPerfil.estado_docs = 'pendiente_revision';
@@ -798,7 +798,7 @@ async function subirAvatarChef(input) {
   if (error) { showToast('Error: ' + error.message); return; }
   const { data: urlData } = supa.storage.from('avatares').getPublicUrl(path);
   const url = urlData.publicUrl + '?t=' + Date.now();
-  await supa.from('chefs').update({ foto_url: url }).eq('id', currentUser.id);
+  await supa.from('chefs').update({ foto_url: url }).eq('user_id', currentUser.id);
   chefPerfil.foto_url = url;
   actualizarUI();
   showToast('¡Foto actualizada!');
@@ -814,7 +814,7 @@ function toggleDisponible() {
   thumb.style.left = disponible ? '25px' : '3px';
   dot.className = 'status-dot' + (disponible ? '' : ' offline');
   txt.textContent = disponible ? 'Disponible' : 'No disponible';
-  supa.from('chefs').update({ activo: disponible }).eq('id', currentUser.id);
+  supa.from('chefs').update({ activo: disponible }).eq('user_id', currentUser.id);
 }
 
 // ─── SOLICITUDES ──────────────────────────────────────────
