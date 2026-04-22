@@ -837,7 +837,7 @@ async function cargarSolicitudes() {
   const { data, error } = await supa
     .from('reservas')
     .select('*, menu_definitivo, menu_definitivo_ok, lista_compras, lista_compras_generada, recetas')
-    .in('estado', ['ofrecida', 'confirmada'])
+    .in('estado', ['ofrecida', 'confirmada', 'cancelada'])
     .order('fecha', { ascending: true });
 
   if (error || !data || data.length === 0) {
@@ -861,8 +861,31 @@ async function cargarSolicitudes() {
     r.estado_servicio !== 'pendiente' &&
     r.estado_servicio !== 'completado'
   );
+
+  // Servicios del chef que fueron cancelados recientemente (últimos 7 días)
+  const cancelados = data.filter(r => {
+    if (r.chef_id !== currentUser.id || r.estado !== 'cancelada') return false;
+    const fecha = new Date(r.fecha + 'T12:00:00');
+    const hace7dias = new Date(); hace7dias.setDate(hace7dias.getDate() - 7);
+    return fecha >= hace7dias;
+  });
+
+  // Notificar cancelaciones al chef
+  if (cancelados.length) {
+    cancelados.forEach(r => {
+      const el = document.getElementById('activo-content');
+      const aviso = document.createElement('div');
+      aviso.style.cssText = 'background:rgba(155,35,53,0.15);border:1px solid rgba(155,35,53,0.35);border-radius:12px;padding:14px 18px;margin-bottom:12px;';
+      aviso.innerHTML = `
+        <div style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#E67E8A;margin-bottom:6px;">⚠ Servicio cancelado</div>
+        <div style="font-size:14px;color:var(--cream);margin-bottom:4px;">${r.menu||'Servicio Celestia'} · ${new Date(r.fecha+'T12:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'long'})}</div>
+        <div style="font-size:13px;color:rgba(250,246,239,0.55);">Motivo: ${r.cancelacion_motivo||'Sin motivo especificado'}</div>`;
+      el.prepend(aviso);
+    });
+  }
+
   if (activos.length) {
-    servicioActivo = activos[0]; // mantener referencia al primero para compatibilidad
+    servicioActivo = activos[0];
     renderServiciosActivos(activos);
   } else {
     renderServiciosActivos([]);

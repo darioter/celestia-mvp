@@ -1581,7 +1581,7 @@ function renderReservas() {
           </div>
           ${r.estado !== 'confirmada' ? `<button class="accion-btn btn-confirmar" onclick="cambiarEstado('${r.id}','confirmada')">✓ Confirmar seña cobrada</button>` : ''}
         ` : ''}
-        ${r.estado !== 'cancelada' ? `<button class="accion-btn btn-cancelar" onclick="cambiarEstado('${r.id}','cancelada')">✕ Cancelar</button>` : `<button class="accion-btn btn-cancelar" onclick="eliminarDefinitivo('${r.id}','${r.nombre}')" style="background:rgba(155,35,53,0.25);border-color:rgba(155,35,53,0.5);">🗑 Eliminar</button>`}
+        ${r.estado !== 'cancelada' ? `<button class="accion-btn btn-cancelar" onclick="cancelarReserva('${r.id}','${r.nombre||''}')">✕ Cancelar</button>` : `<button class="accion-btn btn-cancelar" onclick="eliminarDefinitivo('${r.id}','${r.nombre}')" style="background:rgba(155,35,53,0.25);border-color:rgba(155,35,53,0.5);">🗑 Eliminar</button>`}
       </div>
       <div class="wa-btns">
         ${waBtn('M2','M2 Bienvenida', msgM2, m2Activo)}
@@ -1636,6 +1636,20 @@ async function ofrecerAChefs(id) {
   if (error) { alert('Error: ' + error.message); return; }
   const r = todasReservas.find(r => r.id === id);
   if (r) { r.estado = 'ofrecida'; r.ofrecida_at = new Date().toISOString(); }
+  actualizarStats();
+  renderReservas();
+}
+
+async function cancelarReserva(id, nombre) {
+  const motivo = prompt(`¿Motivo de cancelación para la reserva de ${nombre}?\n(Se notificará al chef asignado)`, '');
+  if (motivo === null) return; // canceló el prompt
+  const { error } = await supa.from('reservas').update({
+    estado: 'cancelada',
+    cancelacion_motivo: motivo || 'Sin motivo especificado'
+  }).eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  const r = todasReservas.find(r => r.id === id);
+  if (r) { r.estado = 'cancelada'; r.cancelacion_motivo = motivo || 'Sin motivo especificado'; }
   actualizarStats();
   renderReservas();
 }
