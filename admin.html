@@ -1372,6 +1372,28 @@ async function rechazarChef(id) {
   cargarChefs();
 }
 
+let adminPolling = null;
+let adminRealtime = null;
+
+function iniciarRealtimeAdmin() {
+  // Polling cada 3 segundos
+  if (adminPolling) clearInterval(adminPolling);
+  adminPolling = setInterval(() => { cargarReservas(); }, 3000);
+
+  // Realtime instantáneo
+  if (adminRealtime) supa.removeChannel(adminRealtime);
+  adminRealtime = supa.channel('admin-reservas-' + Date.now())
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'reservas' }, () => {
+      cargarReservas();
+    })
+    .subscribe();
+}
+
+function detenerRealtimeAdmin() {
+  if (adminPolling) { clearInterval(adminPolling); adminPolling = null; }
+  if (adminRealtime) { supa.removeChannel(adminRealtime); adminRealtime = null; }
+}
+
 function verSeccion(seccion, btn) {
   ['reservas','agenda','pagos','bloqueos','chefs'].forEach(s => {
     const el = document.getElementById('seccion-'+s);
@@ -1379,6 +1401,9 @@ function verSeccion(seccion, btn) {
   });
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+  // Realtime solo en reservas
+  if (seccion === 'reservas') { iniciarRealtimeAdmin(); }
+  else { detenerRealtimeAdmin(); }
   if (seccion === 'bloqueos') cargarBloqueos();
   if (seccion === 'agenda') renderAgenda();
   if (seccion === 'pagos') cargarPagos();
@@ -1434,6 +1459,7 @@ function login() {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('admin-screen').style.display = 'block';
     cargarReservas();
+    iniciarRealtimeAdmin();
   } else {
     document.getElementById('login-error').style.display = 'block';
   }
