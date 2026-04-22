@@ -669,6 +669,7 @@ async function cargarPortal() {
   document.getElementById('portal-screen').style.display = 'block';
   await cargarPerfilChef();
   await cargarSolicitudes();
+  suscribirRealtime();
 }
 
 function verTab(tab, btn) {
@@ -818,6 +819,20 @@ function toggleDisponible() {
 }
 
 // ─── SOLICITUDES ──────────────────────────────────────────
+let realtimeChannel = null;
+
+function suscribirRealtime() {
+  if (realtimeChannel) supa.removeChannel(realtimeChannel);
+  realtimeChannel = supa.channel('reservas-chef')
+    .on('postgres_changes', {
+      event: '*', schema: 'public', table: 'reservas'
+    }, payload => {
+      // Nueva oferta o cambio de estado → recargar
+      cargarSolicitudes();
+    })
+    .subscribe();
+}
+
 async function cargarSolicitudes() {
   const { data, error } = await supa
     .from('reservas')
@@ -831,17 +846,26 @@ async function cargarSolicitudes() {
         <div class="empty-icon">✦</div>
         <div class="empty-text">No hay solicitudes pendientes por ahora.<br>Cuando llegue una nueva, aparecerá acá.</div>
       </div>`;
+    // También limpiar activo si no hay datos
+    renderServiciosActivos([]);
     return;
   }
 
   const fmt = n => n ? '$' + Number(n).toLocaleString('es-AR') : '—';
   const fmtFecha = f => new Date(f + 'T12:00:00').toLocaleDateString('es-AR', { weekday:'long', day:'numeric', month:'long' });
 
-  // Buscar servicio activo — aceptado por este chef
-  const activo = data.find(r => r.chef_id === currentUser.id && r.estado_servicio && r.estado_servicio !== 'pendiente' && r.estado_servicio !== 'completado');
-  if (activo) {
-    servicioActivo = activo;
-    renderServicioActivo(activo);
+  // Todos los servicios activos de este chef
+  const activos = data.filter(r =>
+    r.chef_id === currentUser.id &&
+    r.estado_servicio &&
+    r.estado_servicio !== 'pendiente' &&
+    r.estado_servicio !== 'completado'
+  );
+  if (activos.length) {
+    servicioActivo = activos[0]; // mantener referencia al primero para compatibilidad
+    renderServiciosActivos(activos);
+  } else {
+    renderServiciosActivos([]);
   }
 
   // Solo mostrar ofrecidas sin chef asignado todavía
@@ -964,6 +988,44 @@ const CHECKLIST_ITEMS = [
   { key:'coccion', label:'Cocción', sub:'Ejecución del menú paso a paso' },
   { key:'presentacion', label:'Emplatado y presentación', sub:'El momento final del servicio' },
 ]
+
+function renderServiciosActivos(activos) {
+  const el = document.getElementById('activo-content');
+  if (!activos.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">✦</div><div class="empty-text">No tenés un servicio activo en este momento.</div></div>`;
+    return;
+  }
+  if (activos.length === 1) {
+    renderServicioActivo(activos[0]);
+    return;
+  }
+  // Múltiples servicios activos — mostrar selector
+  el.innerHTML = `
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(250,246,239,0.35);margin-bottom:10px;">
+        ${activos.length} servicios activos
+      </div>
+      ${activos.map((r, i) => {
+        const fmtFecha = f => new Date(f+'T12:00:00').toLocaleDateString('es-AR',{weekday:'short',day:'numeric',month:'short'});
+        return `<button onclick="seleccionarServicioActivo(${i})" style="
+          display:block;width:100%;text-align:left;
+          background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
+          border-radius:12px;padding:14px 18px;margin-bottom:8px;cursor:pointer;
+          font-family:'DM Sans',sans-serif;color:var(--cream);transition:all 0.2s;
+        " onmouseover="this.style.borderColor='rgba(201,168,76,0.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'">
+          <div style="font-family:'DM Serif Display',serif;font-size:16px;margin-bottom:4px;">${r.menu||'Servicio Celestia'}</div>
+          <div style="font-size:12px;color:rgba(250,246,239,0.5);">${fmtFecha(r.fecha)} · ${r.personas} personas</div>
+        </button>`;
+      }).join('')}
+    </div>`;
+  // Guardar referencia para el selector
+  window._serviciosActivos = activos;
+}
+
+function seleccionarServicioActivo(idx) {
+  const r = (window._serviciosActivos||[])[idx];
+  if (r) { servicioActivo = r; renderServicioActivo(r); }
+}
 
 function renderServicioActivo(r) {
   const fmt = n => n ? '$' + Number(n).toLocaleString('es-AR') : '—';
