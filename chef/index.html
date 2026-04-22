@@ -897,16 +897,39 @@ async function setCompra(id, modo, el) {
 }
 
 async function aceptarServicio(id) {
+  const btnEl = document.querySelector(`#sol-${id} .btn-aceptar`);
+  if (btnEl) { btnEl.disabled = true; btnEl.textContent = 'Aceptando...'; }
+
   const { error } = await supa.from('reservas').update({
     chef_id: currentUser.id,
     estado_servicio: 'aceptado'
   }).eq('id', id);
-  if (error) { showToast('Error: ' + error.message); return; }
+
+  if (error) {
+    showToast('Error: ' + error.message);
+    if (btnEl) { btnEl.disabled = false; btnEl.textContent = '✓ Aceptar servicio'; }
+    return;
+  }
+
+  // Leer la reserva completa recién actualizada para tener todos los campos
+  const { data: reservaData } = await supa.from('reservas')
+    .select('*, menu_definitivo, menu_definitivo_ok, lista_compras, lista_compras_generada, recetas')
+    .eq('id', id)
+    .single();
+
+  if (reservaData) {
+    servicioActivo = reservaData;
+    renderServicioActivo(reservaData);
+  }
+
   showToast('¡Servicio aceptado! Preparate para cocinar 🍽');
-  await cargarSolicitudes();
-  // Mostrar tab activo
-  const tab = document.querySelector('.nav-tab:nth-child(2)');
-  verTab('activo', tab);
+
+  // Ir al tab "Servicio activo"
+  const tabActivo = document.querySelector('.nav-tab[onclick*="activo"]');
+  verTab('activo', tabActivo);
+
+  // Recargar solicitudes en background para limpiar la lista
+  cargarSolicitudes();
 }
 
 async function rechazarServicio(id) {
@@ -1192,20 +1215,67 @@ function editarMenuDefinitivo(reservaId) {
 
 // ─── GENERACIÓN IA ────────────────────────────────────────
 async function generarMenuIA(reservaId) {
-  const r = servicioActivo;
   const btn = document.getElementById(`btn-generar-menu-${reservaId}`);
   const loading = document.getElementById(`menu-ia-loading-${reservaId}`);
   if (btn) { btn.disabled = true; btn.style.display = 'none'; }
   if (loading) loading.style.display = 'flex';
 
-  const prompt = `Sos Daro, chef privado de Celestia en Buenos Aires. 
-Generá un menú definitivo para este servicio:
-- Tipo de menú solicitado: "${r.menu || 'Menú a gusto del chef'}"
-- Personas: ${r.personas}
-- Turno: ${r.turno === 'almuerzo' ? 'Almuerzo' : 'Cena'}
-- Notas del cliente: "${r.notas || 'Sin notas especiales'}"
+  // Leer datos frescos — no depender de servicioActivo (puede ser null si no aceptó aún)
+  const r = (servicioActivo?.id === reservaId)
+    ? servicioActivo
+    : (await supa.from('reservas').select('*').eq('id', reservaId).single()).data;
 
-Escribí SOLO el menú en formato claro, plato por plato, con nombre y descripción breve. Sin introducción ni cierre. Máximo 200 palabras.`;
+  if (!r) {
+    showToast('Error: no se encontró la reserva');
+    if (btn) { btn.disabled = false; btn.style.display = 'inline-flex'; }
+    if (loading) loading.style.display = 'none';
+    return;
+  }
+
+  // Leer también lo que el chef ya escribió en el textarea
+  const textoActual = document.getElementById(`menu-definitivo-input-${reservaId}`)?.value?.trim() || '';
+
+  const prompt = `Sos Daro Castello, chef privado de Celestia Buenos Aires, especializado en cocina de autor y experiencias gastronómicas privadas.
+
+Desarrollá el menú definitivo para este servicio real:
+
+PEDIDO DEL CLIENTE: "${textoActual || r.menu || 'Menú a elección del chef'}"
+PERSONAS: ${r.personas}
+TURNO: ${r.turno === 'almuerzo' ? 'Almuerzo' : 'Cena'}
+FECHA: ${r.fecha ? new Date(r.fecha + 'T12:00:00').toLocaleDateString('es-AR', {weekday:'long', day:'numeric', month:'long'}) : ''}
+NOTAS DEL CLIENTE: "${r.notas || 'Sin restricciones'}"
+OCASIÓN: "${r.ocasion || 'Experiencia privada'}"
+
+INSTRUCCIONES ESTRICTAS:
+- Usá EXACTAMENTE los platos que pidió el cliente. Si pidió empanadas fritas → van empanadas fritas. Si pidió guiso de lentejas → va guiso de lentejas.
+- Expandí cada plato con nombre elegante y descripción breve (ingredientes clave, técnica).
+- Si el pedido fue libre, creá un menú de autor acorde al turno y la ocasión.
+- Listá cada plato con su nombre y una línea de descripción.
+- Sin introducción, sin cierre, sin asteriscos, sin numeración. Solo los platos.
+- Máximo 180 palabras.`;
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 500,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const texto = data.content?.[0]?.text || '';
+    const input = document.getElementById(`menu-definitivo-input-${reservaId}`);
+    if (input && texto) input.value = texto;
+    showToast('✦ Menú generado — revisalo y confirmá');
+  } catch(e) {
+    showToast('Error al generar — revisá tu conexión');
+  } finally {
+    if (btn) { btn.disabled = false; btn.style.display = 'inline-flex'; }
+    if (loading) loading.style.display = 'none';
+  }
+}
 
   try {
     const res = await fetch('/api/chat', {
