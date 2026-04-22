@@ -844,24 +844,27 @@ function sonarAlarma() {
 }
 
 function mostrarAlertaOferta(cantidad) {
-  // Badge pulsante en el tab de solicitudes
-  const tabBtn = document.querySelector('.nav-tab[onclick*="solicitudes"]');
-  if (tabBtn && !tabBtn.querySelector('.oferta-badge')) {
-    const badge = document.createElement('span');
-    badge.className = 'oferta-badge';
-    badge.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;background:var(--gold);color:var(--navy);border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:700;margin-left:6px;animation:pulseBadge 1s infinite;';
-    badge.textContent = cantidad;
-    tabBtn.appendChild(badge);
-  } else if (tabBtn?.querySelector('.oferta-badge')) {
-    tabBtn.querySelector('.oferta-badge').textContent = cantidad;
-  }
-  // Toast visible
+  actualizarBadgeOfertas(cantidad);
   showToast(`🍽 ${cantidad} nueva${cantidad>1?'s':''} solicitud${cantidad>1?'es':''} disponible${cantidad>1?'s':''}!`);
   sonarAlarma();
 }
 
 function limpiarAlertaOferta() {
   document.querySelector('.oferta-badge')?.remove();
+}
+
+function actualizarBadgeOfertas(cantidad) {
+  const tabBtn = document.querySelector('.nav-tab[onclick*="solicitudes"]');
+  if (!tabBtn) return;
+  let badge = tabBtn.querySelector('.oferta-badge');
+  if (cantidad <= 0) { badge?.remove(); return; }
+  if (!badge) {
+    badge = document.createElement('span');
+    badge.className = 'oferta-badge';
+    badge.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;background:var(--gold);color:var(--navy);border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:700;margin-left:6px;animation:pulseBadge 1s infinite;';
+    tabBtn.appendChild(badge);
+  }
+  badge.textContent = cantidad;
 }
 
 function suscribirRealtime() {
@@ -940,8 +943,12 @@ async function cargarSolicitudes() {
   const hayNuevas = [...nuevasIds].some(id => !_prevOfertasIds.has(id));
   if (hayNuevas && _prevOfertasIds.size > 0) {
     mostrarAlertaOferta(pendientes.length);
+  } else if (pendientes.length > 0) {
+    // Actualizar el número aunque no haya nuevas
+    actualizarBadgeOfertas(pendientes.length);
+  } else {
+    limpiarAlertaOferta();
   }
-  if (!pendientes.length) limpiarAlertaOferta();
   _prevOfertasIds = nuevasIds;
 
   if (pendientes.length === 0) {
@@ -1049,6 +1056,8 @@ async function rechazarServicio(id) {
   if (!confirm('¿Rechazar este servicio?')) return;
   await supa.from('reservas').update({ chef_id: null, estado_servicio: 'pendiente' }).eq('id', id);
   showToast('Servicio rechazado');
+  // Quitar del set local para que no vuelva a aparecer en este ciclo
+  _prevOfertasIds.delete(id);
   await cargarSolicitudes();
 }
 
