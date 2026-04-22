@@ -269,6 +269,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--navy);min-height:100vh;co
 .ia-dot:nth-child(2){animation-delay:0.2s;}
 .ia-dot:nth-child(3){animation-delay:0.4s;}
 @keyframes iaDot{0%,100%{opacity:0.3;transform:scale(0.8);}50%{opacity:1;transform:scale(1.2);}}
+@keyframes pulseBadge{0%,100%{transform:scale(1);}50%{transform:scale(1.2);}}
 .rating-stars{display:flex;gap:6px;margin:12px 0;}
 .star{
   width:36px;height:36px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);
@@ -823,6 +824,45 @@ function toggleDisponible() {
 // ─── SOLICITUDES ──────────────────────────────────────────
 let realtimeChannel = null;
 let pollingInterval = null;
+let _prevOfertasIds = new Set();
+
+function sonarAlarma() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [0, 150, 300].forEach(delay => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.frequency.value = 880;
+      osc.type = 'sine';
+      gain.gain.setValueAtTime(0.3, ctx.currentTime + delay/1000);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay/1000 + 0.3);
+      osc.start(ctx.currentTime + delay/1000);
+      osc.stop(ctx.currentTime + delay/1000 + 0.3);
+    });
+  } catch(e) {}
+}
+
+function mostrarAlertaOferta(cantidad) {
+  // Badge pulsante en el tab de solicitudes
+  const tabBtn = document.querySelector('.nav-tab[onclick*="solicitudes"]');
+  if (tabBtn && !tabBtn.querySelector('.oferta-badge')) {
+    const badge = document.createElement('span');
+    badge.className = 'oferta-badge';
+    badge.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;background:var(--gold);color:var(--navy);border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:700;margin-left:6px;animation:pulseBadge 1s infinite;';
+    badge.textContent = cantidad;
+    tabBtn.appendChild(badge);
+  } else if (tabBtn?.querySelector('.oferta-badge')) {
+    tabBtn.querySelector('.oferta-badge').textContent = cantidad;
+  }
+  // Toast visible
+  showToast(`🍽 ${cantidad} nueva${cantidad>1?'s':''} solicitud${cantidad>1?'es':''} disponible${cantidad>1?'s':''}!`);
+  sonarAlarma();
+}
+
+function limpiarAlertaOferta() {
+  document.querySelector('.oferta-badge')?.remove();
+}
 
 function suscribirRealtime() {
   // Polling cada 3 segundos para ofertas rápidas
@@ -894,6 +934,15 @@ async function cargarSolicitudes() {
 
   // Solo mostrar ofrecidas sin chef asignado todavía
   const pendientes = data.filter(r => r.estado === 'ofrecida' && !r.chef_id);
+
+  // Detectar nuevas ofertas y notificar
+  const nuevasIds = new Set(pendientes.map(r => r.id));
+  const hayNuevas = [...nuevasIds].some(id => !_prevOfertasIds.has(id));
+  if (hayNuevas && _prevOfertasIds.size > 0) {
+    mostrarAlertaOferta(pendientes.length);
+  }
+  if (!pendientes.length) limpiarAlertaOferta();
+  _prevOfertasIds = nuevasIds;
 
   if (pendientes.length === 0) {
     document.getElementById('solicitudes-lista').innerHTML = `
