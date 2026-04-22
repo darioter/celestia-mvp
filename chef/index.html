@@ -865,20 +865,24 @@ async function cargarSolicitudes() {
   const fmt = n => n ? '$' + Number(n).toLocaleString('es-AR') : '—';
   const fmtFecha = f => new Date(f + 'T12:00:00').toLocaleDateString('es-AR', { weekday:'long', day:'numeric', month:'long' });
 
-  // Todos los servicios activos de este chef
+  // Todos los servicios activos de este chef (excluir canceladas)
   const activos = data.filter(r =>
     r.chef_id === currentUser.id &&
+    r.estado !== 'cancelada' &&
     r.estado_servicio &&
     r.estado_servicio !== 'pendiente' &&
     r.estado_servicio !== 'completado'
   );
 
   // Servicios del chef cancelados recientemente (últimos 7 días)
+  // Incluir tanto las que tenían chef asignado como las que no (por si el chef las había aceptado)
   const cancelados = data.filter(r => {
-    if (r.chef_id !== currentUser.id || r.estado !== 'cancelada') return false;
-    const fecha = new Date(r.fecha + 'T12:00:00');
+    if (r.estado !== 'cancelada') return false;
+    // Mostrar si era del chef o si fue ofrecida (sin chef) — para que todos vean sus cancelaciones
+    if (r.chef_id !== currentUser.id && r.chef_id !== null) return false;
+    const fechaServicio = new Date(r.fecha + 'T12:00:00');
     const hace7dias = new Date(); hace7dias.setDate(hace7dias.getDate() - 7);
-    return fecha >= hace7dias;
+    return fechaServicio >= hace7dias;
   });
 
   if (activos.length || cancelados.length) {
@@ -1024,11 +1028,8 @@ function renderServiciosActivos(activos, cancelados = []) {
     return;
   }
   if (activos.length === 1) {
-    if (avisosCancelados) {
-      el.innerHTML = avisosCancelados;
-      const tmp = document.createElement('div');
-      el.appendChild(tmp);
-    }
+    // Poner avisos arriba, luego el servicio activo debajo
+    el.innerHTML = avisosCancelados;
     renderServicioActivo(activos[0]);
     return;
   }
@@ -1145,8 +1146,10 @@ function renderServicioActivo(r) {
     </div>` : '';
 
   const hayMultiples = (window._serviciosActivos||[]).length > 1;
+  const elActivo = document.getElementById('activo-content');
+  const contenidoPrevio = elActivo.innerHTML;
 
-  document.getElementById('activo-content').innerHTML = `
+  const cardHtml = `
     ${hayMultiples ? `<button onclick="renderServiciosActivos(window._serviciosActivos)" style="display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid rgba(255,255,255,0.12);color:rgba(250,246,239,0.5);font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 14px;border-radius:20px;cursor:pointer;margin-bottom:14px;transition:all 0.2s;" onmouseover="this.style.color='var(--cream)'" onmouseout="this.style.color='rgba(250,246,239,0.5)'">← Ver todos los servicios</button>` : ''}
     <div class="solicitud-card" style="border-color:rgba(201,168,76,0.3);">
       <div class="solicitud-header">
@@ -1208,6 +1211,8 @@ function renderServicioActivo(r) {
         </button>
       </div>
     </div>`;
+
+  elActivo.innerHTML = contenidoPrevio + cardHtml;
 }
 
 async function toggleCheck(reservaId, key) {
