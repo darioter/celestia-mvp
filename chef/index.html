@@ -196,6 +196,79 @@ body{font-family:'DM Sans',sans-serif;background:var(--navy);min-height:100vh;co
 .btn-accion.primary:hover{background:var(--gold-light);}
 
 /* ─── RATING ─── */
+/* ─── MENÚ DEFINITIVO & LISTA COMPRAS ─── */
+.menu-editor-wrap{padding:0 24px 20px;}
+.menu-editor-label{font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(250,246,239,0.35);margin-bottom:10px;}
+.menu-editor-box{
+  width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(201,168,76,0.2);
+  border-radius:12px;padding:14px 16px;font-family:'DM Sans',sans-serif;font-size:13px;
+  color:var(--cream);outline:none;resize:vertical;min-height:120px;line-height:1.7;
+  transition:border 0.2s;
+}
+.menu-editor-box:focus{border-color:rgba(201,168,76,0.5);}
+.menu-editor-box::placeholder{color:rgba(250,246,239,0.2);}
+.menu-editor-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.btn-menu-ia{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:9px 18px;border-radius:40px;border:1px solid rgba(201,168,76,0.3);
+  background:rgba(201,168,76,0.08);color:var(--gold-light);
+  font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;
+  cursor:pointer;transition:all 0.2s;
+}
+.btn-menu-ia:hover{background:rgba(201,168,76,0.18);}
+.btn-menu-ia:disabled{opacity:0.45;cursor:not-allowed;}
+.btn-menu-confirmar{
+  padding:9px 18px;border-radius:40px;border:none;
+  background:var(--gold);color:var(--navy);
+  font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;
+  cursor:pointer;transition:all 0.2s;
+}
+.btn-menu-confirmar:hover{background:var(--gold-light);}
+.menu-ok-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(45,122,79,0.15);border:1px solid rgba(45,122,79,0.35);
+  border-radius:40px;padding:5px 14px;font-size:11px;color:#5DBF87;
+  letter-spacing:0.06em;text-transform:uppercase;
+}
+/* Lista de compras */
+.compras-wrap{padding:0 24px 20px;}
+.compras-section{margin-bottom:16px;}
+.compras-section-title{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(250,246,239,0.35);margin-bottom:8px;}
+.compra-item{
+  display:flex;align-items:center;gap:10px;padding:9px 12px;
+  border-radius:10px;background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.06);margin-bottom:6px;
+  transition:all 0.15s;cursor:pointer;
+}
+.compra-item:hover{border-color:rgba(201,168,76,0.25);}
+.compra-item.checked{opacity:0.45;}
+.compra-item.checked .compra-nombre{text-decoration:line-through;}
+.compra-check{width:20px;height:20px;border-radius:5px;border:1.5px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;transition:all 0.15s;}
+.compra-item.checked .compra-check{background:var(--gold);border-color:var(--gold);color:var(--navy);}
+.compra-nombre{font-size:13px;color:var(--cream);flex:1;}
+.compra-cantidad{font-size:12px;color:rgba(250,246,239,0.45);white-space:nowrap;}
+/* Recetas */
+.receta-item{
+  background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);
+  border-radius:12px;margin-bottom:10px;overflow:hidden;
+}
+.receta-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px;cursor:pointer;transition:background 0.15s;
+}
+.receta-header:hover{background:rgba(255,255,255,0.03);}
+.receta-titulo{font-size:14px;color:var(--cream);font-weight:500;}
+.receta-toggle{font-size:12px;color:rgba(250,246,239,0.35);transition:transform 0.2s;}
+.receta-body{display:none;padding:0 16px 16px;font-size:13px;color:rgba(250,246,239,0.6);line-height:1.75;white-space:pre-wrap;}
+/* Checklist bloqueado */
+.checklist-item.bloqueado{opacity:0.35;cursor:not-allowed;pointer-events:none;}
+.checklist-item.bloqueado .checklist-text::after{content:' 🔒';font-size:10px;}
+/* IA loading */
+.ia-loading{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:rgba(250,246,239,0.5);padding:8px 0;}
+.ia-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);animation:iaDot 1.2s infinite;}
+.ia-dot:nth-child(2){animation-delay:0.2s;}
+.ia-dot:nth-child(3){animation-delay:0.4s;}
+@keyframes iaDot{0%,100%{opacity:0.3;transform:scale(0.8);}50%{opacity:1;transform:scale(1.2);}}
 .rating-stars{display:flex;gap:6px;margin:12px 0;}
 .star{
   width:36px;height:36px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);
@@ -733,7 +806,7 @@ function toggleDisponible() {
 async function cargarSolicitudes() {
   const { data, error } = await supa
     .from('reservas')
-    .select('*')
+    .select('*, menu_definitivo, menu_definitivo_ok, lista_compras, lista_compras_generada, recetas')
     .in('estado', ['reservada','confirmada'])
     .order('fecha', { ascending: true });
 
@@ -749,8 +822,8 @@ async function cargarSolicitudes() {
   const fmt = n => n ? '$' + Number(n).toLocaleString('es-AR') : '—';
   const fmtFecha = f => new Date(f + 'T12:00:00').toLocaleDateString('es-AR', { weekday:'long', day:'numeric', month:'long' });
 
-  // Buscar servicio activo (confirmado con estado_servicio en progreso)
-  const activo = data.find(r => r.estado === 'confirmada' && r.chef_id === currentUser.id && r.estado_servicio && r.estado_servicio !== 'pendiente' && r.estado_servicio !== 'completado');
+  // Buscar servicio activo — incluye estado 'aceptado' y cualquier paso del checklist
+  const activo = data.find(r => r.chef_id === currentUser.id && r.estado_servicio && r.estado_servicio !== 'pendiente' && r.estado_servicio !== 'completado');
   if (activo) {
     servicioActivo = activo;
     renderServicioActivo(activo);
@@ -857,6 +930,84 @@ function renderServicioActivo(r) {
   const fmtFecha = f => new Date(f + 'T12:00:00').toLocaleDateString('es-AR', { weekday:'long', day:'numeric', month:'long' });
   const checklist = r.checklist || {};
   const turnoStr = r.turno === 'almuerzo' ? 'Almuerzo · 12:00hs' : 'Cena · 20:00hs';
+  const menuOk = !!r.menu_definitivo_ok;
+
+  // ─── Calcular qué pasos están habilitados según fecha/hora real ───
+  const ahora = new Date();
+  const fechaServicio = new Date(r.fecha + 'T' + (r.turno === 'almuerzo' ? '12:00:00' : '20:00:00'));
+  const diffHoras = (fechaServicio - ahora) / (1000 * 60 * 60);
+  // compras: habilitar desde 24hs antes; salida: desde 4hs antes; resto: el día del servicio
+  const pasoHabilitado = {
+    compras:      menuOk && diffHoras <= 24,
+    salida:       menuOk && diffHoras <= 4,
+    llegada:      menuOk && diffHoras <= 1,
+    mise:         menuOk && !!checklist.llegada,
+    coccion:      menuOk && !!checklist.mise,
+    presentacion: menuOk && !!checklist.coccion,
+  };
+
+  // ─── Sección menú definitivo ───
+  const menuDefSection = menuOk ? `
+    <div style="padding:0 24px 16px;">
+      <div style="display:flex;align-items:center;gap:10px;background:rgba(45,122,79,0.1);border:1px solid rgba(45,122,79,0.3);border-radius:12px;padding:12px 16px;">
+        <span style="font-size:16px;">✓</span>
+        <div>
+          <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#5DBF87;margin-bottom:3px;">Menú confirmado</div>
+          <div style="font-size:13px;color:var(--cream);line-height:1.5;">${escapeHtml(r.menu_definitivo||'')}</div>
+        </div>
+        <button onclick="editarMenuDefinitivo('${r.id}')" style="margin-left:auto;font-size:11px;color:rgba(250,246,239,0.4);background:transparent;border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;flex-shrink:0;">Editar</button>
+      </div>
+    </div>` : `
+    <div class="menu-editor-wrap" id="menu-editor-wrap-${r.id}">
+      <div class="menu-editor-label">Paso 0 — Menú definitivo del servicio</div>
+      <div style="font-size:12px;color:rgba(250,246,239,0.35);margin-bottom:10px;">Cargá o generá el menú acordado con el cliente antes de iniciar las compras.</div>
+      <textarea class="menu-editor-box" id="menu-definitivo-input-${r.id}" placeholder="Ej: Entrada: Burrata con tomates secos&#10;Principal: Risotto de hongos con trufa&#10;Postre: Panna cotta con frutos rojos">${r.menu_definitivo || r.menu || ''}</textarea>
+      <div class="menu-editor-actions">
+        <button class="btn-menu-ia" onclick="generarMenuIA('${r.id}')" id="btn-generar-menu-${r.id}">
+          ✦ Generar con IA
+        </button>
+        <button class="btn-menu-confirmar" onclick="confirmarMenuDefinitivo('${r.id}')">
+          Confirmar menú →
+        </button>
+      </div>
+      <div id="menu-ia-loading-${r.id}" style="display:none;" class="ia-loading">
+        <div class="ia-dot"></div><div class="ia-dot"></div><div class="ia-dot"></div>
+        <span>Generando menú...</span>
+      </div>
+    </div>`;
+
+  // ─── Sección lista de compras ───
+  const listaCompras = r.lista_compras;
+  const comprasSection = (menuOk && checklist.compras) ? `
+    <div class="compras-wrap" id="compras-wrap-${r.id}">
+      <div class="checklist-title" style="margin-bottom:14px;">Lista de compras</div>
+      ${listaCompras ? renderListaCompras(listaCompras, r.id) : `
+        <div style="display:flex;align-items:center;gap:10px;">
+          <button class="btn-menu-ia" onclick="generarListaCompras('${r.id}')" id="btn-lista-${r.id}">
+            ✦ Generar lista con IA
+          </button>
+          <div id="lista-ia-loading-${r.id}" style="display:none;" class="ia-loading">
+            <div class="ia-dot"></div><div class="ia-dot"></div><div class="ia-dot"></div>
+            <span>Generando lista...</span>
+          </div>
+        </div>`}
+    </div>` : '';
+
+  // ─── Sección recetas ───
+  const recetasSection = (menuOk && r.recetas) ? `
+    <div class="compras-wrap">
+      <div class="checklist-title" style="margin-bottom:14px;">Recetas del servicio</div>
+      ${renderRecetas(r.recetas)}
+    </div>` : (menuOk && checklist.compras) ? `
+    <div class="compras-wrap">
+      <button class="btn-menu-ia" onclick="generarRecetas('${r.id}')" id="btn-recetas-${r.id}">
+        ✦ Generar recetas con IA
+      </button>
+      <div id="recetas-ia-loading-${r.id}" style="display:none;" class="ia-loading">
+        <div class="ia-dot"></div><div class="ia-dot"></div><div class="ia-dot"></div>
+        <span>Generando recetas...</span>
+      </div>
+    </div>` : '';
 
   document.getElementById('activo-content').innerHTML = `
     <div class="solicitud-card" style="border-color:rgba(201,168,76,0.3);">
@@ -872,11 +1023,13 @@ function renderServicioActivo(r) {
         </div>
       </div>
 
+      ${menuDefSection}
+
       <div style="padding:0 24px 16px;">
-        <div style="background:rgba(255,255,255,0.04);border-radius:12px;padding:14px 16px;margin-bottom:16px;">
+        <div style="background:rgba(255,255,255,0.04);border-radius:12px;padding:14px 16px;">
           <div class="info-label" style="margin-bottom:6px;">Dirección del servicio</div>
           <div style="font-size:14px;color:var(--cream);">${r.dir || '—'}</div>
-          ${r.dir ? `<a href="https://www.google.com/maps/search/${encodeURIComponent(r.dir)}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:12px;color:var(--gold);text-decoration:none;border:1px solid rgba(201,168,76,0.3);padding:5px 12px;border-radius:20px;">
+          ${r.dir ? `<a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(r.dir)}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:12px;color:var(--gold);text-decoration:none;border:1px solid rgba(201,168,76,0.3);padding:5px 12px;border-radius:20px;">
             ↗ Abrir en Google Maps
           </a>` : ''}
         </div>
@@ -884,21 +1037,35 @@ function renderServicioActivo(r) {
 
       <div class="checklist-wrap">
         <div class="checklist-title">Checklist del servicio</div>
-        ${CHECKLIST_ITEMS.map(item => {
+        ${!menuOk ? `<div style="font-size:12px;color:rgba(250,246,239,0.35);margin-bottom:12px;">⚠ Confirmá el menú definitivo para habilitar el checklist.</div>` : ''}
+        ${CHECKLIST_ITEMS.map((item, idx) => {
           const done = !!checklist[item.key];
+          const habilitado = pasoHabilitado[item.key];
+          const bloqueado = !habilitado && !done;
+          let motivoBloqueo = '';
+          if (!menuOk) motivoBloqueo = 'Confirmá el menú primero';
+          else if (item.key === 'compras' && diffHoras > 24) motivoBloqueo = `Disponible en ${Math.ceil(diffHoras-24)}hs`;
+          else if (item.key === 'salida' && diffHoras > 4) motivoBloqueo = `Disponible en ${Math.ceil(diffHoras-4)}hs`;
+          else if (item.key === 'llegada' && !checklist.salida) motivoBloqueo = 'Marcá salida primero';
+          else if (item.key === 'mise' && !checklist.llegada) motivoBloqueo = 'Marcá llegada primero';
+          else if (item.key === 'coccion' && !checklist.mise) motivoBloqueo = 'Completá mise en place primero';
+          else if (item.key === 'presentacion' && !checklist.coccion) motivoBloqueo = 'Completá cocción primero';
           return `
-          <div class="checklist-item" onclick="toggleCheck('${r.id}','${item.key}')">
+          <div class="checklist-item ${bloqueado?'bloqueado':''}" ${!bloqueado?`onclick="toggleCheck('${r.id}','${item.key}')"`:'title="${motivoBloqueo}"'}>
             <div class="check-circle ${done?'done':''}"></div>
-            <div>
+            <div style="flex:1;">
               <div class="checklist-text ${done?'done':''}">${item.label}</div>
-              <div class="checklist-step">${item.sub}</div>
+              <div class="checklist-step">${bloqueado && motivoBloqueo ? motivoBloqueo : item.sub}</div>
             </div>
           </div>`;
         }).join('')}
       </div>
 
+      ${comprasSection}
+      ${recetasSection}
+
       <div style="padding:0 24px 24px;">
-        <button class="btn-accion primary" onclick="finalizarServicio('${r.id}')">
+        <button class="btn-accion primary" onclick="finalizarServicio('${r.id}')" ${!checklist.presentacion?'disabled style="opacity:0.4;cursor:not-allowed;"':''}>
           Marcar servicio como completado
         </button>
       </div>
@@ -943,6 +1110,224 @@ async function finalizarServicio(id) {
     </div>`;
   await cargarSolicitudes();
   await cargarHistorial();
+}
+
+// ─── HELPERS ──────────────────────────────────────────────
+function escapeHtml(t) {
+  return (t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function renderListaCompras(lista, reservaId) {
+  if (!lista || !lista.secciones) return '<div style="font-size:13px;color:rgba(250,246,239,0.4);">Sin datos</div>';
+  return lista.secciones.map(sec => `
+    <div class="compras-section">
+      <div class="compras-section-title">${escapeHtml(sec.categoria)}</div>
+      ${(sec.items||[]).map((item, idx) => {
+        const key = `${reservaId}-${sec.categoria}-${idx}`;
+        const checked = (lista.checks||{})[key];
+        return `<div class="compra-item ${checked?'checked':''}" onclick="toggleCompraItem('${reservaId}','${key}',this)">
+          <div class="compra-check">${checked?'✓':''}</div>
+          <div class="compra-nombre">${escapeHtml(item.nombre)}</div>
+          <div class="compra-cantidad">${escapeHtml(item.cantidad||'')}</div>
+        </div>`;
+      }).join('')}
+    </div>`).join('');
+}
+
+function renderRecetas(recetas) {
+  if (!recetas || !recetas.platos) return '';
+  return recetas.platos.map((p, i) => `
+    <div class="receta-item">
+      <div class="receta-header" onclick="toggleReceta(this)">
+        <div class="receta-titulo">${escapeHtml(p.nombre)}</div>
+        <span class="receta-toggle">▼</span>
+      </div>
+      <div class="receta-body">${escapeHtml(p.receta||'')}</div>
+    </div>`).join('');
+}
+
+function toggleReceta(header) {
+  const body = header.nextElementSibling;
+  const arrow = header.querySelector('.receta-toggle');
+  const abierto = body.style.display === 'block';
+  body.style.display = abierto ? 'none' : 'block';
+  arrow.style.transform = abierto ? '' : 'rotate(180deg)';
+}
+
+async function toggleCompraItem(reservaId, key, el) {
+  const { data } = await supa.from('reservas').select('lista_compras').eq('id', reservaId).single();
+  const lista = data?.lista_compras || {};
+  lista.checks = lista.checks || {};
+  lista.checks[key] = !lista.checks[key];
+  await supa.from('reservas').update({ lista_compras: lista }).eq('id', reservaId);
+  el.classList.toggle('checked', lista.checks[key]);
+  const check = el.querySelector('.compra-check');
+  if (check) check.textContent = lista.checks[key] ? '✓' : '';
+  if (servicioActivo) servicioActivo.lista_compras = lista;
+}
+
+// ─── MENÚ DEFINITIVO ──────────────────────────────────────
+async function confirmarMenuDefinitivo(reservaId) {
+  const input = document.getElementById(`menu-definitivo-input-${reservaId}`);
+  const texto = input?.value?.trim();
+  if (!texto || texto.length < 20) { showToast('Escribí el menú antes de confirmar'); return; }
+  const { error } = await supa.from('reservas').update({
+    menu_definitivo: texto,
+    menu_definitivo_ok: true
+  }).eq('id', reservaId);
+  if (error) { showToast('Error: ' + error.message); return; }
+  servicioActivo.menu_definitivo = texto;
+  servicioActivo.menu_definitivo_ok = true;
+  showToast('✓ Menú confirmado — el cliente lo ve en tiempo real');
+  renderServicioActivo(servicioActivo);
+}
+
+function editarMenuDefinitivo(reservaId) {
+  // Quitar el ok para volver al editor
+  supa.from('reservas').update({ menu_definitivo_ok: false }).eq('id', reservaId);
+  servicioActivo.menu_definitivo_ok = false;
+  renderServicioActivo(servicioActivo);
+}
+
+// ─── GENERACIÓN IA ────────────────────────────────────────
+async function generarMenuIA(reservaId) {
+  const r = servicioActivo;
+  const btn = document.getElementById(`btn-generar-menu-${reservaId}`);
+  const loading = document.getElementById(`menu-ia-loading-${reservaId}`);
+  if (btn) { btn.disabled = true; btn.style.display = 'none'; }
+  if (loading) loading.style.display = 'flex';
+
+  const prompt = `Sos Daro, chef privado de Celestia en Buenos Aires. 
+Generá un menú definitivo para este servicio:
+- Tipo de menú solicitado: "${r.menu || 'Menú a gusto del chef'}"
+- Personas: ${r.personas}
+- Turno: ${r.turno === 'almuerzo' ? 'Almuerzo' : 'Cena'}
+- Notas del cliente: "${r.notas || 'Sin notas especiales'}"
+
+Escribí SOLO el menú en formato claro, plato por plato, con nombre y descripción breve. Sin introducción ni cierre. Máximo 200 palabras.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 400,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const texto = data.content?.[0]?.text || '';
+    const input = document.getElementById(`menu-definitivo-input-${reservaId}`);
+    if (input && texto) input.value = texto;
+    showToast('✦ Menú generado — revisalo y confirmá');
+  } catch(e) {
+    showToast('Error al generar — revisá tu conexión');
+  } finally {
+    if (btn) { btn.disabled = false; btn.style.display = 'inline-flex'; }
+    if (loading) loading.style.display = 'none';
+  }
+}
+
+async function generarListaCompras(reservaId) {
+  const r = servicioActivo;
+  const btn = document.getElementById(`btn-lista-${reservaId}`);
+  const loading = document.getElementById(`lista-ia-loading-${reservaId}`);
+  if (btn) { btn.disabled = true; btn.style.display = 'none'; }
+  if (loading) loading.style.display = 'flex';
+
+  const prompt = `Sos un chef profesional. En base a este menú, generá una lista de compras detallada.
+
+Menú: "${r.menu_definitivo}"
+Personas: ${r.personas}
+Modalidad de compra: ${r.compra_modo || 'chef compra'}
+
+Respondé SOLO con un JSON válido, sin markdown, con esta estructura exacta:
+{
+  "secciones": [
+    {
+      "categoria": "Carnes y proteínas",
+      "items": [
+        { "nombre": "Lomo", "cantidad": "1.2 kg" }
+      ]
+    }
+  ]
+}
+
+Categorías posibles: Carnes y proteínas, Verduras y frutas, Lácteos, Almacén/secos, Especias y condimentos, Otros.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 800,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    let texto = data.content?.[0]?.text || '{}';
+    texto = texto.replace(/```json|```/g, '').trim();
+    const lista = JSON.parse(texto);
+    lista.checks = {};
+    await supa.from('reservas').update({ lista_compras: lista, lista_compras_generada: true }).eq('id', reservaId);
+    servicioActivo.lista_compras = lista;
+    servicioActivo.lista_compras_generada = true;
+    showToast('✦ Lista generada');
+    renderServicioActivo(servicioActivo);
+  } catch(e) {
+    showToast('Error al generar lista');
+    if (btn) { btn.disabled = false; btn.style.display = 'inline-flex'; }
+    if (loading) loading.style.display = 'none';
+  }
+}
+
+async function generarRecetas(reservaId) {
+  const r = servicioActivo;
+  const btn = document.getElementById(`btn-recetas-${reservaId}`);
+  const loading = document.getElementById(`recetas-ia-loading-${reservaId}`);
+  if (btn) { btn.disabled = true; btn.style.display = 'none'; }
+  if (loading) loading.style.display = 'flex';
+
+  const prompt = `Sos un chef profesional. Generá las recetas para este menú.
+
+Menú: "${r.menu_definitivo}"
+Personas: ${r.personas}
+
+Respondé SOLO con un JSON válido, sin markdown:
+{
+  "platos": [
+    {
+      "nombre": "Nombre del plato",
+      "receta": "Ingredientes y pasos detallados para ${r.personas} personas. Paso 1: ... Paso 2: ..."
+    }
+  ]
+}`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    let texto = data.content?.[0]?.text || '{}';
+    texto = texto.replace(/```json|```/g, '').trim();
+    const recetas = JSON.parse(texto);
+    await supa.from('reservas').update({ recetas }).eq('id', reservaId);
+    servicioActivo.recetas = recetas;
+    showToast('✦ Recetas generadas');
+    renderServicioActivo(servicioActivo);
+  } catch(e) {
+    showToast('Error al generar recetas');
+    if (btn) { btn.disabled = false; btn.style.display = 'inline-flex'; }
+    if (loading) loading.style.display = 'none';
+  }
 }
 
 // ─── HISTORIAL ────────────────────────────────────────────
