@@ -639,7 +639,7 @@ function actualizarAvatar(nombre, avatarUrl) {
 
 // ─── PERFIL ───────────────────────────────────────────────
 async function cargarPerfil() {
-  const { data } = await supa.from('clientes').select('*').eq('id', currentUser.id).single();
+  const { data } = await supa.from('clientes').select('*').eq('email', currentUser.email).single();
 
   // Si no existe registro, crearlo con datos de Auth
   if (!data) {
@@ -671,10 +671,8 @@ async function cargarPerfil() {
 
 async function guardarPerfil() {
   const nombre = document.getElementById('p-nombre').value.trim();
-  // Primero verificar si ya existe el registro
-  const { data: existing } = await supa.from('clientes').select('id').eq('id', currentUser.id).single();
+  const { data: existing } = await supa.from('clientes').select('id').eq('email', currentUser.email).single();
   const perfil = {
-    id: currentUser.id,
     nombre,
     email: currentUser.email,
     telefono: document.getElementById('p-tel').value.trim(),
@@ -685,9 +683,9 @@ async function guardarPerfil() {
   };
   let error;
   if (existing) {
-    ({ error } = await supa.from('clientes').update(perfil).eq('id', currentUser.id));
+    ({ error } = await supa.from('clientes').update(perfil).eq('email', currentUser.email));
   } else {
-    ({ error } = await supa.from('clientes').insert([perfil]));
+    ({ error } = await supa.from('clientes').insert([{ ...perfil, id: currentUser.id }]));
   }
   if (error) { showToast('Error: ' + error.message); console.error(error); return; }
   actualizarAvatar(nombre);
@@ -707,7 +705,7 @@ async function subirAvatar(input) {
   if (upError) { showToast('Error: ' + upError.message); console.error(upError); return; }
   const { data: urlData } = supa.storage.from('avatares').getPublicUrl(path);
   const avatarUrl = urlData.publicUrl + '?t=' + Date.now();
-  const { error: dbError } = await supa.from('clientes').update({ avatar_url: avatarUrl }).eq('id', currentUser.id);
+  const { error: dbError } = await supa.from('clientes').update({ avatar_url: avatarUrl }).eq('email', currentUser.email);
   if (dbError) { showToast('Error guardando URL: ' + dbError.message); return; }
   const el = document.getElementById('avatar-display');
   el.innerHTML = `<img src="${avatarUrl}" alt="avatar" style="width:100%;height:100%;object-fit:cover;">`;
@@ -782,7 +780,7 @@ async function guardarCocina() {
 // ─── RESERVAS ─────────────────────────────────────────────
 async function cargarReservas() {
   document.getElementById('reservas-lista').innerHTML = '<div class="empty-state"><div class="empty-icon">✦</div>Cargando...</div>';
-  const perfil = await supa.from('clientes').select('email,telefono').eq('id', currentUser.id).single();
+  const perfil = await supa.from('clientes').select('email,telefono').eq('email', currentUser.email).single();
   if (!perfil.data) return;
 
   // Buscar reservas por email o teléfono
@@ -849,7 +847,7 @@ const STEP_ORDER = TRACKING_STEPS.map(s => s.key);
 let _prevServicioClienteHash = null;
 
 async function verificarServicioActivo() {
-  const perfil = await supa.from('clientes').select('email,telefono').eq('id', currentUser.id).single();
+  const perfil = await supa.from('clientes').select('email,telefono').eq('email', currentUser.email).single();
   if (!perfil.data) return;
 
   const { data } = await supa.from('reservas').select('*')
