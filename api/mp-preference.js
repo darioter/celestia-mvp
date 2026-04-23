@@ -59,7 +59,13 @@ export default async function handler(req) {
 
     const data = await res.json();
 
-    return new Response(JSON.stringify(data), {
+    // En sandbox usar sandbox_init_point, en producción usar init_point
+    const isSandbox = MP_ACCESS_TOKEN.startsWith('TEST-');
+    const init_point = isSandbox
+      ? (data.sandbox_init_point || data.init_point)
+      : (data.init_point || data.sandbox_init_point);
+
+    return new Response(JSON.stringify({ ...data, init_point, is_sandbox: isSandbox }), {
       headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',

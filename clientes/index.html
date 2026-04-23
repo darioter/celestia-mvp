@@ -1332,8 +1332,11 @@ async function pagarConMP(reservaId, tipo, monto, nombre, ref) {
       body: JSON.stringify({ reservaId, tipo, monto, description: `Celestia Chef Privado — ${tipo === 'senia' ? 'Seña' : 'Saldo'} reserva ${ref}`, payerName: nombre, ref })
     });
     const data = await res.json();
-    const link = data.init_point || data.sandbox_init_point;
+    const link = data.init_point;
     if (link) {
+      if (data.is_sandbox) {
+        showToast('⚠ Modo prueba — no se cobra dinero real');
+      }
       window.open(link, '_blank');
     } else {
       showToast('Error al generar link de pago — contactá por WhatsApp');

@@ -1395,10 +1395,10 @@ async function generarLinkMP(reservaId, tipo, monto, nombre, ref) {
     });
     if (!res.ok) throw new Error('Error al crear preferencia');
     const data = await res.json();
-    const link = data.init_point || data.sandbox_init_point;
+    const link = data.init_point;
     if (link) {
       await navigator.clipboard.writeText(link);
-      showToast('Link MP copiado — envialo al cliente ✓');
+      showToast(`${data.is_sandbox ? '⚠ SANDBOX — ' : ''}Link MP copiado ✓`);
     }
   } catch(e) {
     // Sin backend MP aún — generar link manual
