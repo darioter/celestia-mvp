@@ -1303,6 +1303,9 @@ function renderServicioActivo(r) {
           Confirmar menú →
         </button>
       </div>
+      <div id="ia-contador-${r.id}" style="margin-top:8px;">
+        <div style="font-size:11px;color:rgba(250,246,239,0.3);">Usos de IA: ${r.ia_usos||0}/${IA_MAX_USOS} · ${Math.max(0, (IA_MAX_USOS-1)-(r.ia_usos||0))} para menú, 1 para ingredientes</div>
+      </div>
       <div id="menu-ia-loading-${r.id}" style="display:none;" class="ia-loading">
         <div class="ia-dot"></div><div class="ia-dot"></div><div class="ia-dot"></div>
         <span>Generando menú...</span>
@@ -1508,19 +1511,28 @@ async function toggleCompraItem(reservaId, key, el) {
 
 // ─── MENÚ DEFINITIVO ──────────────────────────────────────
 async function confirmarMenuDefinitivo(reservaId) {
-  // Leer el menú del textarea de resultado
   const input = document.getElementById(`menu-definitivo-input-${reservaId}`);
   const texto = input?.value?.trim();
   if (!texto || texto.length < 20) { showToast('Generá o escribí el menú antes de confirmar'); return; }
+
+  // Guardar menú confirmado en BD y esperar que persista
   const { error } = await supa.from('reservas').update({
     menu_definitivo: texto,
     menu_definitivo_ok: true
   }).eq('id', reservaId);
   if (error) { showToast('Error: ' + error.message); return; }
-  servicioActivo.menu_definitivo = texto;
-  servicioActivo.menu_definitivo_ok = true;
+
+  // Actualizar estado local
+  if (servicioActivo) {
+    servicioActivo.menu_definitivo = texto;
+    servicioActivo.menu_definitivo_ok = true;
+  }
+
   showToast('✓ Menú confirmado — generando lista de compras...');
   renderServicioActivo(servicioActivo);
+
+  // Pequeña espera para asegurar que Supabase persistió antes de leer
+  await new Promise(r => setTimeout(r, 500));
   await generarListaCompras(reservaId);
 }
 
@@ -1535,10 +1547,54 @@ function editarMenuDefinitivo(reservaId) {
   renderServicioActivo(servicioActivo);
 }
 
+// ─── SISTEMA DE USOS IA ───────────────────────────────────
+const IA_MAX_USOS = 3; // 2 para menú + 1 para ingredientes
+
+async function verificarUsosIA(reservaId) {
+  const { data } = await supa.from('reservas').select('ia_usos').eq('id', reservaId).single();
+  return data?.ia_usos || 0;
+}
+
+async function incrementarUsosIA(reservaId) {
+  const usos = await verificarUsosIA(reservaId);
+  await supa.from('reservas').update({ ia_usos: usos + 1 }).eq('id', reservaId);
+  if (servicioActivo?.id === reservaId) servicioActivo.ia_usos = usos + 1;
+  return usos + 1;
+}
+
+function mostrarContadorIA(reservaId, usosActuales, reservadoPara) {
+  // reservadoPara: 'lista' = el último uso está reservado para ingredientes
+  const usosMenu = usosActuales;
+  const restantes = IA_MAX_USOS - usosActuales;
+  const esUltimoUso = restantes === 1;
+  const agotado = restantes <= 0;
+
+  const el = document.getElementById(`ia-contador-${reservaId}`);
+  if (!el) return;
+
+  if (agotado) {
+    el.innerHTML = `<div style="font-size:11px;color:rgba(230,126,138,0.8);">⚠ Usos de IA agotados para este servicio</div>`;
+  } else if (esUltimoUso) {
+    el.innerHTML = `<div style="font-size:11px;color:rgba(201,168,76,0.7);">⚠ Último uso disponible — reservado para la lista de ingredientes</div>`;
+  } else {
+    el.innerHTML = `<div style="font-size:11px;color:rgba(250,246,239,0.3);">Usos de IA: ${usosActuales}/${IA_MAX_USOS} · ${restantes - 1} para menú, 1 para ingredientes</div>`;
+  }
+}
+
 // ─── GENERACIÓN IA ────────────────────────────────────────
 async function generarMenuIA(reservaId) {
   const btn = document.getElementById(`btn-generar-menu-${reservaId}`);
   const loading = document.getElementById(`menu-ia-loading-${reservaId}`);
+
+  // Verificar usos disponibles — reservar 1 para lista de ingredientes
+  const usos = await verificarUsosIA(reservaId);
+  const usosDisponiblesParaMenu = IA_MAX_USOS - 1; // el último es para ingredientes
+  if (usos >= usosDisponiblesParaMenu) {
+    showToast(`⚠ Solo quedan usos para generar la lista de ingredientes`);
+    mostrarContadorIA(reservaId, usos, 'lista');
+    return;
+  }
+
   if (btn) { btn.disabled = true; btn.style.display = 'none'; }
   if (loading) loading.style.display = 'flex';
 
@@ -1611,6 +1667,8 @@ INSTRUCCIONES:
     // Guardar borrador en BD (no confirmado aún)
     await supa.from('reservas').update({ menu_definitivo: texto, menu_definitivo_ok: false }).eq('id', reservaId);
     if (servicioActivo?.id === reservaId) { servicioActivo.menu_definitivo = texto; servicioActivo.menu_definitivo_ok = false; }
+    const nuevosUsos = await incrementarUsosIA(reservaId);
+    mostrarContadorIA(reservaId, nuevosUsos, 'menu');
     showToast('✦ Menú generado — editá si querés y confirmá');
   } catch(e) {
     showToast('Error de conexión — revisá tu red');
@@ -1624,10 +1682,18 @@ INSTRUCCIONES:
 async function generarListaCompras(reservaId) {
   const btn = document.getElementById(`btn-lista-${reservaId}`);
   const loading = document.getElementById(`lista-ia-loading-${reservaId}`);
+
+  // Verificar que quede al menos 1 uso disponible
+  const usos = await verificarUsosIA(reservaId);
+  if (usos >= IA_MAX_USOS) {
+    showToast('⚠ Usos de IA agotados para este servicio');
+    return;
+  }
+
   if (btn) { btn.disabled = true; btn.style.display = 'none'; }
   if (loading) loading.style.display = 'flex';
 
-  // Leer datos frescos de la BD — servicioActivo puede tener menu_definitivo desactualizado
+  // Leer datos frescos de la BD
   const { data: r } = await supa.from('reservas').select('*').eq('id', reservaId).single();
 
   if (!r || !r.menu_definitivo) {
@@ -1688,6 +1754,7 @@ Categorías (solo las que apliquen): Carnes y proteínas, Pescados y mariscos, V
       servicioActivo.lista_compras = lista;
       servicioActivo.lista_compras_generada = true;
     }
+    await incrementarUsosIA(reservaId);
     showToast('✦ Lista de compras generada');
     if (servicioActivo) renderServicioActivo(servicioActivo);
   } catch(e) {
