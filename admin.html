@@ -595,75 +595,83 @@
   .pago-card {
     background: rgba(255,255,255,0.04);
     border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 14px;
-    padding: 20px 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
+    border-radius: 16px;
+    overflow: hidden;
   }
-  .pago-card-header {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr auto;
-    gap: 16px;
-    align-items: start;
-    padding-bottom: 16px;
+  /* Barra de info superior */
+  .pago-card-top {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px;
     border-bottom: 1px solid rgba(255,255,255,0.06);
-    margin-bottom: 16px;
+    background: rgba(255,255,255,0.02);
+    flex-wrap: wrap; gap: 12px;
   }
-  .pago-card-body {
+  /* Split izq/der */
+  .pago-card-split {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 16px;
+    grid-template-columns: 1fr 1px 1fr;
+    min-height: 200px;
   }
+  .pago-col {
+    padding: 20px 24px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .pago-col-divider {
+    background: rgba(255,255,255,0.06);
+    width: 1px;
+  }
+  .pago-col-titulo {
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .pago-col-titulo.cliente { color: #7C9EBF; }
+  .pago-col-titulo.chef { color: #5DBF87; }
+
+  .pago-monto-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+  }
+  .pago-monto-label { font-size: 12px; color: rgba(250,246,239,0.45); }
+  .pago-monto-valor { font-family: 'DM Serif Display', serif; font-size: 16px; color: var(--gold-light); }
+  .pago-monto-row.cobrado { border-color: rgba(93,191,135,0.25); background: rgba(93,191,135,0.05); }
+  .pago-monto-row.cobrado .pago-monto-valor { color: #5DBF87; }
+  .pago-monto-row.bloqueado { opacity: 0.4; }
+
+  .pago-badge {
+    font-size: 10px; padding: 2px 8px; border-radius: 20px; font-weight: 500;
+  }
+  .pago-badge.ok { background: rgba(93,191,135,0.15); color: #5DBF87; border: 1px solid rgba(93,191,135,0.3); }
+  .pago-badge.pend { background: rgba(201,168,76,0.12); color: var(--gold); border: 1px solid rgba(201,168,76,0.25); }
+  .pago-badge.block { background: rgba(255,255,255,0.04); color: rgba(250,246,239,0.3); border: 1px solid rgba(255,255,255,0.08); }
+
   .pago-card.saldo-cobrado { opacity: 0.6; }
   .pago-card.estado-reservada { border-left: 3px solid var(--gold); }
   .pago-card.estado-confirmada { border-left: 3px solid #4CAF50; }
-  .pago-fecha { font-family: 'DM Serif Display', serif; font-size: 15px; color: var(--cream); }
-  .pago-ref { font-size: 10px; color: var(--gold); letter-spacing: 0.1em; margin-top: 3px; }
-  .pago-cliente { font-size: 14px; font-weight: 500; color: var(--cream); }
-  .pago-menu { font-size: 12px; color: rgba(250,246,239,0.45); margin-top: 2px; }
-  .pago-bloque { display: flex; flex-direction: column; gap: 4px; }
-  .pago-bloque-titulo { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(250,246,239,0.3); margin-bottom: 4px; }
-  .pago-monto { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--gold-light); }
-  .pago-estado-badge {
-    display: inline-flex; align-items: center; gap: 5px;
-    font-size: 11px; font-weight: 500; padding: 4px 10px;
-    border-radius: 20px; letter-spacing: 0.04em;
-  }
-  .pago-estado-badge.pendiente { background: rgba(201,168,76,0.12); color: var(--gold); border: 1px solid rgba(201,168,76,0.25); }
-  .pago-estado-badge.cobrado { background: rgba(76,175,80,0.12); color: #81C784; border: 1px solid rgba(76,175,80,0.25); }
-  .pago-estado-badge.cerrado { background: rgba(255,255,255,0.06); color: rgba(250,246,239,0.4); border: 1px solid rgba(255,255,255,0.1); }
-  .pago-seccion-titulo { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(250,246,239,0.3); margin-bottom: 10px; }
   .btn-cobrar {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12px; font-weight: 500;
-    padding: 8px 14px; border-radius: 8px;
-    cursor: pointer; transition: all 0.15s;
-    border: 1px solid; letter-spacing: 0.03em;
-    text-align: center; width: 100%;
+    font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500;
+    padding: 8px 14px; border-radius: 8px; cursor: pointer; transition: all 0.15s;
+    border: 1px solid; letter-spacing: 0.03em; text-align: center; width: 100%;
   }
   .btn-cobrar-senia { background: rgba(201,168,76,0.1); border-color: rgba(201,168,76,0.35); color: var(--gold-light); }
   .btn-cobrar-senia:hover { background: rgba(201,168,76,0.2); }
   .btn-cobrar-saldo { background: rgba(76,175,80,0.1); border-color: rgba(76,175,80,0.3); color: #81C784; }
   .btn-cobrar-saldo:hover { background: rgba(76,175,80,0.2); }
   .pagos-resumen {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 12px;
-    margin-bottom: 28px;
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 28px;
   }
   .resumen-card {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 12px;
-    padding: 16px 18px;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px; padding: 16px 18px;
   }
   .resumen-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(250,246,239,0.35); margin-bottom: 8px; }
   .resumen-valor { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--gold-light); }
   .resumen-sub { font-size: 11px; color: rgba(250,246,239,0.35); margin-top: 4px; }
   @media (max-width: 900px) {
-    .pago-card-header { grid-template-columns: 1fr 1fr; }
-    .pago-card-body { grid-template-columns: 1fr; }
+    .pago-card-split { grid-template-columns: 1fr; }
+    .pago-col-divider { display: none; }
     .pagos-resumen { grid-template-columns: repeat(2,1fr); }
   }
     padding: 60px 20px;
@@ -1235,167 +1243,139 @@ async function cargarPagos() {
 
     return `
     <div class="pago-card estado-${r.estado}${cerrado?' saldo-cobrado':''}">
-      <!-- HEADER: info básica + desglose + acciones cliente -->
-      <div class="pago-card-header">
-        <!-- Info reserva -->
-        <div>
-          <div class="pago-fecha">${fmtFecha(r.fecha)}</div>
-          <div style="font-size:11px;color:rgba(250,246,239,0.4);margin-top:2px;">${r.turno==='almuerzo'?'☀':'🌙'} ${r.personas}p · ${r.ref}</div>
-          <div class="pago-cliente" style="margin-top:6px;">${r.nombre||'—'}</div>
-          <div class="pago-menu">${r.menu||'—'}</div>
-        </div>
-        <!-- Desglose precios -->
-        <div>
-          <div class="pago-seccion-titulo">Desglose</div>
-          <div style="display:flex;flex-direction:column;gap:3px;font-size:12px;">
-            <div style="display:flex;justify-content:space-between;"><span style="color:rgba(250,246,239,0.5);">Servicio</span><span>${fmt(f.servicio)}</span></div>
-            ${f.express ? `<div style="display:flex;justify-content:space-between;"><span style="color:rgba(250,246,239,0.5);">Express</span><span style="color:var(--gold);">+${fmt(f.express)}</span></div>` : ''}
-            ${f.market ? `<div style="display:flex;justify-content:space-between;"><span style="color:rgba(250,246,239,0.5);">Market</span><span>${fmt(f.market)}</span></div>` : ''}
-            ${f.extras ? `<div style="display:flex;justify-content:space-between;"><span style="color:rgba(250,246,239,0.5);">Extras</span><span>${fmt(f.extras)}</span></div>` : ''}
-            <div style="display:flex;justify-content:space-between;font-weight:600;border-top:1px solid rgba(255,255,255,0.08);padding-top:4px;margin-top:2px;">
-              <span>Total</span><span style="color:var(--gold-light);">${fmt(f.totalCliente)}</span>
-            </div>
-          </div>
-          <button onclick="editarPrecios('${r.id}')" style="margin-top:8px;font-size:10px;color:rgba(250,246,239,0.3);background:transparent;border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:3px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;">Editar precios</button>
-        </div>
-        <!-- Cobros al cliente -->
-        <div>
-          <div class="pago-seccion-titulo">Cobros al cliente</div>
-          <div style="margin-bottom:8px;">
-            <div style="font-size:11px;color:rgba(250,246,239,0.4);">Seña (al reservar)</div>
-            <div class="pago-monto">${fmt(f.seniaMonto)}</div>
-            <div style="margin-top:4px;">${badge(seniaCobrada,'Cobrada','Pendiente',false)}</div>
+
+      <!-- BARRA SUPERIOR: info reserva -->
+      <div class="pago-card-top">
+        <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+          <div>
+            <div style="font-family:'DM Serif Display',serif;font-size:16px;color:var(--cream);">${fmtFecha(r.fecha)}</div>
+            <div style="font-size:11px;color:rgba(250,246,239,0.4);margin-top:2px;">${r.turno==='almuerzo'?'☀ Almuerzo':'🌙 Cena'} · ${r.personas} personas · <span style="color:var(--gold);letter-spacing:0.06em;">${r.ref}</span></div>
           </div>
           <div>
-            <div style="font-size:11px;color:rgba(250,246,239,0.4);">Saldo (al iniciar)</div>
-            <div class="pago-monto">${fmt(f.saldoMonto)}</div>
-            <div style="margin-top:4px;">${badge(saldoCobrado,'Cobrado','Pendiente',!seniaCobrada)}</div>
+            <div style="font-size:14px;font-weight:500;color:var(--cream);">${r.nombre||'—'}</div>
+            <div style="font-size:12px;color:rgba(250,246,239,0.4);">${r.menu||'—'}</div>
           </div>
         </div>
-        <!-- Acciones -->
-        <div style="display:flex;flex-direction:column;gap:6px;min-width:140px;">
-          ${!seniaCobrada ? `
-            <button class="btn-cobrar btn-cobrar-senia" onclick="cobrarSenia('${r.id}')">✓ Seña cobrada</button>
-            <button class="accion-btn" onclick="generarLinkMP('${r.id}','senia',${f.seniaMonto},'${r.nombre||''}','${r.ref||''}')" style="font-size:11px;background:rgba(0,158,227,0.1);border-color:rgba(0,158,227,0.3);color:#009EE3;">🔗 Link MP</button>` : ''}
-          ${seniaCobrada && !saldoCobrado ? `
-            <button class="btn-cobrar btn-cobrar-saldo" onclick="cobrarSaldo('${r.id}')">✓ Saldo cobrado</button>
-            <button class="accion-btn" onclick="generarLinkMP('${r.id}','saldo',${f.saldoMonto},'${r.nombre||''}','${r.ref||''}')" style="font-size:11px;background:rgba(0,158,227,0.1);border-color:rgba(0,158,227,0.3);color:#009EE3;">🔗 Link MP</button>` : ''}
-          ${cerrado ? `<div class="pago-estado-badge cobrado" style="justify-content:center;font-size:10px;">✓ Cliente cerrado</div>` : ''}
-          ${r.tel ? `<button class="accion-btn btn-whatsapp" onclick="waRecordatorio('${r.tel}','${r.nombre}','${r.ref}',${f.seniaMonto},${!seniaCobrada})">WA</button>` : ''}
-          <div style="font-size:10px;color:rgba(250,246,239,0.2);text-align:center;">Com: ${fmt(f.comisionApp)}</div>
-        </div>
-      </div>
-
-      <!-- BODY: liquidación chef -->
-      <div class="pago-card-body">
-        <div style="font-size:11px;color:rgba(250,246,239,0.4);margin-top:2px;">${r.turno==='almuerzo'?'☀':'🌙'} ${r.personas}p · ${r.ref}</div>
-        <div class="pago-cliente" style="margin-top:6px;">${r.nombre||'—'}</div>
-        <div class="pago-menu" style="font-size:11px;">${r.menu||'—'}</div>
-      </div>
-
-      <!-- Desglose de precios -->
-      <div>
-        <div style="font-size:10px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(250,246,239,0.3);margin-bottom:8px;">Desglose</div>
-        <div style="display:flex;flex-direction:column;gap:4px;">
-          <div style="display:flex;justify-content:space-between;font-size:12px;">
-            <span style="color:rgba(250,246,239,0.5);">Servicio</span>
-            <span style="color:var(--cream);">${fmt(f.servicio)}</span>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <div style="text-align:right;">
+            <div style="font-size:10px;color:rgba(250,246,239,0.3);">Total cliente</div>
+            <div style="font-family:'DM Serif Display',serif;font-size:18px;color:var(--gold-light);">${fmt(f.totalCliente)}</div>
           </div>
-          ${f.express ? `<div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:rgba(250,246,239,0.5);">Recargo express</span><span style="color:var(--gold);">+${fmt(f.express)}</span></div>` : ''}
-          ${f.market ? `<div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:rgba(250,246,239,0.5);">Market</span><span style="color:var(--cream);">${fmt(f.market)}</span></div>` : ''}
-          ${f.extras ? `<div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:rgba(250,246,239,0.5);">Extras</span><span style="color:var(--cream);">${fmt(f.extras)}</span></div>` : ''}
-          <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;border-top:1px solid rgba(255,255,255,0.08);padding-top:4px;margin-top:2px;">
-            <span style="color:var(--cream);">Total cliente</span>
-            <span style="color:var(--gold-light);">${fmt(f.totalCliente)}</span>
+          <button onclick="editarPrecios('${r.id}')" style="font-size:11px;color:rgba(250,246,239,0.3);background:transparent;border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:5px 12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">Editar precios</button>
+          ${r.tel ? `<button class="accion-btn btn-whatsapp" onclick="waRecordatorio('${r.tel}','${r.nombre}','${r.ref}',${f.seniaMonto},${!seniaCobrada})" style="padding:5px 12px;font-size:11px;">WA</button>` : ''}
+        </div>
+      </div>
+
+      <!-- SPLIT: izquierda cobros cliente | derecha liquidación chef -->
+      <div class="pago-card-split">
+
+        <!-- IZQUIERDA: Cobros al cliente -->
+        <div class="pago-col">
+          <div class="pago-col-titulo cliente">💳 Cobros al cliente</div>
+
+          <!-- Seña -->
+          <div class="pago-monto-row ${seniaCobrada?'cobrado':''}">
+            <div>
+              <div class="pago-monto-label">Seña — al reservar</div>
+              <div style="font-size:10px;color:rgba(250,246,239,0.25);margin-top:1px;">50% servicio + 100% market/extras</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+              <div class="pago-monto-valor">${fmt(f.seniaMonto)}</div>
+              <span class="pago-badge ${seniaCobrada?'ok':'pend'}">${seniaCobrada?'✓ Cobrada':'· Pendiente'}</span>
+            </div>
           </div>
-        </div>
-        <!-- Editar precios -->
-        <button onclick="editarPrecios('${r.id}')" style="margin-top:8px;font-size:10px;color:rgba(250,246,239,0.3);background:transparent;border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:3px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;">Editar precios</button>
-      </div>
 
-      <!-- Cobros cliente -->
-      <div>
-        <div style="font-size:10px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(250,246,239,0.3);margin-bottom:8px;">Cobros al cliente</div>
-        <div style="margin-bottom:10px;">
-          <div style="font-size:11px;color:rgba(250,246,239,0.4);">Seña (al reservar)</div>
-          <div class="pago-monto">${fmt(f.seniaMonto)}</div>
-          <div style="margin-top:4px;">${badge(seniaCobrada,'Cobrada','Pendiente',false)}</div>
-          <div style="font-size:10px;color:rgba(250,246,239,0.25);margin-top:2px;">50% servicio + 100% market/extras</div>
-        </div>
-        <div>
-          <div style="font-size:11px;color:rgba(250,246,239,0.4);">Saldo (al iniciar)</div>
-          <div class="pago-monto">${fmt(f.saldoMonto)}</div>
-          <div style="margin-top:4px;">${badge(saldoCobrado,'Cobrado','Pendiente',!seniaCobrada)}</div>
-          <div style="font-size:10px;color:rgba(250,246,239,0.25);margin-top:2px;">50% servicio restante</div>
-        </div>
-      </div>
+          <!-- Saldo -->
+          <div class="pago-monto-row ${saldoCobrado?'cobrado':''} ${!seniaCobrada?'bloqueado':''}">
+            <div>
+              <div class="pago-monto-label">Saldo — al iniciar servicio</div>
+              <div style="font-size:10px;color:rgba(250,246,239,0.25);margin-top:1px;">50% servicio restante</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+              <div class="pago-monto-valor">${fmt(f.saldoMonto)}</div>
+              <span class="pago-badge ${saldoCobrado?'ok':seniaCobrada?'pend':'block'}">${saldoCobrado?'✓ Cobrado':seniaCobrada?'· Pendiente':'⏳ Bloqueado'}</span>
+            </div>
+          </div>
 
-      <!-- Liquidación chef -->
-      <div>
-        <div style="font-size:10px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(250,246,239,0.3);margin-bottom:8px;">Liquidación chef</div>
-        ${r.chef_id ? (() => {
-          const chefAlias = r.chefs?.alias_mp || '—';
-          const adelantoMonto = r.adelanto_monto || Math.round(f.baseChef * 0.50);
-          const saldoChefMonto = r.saldo_chef_monto || Math.round(f.baseChef * 0.35);
-          const retencionMonto = f.retencionChef;
-          const factura = r.factura_url;
-          const adelantoLib = !!r.adelanto_liberado;
-          const saldoPagado = !!r.saldo_chef_pagado;
-          return `
-          <div style="font-size:11px;color:rgba(250,246,239,0.35);margin-bottom:8px;">MP: <span style="color:var(--gold);">${chefAlias}</span></div>
-          <div style="display:flex;flex-direction:column;gap:6px;">
+          <!-- Acciones cliente -->
+          <div style="display:flex;flex-direction:column;gap:6px;margin-top:4px;">
+            ${!seniaCobrada ? `
+              <button class="btn-cobrar btn-cobrar-senia" onclick="cobrarSenia('${r.id}')">✓ Marcar seña cobrada</button>
+              <button class="accion-btn" onclick="generarLinkMP('${r.id}','senia',${f.seniaMonto},'${r.nombre||''}','${r.ref||''}')" style="font-size:11px;background:rgba(0,158,227,0.1);border-color:rgba(0,158,227,0.3);color:#009EE3;">🔗 Generar link MP seña</button>` : ''}
+            ${seniaCobrada && !saldoCobrado ? `
+              <button class="btn-cobrar btn-cobrar-saldo" onclick="cobrarSaldo('${r.id}')">✓ Marcar saldo cobrado</button>
+              <button class="accion-btn" onclick="generarLinkMP('${r.id}','saldo',${f.saldoMonto},'${r.nombre||''}','${r.ref||''}')" style="font-size:11px;background:rgba(0,158,227,0.1);border-color:rgba(0,158,227,0.3);color:#009EE3;">🔗 Generar link MP saldo</button>` : ''}
+            ${cerrado ? `<div style="text-align:center;font-size:11px;color:#5DBF87;padding:6px;">✓ Cliente — todo cobrado</div>` : ''}
+          </div>
+          <div style="font-size:10px;color:rgba(250,246,239,0.2);margin-top:auto;">Comisión app: ${fmt(f.comisionApp)}</div>
+        </div>
+
+        <div class="pago-col-divider"></div>
+
+        <!-- DERECHA: Liquidación chef -->
+        <div class="pago-col">
+          <div class="pago-col-titulo chef">👨‍🍳 Liquidación chef</div>
+          ${r.chef_id ? (() => {
+            const chefAlias = r.chefs?.alias_mp || '—';
+            const adelantoMonto = r.adelanto_monto || Math.round(f.baseChef * 0.50);
+            const saldoChefMonto = r.saldo_chef_monto || Math.round(f.baseChef * 0.35);
+            const retencionMonto = f.retencionChef;
+            const factura = r.factura_url;
+            const adelantoLib = !!r.adelanto_liberado;
+            const saldoPagado = !!r.saldo_chef_pagado;
+            const ambasLlegadas = r.llegada_chef && r.llegada_cliente;
+            return `
+            <div style="font-size:11px;color:rgba(250,246,239,0.35);margin-bottom:4px;">
+              MP alias: <span style="color:var(--gold);">${chefAlias}</span>
+              · Base 70%: <span style="color:var(--cream);">${fmt(f.baseChef)}</span>
+            </div>
+
             <!-- Adelanto 50% -->
-            <div style="background:rgba(255,255,255,0.03);border:1px solid ${adelantoLib?'rgba(93,191,135,0.3)':'rgba(255,255,255,0.08)'};border-radius:8px;padding:8px 10px;">
-              <div style="display:flex;justify-content:space-between;align-items:center;">
-                <div>
-                  <div style="font-size:11px;color:rgba(250,246,239,0.4);">Adelanto 50% (llegada)</div>
-                  <div style="font-size:14px;font-weight:600;color:#5DBF87;">${fmt(adelantoMonto)}</div>
-                </div>
-                ${adelantoLib ? `<span style="font-size:10px;color:#5DBF87;">✓ Pagado</span>` :
-                  (r.llegada_chef && r.llegada_cliente) ? `<button onclick="pagarAdelantoChef('${r.id}','${chefAlias}',${adelantoMonto})" class="accion-btn btn-confirmar" style="font-size:11px;padding:4px 10px;">Pagar adelanto</button>` :
-                  `<span style="font-size:10px;color:rgba(250,246,239,0.3);">⏳ Esperando llegada confirmada</span>`}
+            <div class="pago-monto-row ${adelantoLib?'cobrado':''}">
+              <div>
+                <div class="pago-monto-label">Adelanto 50% — al llegar</div>
+                <div style="font-size:10px;color:rgba(250,246,239,0.25);margin-top:1px;">${ambasLlegadas?'✓ Llegada confirmada':r.llegada_chef?'⏳ Esperando confirmación cliente':'⏳ Esperando llegada'}</div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+                <div class="pago-monto-valor">${fmt(adelantoMonto)}</div>
+                ${adelantoLib ? `<span class="pago-badge ok">✓ Pagado</span>` :
+                  ambasLlegadas ? `<button onclick="pagarAdelantoChef('${r.id}','${chefAlias}',${adelantoMonto})" class="btn-cobrar btn-cobrar-saldo" style="width:auto;padding:4px 10px;font-size:11px;">Pagar adelanto</button>` :
+                  `<span class="pago-badge block">⏳ Pendiente</span>`}
               </div>
             </div>
-            <!-- Saldo 35% + factura -->
-            <div style="background:rgba(255,255,255,0.03);border:1px solid ${saldoPagado?'rgba(93,191,135,0.3)':'rgba(255,255,255,0.08)'};border-radius:8px;padding:8px 10px;">
-              <div style="display:flex;justify-content:space-between;align-items:center;">
-                <div>
-                  <div style="font-size:11px;color:rgba(250,246,239,0.4);">Saldo 35% (fin servicio)</div>
-                  <div style="font-size:14px;font-weight:600;color:#5DBF87;">${fmt(saldoChefMonto)}</div>
-                </div>
-                ${saldoPagado ? `<span style="font-size:10px;color:#5DBF87;">✓ Pagado</span>` :
-                  factura ? `<button onclick="pagarSaldoChef('${r.id}','${chefAlias}',${saldoChefMonto})" class="accion-btn btn-confirmar" style="font-size:11px;padding:4px 10px;">Pagar saldo</button>` :
-                  `<span style="font-size:10px;color:rgba(250,246,239,0.3);">⏳ Esperando factura</span>`}
-              </div>
-              ${factura ? `<a href="${factura}" target="_blank" style="font-size:10px;color:var(--gold);text-decoration:none;display:inline-block;margin-top:4px;">📄 Ver factura</a>` : ''}
-            </div>
-            <!-- Retención 15% -->
-            <div style="background:rgba(255,255,255,0.03);border:1px solid ${retLiber?'rgba(93,191,135,0.3)':'rgba(255,255,255,0.08)'};border-radius:8px;padding:8px 10px;">
-              <div style="display:flex;justify-content:space-between;align-items:center;">
-                <div>
-                  <div style="font-size:11px;color:rgba(250,246,239,0.4);">Retención ${r.retencion_pct||15}% (+24hs)</div>
-                  <div style="font-size:14px;font-weight:600;color:#E8C96A;">${fmt(retencionMonto)}</div>
-                </div>
-                ${retLiber ? `<span style="font-size:10px;color:#5DBF87;">✓ Liberada</span>` :
-                  saldoPagado ? `<button onclick="liberarRetencion('${r.id}','${r.chef_id}',${retencionMonto})" class="accion-btn btn-confirmar" style="font-size:11px;padding:4px 10px;">Liberar</button>` :
-                  `<span style="font-size:10px;color:rgba(250,246,239,0.3);">⏳ Bloqueada</span>`}
-              </div>
-            </div>
-          </div>`;
-        })() : `<div style="font-size:12px;color:rgba(250,246,239,0.3);">Sin chef asignado</div>`}
 
-      <!-- Acciones -->
-      <div style="display:flex;flex-direction:column;gap:6px;">
-        ${!seniaCobrada ? `
-          <button class="btn-cobrar btn-cobrar-senia" onclick="cobrarSenia('${r.id}')">✓ Seña cobrada</button>
-          <button class="accion-btn" onclick="generarLinkMP('${r.id}','senia',${f.seniaMonto},'${r.nombre||''}','${r.ref||''}')" style="font-size:11px;background:rgba(0,158,227,0.1);border-color:rgba(0,158,227,0.3);color:#009EE3;">
-            🔗 Link pago MP
-          </button>` : ''}
-        ${seniaCobrada && !saldoCobrado ? `
-          <button class="btn-cobrar btn-cobrar-saldo" onclick="cobrarSaldo('${r.id}')">✓ Saldo cobrado</button>
-          <button class="accion-btn" onclick="generarLinkMP('${r.id}','saldo',${f.saldoMonto},'${r.nombre||''}','${r.ref||''}')" style="font-size:11px;background:rgba(0,158,227,0.1);border-color:rgba(0,158,227,0.3);color:#009EE3;">
-            🔗 Link pago MP
-          </button>` : ''}
+            <!-- Saldo 35% -->
+            <div class="pago-monto-row ${saldoPagado?'cobrado':''}">
+              <div>
+                <div class="pago-monto-label">Saldo 35% — fin servicio</div>
+                <div style="font-size:10px;color:rgba(250,246,239,0.25);margin-top:1px;">${factura?'✓ Factura recibida':'⏳ Requiere factura PDF'}</div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+                <div class="pago-monto-valor">${fmt(saldoChefMonto)}</div>
+                ${saldoPagado ? `<span class="pago-badge ok">✓ Pagado</span>` :
+                  factura ? `<div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;">
+                    <a href="${factura}" target="_blank" style="font-size:10px;color:var(--gold);text-decoration:none;">📄 Ver factura</a>
+                    <button onclick="pagarSaldoChef('${r.id}','${chefAlias}',${saldoChefMonto})" class="btn-cobrar btn-cobrar-saldo" style="width:auto;padding:4px 10px;font-size:11px;">Pagar saldo</button>
+                  </div>` :
+                  `<span class="pago-badge block">⏳ Sin factura</span>`}
+              </div>
+            </div>
+
+            <!-- Retención 15% -->
+            <div class="pago-monto-row ${retLiber?'cobrado':''}">
+              <div>
+                <div class="pago-monto-label">Retención ${r.retencion_pct||15}% — +24hs</div>
+                <div style="font-size:10px;color:rgba(250,246,239,0.25);margin-top:1px;">Garantía por reclamos</div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+                <div class="pago-monto-valor" style="color:#E8C96A;">${fmt(retencionMonto)}</div>
+                ${retLiber ? `<span class="pago-badge ok">✓ Liberada</span>` :
+                  saldoPagado ? `<button onclick="liberarRetencion('${r.id}','${r.chef_id}',${retencionMonto})" class="btn-cobrar btn-cobrar-saldo" style="width:auto;padding:4px 10px;font-size:11px;">Liberar</button>` :
+                  `<span class="pago-badge block">🔒 Bloqueada</span>`}
+              </div>
+            </div>`;
+          })() : `<div style="font-size:12px;color:rgba(250,246,239,0.3);padding:20px 0;text-align:center;">Sin chef asignado</div>`}
+        </div>
       </div>
     </div>`;
   }).join('');
