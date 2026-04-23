@@ -469,6 +469,21 @@ body{font-family:'DM Sans',sans-serif;background:var(--navy);min-height:100vh;co
           <label class="form-label">Bio profesional</label>
           <textarea class="form-input form-textarea" id="chef-bio" placeholder="Contá tu historia, tu estilo de cocina, tu experiencia..."></textarea>
         </div>
+
+        <div style="border-top:1px solid rgba(255,255,255,0.08);margin:20px 0;padding-top:20px;">
+          <div class="perfil-card-title" style="font-size:14px;margin-bottom:16px;">Datos para cobros</div>
+          <div class="form-group">
+            <label class="form-label">Alias o CBU de Mercado Pago</label>
+            <input type="text" class="form-input" id="chef-alias-mp" placeholder="Ej: daro.castello.mp">
+            <div style="font-size:11px;color:rgba(250,246,239,0.3);margin-top:4px;">Es el alias de tu cuenta MP donde recibís los pagos</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">CUIT (monotributista)</label>
+            <input type="text" class="form-input" id="chef-cuit" placeholder="Ej: 20-12345678-9">
+            <div style="font-size:11px;color:rgba(250,246,239,0.3);margin-top:4px;">Necesario para la emisión de facturas</div>
+          </div>
+        </div>
+
         <div style="display:flex;justify-content:flex-end;margin-top:8px;">
           <button class="save-btn" onclick="guardarPerfilChef()">Guardar perfil</button>
         </div>
@@ -703,13 +718,21 @@ function verTab(tab, btn) {
 async function cargarPerfilChef() {
   const { data, error } = await supa.from('chefs').select('*').eq('user_id', currentUser.id).single();
   if (!data) {
-    // El registro ya existe (creado via SQL) pero no tiene datos — no insertar
     console.log('Chef data not found:', error);
     chefPerfil = { id: currentUser.id, nombre: '', apellido: '', servicios_completados: 0, rating_promedio: 0 };
   } else {
     chefPerfil = data;
   }
   actualizarUI();
+  // Cargar campos de cobros en el perfil
+  if (chefPerfil.alias_mp) {
+    const el = document.getElementById('chef-alias-mp');
+    if (el) el.value = chefPerfil.alias_mp;
+  }
+  if (chefPerfil.cuit) {
+    const el = document.getElementById('chef-cuit');
+    if (el) el.value = chefPerfil.cuit;
+  }
 }
 
 function actualizarUI() {
@@ -766,6 +789,8 @@ async function guardarPerfilChef() {
     especialidades: esp ? [esp] : [],
     telefono: document.getElementById('chef-tel').value.trim(),
     bio: document.getElementById('chef-bio').value.trim(),
+    alias_mp: document.getElementById('chef-alias-mp')?.value.trim() || null,
+    cuit: document.getElementById('chef-cuit')?.value.trim() || null,
   };
   const { error } = await supa.from('chefs').update(perfil).eq('user_id', currentUser.id);
   if (error) { showToast('Error: ' + error.message); console.error(error); return; }
@@ -1450,9 +1475,15 @@ async function toggleCheck(reservaId, key) {
   const checklist = data?.checklist || {};
   checklist[key] = !checklist[key];
   const estadoActual = calcEstadoServicio(checklist);
-  await supa.from('reservas').update({ checklist, estado_servicio: estadoActual }).eq('id', reservaId);
+  const updates = { checklist, estado_servicio: estadoActual };
+  // Al marcar llegada, setear llegada_chef para la doble confirmación
+  if (key === 'llegada' && checklist[key]) {
+    updates.llegada_chef = true;
+  }
+  await supa.from('reservas').update(updates).eq('id', reservaId);
   if (servicioActivo) {
     servicioActivo.checklist = checklist;
+    if (key === 'llegada' && checklist[key]) servicioActivo.llegada_chef = true;
     renderServicioActivo(servicioActivo);
   }
 }
@@ -1942,81 +1973,138 @@ async function cargarCobros() {
     .order('fecha', { ascending: false });
 
   if (!data || !data.length) {
-    el.innerHTML = '<div class="empty-state"><div class="empty-icon">✦</div><div class="empty-text">No hay cobros registrados.</div></div>';
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">✦</div><div class="empty-text">No hay cobros registrados aún.</div></div>';
     return;
   }
+
+  // Verificar si tiene alias MP cargado
+  const tieneMPAlias = !!chefPerfil?.alias_mp;
 
   const fmt = n => n ? '$' + Math.round(n).toLocaleString('es-AR') : '—';
   const fmtFecha = f => new Date(f+'T12:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'long',year:'numeric'});
 
   // Totales
-  let totalCobrado = 0, totalPendiente = 0, totalRetenido = 0;
+  let totalAdelantado = 0, totalSaldo = 0, totalRetencion = 0, totalPendiente = 0;
   data.forEach(r => {
-    if (r.estado_servicio === 'completado') {
-      totalCobrado += r.pago_chef_inicial || 0;
-      if (r.retencion_liberada) totalCobrado += r.pago_chef_final || 0;
-      else totalRetenido += r.pago_chef_final || 0;
-    } else if (r.chef_id === currentUser.id && r.estado !== 'cancelada') {
-      totalPendiente += r.pago_chef_inicial || 0;
-    }
+    if (r.adelanto_liberado) totalAdelantado += r.adelanto_monto || 0;
+    if (r.saldo_chef_pagado) totalSaldo += r.saldo_chef_monto || 0;
+    if (r.saldo_chef_pagado && !r.retencion_liberada) totalRetencion += r.retencion_chef || 0;
+    if (!r.saldo_chef_pagado && r.estado !== 'cancelada') totalPendiente += r.pago_chef_inicial || 0;
   });
 
   el.innerHTML = `
+    ${!tieneMPAlias ? `
+    <div style="background:rgba(230,126,138,0.1);border:1px solid rgba(230,126,138,0.3);border-radius:12px;padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <div style="font-size:13px;color:#E67E8A;font-weight:500;">⚠ Falta tu alias de Mercado Pago</div>
+        <div style="font-size:11px;color:rgba(250,246,239,0.4);margin-top:3px;">Cargalo en Mi perfil para recibir pagos</div>
+      </div>
+      <button onclick="verTab('perfil',document.querySelector('.nav-tab[onclick*=perfil]'))" style="font-size:12px;color:var(--gold);background:transparent;border:1px solid rgba(201,168,76,0.3);border-radius:20px;padding:5px 12px;cursor:pointer;font-family:'DM Sans',sans-serif;">Ir al perfil</button>
+    </div>` : ''}
+
     <!-- Resumen -->
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px;">
-      <div style="background:rgba(93,191,135,0.08);border:1px solid rgba(93,191,135,0.2);border-radius:12px;padding:14px;">
-        <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#5DBF87;margin-bottom:6px;">Cobrado</div>
-        <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--cream);">${fmt(totalCobrado)}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:20px;">
+      <div style="background:rgba(93,191,135,0.08);border:1px solid rgba(93,191,135,0.2);border-radius:10px;padding:12px;">
+        <div style="font-size:10px;text-transform:uppercase;color:#5DBF87;margin-bottom:4px;">Adelantos recibidos</div>
+        <div style="font-size:16px;font-weight:600;color:var(--cream);">${fmt(totalAdelantado)}</div>
       </div>
-      <div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:14px;">
-        <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--gold);margin-bottom:6px;">Pendiente</div>
-        <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--cream);">${fmt(totalPendiente)}</div>
+      <div style="background:rgba(93,191,135,0.08);border:1px solid rgba(93,191,135,0.2);border-radius:10px;padding:12px;">
+        <div style="font-size:10px;text-transform:uppercase;color:#5DBF87;margin-bottom:4px;">Saldos cobrados</div>
+        <div style="font-size:16px;font-weight:600;color:var(--cream);">${fmt(totalSaldo)}</div>
       </div>
-      <div style="background:rgba(230,126,138,0.08);border:1px solid rgba(230,126,138,0.2);border-radius:12px;padding:14px;">
-        <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#E67E8A;margin-bottom:6px;">En retención</div>
-        <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--cream);">${fmt(totalRetenido)}</div>
+      <div style="background:rgba(230,126,138,0.08);border:1px solid rgba(230,126,138,0.2);border-radius:10px;padding:12px;">
+        <div style="font-size:10px;text-transform:uppercase;color:#E67E8A;margin-bottom:4px;">En retención</div>
+        <div style="font-size:16px;font-weight:600;color:var(--cream);">${fmt(totalRetencion)}</div>
+      </div>
+      <div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:12px;">
+        <div style="font-size:10px;text-transform:uppercase;color:var(--gold);margin-bottom:4px;">Por cobrar</div>
+        <div style="font-size:16px;font-weight:600;color:var(--cream);">${fmt(totalPendiente)}</div>
       </div>
     </div>
 
     <!-- Detalle por servicio -->
     ${data.map(r => {
-      const completado = r.estado_servicio === 'completado';
-      const cancelado = r.estado === 'cancelada';
-      const pagoInicial = r.pago_chef_inicial || Math.round((r.honorario||0)*0.7*0.85);
-      const pagoFinal = r.pago_chef_final || Math.round((r.honorario||0)*0.7*0.15);
       const servicio = r.precio_servicio || r.honorario || 0;
       const baseChef = Math.round(servicio * 0.70);
       const retPct = r.retencion_pct || 15;
+      const retencion = r.retencion_chef || Math.round(baseChef * retPct / 100);
+      const adelanto = r.adelanto_monto || Math.round(baseChef * 0.50);
+      const saldoChef = r.saldo_chef_monto || (baseChef - adelanto - retencion);
+      const cancelado = r.estado === 'cancelada';
+      const completado = r.estado_servicio === 'completado';
+
+      // Estado del flujo de pagos
+      const etapas = [
+        { label: 'Adelanto (50%)', monto: adelanto, ok: r.adelanto_liberado, color: '#5DBF87' },
+        { label: 'Saldo (35%)', monto: saldoChef, ok: r.saldo_chef_pagado, color: '#5DBF87' },
+        { label: `Retención (${retPct}%)`, monto: retencion, ok: r.retencion_liberada, color: '#E8C96A' },
+      ];
 
       return `
       <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:16px;margin-bottom:10px;">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
           <div>
             <div style="font-size:14px;font-weight:500;color:var(--cream);">${r.menu||'Servicio Celestia'}</div>
             <div style="font-size:12px;color:rgba(250,246,239,0.4);margin-top:2px;">${fmtFecha(r.fecha)} · ${r.personas} personas</div>
           </div>
-          <span style="font-size:10px;padding:3px 10px;border-radius:20px;${cancelado?'background:rgba(155,35,53,0.2);color:#E67E8A;':completado?'background:rgba(93,191,135,0.15);color:#5DBF87;':'background:rgba(201,168,76,0.12);color:var(--gold);'};border:1px solid currentColor;">
-            ${cancelado?'Cancelado':completado?'Completado':'En curso'}
-          </span>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;font-size:12px;">
-          <div>
-            <div style="color:rgba(250,246,239,0.35);margin-bottom:3px;">Base chef (70%)</div>
-            <div style="color:var(--cream);">${fmt(baseChef)}</div>
-          </div>
-          <div>
-            <div style="color:rgba(250,246,239,0.35);margin-bottom:3px;">Pago inmediato</div>
-            <div style="color:#5DBF87;font-weight:600;">${fmt(pagoInicial)}</div>
-          </div>
-          <div>
-            <div style="color:rgba(250,246,239,0.35);margin-bottom:3px;">Retención ${retPct}%</div>
-            <div style="color:${r.retencion_liberada?'#5DBF87':'#E67E8A'};">${fmt(pagoFinal)} ${r.retencion_liberada?'✓ liberada':'⏳ pendiente'}</div>
+          <div style="text-align:right;">
+            <div style="font-size:10px;color:rgba(250,246,239,0.4);">Total chef</div>
+            <div style="font-size:16px;font-weight:600;color:var(--gold-light);">${fmt(baseChef)}</div>
           </div>
         </div>
-        ${completado && !r.retencion_liberada ? `<div style="font-size:11px;color:rgba(250,246,239,0.3);margin-top:10px;">⏳ La retención se libera ~24hs después del servicio sin reclamos</div>` : ''}
-        ${cancelado && r.cancelacion_motivo ? `<div style="font-size:11px;color:rgba(230,126,138,0.7);margin-top:8px;">Motivo: ${r.cancelacion_motivo}</div>` : ''}
+
+        <!-- Etapas de cobro -->
+        <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;">
+          ${etapas.map(e => `
+            <div style="flex:1;min-width:80px;background:rgba(255,255,255,0.03);border:1px solid ${e.ok ? 'rgba(93,191,135,0.3)' : 'rgba(255,255,255,0.08)'};border-radius:8px;padding:8px 10px;text-align:center;">
+              <div style="font-size:10px;color:rgba(250,246,239,0.4);margin-bottom:3px;">${e.label}</div>
+              <div style="font-size:13px;font-weight:600;color:${e.ok ? e.color : 'rgba(250,246,239,0.5)'};">${fmt(e.monto)}</div>
+              <div style="font-size:10px;margin-top:2px;color:${e.ok ? '#5DBF87' : 'rgba(250,246,239,0.3)'};">${e.ok ? '✓ Cobrado' : '⏳ Pendiente'}</div>
+            </div>`).join('')}
+        </div>
+
+        <!-- Factura -->
+        ${completado && !r.factura_url && !r.saldo_chef_pagado ? `
+        <div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:12px 14px;margin-bottom:10px;">
+          <div style="font-size:12px;color:var(--gold-light);margin-bottom:8px;">📄 Subí tu factura para recibir el pago</div>
+          <div style="font-size:11px;color:rgba(250,246,239,0.35);margin-bottom:10px;">Emití la factura por ${fmt(saldoChef + retencion)} a nombre de Celestia. Subí el PDF de AFIP.</div>
+          <input type="file" id="factura-file-${r.id}" accept=".pdf,image/*" style="display:none" onchange="subirFactura(this,'${r.id}')">
+          <button onclick="document.getElementById('factura-file-${r.id}').click()"
+            style="background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.4);color:var(--gold-light);font-family:'DM Sans',sans-serif;font-size:12px;padding:8px 16px;border-radius:20px;cursor:pointer;">
+            ↑ Subir factura PDF
+          </button>
+        </div>` : ''}
+
+        ${r.factura_url ? `
+        <div style="background:rgba(93,191,135,0.08);border:1px solid rgba(93,191,135,0.2);border-radius:10px;padding:10px 14px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;">
+          <div style="font-size:12px;color:#5DBF87;">✓ Factura subida</div>
+          <a href="${r.factura_url}" target="_blank" style="font-size:11px;color:var(--gold);text-decoration:none;border:1px solid rgba(201,168,76,0.3);padding:3px 10px;border-radius:20px;">Ver PDF</a>
+        </div>` : ''}
+
+        ${cancelado ? `<div style="font-size:11px;color:rgba(230,126,138,0.7);">Servicio cancelado${r.cancelacion_motivo ? ' — ' + r.cancelacion_motivo : ''}</div>` : ''}
+        ${r.saldo_chef_pagado && r.retencion_liberada ? `<div style="font-size:11px;color:#5DBF87;text-align:center;padding:8px;">✓ Todos los pagos recibidos</div>` : ''}
       </div>`;
     }).join('')}`;
+}
+
+async function subirFactura(input, reservaId) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 10 * 1024 * 1024) { showToast('Máximo 10MB'); return; }
+  showToast('Subiendo factura...');
+  const ext = file.name.split('.').pop().toLowerCase();
+  const path = `facturas/${reservaId}/factura.${ext}`;
+  await supa.storage.from('avatares').remove([path]);
+  const { error } = await supa.storage.from('avatares').upload(path, file, { contentType: file.type, upsert: true });
+  if (error) { showToast('Error al subir: ' + error.message); return; }
+  const { data: urlData } = supa.storage.from('avatares').getPublicUrl(path);
+  const url = urlData.publicUrl + '?t=' + Date.now();
+  await supa.from('reservas').update({
+    factura_url: url,
+    factura_subida_at: new Date().toISOString()
+  }).eq('id', reservaId);
+  showToast('✓ Factura subida — el admin procesará tu pago');
+  cargarCobros();
 }
 
 </script>

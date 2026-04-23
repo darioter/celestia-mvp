@@ -973,6 +973,27 @@ function renderServicioActivoCliente() {
       </a>
     </div>` : '';
 
+  // Confirmación de llegada — doble tilde chef + cliente
+  const llegadaHtml = estadoActual === 'en_domicilio' ? `
+    <div class="tracking-card" style="border:1.5px solid ${r.llegada_cliente ? 'rgba(45,122,79,0.3)' : 'rgba(201,168,76,0.3)'};">
+      <div style="font-family:'DM Serif Display',serif;font-size:17px;color:var(--navy);margin-bottom:6px;">🏠 Tu chef llegó</div>
+      <div style="font-size:13px;color:var(--text-light);margin-bottom:14px;">Confirmá la llegada para liberar el adelanto al chef.</div>
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:14px;">
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;${r.llegada_chef ? 'color:var(--green);' : 'color:var(--text-light);'}">
+          ${r.llegada_chef ? '✓' : '⏳'} Chef confirmó
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;${r.llegada_cliente ? 'color:var(--green);' : 'color:var(--text-light);'}">
+          ${r.llegada_cliente ? '✓' : '⏳'} Vos confirmaste
+        </div>
+      </div>
+      ${!r.llegada_cliente ? `
+        <button onclick="confirmarLlegada('${r.id}')"
+          style="width:100%;background:var(--navy);color:var(--cream);border:none;border-radius:40px;padding:13px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;">
+          ✓ Confirmar llegada del chef
+        </button>` : `
+        <div style="text-align:center;font-size:13px;color:var(--green);font-weight:500;">✓ Llegada confirmada</div>`}
+    </div>` : '';
+
   // Lista de compras generada
   const listaCompras = r.lista_compras;
   const listaHtml = listaCompras?.secciones?.length ? `
@@ -1059,6 +1080,7 @@ function renderServicioActivoCliente() {
     </div>
     ${menuHtml}
     ${mapsHtml}
+    ${llegadaHtml}
     ${listaHtml}
     ${comprasHtml}
     <div class="chat-card">
@@ -1072,6 +1094,17 @@ function renderServicioActivoCliente() {
     ${calificHtml}`;
 
   cargarMensajesCliente(r.id);
+}
+
+async function confirmarLlegada(reservaId) {
+  await supa.from('reservas').update({ llegada_cliente: true }).eq('id', reservaId);
+  if (servicioActivoCliente) servicioActivoCliente.llegada_cliente = true;
+  showToast('✓ Llegada confirmada — se libera el adelanto al chef');
+  renderServicioActivoCliente();
+  await supa.from('mensajes').insert({
+    reserva_id: reservaId, autor_id: currentUser.id, rol: 'cliente',
+    texto: '✓ El cliente confirmó la llegada del chef al domicilio'
+  });
 }
 
 function descargarListaCliente() {

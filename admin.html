@@ -1280,29 +1280,56 @@ async function cargarPagos() {
       <!-- Liquidación chef -->
       <div>
         <div style="font-size:10px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(250,246,239,0.3);margin-bottom:8px;">Liquidación chef</div>
-        <div style="display:flex;flex-direction:column;gap:5px;">
-          <div style="display:flex;justify-content:space-between;font-size:12px;">
-            <span style="color:rgba(250,246,239,0.5);">Base chef (70%)</span>
-            <span>${fmt(f.baseChef)}</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;font-size:12px;">
-            <span style="color:rgba(250,246,239,0.5);">Retención (${r.retencion_pct||15}%)</span>
-            <span style="color:#E67E8A;">-${fmt(f.retencionChef)}</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;border-top:1px solid rgba(255,255,255,0.08);padding-top:4px;">
-            <span>Pago inmediato</span>
-            <span style="color:#5DBF87;">${fmt(f.pagoChefInic)}</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;font-size:11px;">
-            <span style="color:rgba(250,246,239,0.4);">+ Retención (24h)</span>
-            <span style="color:rgba(250,246,239,0.4);">${fmt(f.pagoChefFinal)}</span>
-          </div>
-          ${saldoCobrado ? `
-          <div style="margin-top:4px;">${badge(retLiber,'Retención liberada','Retención pendiente',false)}</div>
-          ${!retLiber ? `<button onclick="liberarRetencion('${r.id}','${r.chef_id}',${f.pagoChefFinal})" class="accion-btn btn-confirmar" style="font-size:11px;padding:5px 10px;margin-top:4px;">Liberar retención</button>` : ''}
-          ` : ''}
-        </div>
-      </div>
+        ${r.chef_id ? (() => {
+          const chefAlias = r.chefs?.alias_mp || '—';
+          const adelantoMonto = r.adelanto_monto || Math.round(f.baseChef * 0.50);
+          const saldoChefMonto = r.saldo_chef_monto || Math.round(f.baseChef * 0.35);
+          const retencionMonto = f.retencionChef;
+          const factura = r.factura_url;
+          const adelantoLib = !!r.adelanto_liberado;
+          const saldoPagado = !!r.saldo_chef_pagado;
+          return `
+          <div style="font-size:11px;color:rgba(250,246,239,0.35);margin-bottom:8px;">MP: <span style="color:var(--gold);">${chefAlias}</span></div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <!-- Adelanto 50% -->
+            <div style="background:rgba(255,255,255,0.03);border:1px solid ${adelantoLib?'rgba(93,191,135,0.3)':'rgba(255,255,255,0.08)'};border-radius:8px;padding:8px 10px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div>
+                  <div style="font-size:11px;color:rgba(250,246,239,0.4);">Adelanto 50% (llegada)</div>
+                  <div style="font-size:14px;font-weight:600;color:#5DBF87;">${fmt(adelantoMonto)}</div>
+                </div>
+                ${adelantoLib ? `<span style="font-size:10px;color:#5DBF87;">✓ Pagado</span>` :
+                  (r.llegada_chef && r.llegada_cliente) ? `<button onclick="pagarAdelantoChef('${r.id}','${chefAlias}',${adelantoMonto})" class="accion-btn btn-confirmar" style="font-size:11px;padding:4px 10px;">Pagar adelanto</button>` :
+                  `<span style="font-size:10px;color:rgba(250,246,239,0.3);">⏳ Esperando llegada confirmada</span>`}
+              </div>
+            </div>
+            <!-- Saldo 35% + factura -->
+            <div style="background:rgba(255,255,255,0.03);border:1px solid ${saldoPagado?'rgba(93,191,135,0.3)':'rgba(255,255,255,0.08)'};border-radius:8px;padding:8px 10px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div>
+                  <div style="font-size:11px;color:rgba(250,246,239,0.4);">Saldo 35% (fin servicio)</div>
+                  <div style="font-size:14px;font-weight:600;color:#5DBF87;">${fmt(saldoChefMonto)}</div>
+                </div>
+                ${saldoPagado ? `<span style="font-size:10px;color:#5DBF87;">✓ Pagado</span>` :
+                  factura ? `<button onclick="pagarSaldoChef('${r.id}','${chefAlias}',${saldoChefMonto})" class="accion-btn btn-confirmar" style="font-size:11px;padding:4px 10px;">Pagar saldo</button>` :
+                  `<span style="font-size:10px;color:rgba(250,246,239,0.3);">⏳ Esperando factura</span>`}
+              </div>
+              ${factura ? `<a href="${factura}" target="_blank" style="font-size:10px;color:var(--gold);text-decoration:none;display:inline-block;margin-top:4px;">📄 Ver factura</a>` : ''}
+            </div>
+            <!-- Retención 15% -->
+            <div style="background:rgba(255,255,255,0.03);border:1px solid ${retLiber?'rgba(93,191,135,0.3)':'rgba(255,255,255,0.08)'};border-radius:8px;padding:8px 10px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div>
+                  <div style="font-size:11px;color:rgba(250,246,239,0.4);">Retención ${r.retencion_pct||15}% (+24hs)</div>
+                  <div style="font-size:14px;font-weight:600;color:#E8C96A;">${fmt(retencionMonto)}</div>
+                </div>
+                ${retLiber ? `<span style="font-size:10px;color:#5DBF87;">✓ Liberada</span>` :
+                  saldoPagado ? `<button onclick="liberarRetencion('${r.id}','${r.chef_id}',${retencionMonto})" class="accion-btn btn-confirmar" style="font-size:11px;padding:4px 10px;">Liberar</button>` :
+                  `<span style="font-size:10px;color:rgba(250,246,239,0.3);">⏳ Bloqueada</span>`}
+              </div>
+            </div>
+          </div>`;
+        })() : `<div style="font-size:12px;color:rgba(250,246,239,0.3);">Sin chef asignado</div>`}
 
       <!-- Acciones -->
       <div style="display:flex;flex-direction:column;gap:6px;">
@@ -1358,6 +1385,24 @@ async function liberarRetencion(reservaId, chefId, monto) {
   await supa.from('reservas').update({ retencion_liberada: true, estado_escrow: 'liberado' }).eq('id', reservaId);
   await supa.from('transacciones').insert({ reserva_id: reservaId, tipo: 'retencion', monto, estado: 'aprobado', descripcion: 'Retención liberada al chef' });
   showToast(`Retención de ${fmt(monto)} liberada ✓`);
+  cargarPagos();
+}
+
+async function pagarAdelantoChef(reservaId, aliasMP, monto) {
+  const confirmado = confirm(`Transferir adelanto de ${fmt(monto)} al alias MP: ${aliasMP}\n\n¿Confirmás que realizaste la transferencia?`);
+  if (!confirmado) return;
+  await supa.from('reservas').update({ adelanto_liberado: true, adelanto_monto: monto }).eq('id', reservaId);
+  await supa.from('transacciones').insert({ reserva_id: reservaId, tipo: 'adelanto_chef', monto, estado: 'aprobado', descripcion: `Adelanto 50% pagado a ${aliasMP}` });
+  showToast(`Adelanto de ${fmt(monto)} registrado ✓`);
+  cargarPagos();
+}
+
+async function pagarSaldoChef(reservaId, aliasMP, monto) {
+  const confirmado = confirm(`Transferir saldo de ${fmt(monto)} al alias MP: ${aliasMP}\n\n¿Confirmás que realizaste la transferencia?`);
+  if (!confirmado) return;
+  await supa.from('reservas').update({ saldo_chef_pagado: true, saldo_chef_monto: monto }).eq('id', reservaId);
+  await supa.from('transacciones').insert({ reserva_id: reservaId, tipo: 'saldo_chef', monto, estado: 'aprobado', descripcion: `Saldo 35% pagado a ${aliasMP}` });
+  showToast(`Saldo de ${fmt(monto)} registrado ✓`);
   cargarPagos();
 }
 
