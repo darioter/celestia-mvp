@@ -1433,8 +1433,10 @@ async function confirmarMenuDefinitivo(reservaId) {
   if (error) { showToast('Error: ' + error.message); return; }
   servicioActivo.menu_definitivo = texto;
   servicioActivo.menu_definitivo_ok = true;
-  showToast('✓ Menú confirmado — el cliente lo ve en tiempo real');
+  showToast('✓ Menú confirmado — generando lista de compras...');
   renderServicioActivo(servicioActivo);
+  // Generar lista automáticamente
+  await generarListaCompras(reservaId);
 }
 
 function editarMenuDefinitivo(reservaId) {
@@ -1522,25 +1524,30 @@ async function generarListaCompras(reservaId) {
   if (btn) { btn.disabled = true; btn.style.display = 'none'; }
   if (loading) loading.style.display = 'flex';
 
-  const prompt = `Sos un chef profesional. En base a este menú, generá una lista de compras detallada.
+  const prompt = `Sos un chef profesional. Generá la lista de compras completa y detallada para este menú.
 
-Menú: "${r.menu_definitivo}"
-Personas: ${r.personas}
-Modalidad de compra: ${r.compra_modo || 'chef compra'}
+MENÚ DEFINITIVO:
+"${r.menu_definitivo}"
 
-Respondé SOLO con un JSON válido, sin markdown, con esta estructura exacta:
+PERSONAS: ${r.personas}
+TURNO: ${r.turno === 'almuerzo' ? 'Almuerzo' : 'Cena'}
+
+Calculá las cantidades EXACTAS para ${r.personas} personas. Sé preciso: si son 4 personas y necesitás 200g por persona, escribí "800g".
+
+Respondé SOLO con un JSON válido, sin markdown ni texto adicional, con esta estructura exacta:
 {
   "secciones": [
     {
       "categoria": "Carnes y proteínas",
       "items": [
-        { "nombre": "Lomo", "cantidad": "1.2 kg" }
+        { "nombre": "Lomo de res", "cantidad": "1.2 kg" }
       ]
     }
   ]
 }
 
-Categorías posibles: Carnes y proteínas, Verduras y frutas, Lácteos, Almacén/secos, Especias y condimentos, Otros.`;
+Categorías a usar según corresponda: Carnes y proteínas, Pescados y mariscos, Verduras y frutas, Lácteos y huevos, Almacén/secos, Especias y condimentos, Bebidas, Otros.
+Solo incluí las categorías que tengan items. Sé exhaustivo — no omitás ningún ingrediente del menú.`;
 
   try {
     const res = await fetch('/api/chat', {

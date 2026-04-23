@@ -962,9 +962,26 @@ function renderServicioActivoCliente() {
       </a>
     </div>` : '';
 
-  // Modalidad de compras (solo si el menú fue confirmado y aún no eligió)
+  // Lista de compras generada
+  const listaCompras = r.lista_compras;
+  const listaHtml = listaCompras?.secciones?.length ? `
+    <div class="compras-card">
+      <div class="compras-titulo">🛒 Lista de compras del servicio</div>
+      <div style="font-size:12px;color:var(--text-light);margin-bottom:16px;">Generada por tu chef para ${r.personas} personas</div>
+      ${listaCompras.secciones.map(sec => `
+        <div style="margin-bottom:14px;">
+          <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-mid);margin-bottom:8px;">${sec.categoria}</div>
+          ${sec.items.map(item => `
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--cream-dark);">
+              <span style="font-size:13px;color:var(--text);">${item.nombre}</span>
+              <span style="font-size:13px;font-weight:500;color:var(--navy);">${item.cantidad}</span>
+            </div>`).join('')}
+        </div>`).join('')}
+    </div>` : '';
+
+  // Modalidad de compras (solo si el menú fue confirmado)
   const comprasModo = r.compra_modo;
-  const comprasHtml = r.menu_definitivo_ok && estadoActual === 'aceptado' ? `
+  const comprasHtml = r.menu_definitivo_ok ? `
     <div class="compras-card">
       <div class="compras-titulo">¿Cómo preferís gestionar las compras?</div>
       ${[
@@ -1003,6 +1020,7 @@ function renderServicioActivoCliente() {
     </div>
     ${menuHtml}
     ${mapsHtml}
+    ${listaHtml}
     ${comprasHtml}
     <div class="chat-card">
       <div class="compras-titulo">💬 Chat con tu chef</div>
