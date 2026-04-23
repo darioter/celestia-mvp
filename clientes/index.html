@@ -984,12 +984,13 @@ function renderServicioActivoCliente() {
   const comprasHtml = r.menu_definitivo_ok ? `
     <div class="compras-card">
       <div class="compras-titulo">¿Cómo preferís gestionar las compras?</div>
+      <div style="font-size:12px;color:var(--text-light);margin-bottom:14px;">Elegí una opción y confirmá. Tu chef recibirá la notificación.</div>
       ${[
-        { key:'chef', icon:'👨‍🍳', titulo:'El chef compra todo', sub:'Tu chef se encarga de seleccionar y comprar los mejores ingredientes' },
-        { key:'cliente', icon:'🛍', titulo:'Yo compro los ingredientes', sub:'Recibirás la lista de compras y vos la conseguís' },
-        { key:'market', icon:'📦', titulo:'Pedido a domicilio', sub:'Gestionamos un delivery de ingredientes frescos (PedidosYa Market, Rappi, etc)' },
+        { key:'chef', icon:'👨‍🍳', titulo:'El chef compra todo', sub:'Tu chef selecciona y compra los mejores ingredientes' },
+        { key:'cliente', icon:'🛍', titulo:'Yo compro los ingredientes', sub:'Recibís la lista y la conseguís vos' },
+        { key:'market', icon:'📦', titulo:'Pedido a domicilio', sub:'Delivery de ingredientes frescos (PedidosYa Market, Rappi, etc)' },
       ].map(op => `
-        <div class="compra-opcion ${comprasModo===op.key?'selected':''}" onclick="seleccionarComprasModo('${r.id}','${op.key}')">
+        <div class="compra-opcion ${comprasModo===op.key?'selected':''}" onclick="preseleccionarCompra('${op.key}')">
           <div class="compra-opcion-icon">${op.icon}</div>
           <div class="compra-opcion-info">
             <div class="compra-opcion-titulo">${op.titulo}</div>
@@ -997,6 +998,15 @@ function renderServicioActivoCliente() {
           </div>
           ${comprasModo===op.key ? '<div style="color:var(--gold);font-size:18px;">✓</div>' : ''}
         </div>`).join('')}
+      ${comprasModo ? `
+        <div style="background:var(--green-light);border:1px solid rgba(45,122,79,0.2);border-radius:10px;padding:12px 16px;margin-top:4px;display:flex;align-items:center;justify-content:space-between;">
+          <div style="font-size:13px;color:var(--green);font-weight:500;">✓ Confirmaste: ${comprasModo==='chef'?'El chef compra todo':comprasModo==='cliente'?'Yo compro':'Pedido a domicilio'}</div>
+          <button onclick="preseleccionarCompra(null)" style="font-size:11px;color:var(--text-light);background:transparent;border:1px solid var(--cream-dark);border-radius:20px;padding:4px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;">Cambiar</button>
+        </div>` : `
+        <button id="btn-confirmar-compras" onclick="confirmarCompras('${r.id}')"
+          style="width:100%;margin-top:12px;background:var(--navy);color:var(--cream);border:none;border-radius:40px;padding:13px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;opacity:0.4;pointer-events:none;transition:all 0.2s;">
+          Confirmar elección →
+        </button>`}
     </div>` : '';
 
   // Calificación (solo cuando completado)
@@ -1035,18 +1045,51 @@ function renderServicioActivoCliente() {
   cargarMensajesCliente(r.id);
 }
 
-async function seleccionarComprasModo(reservaId, modo) {
+let _compraPreseleccionada = null;
+
+function preseleccionarCompra(modo) {
+  _compraPreseleccionada = modo;
+  // Actualizar UI sin guardar aún
+  document.querySelectorAll('.compra-opcion').forEach(el => el.classList.remove('selected'));
+  if (modo) {
+    // Marcar la opción seleccionada
+    document.querySelectorAll('.compra-opcion').forEach(el => {
+      const titulo = el.querySelector('.compra-opcion-titulo')?.textContent;
+      const matches = (modo==='chef' && titulo?.includes('chef')) ||
+                      (modo==='cliente' && titulo?.includes('Yo')) ||
+                      (modo==='market' && titulo?.includes('domicilio'));
+      if (matches) el.classList.add('selected');
+    });
+    // Habilitar botón confirmar
+    const btn = document.getElementById('btn-confirmar-compras');
+    if (btn) { btn.style.opacity = '1'; btn.style.pointerEvents = 'auto'; }
+  }
+}
+
+async function confirmarCompras(reservaId) {
+  const modo = _compraPreseleccionada;
+  if (!modo) { showToast('Elegí una opción primero'); return; }
   await supa.from('reservas').update({ compra_modo: modo }).eq('id', reservaId);
   if (servicioActivoCliente) servicioActivoCliente.compra_modo = modo;
-  // Notificar al chef via chat del sistema
-  const modos = { chef: 'prefiere que el chef compre los ingredientes 👨‍🍳', cliente: 'va a comprar los ingredientes por su cuenta 🛍', market: 'prefiere coordinar un pedido a domicilio de ingredientes 📦' };
+  // Notificar al chef via chat
+  const modos = {
+    chef: 'prefiere que el chef compre los ingredientes 👨‍🍳',
+    cliente: 'va a comprar los ingredientes por su cuenta 🛍',
+    market: 'prefiere un pedido a domicilio de ingredientes 📦'
+  };
   await supa.from('mensajes').insert({
     reserva_id: reservaId, autor_id: currentUser.id, rol: 'cliente',
-    texto: `📋 Preferencia de compras: el cliente ${modos[modo] || modo}`
+    texto: `📋 Modalidad de compras confirmada: el cliente ${modos[modo]}`
   });
-  showToast('Preferencia guardada ✓');
+  showToast('✓ Preferencia confirmada — tu chef fue notificado');
   renderServicioActivoCliente();
   cargarMensajesCliente(reservaId);
+}
+
+async function seleccionarComprasModo(reservaId, modo) {
+  // Legacy — redirigir a confirmar directamente
+  _compraPreseleccionada = modo;
+  await confirmarCompras(reservaId);
 }
 
 async function cargarMensajesCliente(reservaId) {
