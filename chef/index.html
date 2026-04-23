@@ -1372,8 +1372,13 @@ function renderServicioActivo(r) {
           <div class="solicitud-meta">${fmtFecha(r.fecha)} · ${turnoStr} · ${r.personas} personas</div>
         </div>
         <div style="text-align:right;">
-          <div class="info-label">Tu ganancia</div>
+          <div class="info-label">Tu liquidación</div>
+          ${r.precio_servicio ? `
+          <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--gold-light);">${fmt(r.pago_chef_inicial || Math.round((r.precio_servicio||r.honorario||0)*0.7*0.85))}</div>
+          <div style="font-size:10px;color:rgba(250,246,239,0.35);margin-top:2px;">al finalizar · + ${fmt(r.pago_chef_final || Math.round((r.precio_servicio||r.honorario||0)*0.7*0.15))} en 24hs</div>
+          ` : `
           <div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--gold-light);">${fmt(r.honorario_final || r.honorario)}</div>
+          `}
         </div>
       </div>
 

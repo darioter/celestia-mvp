@@ -852,11 +852,13 @@
 
     <!-- SECCIÓN PAGOS -->
     <div id="seccion-pagos" style="display:none;">
-      <div class="pagos-resumen">
+
+      <!-- RESUMEN FINANCIERO -->
+      <div class="pagos-resumen" id="resumen-financiero" style="grid-template-columns:repeat(5,1fr);">
         <div class="resumen-card">
-          <div class="resumen-label">Señas pendientes</div>
-          <div class="resumen-valor" id="res-senias-pendientes">—</div>
-          <div class="resumen-sub" id="res-senias-monto">—</div>
+          <div class="resumen-label">En escrow</div>
+          <div class="resumen-valor" id="res-escrow">—</div>
+          <div class="resumen-sub">fondos retenidos</div>
         </div>
         <div class="resumen-card">
           <div class="resumen-label">Señas cobradas</div>
@@ -864,16 +866,22 @@
           <div class="resumen-sub" id="res-senias-cobradas-monto">—</div>
         </div>
         <div class="resumen-card">
-          <div class="resumen-label">Saldos pendientes</div>
-          <div class="resumen-valor" id="res-saldos-pendientes">—</div>
+          <div class="resumen-label">Saldos cobrados</div>
+          <div class="resumen-valor" id="res-saldos-cobrados">—</div>
           <div class="resumen-sub" id="res-saldos-monto">—</div>
         </div>
         <div class="resumen-card">
-          <div class="resumen-label">Total cobrado</div>
-          <div class="resumen-valor" id="res-total-cobrado">—</div>
-          <div class="resumen-sub">señas + saldos</div>
+          <div class="resumen-label">Comisión app</div>
+          <div class="resumen-valor" id="res-comision">—</div>
+          <div class="resumen-sub">30% servicios</div>
+        </div>
+        <div class="resumen-card">
+          <div class="resumen-label">Retenciones</div>
+          <div class="resumen-valor" id="res-retenciones">—</div>
+          <div class="resumen-sub">garantía chefs</div>
         </div>
       </div>
+
       <div class="pagos-grid" id="pagos-grid">
         <div class="loading">Cargando pagos...</div>
       </div>
@@ -1138,85 +1146,166 @@ async function renderAgenda() {
 const fmt = n => n ? '$' + Math.round(n).toLocaleString('es-AR') : '—';
 const fmtFechaPago = f => f ? new Date(f+'T12:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'short',year:'numeric'}) : '';
 
+// ─── MOTOR FINANCIERO ────────────────────────────────────
+const COMISION_APP = 0.30;      // 30% del servicio
+const RETENCION_DEFAULT = 0.15; // 15% del servicio como garantía
+const MP_ACCESS_TOKEN = 'TEST-'; // Reemplazar con token real de MP
+
+function calcularFinanciero(r) {
+  const servicio = r.precio_servicio || r.honorario || 0;
+  const market   = r.precio_market || 0;
+  const extras   = r.precio_extras || 0;
+  const express  = r.recargo_express || 0;
+  const retPct   = (r.retencion_pct || 15) / 100;
+
+  const totalServicio = servicio + express;
+  const totalCliente  = totalServicio + market + extras;
+  const seniaMonto    = Math.round(totalServicio * 0.5) + market + extras; // 50% servicio + 100% market+extras
+  const saldoMonto    = Math.round(totalServicio * 0.5);                    // 50% servicio restante
+  const comisionApp   = Math.round(totalServicio * COMISION_APP);
+  const baseChef      = Math.round(totalServicio * (1 - COMISION_APP));     // 70% del servicio
+  const retencionChef = Math.round(baseChef * retPct);
+  const pagoChefInic  = baseChef - retencionChef;                           // lo que cobra al finalizar
+  const pagoChefFinal = retencionChef;                                      // liberación 24h después
+
+  return { totalServicio, totalCliente, seniaMonto, saldoMonto, comisionApp, baseChef, retencionChef, pagoChefInic, pagoChefFinal, market, extras, express, servicio };
+}
+
 async function cargarPagos() {
   document.getElementById('pagos-grid').innerHTML = '<div class="loading">Cargando...</div>';
-  const { data, error } = await supa
-    .from('reservas')
-    .select('*')
-    .in('estado', ['reservada','confirmada'])
+  const { data, error } = await supa.from('reservas').select('*')
+    .not('estado','eq','cancelada')
     .order('fecha', { ascending: true });
   if (error) { document.getElementById('pagos-grid').innerHTML = '<div class="loading">Error</div>'; return; }
 
-  // Calcular resumen
-  let seniasPend = 0, seniasCobr = 0, saldosPend = 0, totalCobrado = 0;
-  let montoSeniasPend = 0, montoSeniasCobr = 0, montoSaldosPend = 0;
-
+  // Resumen financiero
+  let escrow = 0, seniasCobr = 0, saldosCobr = 0, comision = 0, retenciones = 0;
+  let montoSenias = 0, montoSaldos = 0;
   data.forEach(r => {
-    const honorario = r.honorario || 0;
-    const senia = Math.round(honorario * 0.5);
-    const saldo = honorario - senia;
-    if (!r.senia_cobrada) { seniasPend++; montoSeniasPend += senia; }
-    else { seniasCobr++; montoSeniasCobr += senia; totalCobrado += senia; }
-    if (r.senia_cobrada && !r.saldo_cobrado) { saldosPend++; montoSaldosPend += saldo; }
-    if (r.saldo_cobrado) totalCobrado += saldo;
+    const f = calcularFinanciero(r);
+    if (r.senia_cobrada) { seniasCobr++; montoSenias += f.seniaMonto; escrow += f.seniaMonto; }
+    if (r.saldo_cobrado) { saldosCobr++; montoSaldos += f.saldoMonto; escrow += f.saldoMonto; }
+    if (r.senia_cobrada || r.saldo_cobrado) comision += f.comisionApp;
+    if (r.senia_cobrada) retenciones += f.retencionChef;
   });
 
-  document.getElementById('res-senias-pendientes').textContent = seniasPend;
-  document.getElementById('res-senias-monto').textContent = fmt(montoSeniasPend) + ' por cobrar';
+  document.getElementById('res-escrow').textContent = fmt(escrow);
   document.getElementById('res-senias-cobradas').textContent = seniasCobr;
-  document.getElementById('res-senias-cobradas-monto').textContent = fmt(montoSeniasCobr) + ' ingresado';
-  document.getElementById('res-saldos-pendientes').textContent = saldosPend;
-  document.getElementById('res-saldos-monto').textContent = fmt(montoSaldosPend) + ' por cobrar';
-  document.getElementById('res-total-cobrado').textContent = fmt(totalCobrado);
+  document.getElementById('res-senias-cobradas-monto').textContent = fmt(montoSenias) + ' ingresado';
+  document.getElementById('res-saldos-cobrados').textContent = saldosCobr;
+  document.getElementById('res-saldos-monto').textContent = fmt(montoSaldos) + ' ingresado';
+  document.getElementById('res-comision').textContent = fmt(comision);
+  document.getElementById('res-retenciones').textContent = fmt(retenciones);
 
-  if (data.length === 0) {
-    document.getElementById('pagos-grid').innerHTML = '<div class="empty-state"><div class="empty-state-icon">✦</div>No hay reservas activas</div>';
+  if (!data.length) {
+    document.getElementById('pagos-grid').innerHTML = '<div class="empty-state"><div class="empty-state-icon">✦</div>No hay reservas</div>';
     return;
   }
 
   const fmtFecha = f => new Date(f+'T12:00:00').toLocaleDateString('es-AR',{weekday:'short',day:'numeric',month:'short'});
+  const badge = (ok, textoOk, textoNo, bloqueado) => ok
+    ? `<span style="font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(76,175,80,0.12);color:#81C784;border:1px solid rgba(76,175,80,0.25);">✓ ${textoOk}</span>`
+    : bloqueado
+    ? `<span style="font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,0.04);color:rgba(250,246,239,0.2);border:1px solid rgba(255,255,255,0.06);">⏳ ${textoNo}</span>`
+    : `<span style="font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(201,168,76,0.1);color:var(--gold);border:1px solid rgba(201,168,76,0.2);">· ${textoNo}</span>`;
 
   document.getElementById('pagos-grid').innerHTML = data.map(r => {
-    const honorario = r.honorario || 0;
-    const senia = Math.round(honorario * 0.5);
-    const saldo = honorario - senia;
+    const f = calcularFinanciero(r);
     const seniaCobrada = !!r.senia_cobrada;
     const saldoCobrado = !!r.saldo_cobrado;
+    const retLiber = !!r.retencion_liberada;
     const cerrado = seniaCobrada && saldoCobrado;
 
     return `
     <div class="pago-card estado-${r.estado}${cerrado?' saldo-cobrado':''}">
+      <!-- Info reserva -->
       <div>
         <div class="pago-fecha">${fmtFecha(r.fecha)}</div>
-        <div style="font-size:12px;color:rgba(250,246,239,0.5);margin-top:2px;">${r.turno==='almuerzo'?'☀ Almuerzo':'🌙 Cena'} · ${r.personas}p</div>
-        <div class="pago-ref">${r.ref}</div>
+        <div style="font-size:11px;color:rgba(250,246,239,0.4);margin-top:2px;">${r.turno==='almuerzo'?'☀':'🌙'} ${r.personas}p · ${r.ref}</div>
+        <div class="pago-cliente" style="margin-top:6px;">${r.nombre||'—'}</div>
+        <div class="pago-menu" style="font-size:11px;">${r.menu||'—'}</div>
       </div>
+
+      <!-- Desglose de precios -->
       <div>
-        <div class="pago-cliente">${r.nombre||'—'}</div>
-        <div class="pago-menu">${r.menu||'—'}</div>
-        ${r.tel ? `<div style="font-size:11px;color:rgba(250,246,239,0.35);margin-top:3px;">${r.tel}</div>` : ''}
-      </div>
-      <div class="pago-bloque">
-        <div class="pago-bloque-titulo">Seña (50%)</div>
-        <div class="pago-monto">${fmt(senia)}</div>
-        <div class="${seniaCobrada?'pago-estado-badge cobrado':'pago-estado-badge pendiente'}" style="margin-top:4px;">
-          ${seniaCobrada ? '✓ Cobrada' : '· Pendiente'}
+        <div style="font-size:10px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(250,246,239,0.3);margin-bottom:8px;">Desglose</div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div style="display:flex;justify-content:space-between;font-size:12px;">
+            <span style="color:rgba(250,246,239,0.5);">Servicio</span>
+            <span style="color:var(--cream);">${fmt(f.servicio)}</span>
+          </div>
+          ${f.express ? `<div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:rgba(250,246,239,0.5);">Recargo express</span><span style="color:var(--gold);">+${fmt(f.express)}</span></div>` : ''}
+          ${f.market ? `<div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:rgba(250,246,239,0.5);">Market</span><span style="color:var(--cream);">${fmt(f.market)}</span></div>` : ''}
+          ${f.extras ? `<div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:rgba(250,246,239,0.5);">Extras</span><span style="color:var(--cream);">${fmt(f.extras)}</span></div>` : ''}
+          <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;border-top:1px solid rgba(255,255,255,0.08);padding-top:4px;margin-top:2px;">
+            <span style="color:var(--cream);">Total cliente</span>
+            <span style="color:var(--gold-light);">${fmt(f.totalCliente)}</span>
+          </div>
         </div>
-        ${r.senia_fecha ? `<div style="font-size:10px;color:rgba(250,246,239,0.3);margin-top:2px;">${fmtFechaPago(r.senia_fecha)}</div>` : ''}
+        <!-- Editar precios -->
+        <button onclick="editarPrecios('${r.id}')" style="margin-top:8px;font-size:10px;color:rgba(250,246,239,0.3);background:transparent;border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:3px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;">Editar precios</button>
       </div>
-      <div class="pago-bloque">
-        <div class="pago-bloque-titulo">Saldo</div>
-        <div class="pago-monto">${fmt(saldo)}</div>
-        <div class="${saldoCobrado?'pago-estado-badge cobrado':seniaCobrada?'pago-estado-badge pendiente':'pago-estado-badge cerrado'}" style="margin-top:4px;">
-          ${saldoCobrado ? '✓ Cobrado' : seniaCobrada ? '· Pendiente' : '· Bloqueado'}
+
+      <!-- Cobros cliente -->
+      <div>
+        <div style="font-size:10px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(250,246,239,0.3);margin-bottom:8px;">Cobros al cliente</div>
+        <div style="margin-bottom:10px;">
+          <div style="font-size:11px;color:rgba(250,246,239,0.4);">Seña (al reservar)</div>
+          <div class="pago-monto">${fmt(f.seniaMonto)}</div>
+          <div style="margin-top:4px;">${badge(seniaCobrada,'Cobrada','Pendiente',false)}</div>
+          <div style="font-size:10px;color:rgba(250,246,239,0.25);margin-top:2px;">50% servicio + 100% market/extras</div>
         </div>
-        ${r.saldo_fecha ? `<div style="font-size:10px;color:rgba(250,246,239,0.3);margin-top:2px;">${fmtFechaPago(r.saldo_fecha)}</div>` : ''}
+        <div>
+          <div style="font-size:11px;color:rgba(250,246,239,0.4);">Saldo (al iniciar)</div>
+          <div class="pago-monto">${fmt(f.saldoMonto)}</div>
+          <div style="margin-top:4px;">${badge(saldoCobrado,'Cobrado','Pendiente',!seniaCobrada)}</div>
+          <div style="font-size:10px;color:rgba(250,246,239,0.25);margin-top:2px;">50% servicio restante</div>
+        </div>
       </div>
+
+      <!-- Liquidación chef -->
+      <div>
+        <div style="font-size:10px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(250,246,239,0.3);margin-bottom:8px;">Liquidación chef</div>
+        <div style="display:flex;flex-direction:column;gap:5px;">
+          <div style="display:flex;justify-content:space-between;font-size:12px;">
+            <span style="color:rgba(250,246,239,0.5);">Base chef (70%)</span>
+            <span>${fmt(f.baseChef)}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;">
+            <span style="color:rgba(250,246,239,0.5);">Retención (${r.retencion_pct||15}%)</span>
+            <span style="color:#E67E8A;">-${fmt(f.retencionChef)}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;border-top:1px solid rgba(255,255,255,0.08);padding-top:4px;">
+            <span>Pago inmediato</span>
+            <span style="color:#5DBF87;">${fmt(f.pagoChefInic)}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;">
+            <span style="color:rgba(250,246,239,0.4);">+ Retención (24h)</span>
+            <span style="color:rgba(250,246,239,0.4);">${fmt(f.pagoChefFinal)}</span>
+          </div>
+          ${saldoCobrado ? `
+          <div style="margin-top:4px;">${badge(retLiber,'Retención liberada','Retención pendiente',false)}</div>
+          ${!retLiber ? `<button onclick="liberarRetencion('${r.id}','${r.chef_id}',${f.pagoChefFinal})" class="accion-btn btn-confirmar" style="font-size:11px;padding:5px 10px;margin-top:4px;">Liberar retención</button>` : ''}
+          ` : ''}
+        </div>
+      </div>
+
+      <!-- Acciones -->
       <div style="display:flex;flex-direction:column;gap:6px;">
-        ${!seniaCobrada ? `<button class="btn-cobrar btn-cobrar-senia" onclick="cobrarSenia('${r.id}')">✓ Cobrar seña</button>` : ''}
-        ${seniaCobrada && !saldoCobrado ? `<button class="btn-cobrar btn-cobrar-saldo" onclick="cobrarSaldo('${r.id}')">✓ Cobrar saldo</button>` : ''}
-        ${cerrado ? `<div class="pago-estado-badge cobrado" style="justify-content:center;">✓ Cerrado</div>` : ''}
-        ${r.tel ? `<button class="accion-btn btn-whatsapp" onclick="waRecordatorio('${r.tel}','${r.nombre}','${r.ref}',${senia},${!seniaCobrada})">WA recordatorio</button>` : ''}
+        ${!seniaCobrada ? `
+          <button class="btn-cobrar btn-cobrar-senia" onclick="cobrarSenia('${r.id}')">✓ Seña cobrada</button>
+          <button class="accion-btn" onclick="generarLinkMP('${r.id}','senia',${f.seniaMonto},'${r.nombre||''}','${r.ref||''}')" style="font-size:11px;background:rgba(0,158,227,0.1);border-color:rgba(0,158,227,0.3);color:#009EE3;">
+            🔗 Link pago MP
+          </button>` : ''}
+        ${seniaCobrada && !saldoCobrado ? `
+          <button class="btn-cobrar btn-cobrar-saldo" onclick="cobrarSaldo('${r.id}')">✓ Saldo cobrado</button>
+          <button class="accion-btn" onclick="generarLinkMP('${r.id}','saldo',${f.saldoMonto},'${r.nombre||''}','${r.ref||''}')" style="font-size:11px;background:rgba(0,158,227,0.1);border-color:rgba(0,158,227,0.3);color:#009EE3;">
+            🔗 Link pago MP
+          </button>` : ''}
+        ${cerrado && !retLiber ? `<div class="pago-estado-badge cobrado" style="justify-content:center;font-size:10px;">✓ Saldo cobrado · ret. pendiente</div>` : ''}
+        ${cerrado && retLiber ? `<div class="pago-estado-badge cobrado" style="justify-content:center;font-size:10px;">✓ Cerrado · todo liberado</div>` : ''}
+        ${r.tel ? `<button class="accion-btn btn-whatsapp" onclick="waRecordatorio('${r.tel}','${r.nombre}','${r.ref}',${f.seniaMonto},${!seniaCobrada})">WA recordatorio</button>` : ''}
+        <div style="font-size:10px;color:rgba(250,246,239,0.2);text-align:center;margin-top:2px;">Comisión app: ${fmt(f.comisionApp)}</div>
       </div>
     </div>`;
   }).join('');
@@ -1224,35 +1313,105 @@ async function cargarPagos() {
 
 async function cobrarSenia(id) {
   if (!confirm('¿Confirmás que recibiste la seña?')) return;
-  const hoy = new Date().toISOString().slice(0,10);
-  const { error } = await supa.from('reservas').update({
-    senia_cobrada: true,
-    senia_fecha: hoy,
-    estado: 'confirmada'
-  }).eq('id', id);
-  if (error) { alert('Error: ' + error.message); return; }
   const r = todasReservas.find(r => r.id === id);
-  if (r) { r.senia_cobrada = true; r.senia_fecha = hoy; r.estado = 'confirmada'; }
-  actualizarStats();
+  const f = r ? calcularFinanciero(r) : null;
+  const hoy = new Date().toISOString().slice(0,10);
+  const updates = { senia_cobrada: true, senia_fecha: hoy, estado: 'confirmada', estado_escrow: 'senia_cobrada' };
+  if (f) { updates.senia_monto = f.seniaMonto; updates.comision_app = f.comisionApp; updates.retencion_chef = f.retencionChef; updates.pago_chef_inicial = f.pagoChefInic; updates.pago_chef_final = f.pagoChefFinal; }
+  const { error } = await supa.from('reservas').update(updates).eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  // Registrar transacción
+  if (f) await supa.from('transacciones').insert({ reserva_id: id, tipo: 'senia', monto: f.seniaMonto, estado: 'aprobado', descripcion: `Seña cobrada — ${r?.ref||''}` });
+  if (r) Object.assign(r, updates);
   cargarPagos();
 }
 
 async function cobrarSaldo(id) {
-  if (!confirm('¿Confirmás que recibiste el saldo completo?')) return;
+  if (!confirm('¿Confirmás que recibiste el saldo?')) return;
+  const r = todasReservas.find(r => r.id === id);
+  const f = r ? calcularFinanciero(r) : null;
   const hoy = new Date().toISOString().slice(0,10);
-  const { error } = await supa.from('reservas').update({
-    saldo_cobrado: true,
-    saldo_fecha: hoy
-  }).eq('id', id);
+  const updates = { saldo_cobrado: true, saldo_fecha: hoy, estado_escrow: 'saldo_cobrado' };
+  if (f) { updates.saldo_monto = f.saldoMonto; }
+  const { error } = await supa.from('reservas').update(updates).eq('id', id);
   if (error) { alert('Error: ' + error.message); return; }
+  if (f) await supa.from('transacciones').insert({ reserva_id: id, tipo: 'saldo', monto: f.saldoMonto, estado: 'aprobado', descripcion: `Saldo cobrado — ${r?.ref||''}` });
   cargarPagos();
 }
 
-function waRecordatorio(tel, nombre, ref, senia, esSenia) {
+async function liberarRetencion(reservaId, chefId, monto) {
+  if (!confirm(`¿Liberar retención de ${fmt(monto)} al chef? (Han pasado +24hs sin reclamos)`)) return;
+  await supa.from('reservas').update({ retencion_liberada: true, estado_escrow: 'liberado' }).eq('id', reservaId);
+  await supa.from('transacciones').insert({ reserva_id: reservaId, tipo: 'retencion', monto, estado: 'aprobado', descripcion: 'Retención liberada al chef' });
+  showToast(`Retención de ${fmt(monto)} liberada ✓`);
+  cargarPagos();
+}
+
+async function editarPrecios(id) {
+  const r = todasReservas.find(r => r.id === id);
+  if (!r) return;
+  const servicio = prompt('Precio del servicio (mano de obra):', r.precio_servicio || r.honorario || 0);
+  if (servicio === null) return;
+  const market = prompt('Costo market (ingredientes):', r.precio_market || 0);
+  if (market === null) return;
+  const extras = prompt('Extras (bebidas, vajilla, etc):', r.precio_extras || 0);
+  if (extras === null) return;
+  const express = prompt('Recargo express (0 si no aplica):', r.recargo_express || 0);
+  if (express === null) return;
+  const retPct = prompt('Retención chef % (default 15):', r.retencion_pct || 15);
+  if (retPct === null) return;
+
+  const updates = {
+    precio_servicio: parseFloat(servicio)||0,
+    precio_market: parseFloat(market)||0,
+    precio_extras: parseFloat(extras)||0,
+    recargo_express: parseFloat(express)||0,
+    retencion_pct: parseFloat(retPct)||15,
+    honorario: parseFloat(servicio)||0, // compatibilidad
+    honorario_final: parseFloat(servicio)||0,
+  };
+  const f = calcularFinanciero({ ...r, ...updates });
+  updates.total_cliente = f.totalCliente;
+
+  await supa.from('reservas').update(updates).eq('id', id);
+  Object.assign(r, updates);
+  showToast('Precios actualizados ✓');
+  cargarPagos();
+  renderReservas();
+}
+
+async function generarLinkMP(reservaId, tipo, monto, nombre, ref) {
+  // Generar preferencia de pago en Mercado Pago via backend
+  try {
+    const res = await fetch('/api/mp-preference', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        reservaId, tipo, monto,
+        description: `Celestia Chef Privado — ${tipo === 'senia' ? 'Seña' : 'Saldo'} reserva ${ref}`,
+        payerName: nombre,
+        ref
+      })
+    });
+    if (!res.ok) throw new Error('Error al crear preferencia');
+    const data = await res.json();
+    const link = data.init_point || data.sandbox_init_point;
+    if (link) {
+      await navigator.clipboard.writeText(link);
+      showToast('Link MP copiado — envialo al cliente ✓');
+    }
+  } catch(e) {
+    // Sin backend MP aún — generar link manual
+    const msg = `Hola! Para completar tu reserva Celestia (${ref}), abonás $${Math.round(monto).toLocaleString('es-AR')} por ${tipo === 'senia' ? 'la seña' : 'el saldo'}. Alias: daro.chef · CVU: (completar)`;
+    await navigator.clipboard.writeText(msg);
+    showToast('Mensaje copiado (MP no configurado aún) — envialo por WA');
+  }
+}
+
+function waRecordatorio(tel, nombre, ref, monto, esSenia) {
   const num = tel.replace(/\D/g,'');
-  const monto = '$' + Math.round(senia).toLocaleString('es-AR');
   const msg = esSenia
-    ? `Hola ${nombre}! Te recordamos que la seña de ${monto} para confirmar tu reserva Celestia (${ref}) está pendiente. Podés hacerla al alias daro.chef. Cualquier consulta estamos acá.`
+    ? `Hola ${nombre}! Te recordamos que la seña de $${Math.round(monto).toLocaleString('es-AR')} para confirmar tu reserva Celestia (${ref}) está pendiente. Podés abonarlo por Mercado Pago o transferencia. Cualquier consulta estamos acá.`
     : `Hola ${nombre}! Te recordamos que el saldo de tu experiencia Celestia (${ref}) se abona el día del evento antes de comenzar el servicio. Cualquier consulta estamos acá.`;
   window.open(`https://wa.me/${num.startsWith('54')?num:'54'+num}?text=${encodeURIComponent(msg)}`,'_blank');
 }
