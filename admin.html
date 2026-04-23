@@ -805,6 +805,7 @@
 </style>
 </head>
 <body>
+<div id="toast-admin" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:#1A2E42;color:#FAF6EF;padding:12px 24px;border-radius:40px;font-size:13px;opacity:0;transition:all 0.3s;z-index:9999;pointer-events:none;white-space:nowrap;font-family:'DM Sans',sans-serif;"></div>
 
 <!-- LOGIN -->
 <div id="login-screen">
@@ -973,6 +974,20 @@ const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
 const PWD = 'piko6969';
 let todasReservas = [];
 let filtroActual = 'todas';
+
+function showToast(msg) {
+  const t = document.getElementById('toast-admin');
+  t.textContent = msg;
+  t.style.opacity = '1';
+  t.style.transform = 'translateX(-50%) translateY(0)';
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(() => {
+    t.style.opacity = '0';
+    t.style.transform = 'translateX(-50%) translateY(20px)';
+  }, 3000);
+}
+
+const fmt = n => n ? '$' + Math.round(n).toLocaleString('es-AR') : '—';
 
 // ─── AGENDA ─────────────────────────────────────────────
 const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
@@ -1143,11 +1158,10 @@ async function renderAgenda() {
 }
 
 // ─── PAGOS ───────────────────────────────────────────────
-const fmt = n => n ? '$' + Math.round(n).toLocaleString('es-AR') : '—';
 const fmtFechaPago = f => f ? new Date(f+'T12:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'short',year:'numeric'}) : '';
 
 // ─── MOTOR FINANCIERO ────────────────────────────────────
-const COMISION_APP = 0.30;      // 30% del servicio
+const COMISION_APP = 0.30;
 const RETENCION_DEFAULT = 0.15; // 15% del servicio como garantía
 const MP_ACCESS_TOKEN = 'TEST-'; // Reemplazar con token real de MP
 
