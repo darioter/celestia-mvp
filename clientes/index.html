@@ -313,6 +313,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); min-height:100
       <button class="portal-tab active" onclick="verTab('perfil',this)">Mis datos</button>
       <button class="portal-tab" onclick="verTab('cocina',this)">Mi cocina</button>
       <button class="portal-tab" id="tab-btn-activo" onclick="verTab('activo',this)">Servicio activo</button>
+      <button class="portal-tab" id="tab-btn-pagos" onclick="verTab('pagos',this)">Mis pagos</button>
       <button class="portal-tab" onclick="verTab('reservas',this)">Mis reservas</button>
       <button class="portal-tab" onclick="verTab('menus',this)">Mis menús</button>
     </div>
@@ -425,6 +426,15 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); min-height:100
     <div class="seccion" id="tab-activo">
       <div id="activo-content-cliente">
         <div class="empty-state"><div class="empty-icon">✦</div>No tenés un servicio activo en este momento.</div>
+      </div>
+    </div>
+
+    <!-- TAB: PAGOS -->
+    <div class="seccion" id="tab-pagos">
+      <div class="seccion-titulo">Mis pagos</div>
+      <div class="seccion-sub">Estado de cobros y pagos pendientes de tus reservas.</div>
+      <div id="pagos-cliente-content">
+        <div class="empty-state"><div class="empty-icon">✦</div>Cargando...</div>
       </div>
     </div>
 
@@ -542,6 +552,7 @@ function verTab(tab, btn) {
   if (tab === 'reservas') cargarReservas();
   if (tab === 'menus') cargarMenusGuardados();
   if (tab === 'activo') renderServicioActivoCliente();
+  if (tab === 'pagos') cargarPagosCliente();
 }
 
 function detectarUrlMenu(propuesta) {
@@ -1204,6 +1215,134 @@ function iniciarPollingCliente() {
   chatPolling = setInterval(() => {
     if (servicioActivoCliente) cargarMensajesCliente(servicioActivoCliente.id);
   }, 4000);
+}
+
+async function cargarPagosCliente() {
+  const el = document.getElementById('pagos-cliente-content');
+  el.innerHTML = '<div class="empty-state"><div class="empty-icon">✦</div>Cargando...</div>';
+
+  const perfil = await supa.from('clientes').select('email,telefono').eq('email', currentUser.email).single();
+  if (!perfil.data) return;
+
+  const { data } = await supa.from('reservas').select('*')
+    .or(`email.eq.${perfil.data.email},tel.eq.${perfil.data.telefono}`)
+    .order('fecha', { ascending: false });
+
+  if (!data || !data.length) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">✦</div>No hay pagos registrados.</div>';
+    return;
+  }
+
+  const fmt = n => n ? '$' + Math.round(n).toLocaleString('es-AR') : '—';
+  const fmtFecha = f => new Date(f+'T12:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'long',year:'numeric'});
+
+  el.innerHTML = data.map(r => {
+    const servicio = r.precio_servicio || r.honorario || 0;
+    const market = r.precio_market || 0;
+    const extras = r.precio_extras || 0;
+    const express = r.recargo_express || 0;
+    const total = servicio + express + market + extras;
+    const senia = r.senia_monto || Math.round((servicio+express)*0.5) + market + extras;
+    const saldo = r.saldo_monto || Math.round((servicio+express)*0.5);
+    const seniaCobrada = !!r.senia_cobrada;
+    const saldoCobrado = !!r.saldo_cobrado;
+
+    return `
+    <div style="background:var(--white);border-radius:16px;padding:20px 24px;box-shadow:var(--shadow);margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;">
+        <div>
+          <div style="font-family:'DM Serif Display',serif;font-size:18px;color:var(--navy);">${r.menu||'Experiencia Celestia'}</div>
+          <div style="font-size:13px;color:var(--text-light);margin-top:3px;">${fmtFecha(r.fecha)} · ${r.personas} personas · ${r.ref||''}</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:11px;color:var(--text-light);">Total</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--navy);">${fmt(total)}</div>
+        </div>
+      </div>
+
+      <!-- Desglose -->
+      ${(market||extras||express) ? `
+      <div style="background:var(--cream);border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:12px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="color:var(--text-light);">Servicio chef</span><span>${fmt(servicio)}</span></div>
+        ${express ? `<div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="color:var(--text-light);">Recargo express</span><span>+${fmt(express)}</span></div>` : ''}
+        ${market ? `<div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="color:var(--text-light);">Ingredientes (market)</span><span>${fmt(market)}</span></div>` : ''}
+        ${extras ? `<div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="color:var(--text-light);">Extras</span><span>${fmt(extras)}</span></div>` : ''}
+      </div>` : ''}
+
+      <!-- Estado pagos -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+        <div style="border:1.5px solid ${seniaCobrada?'rgba(45,122,79,0.3)':'var(--cream-dark)'};border-radius:12px;padding:14px;">
+          <div style="font-size:11px;color:var(--text-light);margin-bottom:4px;">Seña (al reservar)</div>
+          <div style="font-size:18px;font-weight:600;color:var(--navy);margin-bottom:6px;">${fmt(senia)}</div>
+          <div style="font-size:11px;">
+            ${seniaCobrada
+              ? `<span style="color:var(--green);">✓ Abonada</span>`
+              : `<span style="color:var(--gold);font-weight:500;">· Pendiente de pago</span>`}
+          </div>
+          <div style="font-size:10px;color:var(--text-light);margin-top:3px;">50% servicio + 100% market/extras</div>
+        </div>
+        <div style="border:1.5px solid ${saldoCobrado?'rgba(45,122,79,0.3)':seniaCobrada?'var(--cream-dark)':'rgba(0,0,0,0.06)'};border-radius:12px;padding:14px;${!seniaCobrada?'opacity:0.5;':''}">
+          <div style="font-size:11px;color:var(--text-light);margin-bottom:4px;">Saldo (al iniciar)</div>
+          <div style="font-size:18px;font-weight:600;color:var(--navy);margin-bottom:6px;">${fmt(saldo)}</div>
+          <div style="font-size:11px;">
+            ${saldoCobrado
+              ? `<span style="color:var(--green);">✓ Abonado</span>`
+              : seniaCobrada
+              ? `<span style="color:var(--gold);font-weight:500;">· Pendiente de pago</span>`
+              : `<span style="color:var(--text-light);">⏳ Se abona al iniciar el servicio</span>`}
+          </div>
+          <div style="font-size:10px;color:var(--text-light);margin-top:3px;">50% servicio restante</div>
+        </div>
+      </div>
+
+      <!-- Botones de pago -->
+      ${!seniaCobrada && senia > 0 ? `
+      <div style="margin-bottom:10px;">
+        <div style="font-size:12px;color:var(--text-light);margin-bottom:8px;">Pagá la seña de forma segura:</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button onclick="pagarConMP('${r.id}','senia',${senia},'${r.nombre||''}','${r.ref||''}')"
+            style="display:inline-flex;align-items:center;gap:8px;background:#009EE3;color:white;border:none;border-radius:40px;padding:12px 24px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-1.97 9.289c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.16 13.614l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.656.972z"/></svg>
+            Pagar con Mercado Pago ${fmt(senia)}
+          </button>
+        </div>
+        <div style="font-size:11px;color:var(--text-light);margin-top:8px;">También podés abonar por transferencia — consultá por WhatsApp.</div>
+      </div>` : ''}
+
+      ${seniaCobrada && !saldoCobrado && saldo > 0 ? `
+      <div style="background:rgba(45,122,79,0.06);border:1px solid rgba(45,122,79,0.15);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--green);">
+        ✓ Seña abonada · El saldo de ${fmt(saldo)} se abona el día del evento al inicio del servicio.
+      </div>` : ''}
+
+      ${seniaCobrada && saldoCobrado ? `
+      <div style="background:rgba(45,122,79,0.06);border:1px solid rgba(45,122,79,0.15);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--green);text-align:center;">
+        ✓ Pagos completos — ¡Todo listo para tu experiencia Celestia!
+      </div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+async function pagarConMP(reservaId, tipo, monto, nombre, ref) {
+  const btn = event.target.closest('button');
+  if (btn) { btn.disabled = true; btn.textContent = 'Generando link...'; }
+  try {
+    const res = await fetch('/api/mp-preference', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reservaId, tipo, monto, description: `Celestia Chef Privado — ${tipo === 'senia' ? 'Seña' : 'Saldo'} reserva ${ref}`, payerName: nombre, ref })
+    });
+    const data = await res.json();
+    const link = data.init_point || data.sandbox_init_point;
+    if (link) {
+      window.open(link, '_blank');
+    } else {
+      showToast('Error al generar link de pago — contactá por WhatsApp');
+    }
+  } catch(e) {
+    showToast('Error de conexión — intentá de nuevo');
+  } finally {
+    if (btn) { btn.disabled = false; btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-1.97 9.289c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.16 13.614l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.656.972z"/></svg> Pagar con Mercado Pago`; }
+  }
 }
 
 // ─── INIT ─────────────────────────────────────────────────

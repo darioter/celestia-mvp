@@ -375,6 +375,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--navy);min-height:100vh;co
     <button class="nav-tab active" onclick="verTab('solicitudes',this)">Solicitudes</button>
     <button class="nav-tab" onclick="verTab('activo',this)">Servicio activo</button>
     <button class="nav-tab" onclick="verTab('historial',this)">Historial</button>
+    <button class="nav-tab" onclick="verTab('cobros',this)">Mis cobros</button>
     <button class="nav-tab" onclick="verTab('perfil',this)">Mi perfil</button>
   </nav>
 
@@ -424,6 +425,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--navy);min-height:100vh;co
       <div class="perfil-card">
         <div class="perfil-card-title">Servicios realizados</div>
         <div id="historial-lista">
+          <div class="empty-state"><div class="empty-icon">✦</div><div class="empty-text">Cargando...</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: COBROS -->
+    <div id="tab-cobros" style="display:none;">
+      <div class="perfil-card">
+        <div class="perfil-card-title">Mis cobros</div>
+        <div id="cobros-content">
           <div class="empty-state"><div class="empty-icon">✦</div><div class="empty-text">Cargando...</div></div>
         </div>
       </div>
@@ -677,7 +688,7 @@ async function cargarPortal() {
 }
 
 function verTab(tab, btn) {
-  ['solicitudes','activo','historial','perfil'].forEach(t => {
+  ['solicitudes','activo','historial','cobros','perfil'].forEach(t => {
     const el = document.getElementById('tab-' + t);
     if (el) el.style.display = 'none';
   });
@@ -685,6 +696,7 @@ function verTab(tab, btn) {
   document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
   if (tab === 'historial') cargarHistorial();
+  if (tab === 'cobros') cargarCobros();
 }
 
 // ─── PERFIL CHEF ──────────────────────────────────────────
@@ -1919,6 +1931,92 @@ async function cargarHistorial() {
       </div>
       <div class="hist-monto">${fmt(r.honorario_final || r.honorario)}</div>
     </div>`).join('');
+}
+async function cargarCobros() {
+  const el = document.getElementById('cobros-content');
+  el.innerHTML = '<div class="empty-state"><div class="empty-icon">✦</div><div class="empty-text">Cargando...</div></div>';
+
+  const { data } = await supa.from('reservas')
+    .select('*')
+    .eq('chef_id', currentUser.id)
+    .order('fecha', { ascending: false });
+
+  if (!data || !data.length) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">✦</div><div class="empty-text">No hay cobros registrados.</div></div>';
+    return;
+  }
+
+  const fmt = n => n ? '$' + Math.round(n).toLocaleString('es-AR') : '—';
+  const fmtFecha = f => new Date(f+'T12:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'long',year:'numeric'});
+
+  // Totales
+  let totalCobrado = 0, totalPendiente = 0, totalRetenido = 0;
+  data.forEach(r => {
+    if (r.estado_servicio === 'completado') {
+      totalCobrado += r.pago_chef_inicial || 0;
+      if (r.retencion_liberada) totalCobrado += r.pago_chef_final || 0;
+      else totalRetenido += r.pago_chef_final || 0;
+    } else if (r.chef_id === currentUser.id && r.estado !== 'cancelada') {
+      totalPendiente += r.pago_chef_inicial || 0;
+    }
+  });
+
+  el.innerHTML = `
+    <!-- Resumen -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px;">
+      <div style="background:rgba(93,191,135,0.08);border:1px solid rgba(93,191,135,0.2);border-radius:12px;padding:14px;">
+        <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#5DBF87;margin-bottom:6px;">Cobrado</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--cream);">${fmt(totalCobrado)}</div>
+      </div>
+      <div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:12px;padding:14px;">
+        <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--gold);margin-bottom:6px;">Pendiente</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--cream);">${fmt(totalPendiente)}</div>
+      </div>
+      <div style="background:rgba(230,126,138,0.08);border:1px solid rgba(230,126,138,0.2);border-radius:12px;padding:14px;">
+        <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#E67E8A;margin-bottom:6px;">En retención</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--cream);">${fmt(totalRetenido)}</div>
+      </div>
+    </div>
+
+    <!-- Detalle por servicio -->
+    ${data.map(r => {
+      const completado = r.estado_servicio === 'completado';
+      const cancelado = r.estado === 'cancelada';
+      const pagoInicial = r.pago_chef_inicial || Math.round((r.honorario||0)*0.7*0.85);
+      const pagoFinal = r.pago_chef_final || Math.round((r.honorario||0)*0.7*0.15);
+      const servicio = r.precio_servicio || r.honorario || 0;
+      const baseChef = Math.round(servicio * 0.70);
+      const retPct = r.retencion_pct || 15;
+
+      return `
+      <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:16px;margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+          <div>
+            <div style="font-size:14px;font-weight:500;color:var(--cream);">${r.menu||'Servicio Celestia'}</div>
+            <div style="font-size:12px;color:rgba(250,246,239,0.4);margin-top:2px;">${fmtFecha(r.fecha)} · ${r.personas} personas</div>
+          </div>
+          <span style="font-size:10px;padding:3px 10px;border-radius:20px;${cancelado?'background:rgba(155,35,53,0.2);color:#E67E8A;':completado?'background:rgba(93,191,135,0.15);color:#5DBF87;':'background:rgba(201,168,76,0.12);color:var(--gold);'};border:1px solid currentColor;">
+            ${cancelado?'Cancelado':completado?'Completado':'En curso'}
+          </span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;font-size:12px;">
+          <div>
+            <div style="color:rgba(250,246,239,0.35);margin-bottom:3px;">Base chef (70%)</div>
+            <div style="color:var(--cream);">${fmt(baseChef)}</div>
+          </div>
+          <div>
+            <div style="color:rgba(250,246,239,0.35);margin-bottom:3px;">Pago inmediato</div>
+            <div style="color:#5DBF87;font-weight:600;">${fmt(pagoInicial)}</div>
+          </div>
+          <div>
+            <div style="color:rgba(250,246,239,0.35);margin-bottom:3px;">Retención ${retPct}%</div>
+            <div style="color:${r.retencion_liberada?'#5DBF87':'#E67E8A'};">${fmt(pagoFinal)} ${r.retencion_liberada?'✓ liberada':'⏳ pendiente'}</div>
+          </div>
+        </div>
+        ${completado && !r.retencion_liberada ? `<div style="font-size:11px;color:rgba(250,246,239,0.3);margin-top:10px;">⏳ La retención se libera ~24hs después del servicio sin reclamos</div>` : ''}
+        ${cancelado && r.cancelacion_motivo ? `<div style="font-size:11px;color:rgba(230,126,138,0.7);margin-top:8px;">Motivo: ${r.cancelacion_motivo}</div>` : ''}
+      </div>`;
+    }).join('')}`;
 }
 
 </script>
