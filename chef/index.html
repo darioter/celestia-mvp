@@ -1622,36 +1622,47 @@ INSTRUCCIONES:
 }
 
 async function generarListaCompras(reservaId) {
-  const r = servicioActivo;
   const btn = document.getElementById(`btn-lista-${reservaId}`);
   const loading = document.getElementById(`lista-ia-loading-${reservaId}`);
   if (btn) { btn.disabled = true; btn.style.display = 'none'; }
   if (loading) loading.style.display = 'flex';
 
-  const prompt = `Sos un chef profesional. Generá la lista de compras completa y detallada para este menú.
+  // Leer datos frescos de la BD — servicioActivo puede tener menu_definitivo desactualizado
+  const { data: r } = await supa.from('reservas').select('*').eq('id', reservaId).single();
 
-MENÚ DEFINITIVO:
+  if (!r || !r.menu_definitivo) {
+    showToast('Confirmá el menú antes de generar la lista');
+    if (btn) { btn.disabled = false; btn.style.display = 'inline-flex'; }
+    if (loading) loading.style.display = 'none';
+    return;
+  }
+
+  const prompt = `Sos un chef profesional. Generá la lista de compras COMPLETA y EXHAUSTIVA para este menú.
+
+MENÚ DEFINITIVO CONFIRMADO:
 "${r.menu_definitivo}"
 
 PERSONAS: ${r.personas}
 TURNO: ${r.turno === 'almuerzo' ? 'Almuerzo' : 'Cena'}
 
-Calculá las cantidades EXACTAS para ${r.personas} personas. Sé preciso: si son 4 personas y necesitás 200g por persona, escribí "800g".
+INSTRUCCIONES:
+- Calculá cantidades EXACTAS para ${r.personas} personas (ej: 4 personas × 200g = "800g")
+- Incluí TODOS los ingredientes, incluso los básicos (aceite, sal, pimienta, manteca, etc.)
+- Agregá un 15% extra por mermas y ajustes de cocina
+- Sé muy específico: "Lomo de res" no "carne", "Parmesano reggiano" no "queso"
+- No omitás ningún ingrediente por pequeño que sea
 
-Respondé SOLO con un JSON válido, sin markdown ni texto adicional, con esta estructura exacta:
+Respondé SOLO con JSON válido, sin markdown, sin texto adicional:
 {
   "secciones": [
     {
       "categoria": "Carnes y proteínas",
-      "items": [
-        { "nombre": "Lomo de res", "cantidad": "1.2 kg" }
-      ]
+      "items": [{ "nombre": "Lomo de res", "cantidad": "1 kg" }]
     }
   ]
 }
 
-Categorías a usar según corresponda: Carnes y proteínas, Pescados y mariscos, Verduras y frutas, Lácteos y huevos, Almacén/secos, Especias y condimentos, Bebidas, Otros.
-Solo incluí las categorías que tengan items. Sé exhaustivo — no omitás ningún ingrediente del menú.`;
+Categorías (solo las que apliquen): Carnes y proteínas, Pescados y mariscos, Verduras y frutas, Lácteos y huevos, Almacén/secos, Especias y condimentos, Bebidas, Otros.`;
 
   try {
     const res = await fetch('/api/chat', {
@@ -1659,22 +1670,29 @@ Solo incluí las categorías que tengan items. Sé exhaustivo — no omitás nin
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
-        max_tokens: 800,
+        max_tokens: 1200,
         messages: [{ role: 'user', content: prompt }]
       })
     });
+    if (!res.ok) { showToast(`Error API: ${res.status}`); return; }
     const data = await res.json();
-    let texto = data.content?.[0]?.text || '{}';
-    texto = texto.replace(/```json|```/g, '').trim();
-    const lista = JSON.parse(texto);
+    let texto = data.content?.[0]?.text || '';
+    if (!texto) { showToast('Sin respuesta — intentá de nuevo'); return; }
+    texto = texto.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+    const jsonMatch = texto.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) { showToast('Error al procesar — intentá de nuevo'); console.error('No JSON:', texto); return; }
+    const lista = JSON.parse(jsonMatch[0]);
     lista.checks = {};
     await supa.from('reservas').update({ lista_compras: lista, lista_compras_generada: true }).eq('id', reservaId);
-    servicioActivo.lista_compras = lista;
-    servicioActivo.lista_compras_generada = true;
-    showToast('✦ Lista generada');
-    renderServicioActivo(servicioActivo);
+    if (servicioActivo?.id === reservaId) {
+      servicioActivo.lista_compras = lista;
+      servicioActivo.lista_compras_generada = true;
+    }
+    showToast('✦ Lista de compras generada');
+    if (servicioActivo) renderServicioActivo(servicioActivo);
   } catch(e) {
-    showToast('Error al generar lista');
+    showToast('Error al generar lista — revisá tu conexión');
+    console.error('generarListaCompras error:', e);
     if (btn) { btn.disabled = false; btn.style.display = 'inline-flex'; }
     if (loading) loading.style.display = 'none';
   }
