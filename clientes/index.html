@@ -967,7 +967,25 @@ function renderServicioActivoCliente() {
   const listaHtml = listaCompras?.secciones?.length ? `
     <div class="compras-card">
       <div class="compras-titulo">🛒 Lista de compras del servicio</div>
-      <div style="font-size:12px;color:var(--text-light);margin-bottom:16px;">Generada por tu chef para ${r.personas} personas</div>
+      <div style="font-size:12px;color:var(--text-light);margin-bottom:14px;">Generada por tu chef para ${r.personas} personas</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+        <button onclick="descargarListaCliente()"
+          style="display:inline-flex;align-items:center;gap:5px;background:var(--navy);color:var(--cream);border:none;border-radius:20px;padding:8px 16px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;">
+          ↓ Descargar lista
+        </button>
+        <button onclick="copiarListaCliente()"
+          style="display:inline-flex;align-items:center;gap:5px;background:transparent;color:var(--text-mid);border:1.5px solid var(--cream-dark);border-radius:20px;padding:8px 16px;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;">
+          ↗ Copiar lista
+        </button>
+        <a href="https://www.pedidosya.com.ar/supermercados" target="_blank"
+          style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,89,0,0.08);color:#FF5900;border:1.5px solid rgba(255,89,0,0.25);border-radius:20px;padding:8px 16px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;text-decoration:none;">
+          🛒 Ir a PedidosYa Market
+        </a>
+        <a href="https://www.rappi.com.ar/supermercados" target="_blank"
+          style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,106,0,0.08);color:#FF6A00;border:1.5px solid rgba(255,106,0,0.25);border-radius:20px;padding:8px 16px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;text-decoration:none;">
+          🛒 Ir a Rappi
+        </a>
+      </div>
       ${listaCompras.secciones.map(sec => `
         <div style="margin-bottom:14px;">
           <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-mid);margin-bottom:8px;">${sec.categoria}</div>
@@ -1043,6 +1061,37 @@ function renderServicioActivoCliente() {
     ${calificHtml}`;
 
   cargarMensajesCliente(r.id);
+}
+
+function descargarListaCliente() {
+  const r = servicioActivoCliente;
+  if (!r?.lista_compras?.secciones) return;
+  const fecha = new Date(r.fecha+'T12:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'long'});
+  let txt = `CELESTIA CHEF PRIVADO\nLista de compras — ${r.menu||'Servicio'}\n${fecha} · ${r.personas} personas\n${'─'.repeat(40)}\n\n`;
+  txt += r.lista_compras.secciones.map(sec =>
+    `${sec.categoria.toUpperCase()}\n${(sec.items||[]).map(i => `  • ${i.nombre}: ${i.cantidad}`).join('\n')}`
+  ).join('\n\n');
+  txt += `\n\n${'─'.repeat(40)}\nCelestia Chef Privado · chefprivado.ar`;
+  const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `lista-compras-celestia.txt`;
+  a.click(); URL.revokeObjectURL(url);
+  showToast('Lista descargada ✓');
+}
+
+async function copiarListaCliente() {
+  const r = servicioActivoCliente;
+  if (!r?.lista_compras?.secciones) return;
+  const fecha = new Date(r.fecha+'T12:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'long'});
+  let txt = `*Lista de compras — Celestia*\n${r.menu||'Servicio'} · ${fecha} · ${r.personas} personas\n\n`;
+  txt += r.lista_compras.secciones.map(sec =>
+    `*${sec.categoria}*\n${(sec.items||[]).map(i => `• ${i.nombre}: ${i.cantidad}`).join('\n')}`
+  ).join('\n\n');
+  try {
+    await navigator.clipboard.writeText(txt);
+    showToast('Lista copiada — podés pegarla en WhatsApp ✓');
+  } catch { showToast('No se pudo copiar — intentá descargar'); }
 }
 
 let _compraPreseleccionada = null;

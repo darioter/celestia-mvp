@@ -1475,7 +1475,28 @@ function escapeHtml(t) {
 
 function renderListaCompras(lista, reservaId) {
   if (!lista || !lista.secciones) return '<div style="font-size:13px;color:rgba(250,246,239,0.4);">Sin datos</div>';
-  return lista.secciones.map(sec => `
+
+  // Generar texto plano para compartir/descargar
+  const textoLista = lista.secciones.map(sec =>
+    `${sec.categoria.toUpperCase()}\n${(sec.items||[]).map(i => `• ${i.nombre}: ${i.cantidad}`).join('\n')}`
+  ).join('\n\n');
+
+  // Generar query para PedidosYa Market / Rappi
+  const todosItems = lista.secciones.flatMap(s => s.items||[]).map(i => i.nombre).join(', ');
+  const queryMarket = encodeURIComponent(todosItems.substring(0, 200));
+
+  return `
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
+      <button onclick="descargarLista('${reservaId}')"
+        style="display:inline-flex;align-items:center;gap:6px;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.3);color:var(--gold-light);font-family:'DM Sans',sans-serif;font-size:12px;padding:7px 14px;border-radius:20px;cursor:pointer;">
+        ↓ Descargar lista
+      </button>
+      <button onclick="compartirLista('${reservaId}')"
+        style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(250,246,239,0.6);font-family:'DM Sans',sans-serif;font-size:12px;padding:7px 14px;border-radius:20px;cursor:pointer;">
+        ↗ Copiar lista
+      </button>
+    </div>
+    ${lista.secciones.map(sec => `
     <div class="compras-section">
       <div class="compras-section-title">${escapeHtml(sec.categoria)}</div>
       ${(sec.items||[]).map((item, idx) => {
@@ -1487,7 +1508,40 @@ function renderListaCompras(lista, reservaId) {
           <div class="compra-cantidad">${escapeHtml(item.cantidad||'')}</div>
         </div>`;
       }).join('')}
-    </div>`).join('');
+    </div>`).join('')}`;
+}
+
+async function descargarLista(reservaId) {
+  const r = servicioActivo || (await supa.from('reservas').select('*').eq('id', reservaId).single()).data;
+  if (!r?.lista_compras?.secciones) return;
+  const fecha = new Date(r.fecha+'T12:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'long'});
+  let txt = `CELESTIA CHEF PRIVADO\nLista de compras — ${r.menu || 'Servicio'}\n${fecha} · ${r.personas} personas\n${'─'.repeat(40)}\n\n`;
+  txt += r.lista_compras.secciones.map(sec =>
+    `${sec.categoria.toUpperCase()}\n${(sec.items||[]).map(i => `  • ${i.nombre}: ${i.cantidad}`).join('\n')}`
+  ).join('\n\n');
+  txt += `\n\n${'─'.repeat(40)}\nCelestia Chef Privado · chefprivado.ar`;
+  const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `lista-compras-celestia-${r.ref||reservaId}.txt`;
+  a.click(); URL.revokeObjectURL(url);
+  showToast('Lista descargada ✓');
+}
+
+async function compartirLista(reservaId) {
+  const r = servicioActivo || (await supa.from('reservas').select('*').eq('id', reservaId).single()).data;
+  if (!r?.lista_compras?.secciones) return;
+  const fecha = new Date(r.fecha+'T12:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'long'});
+  let txt = `*Lista de compras — Celestia*\n${r.menu||'Servicio'} · ${fecha} · ${r.personas} personas\n\n`;
+  txt += r.lista_compras.secciones.map(sec =>
+    `*${sec.categoria}*\n${(sec.items||[]).map(i => `• ${i.nombre}: ${i.cantidad}`).join('\n')}`
+  ).join('\n\n');
+  try {
+    await navigator.clipboard.writeText(txt);
+    showToast('Lista copiada — podés pegarla en WhatsApp o notas ✓');
+  } catch {
+    showToast('No se pudo copiar — intentá descargar');
+  }
 }
 
 function renderRecetas(recetas) {
