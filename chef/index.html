@@ -575,6 +575,7 @@ let currentUser = null;
 let chefPerfil = null;
 let disponible = true;
 let servicioActivo = null;
+let _prevServicioHash = '';
 
 function showToast(msg) {
   const t = document.getElementById('toast');
@@ -943,6 +944,33 @@ async function cargarSolicitudes() {
 
   if (activos.length || cancelados.length) {
     servicioActivo = activos[0] || null;
+
+    // Detectar cambios del cliente y notificar al chef
+    if (activos.length && _prevServicioHash) {
+      activos.forEach(r => {
+        const prevHash = _prevServicioHash[r.id];
+        if (!prevHash) return;
+        // Cliente eligió modalidad de compras
+        if (prevHash.compra_modo !== r.compra_modo && r.compra_modo) {
+          const modos = { chef: 'el chef compra', cliente: 'el cliente compra', market: 'pedido a domicilio' };
+          showToast(`🛒 El cliente eligió: ${modos[r.compra_modo] || r.compra_modo}`);
+        }
+        // Cliente confirmó el menú (menu_definitivo_ok cambió a true)
+        if (!prevHash.menu_definitivo_ok && r.menu_definitivo_ok) {
+          showToast('✓ El cliente aprobó el menú definitivo');
+        }
+        // Cliente envió calificación
+        if (!prevHash.calificacion && r.calificacion) {
+          showToast(`⭐ El cliente te calificó con ${r.calificacion} estrellas`);
+        }
+      });
+    }
+    // Guardar hash actual
+    _prevServicioHash = {};
+    activos.forEach(r => {
+      _prevServicioHash[r.id] = { compra_modo: r.compra_modo, menu_definitivo_ok: r.menu_definitivo_ok, calificacion: r.calificacion };
+    });
+
     // No re-renderizar si el chef está escribiendo en el textarea de menú
     const estaEditando = activos.some(r => {
       const textarea = document.getElementById(`menu-definitivo-input-${r.id}`);
@@ -1031,6 +1059,7 @@ async function setCompra(id, modo, el) {
   el.closest('.compra-chips').querySelectorAll('.compra-chip').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
   await supa.from('reservas').update({ compra_modo: modo }).eq('id', id);
+  if (servicioActivo) servicioActivo.compra_modo = modo;
 }
 
 async function aceptarServicio(id) {

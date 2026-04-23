@@ -828,6 +828,8 @@ const TRACKING_STEPS = [
 
 const STEP_ORDER = TRACKING_STEPS.map(s => s.key);
 
+let _prevServicioClienteHash = null;
+
 async function verificarServicioActivo() {
   const perfil = await supa.from('clientes').select('email,telefono').eq('id', currentUser.id).single();
   if (!perfil.data) return;
@@ -856,12 +858,47 @@ async function verificarServicioActivo() {
     tabBtn.querySelector('.activo-badge')?.remove();
   }
 
+  // Detectar cambios del chef y notificar al cliente
+  if (activo && _prevServicioClienteHash) {
+    const prev = _prevServicioClienteHash;
+    if (!prev.menu_definitivo_ok && activo.menu_definitivo_ok) {
+      showToast('✓ Tu chef confirmó el menú definitivo');
+      // Badge en tab si no está viendo el servicio activo
+      if (!document.getElementById('tab-activo').classList.contains('activa')) {
+        actualizarBadgeCliente('¡Menú confirmado!');
+      }
+    }
+    if (prev.estado_servicio !== activo.estado_servicio) {
+      const labels = { compras:'🛒 Tu chef está comprando los ingredientes', en_camino:'🚗 Tu chef está en camino', en_domicilio:'🏠 Tu chef llegó a tu domicilio', mise_en_place:'🔪 Mise en place en curso', coccion:'🍳 Tu chef está cocinando', presentacion:'🍽 ¡Casi listo! Emplatando', completado:'✦ ¡Servicio completado!' };
+      const msg = labels[activo.estado_servicio];
+      if (msg) showToast(msg);
+    }
+  }
+
   if (JSON.stringify(activo) !== JSON.stringify(servicioActivoCliente)) {
     servicioActivoCliente = activo;
+    _prevServicioClienteHash = activo ? { menu_definitivo_ok: activo.menu_definitivo_ok, estado_servicio: activo.estado_servicio } : null;
     if (document.getElementById('tab-activo').classList.contains('activa')) {
       renderServicioActivoCliente();
     }
+  } else {
+    _prevServicioClienteHash = activo ? { menu_definitivo_ok: activo.menu_definitivo_ok, estado_servicio: activo.estado_servicio } : null;
   }
+}
+
+function actualizarBadgeCliente(msg) {
+  const tabBtn = document.getElementById('tab-btn-activo');
+  if (!tabBtn) return;
+  let badge = tabBtn.querySelector('.notif-badge');
+  if (!badge) {
+    badge = document.createElement('span');
+    badge.className = 'notif-badge';
+    badge.style.cssText = 'display:inline-block;background:#E67E8A;color:white;border-radius:20px;font-size:10px;padding:2px 7px;margin-left:5px;font-weight:600;';
+    tabBtn.appendChild(badge);
+  }
+  badge.textContent = '●';
+  // Auto-quitar al hacer click en el tab
+  tabBtn.addEventListener('click', () => badge.remove(), { once: true });
 }
 
 function renderServicioActivoCliente() {
@@ -967,8 +1004,15 @@ function renderServicioActivoCliente() {
 async function seleccionarComprasModo(reservaId, modo) {
   await supa.from('reservas').update({ compra_modo: modo }).eq('id', reservaId);
   if (servicioActivoCliente) servicioActivoCliente.compra_modo = modo;
-  showToast('Preferencia de compras guardada ✓');
+  // Notificar al chef via chat del sistema
+  const modos = { chef: 'prefiere que el chef compre los ingredientes 👨‍🍳', cliente: 'va a comprar los ingredientes por su cuenta 🛍', market: 'prefiere coordinar un pedido a domicilio de ingredientes 📦' };
+  await supa.from('mensajes').insert({
+    reserva_id: reservaId, autor_id: currentUser.id, rol: 'cliente',
+    texto: `📋 Preferencia de compras: el cliente ${modos[modo] || modo}`
+  });
+  showToast('Preferencia guardada ✓');
   renderServicioActivoCliente();
+  cargarMensajesCliente(reservaId);
 }
 
 async function cargarMensajesCliente(reservaId) {
