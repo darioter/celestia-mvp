@@ -1204,70 +1204,94 @@ function renderServicioActivo(r) {
   };
 
   // ─── Sección menú definitivo ───
-  // Detectar si el pedido viene de un menú guardado del cliente (texto largo/detallado)
-  const tieneMenuPrevio = !!(r.menu_definitivo || (r.menu && r.menu.length > 30));
+  const tieneMenuPrevio = !!(r.menu && r.menu.length > 30);
+  const tieneGenerado = !!r.menu_definitivo;
 
   const menuDefSection = menuOk ? `
-    <div style="padding:0 24px 16px;">
-      <div style="display:flex;align-items:center;gap:10px;background:rgba(45,122,79,0.1);border:1px solid rgba(45,122,79,0.3);border-radius:12px;padding:12px 16px;">
-        <span style="font-size:16px;">✓</span>
+    <div class="menu-editor-wrap" id="menu-editor-wrap-${r.id}">
+      <div class="menu-editor-label">Paso 0 — Menú definitivo del servicio</div>
+
+      <!-- Campos siempre visibles -->
+      ${tieneMenuPrevio ? `
+      <div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);border-radius:10px;padding:12px 14px;margin-bottom:14px;">
+        <div style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;">✦ Propuesta original del cliente</div>
+        <div style="font-size:13px;color:var(--cream);line-height:1.6;white-space:pre-wrap;">${escapeHtml(r.menu || '')}</div>
+      </div>` : ''}
+
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;">
         <div>
-          <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#5DBF87;margin-bottom:3px;">Menú confirmado</div>
-          <div style="font-size:13px;color:var(--cream);line-height:1.5;white-space:pre-wrap;">${escapeHtml(r.menu_definitivo||'')}</div>
+          <div style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(250,246,239,0.4);margin-bottom:5px;">Idea o lineamiento</div>
+          <textarea class="menu-editor-box" id="campo-idea-${r.id}" rows="2" placeholder="Ej: menú de 3 pasos con influencia mediterránea..." style="min-height:60px;">${tieneMenuPrevio ? (r.menu||'') : ''}</textarea>
         </div>
-        <button onclick="editarMenuDefinitivo('${r.id}')" style="margin-left:auto;font-size:11px;color:rgba(250,246,239,0.4);background:transparent;border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;flex-shrink:0;">Editar</button>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div>
+            <div style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(250,246,239,0.4);margin-bottom:5px;">✓ Debe estar</div>
+            <textarea class="menu-editor-box" id="campo-si-${r.id}" rows="3" placeholder="Ej: cordero, trufa, empanadas fritas..." style="min-height:80px;"></textarea>
+          </div>
+          <div>
+            <div style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(250,246,239,0.4);margin-bottom:5px;">✗ No debe estar</div>
+            <textarea class="menu-editor-box" id="campo-no-${r.id}" rows="3" placeholder="Ej: mariscos, gluten, cerdo..." style="min-height:80px;"></textarea>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(250,246,239,0.4);margin-bottom:5px;">Notas del chef</div>
+          <textarea class="menu-editor-box" id="campo-notas-${r.id}" rows="2" placeholder="Ej: cumpleaños 50, ambiente formal, porciones generosas..." style="min-height:55px;">${r.notas||''}</textarea>
+        </div>
+      </div>
+
+      <!-- Menú generado -->
+      <div style="background:rgba(45,122,79,0.08);border:1px solid rgba(45,122,79,0.25);border-radius:12px;padding:16px;margin-bottom:12px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <div style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:#5DBF87;">✓ Menú confirmado</div>
+          <button onclick="editarMenuDefinitivo('${r.id}')" style="font-size:11px;color:rgba(250,246,239,0.4);background:transparent;border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;">Editar</button>
+        </div>
+        <div style="font-size:13px;color:var(--cream);line-height:1.7;white-space:pre-wrap;">${escapeHtml(r.menu_definitivo||'')}</div>
+      </div>
+
+      <div class="menu-editor-actions">
+        <button class="btn-menu-ia" onclick="generarMenuIA('${r.id}')" id="btn-generar-menu-${r.id}">↺ Regenerar con IA</button>
+      </div>
+      <div id="menu-ia-loading-${r.id}" style="display:none;" class="ia-loading">
+        <div class="ia-dot"></div><div class="ia-dot"></div><div class="ia-dot"></div>
+        <span>Generando menú...</span>
       </div>
     </div>` : `
     <div class="menu-editor-wrap" id="menu-editor-wrap-${r.id}">
       <div class="menu-editor-label">Paso 0 — Menú definitivo del servicio</div>
+      <div style="font-size:12px;color:rgba(250,246,239,0.35);margin-bottom:16px;">Completá los campos y generá el menú con IA. Podés editarlo antes de confirmar.</div>
 
       ${tieneMenuPrevio ? `
-      <!-- Menú pre-cargado del cliente -->
       <div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);border-radius:10px;padding:12px 14px;margin-bottom:14px;">
-        <div style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;">✦ Pedido del cliente</div>
-        <div style="font-size:13px;color:var(--cream);line-height:1.6;white-space:pre-wrap;">${escapeHtml(r.menu_definitivo || r.menu || '')}</div>
-      </div>
-      <div style="font-size:12px;color:rgba(250,246,239,0.35);margin-bottom:12px;">El cliente ya tiene una propuesta. Podés ajustarla o agregar contexto antes de generar el menú definitivo.</div>
-      ` : `
-      <div style="font-size:12px;color:rgba(250,246,239,0.35);margin-bottom:16px;">Completá los campos para que la IA genere el mejor menú para este servicio.</div>
-      `}
+        <div style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;">✦ Propuesta original del cliente</div>
+        <div style="font-size:13px;color:var(--cream);line-height:1.6;white-space:pre-wrap;">${escapeHtml(r.menu || '')}</div>
+      </div>` : ''}
 
-      <!-- Campos estructurados -->
-      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:14px;">
+      <!-- Campos siempre visibles -->
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;">
         <div>
-          <div style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(250,246,239,0.4);margin-bottom:6px;">Idea o lineamiento del menú</div>
-          <textarea class="menu-editor-box" id="campo-idea-${r.id}" rows="2"
-            placeholder="Ej: menú de 3 pasos con influencia mediterránea, cocina de autor argentina, menú de degustación..."
-            style="min-height:70px;">${tieneMenuPrevio ? (r.menu_definitivo || r.menu || '') : ''}</textarea>
+          <div style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(250,246,239,0.4);margin-bottom:5px;">Idea o lineamiento del menú</div>
+          <textarea class="menu-editor-box" id="campo-idea-${r.id}" rows="2" placeholder="Ej: menú de 3 pasos con influencia mediterránea, cocina de autor, degustación..." style="min-height:60px;">${tieneMenuPrevio ? (r.menu||'') : ''}</textarea>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
           <div>
-            <div style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(250,246,239,0.4);margin-bottom:6px;">Ingredientes / platos que SÍ deben estar</div>
-            <textarea class="menu-editor-box" id="campo-si-${r.id}" rows="3"
-              placeholder="Ej: cordero, trufa negra, burrata, empanadas fritas..."
-              style="min-height:80px;"></textarea>
+            <div style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(250,246,239,0.4);margin-bottom:5px;">✓ Ingredientes / platos que SÍ</div>
+            <textarea class="menu-editor-box" id="campo-si-${r.id}" rows="3" placeholder="Ej: cordero, trufa negra, burrata, empanadas fritas..." style="min-height:80px;"></textarea>
           </div>
           <div>
-            <div style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(250,246,239,0.4);margin-bottom:6px;">Ingredientes / platos que NO deben estar</div>
-            <textarea class="menu-editor-box" id="campo-no-${r.id}" rows="3"
-              placeholder="Ej: mariscos, gluten, cerdo, picante..."
-              style="min-height:80px;"></textarea>
+            <div style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(250,246,239,0.4);margin-bottom:5px;">✗ Ingredientes / platos que NO</div>
+            <textarea class="menu-editor-box" id="campo-no-${r.id}" rows="3" placeholder="Ej: mariscos, gluten, cerdo, picante..." style="min-height:80px;"></textarea>
           </div>
         </div>
         <div>
-          <div style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(250,246,239,0.4);margin-bottom:6px;">Notas adicionales del chef (opcional)</div>
-          <textarea class="menu-editor-box" id="campo-notas-${r.id}" rows="2"
-            placeholder="Ej: el cliente cumple 50 años, ambiente muy formal, prefieren porciones generosas..."
-            style="min-height:60px;">${r.notas||''}</textarea>
+          <div style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(250,246,239,0.4);margin-bottom:5px;">Notas adicionales del chef</div>
+          <textarea class="menu-editor-box" id="campo-notas-${r.id}" rows="2" placeholder="Ej: cumpleaños 50, ambiente formal, porciones generosas, maridaje vinos..." style="min-height:55px;">${r.notas||''}</textarea>
         </div>
       </div>
 
-      <!-- Resultado generado por IA -->
-      <div id="menu-resultado-wrap-${r.id}" style="${r.menu_definitivo ? '' : 'display:none;'}">
-        <div style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(250,246,239,0.4);margin-bottom:6px;">Menú generado — revisá y confirmá</div>
-        <textarea class="menu-editor-box" id="menu-definitivo-input-${r.id}"
-          style="min-height:140px;cursor:text;"
-          placeholder="El menú generado aparecerá acá...">${r.menu_definitivo || ''}</textarea>
+      <!-- Resultado IA — aparece después de generar -->
+      <div id="menu-resultado-wrap-${r.id}" style="${tieneGenerado ? '' : 'display:none;'}">
+        <div style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:rgba(250,246,239,0.4);margin-bottom:6px;">Menú generado — editá si necesitás y confirmá</div>
+        <textarea class="menu-editor-box" id="menu-definitivo-input-${r.id}" style="min-height:160px;cursor:text;" placeholder="El menú generado aparecerá acá...">${r.menu_definitivo||''}</textarea>
       </div>
 
       <div class="menu-editor-actions" style="margin-top:12px;">
@@ -1275,7 +1299,7 @@ function renderServicioActivo(r) {
           ✦ Generar con IA
         </button>
         <button class="btn-menu-confirmar" onclick="confirmarMenuDefinitivo('${r.id}')"
-          id="btn-confirmar-menu-${r.id}" style="${r.menu_definitivo ? '' : 'opacity:0.4;'}">
+          id="btn-confirmar-menu-${r.id}" style="${tieneGenerado ? '' : 'opacity:0.4;pointer-events:none;'}">
           Confirmar menú →
         </button>
       </div>
@@ -1484,9 +1508,10 @@ async function toggleCompraItem(reservaId, key, el) {
 
 // ─── MENÚ DEFINITIVO ──────────────────────────────────────
 async function confirmarMenuDefinitivo(reservaId) {
+  // Leer el menú del textarea de resultado
   const input = document.getElementById(`menu-definitivo-input-${reservaId}`);
   const texto = input?.value?.trim();
-  if (!texto || texto.length < 20) { showToast('Escribí el menú antes de confirmar'); return; }
+  if (!texto || texto.length < 20) { showToast('Generá o escribí el menú antes de confirmar'); return; }
   const { error } = await supa.from('reservas').update({
     menu_definitivo: texto,
     menu_definitivo_ok: true
@@ -1496,14 +1521,17 @@ async function confirmarMenuDefinitivo(reservaId) {
   servicioActivo.menu_definitivo_ok = true;
   showToast('✓ Menú confirmado — generando lista de compras...');
   renderServicioActivo(servicioActivo);
-  // Generar lista automáticamente
   await generarListaCompras(reservaId);
 }
 
 function editarMenuDefinitivo(reservaId) {
-  // Quitar el ok para volver al editor
   supa.from('reservas').update({ menu_definitivo_ok: false }).eq('id', reservaId);
   servicioActivo.menu_definitivo_ok = false;
+  // Mostrar el textarea de resultado para que pueda editar
+  const wrap = document.getElementById(`menu-resultado-wrap-${reservaId}`);
+  const btnConfirmar = document.getElementById(`btn-confirmar-menu-${reservaId}`);
+  if (wrap) wrap.style.display = 'block';
+  if (btnConfirmar) { btnConfirmar.style.opacity = '1'; btnConfirmar.style.pointerEvents = 'auto'; }
   renderServicioActivo(servicioActivo);
 }
 
@@ -1571,17 +1599,19 @@ INSTRUCCIONES:
     const texto = data.content?.[0]?.text || '';
     if (!texto) { showToast('Sin respuesta — intentá de nuevo'); return; }
 
-    // Mostrar resultado
+    // Mostrar resultado en textarea
     const input = document.getElementById(`menu-definitivo-input-${reservaId}`);
     const wrap = document.getElementById(`menu-resultado-wrap-${reservaId}`);
     const btnConfirmar = document.getElementById(`btn-confirmar-menu-${reservaId}`);
     if (input) input.value = texto;
     if (wrap) wrap.style.display = 'block';
-    if (btnConfirmar) btnConfirmar.style.opacity = '1';
-    // Guardar borrador
-    await supa.from('reservas').update({ menu_definitivo: texto }).eq('id', reservaId);
-    if (servicioActivo?.id === reservaId) servicioActivo.menu_definitivo = texto;
-    showToast('✦ Menú generado — revisalo y confirmá');
+    if (btnConfirmar) { btnConfirmar.style.opacity = '1'; btnConfirmar.style.pointerEvents = 'auto'; }
+    // Scroll al resultado
+    if (wrap) wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    // Guardar borrador en BD (no confirmado aún)
+    await supa.from('reservas').update({ menu_definitivo: texto, menu_definitivo_ok: false }).eq('id', reservaId);
+    if (servicioActivo?.id === reservaId) { servicioActivo.menu_definitivo = texto; servicioActivo.menu_definitivo_ok = false; }
+    showToast('✦ Menú generado — editá si querés y confirmá');
   } catch(e) {
     showToast('Error de conexión — revisá tu red');
     console.error('generarMenuIA error:', e);
