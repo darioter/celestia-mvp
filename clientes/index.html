@@ -516,6 +516,9 @@ async function doRegister() {
 async function doLogout() {
   await supa.auth.signOut();
   currentUser = null;
+  portalCargado = false;
+  if (pollingCliente) clearInterval(pollingCliente);
+  if (chatPolling) clearInterval(chatPolling);
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('portal-screen').style.display = 'none';
 }
@@ -637,7 +640,20 @@ function actualizarAvatar(nombre, avatarUrl) {
 // ─── PERFIL ───────────────────────────────────────────────
 async function cargarPerfil() {
   const { data } = await supa.from('clientes').select('*').eq('id', currentUser.id).single();
-  if (!data) return;
+
+  // Si no existe registro, crearlo con datos de Auth
+  if (!data) {
+    const nombre = currentUser.user_metadata?.full_name || currentUser.email?.split('@')[0] || '';
+    await supa.from('clientes').insert([{
+      id: currentUser.id,
+      nombre,
+      email: currentUser.email
+    }]);
+    actualizarAvatar(nombre, null);
+    document.getElementById('p-nombre').value = nombre;
+    return;
+  }
+
   document.getElementById('p-nombre').value = data.nombre || '';
   document.getElementById('p-tel').value = data.telefono || '';
   document.getElementById('p-dir').value = data.direccion || '';
@@ -648,7 +664,9 @@ async function cargarPerfil() {
     const el = document.getElementById('avatar-display');
     el.innerHTML = `<img src="${data.avatar_url}" alt="avatar">`;
   }
-  actualizarAvatar(data.nombre, data.avatar_url);
+  // Mostrar email si no hay nombre aún
+  const displayNombre = data.nombre || currentUser.email?.split('@')[0] || '';
+  actualizarAvatar(displayNombre, data.avatar_url);
 }
 
 async function guardarPerfil() {
@@ -1081,15 +1099,17 @@ function iniciarPollingCliente() {
 }
 
 // ─── INIT ─────────────────────────────────────────────────
+let portalCargado = false;
+
 supa.auth.onAuthStateChange((event, session) => {
   if (event === 'PASSWORD_RECOVERY') {
     mostrarFormNuevaPassword();
-  } else if (event === 'SIGNED_IN' && session) {
-    // Solo entrar al portal si NO es un recovery
+  } else if (event === 'SIGNED_IN' && session && !portalCargado) {
     const hash = window.location.hash;
     const isRecovery = hash.includes('type=recovery') || hash.includes('type=passwordRecovery');
-    if (!isRecovery && !document.getElementById('form-nueva-pwd').style.display === 'block') {
+    if (!isRecovery) {
       currentUser = session.user;
+      portalCargado = true;
       mostrarPortal();
     }
   }
@@ -1097,15 +1117,17 @@ supa.auth.onAuthStateChange((event, session) => {
 
 (async () => {
   const hash = window.location.hash;
-  // Si el hash tiene type=recovery → mostrar form nueva contraseña SIN entrar al portal
   if (hash.includes('type=recovery') || hash.includes('type=passwordRecovery') || hash.includes('error_code=otp_expired')) {
     mostrarFormNuevaPassword();
     return;
   }
-
+  // Pequeña espera para que onAuthStateChange procese primero el redirect OAuth
+  await new Promise(r => setTimeout(r, 150));
+  if (portalCargado) return; // ya lo cargó onAuthStateChange
   const { data } = await supa.auth.getSession();
   if (data.session) {
     currentUser = data.session.user;
+    portalCargado = true;
     mostrarPortal();
   }
 })();
