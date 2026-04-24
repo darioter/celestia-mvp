@@ -913,9 +913,12 @@ async function verificarServicioActivo() {
 
   if (error) console.error('verificarServicioActivo:', error);
 
-  const activo = (data || []).find(r =>
-    ['confirmada', 'ofrecida'].includes(r.estado)
-  );
+  // Preferir el que tiene chef asignado y está más avanzado
+  const activos = (data || []).filter(r => ['confirmada', 'ofrecida'].includes(r.estado));
+  const activo = activos.find(r => r.chef_id && r.estado_servicio && r.estado_servicio !== 'completado')
+    || activos.find(r => r.chef_id)
+    || activos[0]
+    || null;
 
   // Badge en tab
   const tabBtn = document.getElementById('tab-btn-activo');
@@ -1395,7 +1398,8 @@ function iniciarPollingCliente() {
   pollingCliente = setInterval(verificarServicioActivo, 5000);
   if (chatPolling) clearInterval(chatPolling);
   chatPolling = setInterval(() => {
-    if (servicioActivoCliente) cargarMensajesCliente(servicioActivoCliente.id);
+    if (_chatReservaId) cargarMensajesCliente(_chatReservaId);
+    else if (servicioActivoCliente) cargarMensajesCliente(servicioActivoCliente.id);
   }, 4000);
 }
 
@@ -1587,6 +1591,7 @@ async function seleccionarComprasModo(reservaId, modo) {
 // ─── CHAT FLOTANTE ────────────────────────────────────────
 let chatAbierto = false;
 let _mensajesCount = 0;
+let _chatReservaId = null; // ID del servicio cuyo chat está activo
 
 function toggleChatFlotante() {
   chatAbierto = !chatAbierto;
@@ -1604,12 +1609,11 @@ function toggleChatFlotante() {
 }
 
 function mostrarChatFlotante(reservaId) {
+  _chatReservaId = reservaId;
   const btn = document.getElementById('chat-float-btn');
   if (btn) btn.style.display = 'flex';
-  // Bind send button
   const sendBtn = document.getElementById('chat-float-send-btn');
   if (sendBtn) sendBtn.onclick = () => enviarMensajeCliente(reservaId);
-  // Enter key
   const input = document.getElementById('chat-input-cliente');
   if (input) {
     input.onkeydown = e => {

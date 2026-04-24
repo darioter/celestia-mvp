@@ -2118,10 +2118,34 @@ Categorías (solo las que apliquen): Carnes y proteínas, Pescados y mariscos, V
     const data = await res.json();
     let texto = data.content?.[0]?.text || '';
     if (!texto) { showToast('Sin respuesta — intentá de nuevo'); return; }
+    // Limpiar markdown
     texto = texto.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+    // Extraer bloque JSON
     const jsonMatch = texto.match(/\{[\s\S]*\}/);
     if (!jsonMatch) { showToast('Error al procesar — intentá de nuevo'); console.error('No JSON:', texto); return; }
-    const lista = JSON.parse(jsonMatch[0]);
+    let jsonStr = jsonMatch[0];
+    // Sanitizar caracteres problemáticos dentro de strings JSON
+    // Reemplazar comillas tipográficas por rectas
+    jsonStr = jsonStr.replace(/[\u201C\u201D\u201E\u201F]/g, '"').replace(/[\u2018\u2019\u201A\u201B]/g, "'");
+    // Eliminar caracteres de control
+    jsonStr = jsonStr.replace(/[\u0000-\u001F\u007F]/g, ' ');
+    let lista;
+    try {
+      lista = JSON.parse(jsonStr);
+    } catch(parseErr) {
+      // Intentar extraer solo las secciones con regex como fallback
+      console.error('JSON parse error, trying fallback:', parseErr.message, jsonStr.substring(0, 200));
+      const fallback = { secciones: [] };
+      const secMatches = jsonStr.matchAll(/"categoria"\s*:\s*"([^"]+)"[\s\S]*?"items"\s*:\s*\[([\s\S]*?)\]/g);
+      for (const m of secMatches) {
+        const items = [];
+        const itemMatches = m[2].matchAll(/"nombre"\s*:\s*"([^"]+)"[^}]*"cantidad"\s*:\s*"([^"]+)"/g);
+        for (const im of itemMatches) items.push({ nombre: im[1], cantidad: im[2] });
+        if (items.length) fallback.secciones.push({ categoria: m[1], items });
+      }
+      if (!fallback.secciones.length) { showToast('Error al procesar lista — intentá de nuevo'); return; }
+      lista = fallback;
+    }
     lista.checks = {};
     await supa.from('reservas').update({ lista_compras: lista, lista_compras_generada: true }).eq('id', reservaId);
     if (servicioActivo?.id === reservaId) {
