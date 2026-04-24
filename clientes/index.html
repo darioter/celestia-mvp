@@ -796,7 +796,7 @@ async function cargarReservas() {
   document.getElementById('reservas-lista').innerHTML = '<div class="empty-state"><div class="empty-icon">✦</div>Cargando...</div>';
   const email = currentUser.email;
   const { data } = await supa.from('reservas').select('*')
-    .or(`email.eq.${email},cliente_id.eq.${currentUser.id}`)
+    .eq('email', email)
     .order('fecha', { ascending: false });
 
   if (!data || data.length === 0) {
@@ -858,17 +858,17 @@ const STEP_ORDER = TRACKING_STEPS.map(s => s.key);
 let _prevServicioClienteHash = null;
 
 async function verificarServicioActivo() {
-  // Buscar reservas por email (principal) o cliente_id
   const email = currentUser.email;
-  const { data } = await supa.from('reservas').select('*')
-    .or(`email.eq.${email},cliente_id.eq.${currentUser.id}`)
-    .not('estado_servicio', 'is', null)
+  // Buscar por email — incluye confirmadas y ofrecidas aunque no tengan chef aún
+  const { data, error } = await supa.from('reservas').select('*')
+    .eq('email', email)
     .not('estado', 'eq', 'cancelada')
     .order('fecha', { ascending: true });
 
+  if (error) console.error('verificarServicioActivo:', error);
+
   const activo = (data || []).find(r =>
-    r.estado_servicio && r.estado_servicio !== 'completado' &&
-    ['confirmada','ofrecida'].includes(r.estado)
+    ['confirmada', 'ofrecida'].includes(r.estado)
   );
 
   // Badge en tab
@@ -1309,7 +1309,7 @@ async function cargarPagosCliente() {
 
   const email = currentUser.email;
   const { data } = await supa.from('reservas').select('*')
-    .or(`email.eq.${email},cliente_id.eq.${currentUser.id}`)
+    .eq('email', email)
     .order('fecha', { ascending: false });
 
   if (!data || !data.length) {
