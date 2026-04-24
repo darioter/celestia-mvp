@@ -1311,6 +1311,12 @@ function renderServiciosActivos(activos, cancelados = []) {
     </div>`;
 }
 
+function volverAlSelector() {
+  _servicioSeleccionadoManualmente = null;
+  servicioActivo = window._serviciosActivos?.[0] || null;
+  renderServiciosActivos(window._serviciosActivos || [], []);
+}
+
 function seleccionarServicioActivo(idx) {
   const r = (window._serviciosActivos||[])[idx];
   if (r) {
@@ -1528,7 +1534,7 @@ function renderServicioActivo(r) {
   const contenidoPrevio = elActivo.innerHTML;
 
   const cardHtml = `
-    ${hayMultiples ? `<button onclick="renderServiciosActivos(window._serviciosActivos)" style="display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid rgba(255,255,255,0.12);color:rgba(250,246,239,0.5);font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 14px;border-radius:20px;cursor:pointer;margin-bottom:14px;transition:all 0.2s;" onmouseover="this.style.color='var(--cream)'" onmouseout="this.style.color='rgba(250,246,239,0.5)'">← Ver todos los servicios</button>` : ''}
+    ${hayMultiples ? `<button onclick="volverAlSelector()" style="display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid rgba(255,255,255,0.12);color:rgba(250,246,239,0.5);font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 14px;border-radius:20px;cursor:pointer;margin-bottom:14px;transition:all 0.2s;" onmouseover="this.style.color='var(--cream)'" onmouseout="this.style.color='rgba(250,246,239,0.5)'">← Ver todos los servicios</button>` : ''}
     <div class="solicitud-card" style="border-color:rgba(201,168,76,0.3);">
       <div class="solicitud-header">
         <div>
@@ -1537,13 +1543,17 @@ function renderServicioActivo(r) {
           <div class="solicitud-meta">${fmtFecha(r.fecha)} · ${turnoStr} · ${r.personas} personas</div>
         </div>
         <div style="text-align:right;">
-          <div class="info-label">Tu liquidación</div>
-          ${r.precio_servicio ? `
-          <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--gold-light);">${fmt(r.pago_chef_inicial || Math.round((r.precio_servicio||r.honorario||0)*0.7*0.85))}</div>
-          <div style="font-size:10px;color:rgba(250,246,239,0.35);margin-top:2px;">al finalizar · + ${fmt(r.pago_chef_final || Math.round((r.precio_servicio||r.honorario||0)*0.7*0.15))} en 24hs</div>
-          ` : `
-          <div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--gold-light);">${fmt(r.honorario_final || r.honorario)}</div>
-          `}
+          <div class="info-label">Tu cobro (70%)</div>
+          ${(r.precio_servicio||r.honorario) ? (() => {
+            const _srv = r.precio_servicio||r.honorario||0;
+            const _base = Math.round(_srv * 0.70);
+            const _ret = Math.round(_base * ((r.retencion_pct||15)/100));
+            return `
+          <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--gold-light);">${fmt(_base)}</div>
+          <div style="font-size:10px;color:rgba(250,246,239,0.35);margin-top:2px;">adelanto ${fmt(Math.round(_base*0.50))} · saldo ${fmt(Math.round(_base*0.35))} · ret. ${fmt(_ret)}</div>`;
+          })() : `
+          <div style="font-family:'DM Serif Display',serif;font-size:20px;color:rgba(250,246,239,0.3);">—</div>
+          <div style="font-size:10px;color:rgba(250,246,239,0.25);margin-top:2px;">Precio por definir</div>`}
         </div>
       </div>
 
