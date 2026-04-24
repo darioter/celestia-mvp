@@ -173,17 +173,50 @@ body{font-family:'DM Sans',sans-serif;background:var(--navy);min-height:100vh;co
 .checklist-wrap{padding:0 24px 20px;}
   .chat-chef-wrap { padding:0 24px 24px; }
   .chat-chef-titulo { font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:rgba(250,246,239,0.35); margin-bottom:12px; }
-  .chat-chef-mensajes { max-height:260px; overflow-y:auto; display:flex; flex-direction:column; gap:8px; margin-bottom:12px; padding-right:2px; }
-  .chat-chef-msg { max-width:80%; padding:10px 14px; border-radius:14px; font-size:13px; line-height:1.5; }
-  .chat-chef-msg.chef { align-self:flex-end; background:rgba(201,168,76,0.15); color:var(--cream); border-bottom-right-radius:4px; border:1px solid rgba(201,168,76,0.2); }
-  .chat-chef-msg.cliente { align-self:flex-start; background:rgba(255,255,255,0.06); color:var(--cream); border-bottom-left-radius:4px; }
-  .chat-chef-msg.sistema { align-self:center; background:transparent; color:rgba(250,246,239,0.35); font-size:11px; font-style:italic; border:none; padding:4px 0; }
-  .chat-chef-meta { font-size:10px; opacity:0.45; margin-top:3px; }
-  .chat-chef-input-wrap { display:flex; gap:8px; }
-  .chat-chef-input { flex:1; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:10px 14px; font-family:'DM Sans',sans-serif; font-size:13px; color:var(--cream); outline:none; resize:none; transition:border 0.2s; }
-  .chat-chef-input:focus { border-color:rgba(201,168,76,0.4); }
-  .chat-chef-send { background:rgba(201,168,76,0.15); color:var(--gold-light); border:1px solid rgba(201,168,76,0.3); border-radius:10px; padding:10px 16px; cursor:pointer; font-size:13px; font-weight:500; font-family:'DM Sans',sans-serif; transition:all 0.2s; white-space:nowrap; }
-  .chat-chef-send:hover { background:rgba(201,168,76,0.25); }
+  /* Chat flotante chef */
+  .chef-float-btn {
+    position:fixed; bottom:24px; right:24px; width:54px; height:54px;
+    background:rgba(201,168,76,0.9); border-radius:50%; border:none;
+    cursor:pointer; display:none; align-items:center; justify-content:center;
+    font-size:22px; box-shadow:0 4px 20px rgba(0,0,0,0.4);
+    z-index:1000; transition:transform 0.2s;
+  }
+  .chef-float-btn:hover { transform:scale(1.08); }
+  .chef-float-badge {
+    position:absolute; top:-4px; right:-4px; background:#E67E8A;
+    color:white; border-radius:50%; width:18px; height:18px;
+    font-size:10px; font-weight:700; display:none;
+    align-items:center; justify-content:center;
+  }
+  .chef-float-panel {
+    position:fixed; bottom:88px; right:24px; width:320px; height:420px;
+    background:var(--navy-mid); border:1px solid rgba(255,255,255,0.12);
+    border-radius:16px; z-index:1001; display:none;
+    flex-direction:column; box-shadow:0 8px 32px rgba(0,0,0,0.5);
+  }
+  .chef-float-panel.open { display:flex; }
+  .chef-float-header {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 16px; border-bottom:1px solid rgba(255,255,255,0.08);
+    font-size:13px; font-weight:500; color:var(--cream);
+  }
+  .chef-float-mensajes {
+    flex:1; overflow-y:auto; padding:12px; display:flex;
+    flex-direction:column; gap:8px;
+  }
+  .chef-float-input-wrap { display:flex; gap:8px; padding:10px 12px; border-top:1px solid rgba(255,255,255,0.08); }
+  .chef-float-input {
+    flex:1; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1);
+    border-radius:8px; padding:8px 12px; font-family:'DM Sans',sans-serif;
+    font-size:13px; color:var(--cream); outline:none; resize:none;
+  }
+  .chef-float-input:focus { border-color:rgba(201,168,76,0.4); }
+  .chef-float-send {
+    background:rgba(201,168,76,0.2); color:var(--gold-light);
+    border:1px solid rgba(201,168,76,0.3); border-radius:8px;
+    padding:8px 12px; cursor:pointer; font-size:13px; white-space:nowrap;
+    font-family:'DM Sans',sans-serif;
+  }
 .checklist-title{font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(250,246,239,0.35);margin-bottom:12px;}
 .checklist-item{
   display:flex;align-items:center;gap:12px;padding:10px 0;
@@ -1116,10 +1149,21 @@ async function cargarSolicitudes() {
 }
 
 async function setCompra(id, modo, el) {
-  el.closest('.compra-chips').querySelectorAll('.compra-chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  await supa.from('reservas').update({ compra_modo: modo }).eq('id', id);
-  if (servicioActivo) servicioActivo.compra_modo = modo;
+  // Legacy — redirigir a nueva función
+  await proponerCompraChef(id, modo);
+}
+
+async function proponerCompraChef(reservaId, modo) {
+  const modoLabels = { chef:'comprar los ingredientes 👨‍🍳', cliente:'que vos comprés los ingredientes 🛍', market:'hacer un pedido a domicilio 📦 (según disponibilidad)' };
+  await supa.from('reservas').update({ compra_modo_chef: modo }).eq('id', reservaId);
+  if (servicioActivo) servicioActivo.compra_modo_chef = modo;
+  // Notificar al cliente via chat
+  await supa.from('mensajes').insert({
+    reserva_id: reservaId, autor_id: currentUser.id, rol: 'chef',
+    texto: `📋 Tu chef sugiere ${modoLabels[modo]} — confirmá o cambiá la modalidad en tu portal`
+  });
+  showToast('✓ Propuesta enviada al cliente para confirmar');
+  renderServicioActivo(servicioActivo);
 }
 
 async function aceptarServicio(id) {
@@ -1383,22 +1427,49 @@ function renderServicioActivo(r) {
   // ─── Sección lista de compras ───
   const listaCompras = r.lista_compras;
   const compra_modo = r.compra_modo;
-  const modoLabel = { chef: '👨‍🍳 El chef compra', cliente: '🛍 El cliente compra', market: '📦 Pedido a domicilio' };
-  const notifCompras = compra_modo ? `
-    <div style="background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);border-radius:10px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;">
+  const compra_modo_chef = r.compra_modo_chef;
+  const compra_bloqueado = !!r.compra_modo_bloqueado;
+  const modoIcons = { chef:'👨‍🍳', cliente:'🛍', market:'📦' };
+  const modoLabels = { chef:'Chef compra todo', cliente:'Cliente compra', market:'Market/Domicilio' };
+
+  // Sección de modalidad compras
+  const comprasModalidad = compra_bloqueado ? `
+    <div style="background:rgba(93,191,135,0.1);border:1px solid rgba(93,191,135,0.25);border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+      <span style="font-size:20px;">${modoIcons[compra_modo]||'✓'}</span>
       <div>
-        <div style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);margin-bottom:3px;">El cliente eligió</div>
-        <div style="font-size:14px;color:var(--cream);font-weight:500;">${modoLabel[compra_modo] || compra_modo}</div>
+        <div style="font-size:13px;color:#5DBF87;font-weight:500;">✓ ${modoLabels[compra_modo]||compra_modo} — confirmado</div>
+        <div style="font-size:11px;color:rgba(250,246,239,0.35);">Bloqueado — el cliente confirmó esta modalidad</div>
       </div>
-      <div style="font-size:20px;">${compra_modo==='chef'?'✓':'📋'}</div>
+    </div>` :
+  compra_modo_chef && compra_modo ? `
+    <div style="background:rgba(93,191,135,0.08);border:1px solid rgba(93,191,135,0.2);border-radius:10px;padding:10px 14px;margin-bottom:12px;">
+      <div style="font-size:11px;color:#5DBF87;margin-bottom:3px;">✓ Cliente confirmó: ${modoIcons[compra_modo]} ${modoLabels[compra_modo]||compra_modo}</div>
+      <div style="font-size:11px;color:rgba(250,246,239,0.3);">Acordado y bloqueado</div>
+    </div>` :
+  compra_modo_chef ? `
+    <div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:10px 14px;margin-bottom:12px;">
+      <div style="font-size:11px;color:var(--gold);margin-bottom:3px;">⏳ Propuesta enviada — esperando que el cliente confirme</div>
+      <div style="font-size:13px;color:var(--cream);">${modoIcons[compra_modo_chef]} ${modoLabels[compra_modo_chef]}</div>
+      <div style="font-size:11px;color:rgba(250,246,239,0.3);margin-top:3px;">Aclaración: según disponibilidad de ingredientes</div>
     </div>` : `
-    <div style="font-size:12px;color:rgba(250,246,239,0.35);padding:8px 0;">⏳ Esperando que el cliente confirme la modalidad de compras...</div>`;
+    <div style="margin-bottom:12px;">
+      <div style="font-size:12px;color:rgba(250,246,239,0.4);margin-bottom:8px;">Proponé al cliente cómo manejar las compras:</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        ${['chef','cliente','market'].map(k => `
+          <button onclick="proponerCompraChef('${r.id}','${k}')"
+            style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:var(--cream);font-family:'DM Sans',sans-serif;font-size:12px;padding:8px 14px;border-radius:20px;cursor:pointer;transition:all 0.15s;"
+            onmouseover="this.style.borderColor='rgba(201,168,76,0.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'">
+            ${modoIcons[k]} ${modoLabels[k]}
+          </button>`).join('')}
+      </div>
+      <div style="font-size:11px;color:rgba(250,246,239,0.25);margin-top:6px;">Según disponibilidad de ingredientes. El cliente podrá aceptar o cambiar una vez.</div>
+    </div>`;
 
   const comprasSection = menuOk ? `
     <div class="compras-wrap" id="compras-wrap-${r.id}">
       <div class="checklist-title" style="margin-bottom:12px;">Compras del servicio</div>
-      ${notifCompras}
-      ${listaCompras ? renderListaCompras(listaCompras, r.id) : `
+      ${comprasModalidad}
+      ${listaCompras?.secciones?.length ? renderListaCompras(listaCompras, r.id) : `
         <div style="display:flex;align-items:center;gap:10px;margin-top:8px;">
           <button class="btn-menu-ia" onclick="generarListaCompras('${r.id}')" id="btn-lista-${r.id}">
             ✦ Generar lista con IA
@@ -1490,18 +1561,6 @@ function renderServicioActivo(r) {
 
       ${comprasSection}
       ${recetasSection}
-
-      <!-- Chat con el cliente -->
-      <div class="chat-chef-wrap">
-        <div class="chat-chef-titulo">💬 Chat con el cliente</div>
-        <div class="chat-chef-mensajes" id="chat-chef-mensajes-${r.id}">
-          <div style="font-size:12px;color:rgba(250,246,239,0.3);text-align:center;padding:10px;">Cargando mensajes...</div>
-        </div>
-        <div class="chat-chef-input-wrap">
-          <textarea class="chat-chef-input" id="chat-chef-input-${r.id}" rows="2" placeholder="Escribí un mensaje al cliente..."></textarea>
-          <button class="chat-chef-send" onclick="enviarMensajeChef('${r.id}')">Enviar</button>
-        </div>
-      </div>
 
       <div style="padding:0 24px 24px;">
         <button class="btn-accion primary" onclick="finalizarServicio('${r.id}')" ${!checklist.presentacion?'disabled style="opacity:0.4;cursor:not-allowed;"':''}>
@@ -1798,71 +1857,100 @@ function mensajeContieneContacto(texto) {
   return patrones.some(p => p.test(texto));
 }
 
-// ─── CHAT CHEF ────────────────────────────────────────────
+// ─── CHAT FLOTANTE CHEF ───────────────────────────────────
 let chatChefPolling = null;
+let chatChefAbierto = false;
+let chatChefReservaId = null;
+let _msgChefCount = 0;
+
+function toggleChatChef() {
+  const panel = document.getElementById('chef-float-panel');
+  chatChefAbierto = !chatChefAbierto;
+  panel.classList.toggle('open', chatChefAbierto);
+  if (chatChefAbierto) {
+    // Limpiar badge
+    const badge = document.getElementById('chef-float-badge');
+    if (badge) badge.style.display = 'none';
+    if (chatChefReservaId) cargarMensajesChef(chatChefReservaId);
+    setTimeout(() => document.getElementById('chef-float-input')?.focus(), 100);
+  }
+}
 
 async function cargarMensajesChef(reservaId) {
-  const el = document.getElementById(`chat-chef-mensajes-${reservaId}`);
+  const el = document.getElementById('chef-float-mensajes');
   if (!el) return;
   const { data } = await supa.from('mensajes')
-    .select('*')
-    .eq('reserva_id', reservaId)
+    .select('*').eq('reserva_id', reservaId)
     .order('created_at', { ascending: true });
   if (!data?.length) {
-    el.innerHTML = '<div style="font-size:12px;color:rgba(250,246,239,0.3);text-align:center;padding:10px;">Sin mensajes aún — escribile al cliente</div>';
+    el.innerHTML = '<div style="font-size:12px;color:rgba(250,246,239,0.3);text-align:center;padding:20px;">Sin mensajes aún</div>';
     return;
   }
+  // Detectar mensajes nuevos para badge
+  if (!chatChefAbierto && data.length > _msgChefCount) {
+    const nuevos = data.length - _msgChefCount;
+    const badge = document.getElementById('chef-float-badge');
+    if (badge) { badge.style.display = 'flex'; badge.textContent = nuevos > 9 ? '9+' : nuevos; }
+    const btn = document.getElementById('chef-float-btn');
+    if (btn) { btn.style.background = '#E67E8A'; setTimeout(() => btn.style.background = 'rgba(201,168,76,0.9)', 2000); }
+  }
+  _msgChefCount = data.length;
   const fmtHora = ts => new Date(ts).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
   el.innerHTML = data.map(m => {
     const esChef = m.rol === 'chef';
     const esSistema = m.rol === 'sistema' || m.texto?.startsWith('📋') || m.texto?.startsWith('✓ El cliente');
-    return `<div class="chat-chef-msg ${esSistema?'sistema':esChef?'chef':'cliente'}">
-      ${m.texto}
-      <div class="chat-chef-meta">${esSistema?'':fmtHora(m.created_at)}</div>
+    if (esSistema) return `<div style="text-align:center;font-size:11px;color:rgba(250,246,239,0.3);font-style:italic;padding:4px 0;">${m.texto}</div>`;
+    return `<div style="display:flex;flex-direction:column;align-items:${esChef?'flex-end':'flex-start'};margin-bottom:6px;">
+      <div style="max-width:80%;padding:8px 12px;border-radius:12px;font-size:13px;line-height:1.4;
+        ${esChef?'background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.2);color:var(--cream);border-bottom-right-radius:4px;':'background:rgba(255,255,255,0.07);color:var(--cream);border-bottom-left-radius:4px;'}">
+        ${m.texto}
+      </div>
+      <div style="font-size:10px;color:rgba(250,246,239,0.3);margin-top:2px;">${fmtHora(m.created_at)}</div>
     </div>`;
   }).join('');
-  // Auto-scroll al último
   el.scrollTop = el.scrollHeight;
 }
 
 async function enviarMensajeChef(reservaId) {
-  const input = document.getElementById(`chat-chef-input-${reservaId}`);
+  const input = document.getElementById('chef-float-input');
   const textoOriginal = input?.value?.trim();
-  if (!textoOriginal) return;
-
+  if (!textoOriginal || !reservaId) return;
   if (mensajeContieneContacto(textoOriginal)) {
-    showToast('⚠ El mensaje contiene datos de contacto — no está permitido por seguridad');
+    showToast('⚠ No podés compartir datos de contacto por el chat');
     return;
   }
-
   const texto = filtrarMensaje(textoOriginal);
   input.value = '';
   const { error } = await supa.from('mensajes').insert({
-    reserva_id: reservaId,
-    autor_id: currentUser.id,
-    rol: 'chef',
-    texto
+    reserva_id: reservaId, autor_id: currentUser.id, rol: 'chef', texto
   });
   if (error) {
-    showToast('Error al enviar: ' + error.message);
-    input.value = textoOriginal; // restaurar texto si falló
-    console.error('enviarMensajeChef error:', error);
+    showToast('Error: ' + error.message);
+    input.value = textoOriginal;
+    console.error('chat chef error:', error);
     return;
   }
   cargarMensajesChef(reservaId);
 }
 
-// Enter para enviar (Shift+Enter = nueva línea)
-document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && !e.shiftKey && e.target.classList.contains('chat-chef-input')) {
-    e.preventDefault();
-    const reservaId = e.target.id.replace('chat-chef-input-', '');
-    enviarMensajeChef(reservaId);
-  }
-});
-
 function iniciarChatChefPolling(reservaId) {
+  chatChefReservaId = reservaId;
   if (chatChefPolling) clearInterval(chatChefPolling);
+  // Mostrar botón flotante
+  const btn = document.getElementById('chef-float-btn');
+  if (btn) btn.style.display = 'flex';
+  // Bind send
+  const sendBtn = document.getElementById('chef-float-send-btn');
+  if (sendBtn) sendBtn.onclick = () => enviarMensajeChef(reservaId);
+  const input = document.getElementById('chef-float-input');
+  if (input) {
+    input.onkeydown = e => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); enviarMensajeChef(reservaId); }
+    };
+  }
+  // Actualizar header con nombre reserva
+  const header = document.getElementById('chef-float-titulo');
+  if (header) header.textContent = `Chat — ${servicioActivo?.nombre || 'cliente'}`;
   cargarMensajesChef(reservaId);
   chatChefPolling = setInterval(() => cargarMensajesChef(reservaId), 4000);
 }
@@ -2258,5 +2346,22 @@ async function subirFactura(input, reservaId) {
 }
 
 </script>
+<!-- CHAT FLOTANTE CHEF -->
+<button class="chef-float-btn" id="chef-float-btn" onclick="toggleChatChef()" style="display:none;">
+  💬
+  <span class="chef-float-badge" id="chef-float-badge" style="display:none;">0</span>
+</button>
+<div class="chef-float-panel" id="chef-float-panel">
+  <div class="chef-float-header">
+    <span id="chef-float-titulo">Chat con el cliente</span>
+    <button onclick="toggleChatChef()" style="background:transparent;border:none;color:rgba(250,246,239,0.5);cursor:pointer;font-size:18px;line-height:1;">×</button>
+  </div>
+  <div class="chef-float-mensajes" id="chef-float-mensajes"></div>
+  <div class="chef-float-input-wrap">
+    <textarea class="chef-float-input" id="chef-float-input" rows="2" placeholder="Escribí un mensaje..."></textarea>
+    <button class="chef-float-send" id="chef-float-send-btn">↑</button>
+  </div>
+</div>
+
 </body>
 </html>

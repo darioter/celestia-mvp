@@ -59,6 +59,52 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); min-height:100
 
 /* Chat */
 .chat-card { background:var(--white); border-radius:16px; padding:24px; box-shadow:var(--shadow); margin-bottom:20px; }
+  /* Chat flotante */
+  .chat-float-btn {
+    position: fixed; bottom: 24px; right: 24px; z-index: 1000;
+    width: 54px; height: 54px; border-radius: 50%;
+    background: var(--navy); color: var(--cream);
+    border: none; cursor: pointer; font-size: 22px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.2s;
+  }
+  .chat-float-btn:hover { transform: scale(1.08); }
+  .chat-float-badge {
+    position: absolute; top: -3px; right: -3px;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: #E67E8A; font-size: 10px; font-weight: 700;
+    color: white; display: flex; align-items: center; justify-content: center;
+    animation: pulseStep 2s infinite;
+  }
+  .chat-float-panel {
+    position: fixed; bottom: 90px; right: 24px; z-index: 999;
+    width: 320px; background: var(--white); border-radius: 16px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+    display: none; flex-direction: column; overflow: hidden;
+  }
+  .chat-float-panel.open { display: flex; }
+  .chat-float-header {
+    background: var(--navy); color: var(--cream);
+    padding: 14px 16px; display: flex; align-items: center; justify-content: space-between;
+    font-size: 13px; font-weight: 600;
+  }
+  .chat-float-mensajes {
+    flex: 1; overflow-y: auto; padding: 12px;
+    display: flex; flex-direction: column; gap: 8px;
+    max-height: 260px;
+  }
+  .chat-float-input-wrap { display: flex; gap: 8px; padding: 10px 12px; border-top: 1px solid var(--cream-dark); }
+  .chat-float-input {
+    flex: 1; border: 1.5px solid var(--cream-dark); border-radius: 8px;
+    padding: 8px 10px; font-family: 'DM Sans', sans-serif; font-size: 13px;
+    color: var(--text); outline: none; resize: none;
+  }
+  .chat-float-input:focus { border-color: var(--gold); }
+  .chat-float-send {
+    background: var(--navy); color: var(--cream); border: none;
+    border-radius: 8px; padding: 8px 12px; cursor: pointer; font-size: 13px;
+  }
 .chat-mensajes { max-height:280px; overflow-y:auto; display:flex; flex-direction:column; gap:10px; margin-bottom:16px; padding-right:4px; }
 .chat-msg { max-width:80%; padding:10px 14px; border-radius:16px; font-size:13px; line-height:1.5; }
 .chat-msg.cliente { align-self:flex-end; background:var(--navy); color:var(--cream); border-bottom-right-radius:4px; }
@@ -957,10 +1003,32 @@ function renderServicioActivoCliente() {
   }).join('');
 
   // Menú confirmado
+  // Menu interaction: chef propone → cliente aprueba o pide cambios
   const menuHtml = r.menu_definitivo ? `
-    <div class="menu-confirmado-card">
-      <div class="menu-label">✓ Menú confirmado por tu chef</div>
-      <div class="menu-texto">${r.menu_definitivo}</div>
+    <div class="menu-confirmado-card" style="border:1.5px solid ${r.menu_cliente_ok ? 'rgba(45,122,79,0.3)' : 'rgba(201,168,76,0.3)'};">
+      <div class="menu-label" style="display:flex;justify-content:space-between;align-items:center;">
+        <span>✦ Menú propuesto por tu chef</span>
+        ${r.menu_cliente_ok ? `<span style="font-size:11px;color:var(--green);font-weight:500;">✓ Aprobado por vos</span>` : `<span style="font-size:11px;color:var(--gold);">· Pendiente tu aprobación</span>`}
+      </div>
+      <div class="menu-texto" style="white-space:pre-wrap;">${r.menu_definitivo}</div>
+      ${!r.menu_cliente_ok ? `
+      <div style="margin-top:14px;border-top:1px solid var(--cream-dark);padding-top:14px;">
+        <div style="font-size:12px;color:var(--text-light);margin-bottom:10px;">¿Todo bien con el menú? Podés aprobarlo o pedirle cambios a tu chef.</div>
+        <textarea id="menu-comentario-cliente" placeholder="Comentario opcional: ej. prefiero sin ajo, o ¿podés incluir entrada de burrata?" 
+          style="width:100%;border:1.5px solid var(--cream-dark);border-radius:10px;padding:10px 12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);resize:none;min-height:70px;margin-bottom:10px;box-sizing:border-box;"
+          rows="2">${r.menu_cliente_comentario||''}</textarea>
+        <div style="display:flex;gap:8px;">
+          <button onclick="aprobarMenu('${r.id}')"
+            style="flex:1;background:var(--navy);color:var(--cream);border:none;border-radius:40px;padding:11px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">
+            ✓ Aprobar menú
+          </button>
+          <button onclick="pedirCambioMenu('${r.id}')"
+            style="flex:1;background:transparent;color:var(--text-mid);border:1.5px solid var(--cream-dark);border-radius:40px;padding:11px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;">
+            ✎ Pedir cambio
+          </button>
+        </div>
+      </div>` : `
+      <div style="margin-top:10px;font-size:12px;color:var(--green);">✓ Aprobaste este menú — tu chef ya puede preparar la lista de compras</div>`}
     </div>` : '';
 
   // Google Maps si está en camino
@@ -993,7 +1061,7 @@ function renderServicioActivoCliente() {
         <div style="text-align:center;font-size:13px;color:var(--green);font-weight:500;">✓ Llegada confirmada</div>`}
     </div>` : '';
 
-  // Lista de compras generada
+  // Lista de compras — mostrar siempre que esté generada
   const listaCompras = r.lista_compras;
   const listaHtml = listaCompras?.secciones?.length ? `
     <div class="compras-card">
@@ -1029,33 +1097,57 @@ function renderServicioActivoCliente() {
     </div>` : '';
 
   // Modalidad de compras (solo si el menú fue confirmado)
+  // Modalidad de compras — chef propone, cliente confirma, se bloquea
   const comprasModo = r.compra_modo;
+  const comprasModoChef = r.compra_modo_chef;
+  const comprasBloqueado = !!r.compra_modo_bloqueado;
+  const modoLabels = {
+    chef: { icon:'👨‍🍳', titulo:'El chef compra todo', sub:'Tu chef selecciona y compra los mejores ingredientes' },
+    cliente: { icon:'🛍', titulo:'Vos comprás los ingredientes', sub:'Recibís la lista y la conseguís vos' },
+    market: { icon:'📦', titulo:'Pedido a domicilio', sub:'Delivery de ingredientes frescos — según disponibilidad' }
+  };
   const comprasHtml = r.menu_definitivo_ok ? `
     <div class="compras-card">
-      <div class="compras-titulo">¿Cómo preferís gestionar las compras?</div>
-      <div style="font-size:12px;color:var(--text-light);margin-bottom:14px;">Elegí una opción y confirmá. Tu chef recibirá la notificación.</div>
-      ${[
-        { key:'chef', icon:'👨‍🍳', titulo:'El chef compra todo', sub:'Tu chef selecciona y compra los mejores ingredientes' },
-        { key:'cliente', icon:'🛍', titulo:'Yo compro los ingredientes', sub:'Recibís la lista y la conseguís vos' },
-        { key:'market', icon:'📦', titulo:'Pedido a domicilio', sub:'Delivery de ingredientes frescos (PedidosYa Market, Rappi, etc)' },
-      ].map(op => `
-        <div class="compra-opcion ${comprasModo===op.key?'selected':''}" onclick="preseleccionarCompra('${op.key}')">
-          <div class="compra-opcion-icon">${op.icon}</div>
-          <div class="compra-opcion-info">
-            <div class="compra-opcion-titulo">${op.titulo}</div>
-            <div class="compra-opcion-sub">${op.sub}</div>
+      <div class="compras-titulo">🛒 ¿Cómo se manejan las compras?</div>
+      ${comprasBloqueado ? `
+        <!-- BLOQUEADO: ya fue confirmado -->
+        <div style="background:rgba(45,122,79,0.06);border:1.5px solid rgba(45,122,79,0.2);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:14px;">
+          <div style="font-size:24px;">${modoLabels[comprasModo]?.icon||'✓'}</div>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--text);">${modoLabels[comprasModo]?.titulo||comprasModo}</div>
+            <div style="font-size:12px;color:var(--text-light);margin-top:2px;">✓ Confirmado y bloqueado</div>
           </div>
-          ${comprasModo===op.key ? '<div style="color:var(--gold);font-size:18px;">✓</div>' : ''}
-        </div>`).join('')}
-      ${comprasModo ? `
-        <div style="background:var(--green-light);border:1px solid rgba(45,122,79,0.2);border-radius:10px;padding:12px 16px;margin-top:4px;display:flex;align-items:center;justify-content:space-between;">
-          <div style="font-size:13px;color:var(--green);font-weight:500;">✓ Confirmaste: ${comprasModo==='chef'?'El chef compra todo':comprasModo==='cliente'?'Yo compro':'Pedido a domicilio'}</div>
-          <button onclick="preseleccionarCompra(null)" style="font-size:11px;color:var(--text-light);background:transparent;border:1px solid var(--cream-dark);border-radius:20px;padding:4px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;">Cambiar</button>
-        </div>` : `
+        </div>` :
+      comprasModoChef && !comprasModo ? `
+        <!-- CHEF PROPUSO — cliente debe confirmar -->
+        <div style="background:rgba(201,168,76,0.06);border:1.5px solid rgba(201,168,76,0.2);border-radius:12px;padding:14px 16px;margin-bottom:12px;">
+          <div style="font-size:11px;color:var(--gold);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">Tu chef sugiere</div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="font-size:22px;">${modoLabels[comprasModoChef]?.icon||'📋'}</div>
+            <div>
+              <div style="font-size:14px;font-weight:600;color:var(--text);">${modoLabels[comprasModoChef]?.titulo||comprasModoChef}</div>
+              <div style="font-size:12px;color:var(--text-light);">${modoLabels[comprasModoChef]?.sub||''}</div>
+            </div>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--text-light);margin-bottom:10px;">¿Estás de acuerdo o preferís otra opción?</div>
+        ${['chef','cliente','market'].map(key => `
+          <div class="compra-opcion ${comprasModoChef===key?'selected':''}" onclick="preseleccionarCompra('${key}')">
+            <div class="compra-opcion-icon">${modoLabels[key].icon}</div>
+            <div class="compra-opcion-info">
+              <div class="compra-opcion-titulo">${modoLabels[key].titulo}</div>
+              <div class="compra-opcion-sub">${modoLabels[key].sub}</div>
+            </div>
+            ${comprasModoChef===key ? '<div style="color:var(--gold);font-size:16px;">✓</div>' : ''}
+          </div>`).join('')}
         <button id="btn-confirmar-compras" onclick="confirmarCompras('${r.id}')"
-          style="width:100%;margin-top:12px;background:var(--navy);color:var(--cream);border:none;border-radius:40px;padding:13px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;opacity:0.4;pointer-events:none;transition:all 0.2s;">
-          Confirmar elección →
-        </button>`}
+          style="width:100%;margin-top:12px;background:var(--navy);color:var(--cream);border:none;border-radius:40px;padding:13px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;">
+          Confirmar modalidad →
+        </button>` : `
+        <!-- Sin propuesta del chef aún -->
+        <div style="font-size:13px;color:var(--text-light);text-align:center;padding:16px 0;">
+          ⏳ Tu chef está definiendo la modalidad de compras...
+        </div>`}
     </div>` : '';
 
   // Calificación (solo cuando completado)
@@ -1082,17 +1174,11 @@ function renderServicioActivoCliente() {
     ${llegadaHtml}
     ${listaHtml}
     ${comprasHtml}
-    <div class="chat-card">
-      <div class="compras-titulo">💬 Chat con tu chef</div>
-      <div class="chat-mensajes" id="chat-mensajes-cliente"></div>
-      <div class="chat-input-wrap">
-        <textarea class="chat-input" id="chat-input-cliente" placeholder="Escribí un mensaje..." rows="2"></textarea>
-        <button class="chat-send" onclick="enviarMensajeCliente('${r.id}')">Enviar</button>
-      </div>
-    </div>
-    ${calificHtml}`;
+    ${calificHtml}
+  </div>`;
 
   cargarMensajesCliente(r.id);
+  mostrarChatFlotante(r.id);
 }
 
 async function confirmarLlegada(reservaId) {
@@ -1217,12 +1303,22 @@ async function cargarMensajesCliente(reservaId) {
     el.innerHTML = '<div style="text-align:center;font-size:12px;color:var(--text-light);padding:20px;">Todavía no hay mensajes. ¡Escribile a tu chef!</div>';
     return;
   }
-  el.innerHTML = data.map(m => `
-    <div class="chat-msg ${m.rol === 'cliente' ? 'cliente' : 'chef'}">
+  // Detectar mensajes nuevos del chef
+  const nuevosMensajesChef = data.filter(m => m.rol === 'chef' || m.rol === 'sistema');
+  if (nuevosMensajesChef.length > _mensajesCount && _mensajesCount > 0) {
+    notificarMensajeNuevo(nuevosMensajesChef.length - _mensajesCount);
+  }
+  _mensajesCount = nuevosMensajesChef.length;
+
+  const fmtHora = ts => new Date(ts).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+  el.innerHTML = data.map(m => {
+    const esSistema = m.rol === 'sistema' || m.texto?.startsWith('📋') || m.texto?.startsWith('✅') || m.texto?.startsWith('✎');
+    return `<div class="chat-msg ${esSistema ? 'chef' : m.rol === 'cliente' ? 'cliente' : 'chef'}" ${esSistema ? 'style="font-style:italic;opacity:0.7;"' : ''}>
       ${m.texto}
-      <div class="chat-msg-meta">${new Date(m.created_at).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})}</div>
-    </div>`).join('');
-  el.scrollTop = el.scrollHeight;
+      <div class="chat-msg-meta">${fmtHora(m.created_at)}</div>
+    </div>`;
+  }).join('');
+  if (chatAbierto) el.scrollTop = el.scrollHeight;
 }
 
 // ─── FILTRO SEGURIDAD CHAT ────────────────────────────────
@@ -1432,6 +1528,119 @@ async function pagarConMP(reservaId, tipo, monto, nombre, ref) {
   }
 }
 
+async function aprobarMenu(reservaId) {
+  const comentario = document.getElementById('menu-comentario-cliente')?.value?.trim() || '';
+  await supa.from('reservas').update({
+    menu_cliente_ok: true,
+    menu_cliente_comentario: comentario || null
+  }).eq('id', reservaId);
+  if (servicioActivoCliente) { servicioActivoCliente.menu_cliente_ok = true; }
+  // Notificar al chef
+  await supa.from('mensajes').insert({
+    reserva_id: reservaId, autor_id: currentUser.id, rol: 'cliente',
+    texto: `✅ El cliente aprobó el menú${comentario ? ` — nota: "${comentario}"` : ''}`
+  });
+  showToast('✓ Menú aprobado — tu chef puede avanzar con la lista de compras');
+  renderServicioActivoCliente();
+}
+
+async function pedirCambioMenu(reservaId) {
+  const comentario = document.getElementById('menu-comentario-cliente')?.value?.trim();
+  if (!comentario) { showToast('Escribí qué cambio querés antes de enviar'); return; }
+  await supa.from('mensajes').insert({
+    reserva_id: reservaId, autor_id: currentUser.id, rol: 'cliente',
+    texto: `✎ El cliente pide un cambio en el menú: "${comentario}"`
+  });
+  showToast('✓ Cambio enviado — tu chef lo verá en el chat');
+  cargarMensajesCliente(reservaId);
+}
+
+async function confirmarCompras(reservaId) {
+  const modo = _compraPreseleccionada || servicioActivoCliente?.compra_modo_chef;
+  if (!modo) { showToast('Elegí una opción primero'); return; }
+  await supa.from('reservas').update({
+    compra_modo: modo,
+    compra_modo_bloqueado: true
+  }).eq('id', reservaId);
+  if (servicioActivoCliente) {
+    servicioActivoCliente.compra_modo = modo;
+    servicioActivoCliente.compra_modo_bloqueado = true;
+  }
+  const modos = {
+    chef: 'el chef compra los ingredientes 👨‍🍳',
+    cliente: 'el cliente compra los ingredientes 🛍',
+    market: 'se hace un pedido a domicilio 📦'
+  };
+  await supa.from('mensajes').insert({
+    reserva_id: reservaId, autor_id: currentUser.id, rol: 'cliente',
+    texto: `📋 Modalidad de compras confirmada y bloqueada: ${modos[modo]}`
+  });
+  showToast('✓ Modalidad confirmada y bloqueada');
+  renderServicioActivoCliente();
+}
+
+async function seleccionarComprasModo(reservaId, modo) {
+  _compraPreseleccionada = modo;
+  await confirmarCompras(reservaId);
+}
+
+// ─── CHAT FLOTANTE ────────────────────────────────────────
+let chatAbierto = false;
+let _mensajesCount = 0;
+
+function toggleChatFlotante() {
+  chatAbierto = !chatAbierto;
+  const panel = document.getElementById('chat-float-panel');
+  const badge = document.getElementById('chat-float-badge');
+  panel.classList.toggle('open', chatAbierto);
+  if (chatAbierto) {
+    badge.style.display = 'none';
+    badge.textContent = '0';
+    _mensajesCount = 0;
+    // Scroll al fondo
+    const msgs = document.getElementById('chat-mensajes-cliente');
+    if (msgs) msgs.scrollTop = msgs.scrollHeight;
+  }
+}
+
+function mostrarChatFlotante(reservaId) {
+  const btn = document.getElementById('chat-float-btn');
+  if (btn) btn.style.display = 'flex';
+  // Bind send button
+  const sendBtn = document.getElementById('chat-float-send-btn');
+  if (sendBtn) sendBtn.onclick = () => enviarMensajeCliente(reservaId);
+  // Enter key
+  const input = document.getElementById('chat-input-cliente');
+  if (input) {
+    input.onkeydown = e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        enviarMensajeCliente(reservaId);
+      }
+    };
+  }
+}
+
+function ocultarChatFlotante() {
+  const btn = document.getElementById('chat-float-btn');
+  const panel = document.getElementById('chat-float-panel');
+  if (btn) btn.style.display = 'none';
+  if (panel) panel.classList.remove('open');
+  chatAbierto = false;
+}
+
+function notificarMensajeNuevo(count) {
+  if (chatAbierto) return;
+  const badge = document.getElementById('chat-float-badge');
+  if (badge) {
+    badge.style.display = 'flex';
+    badge.textContent = count > 9 ? '9+' : count;
+  }
+  // Pulso en el botón
+  const btn = document.getElementById('chat-float-btn');
+  if (btn) { btn.style.background = '#E67E8A'; setTimeout(() => btn.style.background = 'var(--navy)', 2000); }
+}
+
 // ─── INIT ─────────────────────────────────────────────────
 let portalCargado = false;
 
@@ -1498,5 +1707,22 @@ async function doNuevaPassword() {
   }, 2000);
 }
 </script>
+<!-- Chat flotante -->
+<button class="chat-float-btn" id="chat-float-btn" onclick="toggleChatFlotante()" style="display:none;">
+  💬
+  <span class="chat-float-badge" id="chat-float-badge" style="display:none;">0</span>
+</button>
+<div class="chat-float-panel" id="chat-float-panel">
+  <div class="chat-float-header">
+    <span>💬 Chat con tu chef</span>
+    <button onclick="toggleChatFlotante()" style="background:transparent;border:none;color:rgba(250,246,239,0.6);cursor:pointer;font-size:18px;line-height:1;">×</button>
+  </div>
+  <div class="chat-float-mensajes" id="chat-mensajes-cliente"></div>
+  <div class="chat-float-input-wrap">
+    <textarea class="chat-float-input" id="chat-input-cliente" placeholder="Escribí un mensaje..." rows="2"></textarea>
+    <button class="chat-float-send" id="chat-float-send-btn">↑</button>
+  </div>
+</div>
+
 </body>
 </html>
