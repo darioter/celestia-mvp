@@ -1290,45 +1290,32 @@ function renderServiciosActivos(activos, cancelados = []) {
     return;
   }
 
-  // Múltiples servicios — mostrar selector
-  const fmtFecha = f => new Date(f+'T12:00:00').toLocaleDateString('es-AR',{weekday:'short',day:'numeric',month:'short'});
-  const estadoLabel = es => ({ aceptado:'Aceptado', compras:'Comprando', en_camino:'En camino', en_domicilio:'En domicilio', mise_en_place:'Mise en place', coccion:'Cocinando', presentacion:'Emplatando', completado:'Completado' })[es] || 'Confirmado';
-  const estadoColor = es => (['en_domicilio','mise_en_place','coccion','presentacion'].includes(es) ? '#E8C96A' : es === 'completado' ? '#5DBF87' : 'rgba(250,246,239,0.4)');
+  // Múltiples servicios — solapas arriba estilo cliente
+  const fmtFechaTab = f => new Date(f+'T12:00:00').toLocaleDateString('es-AR',{weekday:'short',day:'numeric',month:'short'});
+  const estadoLabel = es => ({ aceptado:'Confirmado', compras:'Comprando', en_camino:'En camino', en_domicilio:'En domicilio', mise_en_place:'Mise en place', coccion:'Cocinando', presentacion:'Emplatando', completado:'Completado' })[es] || 'Confirmado';
 
   el.innerHTML = avisosCancelados + `
-    <div style="margin-bottom:4px;">
-      <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(250,246,239,0.3);margin-bottom:12px;">
-        ${activos.length} servicios activos — seleccioná uno para operar
-      </div>
-      ${activos.map((r, i) => {
-        const fmt = n => n ? '$' + Math.round(n).toLocaleString('es-AR') : '—';
-        const base = Math.round((r.precio_servicio||r.honorario||0) * 0.70);
-        return `<button onclick="seleccionarServicioActivo(${i})" style="
-          display:block;width:100%;text-align:left;
-          background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);
-          border-radius:14px;padding:18px 20px;margin-bottom:10px;cursor:pointer;
-          font-family:'DM Sans',sans-serif;transition:all 0.2s;
-        " onmouseover="this.style.background='rgba(201,168,76,0.06)';this.style.borderColor='rgba(201,168,76,0.35)'"
-           onmouseout="this.style.background='rgba(255,255,255,0.03)';this.style.borderColor='rgba(255,255,255,0.08)'">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-            <div>
-              <div style="font-family:'DM Serif Display',serif;font-size:17px;color:var(--cream);margin-bottom:5px;">${r.menu||'Servicio Celestia'}</div>
-              <div style="font-size:12px;color:rgba(250,246,239,0.45);">${fmtFecha(r.fecha)} · ${r.turno==='almuerzo'?'☀':'🌙'} · ${r.personas} personas</div>
-            </div>
-            <div style="text-align:right;flex-shrink:0;margin-left:16px;">
-              ${base ? `<div style="font-size:14px;font-weight:600;color:var(--gold-light);">${fmt(base)}</div>` : ''}
-              <div style="font-size:11px;color:${estadoColor(r.estado_servicio)};margin-top:3px;">${estadoLabel(r.estado_servicio)}</div>
-            </div>
-          </div>
-          <div style="margin-top:10px;font-size:11px;color:rgba(250,246,239,0.25);">Tocar para operar este servicio →</div>
-        </button>`;
-      }).join('')}
+    <div style="display:flex;gap:4px;flex-wrap:wrap;border-bottom:1px solid rgba(255,255,255,0.08);margin-bottom:20px;">
+      ${activos.map((r, i) => `
+        <button onclick="seleccionarServicioActivo(${i})"
+          style="display:flex;flex-direction:column;align-items:flex-start;gap:3px;
+            padding:10px 16px 12px;border:none;border-bottom:2px solid transparent;
+            background:transparent;cursor:pointer;font-family:'DM Sans',sans-serif;
+            color:rgba(250,246,239,0.5);transition:all 0.2s;margin-bottom:-1px;border-radius:8px 8px 0 0;"
+          onmouseover="this.style.color='var(--cream)';this.style.background='rgba(255,255,255,0.04)'"
+          onmouseout="this.style.color='rgba(250,246,239,0.5)';this.style.background='transparent'">
+          <div style="font-size:13px;font-weight:500;color:inherit;">${r.menu||'Servicio'}</div>
+          <div style="font-size:11px;color:rgba(250,246,239,0.3);">${fmtFechaTab(r.fecha)} · ${r.turno==='almuerzo'?'☀':'🌙'} · ${estadoLabel(r.estado_servicio)}</div>
+        </button>`).join('')}
+    </div>
+    <div style="font-size:13px;color:rgba(250,246,239,0.3);text-align:center;padding:30px 0;">
+      Seleccioná un servicio arriba para operar
     </div>`;
 }
 
 function volverAlSelector() {
   _servicioSeleccionadoManualmente = null;
-  servicioActivo = window._serviciosActivos?.[0] || null;
+  servicioActivo = null;
   renderServiciosActivos(window._serviciosActivos || [], []);
 }
 
@@ -1338,6 +1325,11 @@ function seleccionarServicioActivo(idx) {
     _servicioSeleccionadoManualmente = r.id;
     servicioActivo = r;
     renderServicioActivo(r);
+    // Resaltar la solapa seleccionada si el selector sigue visible
+    document.querySelectorAll('[onclick^="seleccionarServicioActivo"]').forEach((btn, i) => {
+      btn.style.color = i === idx ? 'var(--gold-light)' : 'rgba(250,246,239,0.5)';
+      btn.style.borderBottom = i === idx ? '2px solid var(--gold)' : '2px solid transparent';
+    });
   }
 }
 
