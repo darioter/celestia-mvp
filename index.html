@@ -2157,31 +2157,57 @@ async function guardarMenuIA() {
 }
 
 // ─── AUTH FLOW RESERVA ───────────────────────────────────
-async function _goToAuthThenStep4() {
-  // Verificar si hay sesión activa
+async function _verificarAuthYContinuar() {
+  // Verificar sesión real en Supabase
   const { data } = await supa.auth.getSession();
+
   if (data?.session) {
-    // Hay sesión — cargar perfil y continuar
-    await iniciarSesion();
-    _mostrarPasoAuth(false);
-    return;
+    // Hay sesión — asegurar que el perfil esté cargado
+    if (!clientePerfil) await iniciarSesion();
+    _irAPaso4();
+  } else {
+    // Sin sesión → mostrar pantalla auth
+    _mostrarScreenAuth();
   }
-  // No hay sesión — mostrar pantalla auth
-  _mostrarPasoAuth(true);
 }
 
-function _mostrarPasoAuth(mostrar) {
-  if (!mostrar) {
-    goTo(4);
-    return;
-  }
+function _irAPaso4() {
+  // Ocultar todo y mostrar paso 4 directamente
   [1, 2, 26, 25, 3, 4, 5, 'auth'].forEach(s => {
     const el = document.getElementById('screen-' + s);
     if (el) el.style.display = 'none';
   });
-  document.getElementById('screen-auth').style.display = 'block';
   document.getElementById('screen-success').style.display = 'none';
+  document.getElementById('screen-4').style.display = 'block';
+  const floatBtn = document.getElementById('float-continuar');
+  if (floatBtn) floatBtn.style.display = 'none';
+  // Steps bar
+  [1,2,3,4,5].forEach(s => {
+    const tab = document.getElementById('step-tab-' + s);
+    if (!tab) return;
+    tab.classList.remove('active','done');
+    if (s === 4) tab.classList.add('active');
+    else if (s < 4) tab.classList.add('done');
+  });
+  state.step = 4;
+  cargarPerfilEnFormulario();
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function _mostrarScreenAuth() {
+  [1, 2, 26, 25, 3, 4, 5, 'auth'].forEach(s => {
+    const el = document.getElementById('screen-' + s);
+    if (el) el.style.display = 'none';
+  });
+  document.getElementById('screen-success').style.display = 'none';
+  document.getElementById('screen-auth').style.display = 'block';
+  // Guardar estado para restaurar después del login
+  _guardarEstadoReserva();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+async function _goToAuthThenStep4() {
+  await _verificarAuthYContinuar();
 }
 
 function switchAuthTab(tab) {
@@ -2245,7 +2271,7 @@ async function registrarseYContinuar() {
   }
   btn.textContent = '✓ Cuenta creada';
   await iniciarSesion();
-  setTimeout(() => goTo(4), 600);
+  setTimeout(() => _irAPaso4(), 400);
 }
 
 async function loginYContinuar() {
@@ -2265,7 +2291,7 @@ async function loginYContinuar() {
   }
   btn.textContent = '✓ Ingresaste';
   await iniciarSesion();
-  setTimeout(() => goTo(4), 600);
+  setTimeout(() => _irAPaso4(), 400);
 }
 
 async function authConGoogle() {
@@ -2326,7 +2352,7 @@ supa.auth.onAuthStateChange(async (event, session) => {
           // Ocultar pantalla auth si está visible
           const screenAuth = document.getElementById('screen-auth');
           if (screenAuth) screenAuth.style.display = 'none';
-          goTo(4);
+          _irAPaso4();
         }, 500);
       }
     }
@@ -2402,7 +2428,7 @@ async function cargarPerfilEnFormulario() {
     const restaurado = _restaurarEstadoReserva();
     if (restaurado && state.fecha && state.turno) {
       window.history.replaceState({}, '', window.location.pathname);
-      setTimeout(() => goTo(4), 300);
+      setTimeout(() => _irAPaso4(), 300);
       return;
     }
   }
@@ -2695,11 +2721,9 @@ function startFlow() {
 }
 
 function goTo(step) {
-  // Si va al paso 4 sin sesión → mostrar auth primero
-  if (step === 4 && !clientePerfil) {
-    const { data } = supa.auth.getSession();
-    // Verificar sesión sincrónicamente via clientePerfil
-    _goToAuthThenStep4();
+  // Si va al paso 4 → verificar sesión async
+  if (step === 4) {
+    _verificarAuthYContinuar();
     return;
   }
 
