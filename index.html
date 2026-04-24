@@ -2342,12 +2342,12 @@ async function cargarPerfilEnFormulario() {
   await iniciarSesion();
   iaVerificarLimite();
 
-  // Si vuelve de Google OAuth con reserva pendiente → ir al paso 4
+  // Leer params URL una sola vez
   const params = new URLSearchParams(window.location.search);
+
+  // Si vuelve de Google OAuth con reserva pendiente → ir al paso 4
   if (params.get('reserva') === 'continuar' && clientePerfil) {
-    // Limpiar URL
     window.history.replaceState({}, '', window.location.pathname);
-    // Restaurar estado si hay algo guardado
     const estadoGuardado = sessionStorage.getItem('celestia_reserva_estado');
     if (estadoGuardado) {
       try { Object.assign(state, JSON.parse(estadoGuardado)); } catch(e) {}
@@ -2358,7 +2358,6 @@ async function cargarPerfilEnFormulario() {
   }
 
   // Pre-seleccionar menú desde URL (?menu=1 o ?menu=2)
-  const params = new URLSearchParams(window.location.search);
   const menuParam = params.get('menu');
   if (menuParam) {
     const menuId = parseInt(menuParam);
