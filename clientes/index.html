@@ -884,7 +884,8 @@ async function cargarReservas() {
 
 // ─── SERVICIO ACTIVO ──────────────────────────────────────
 let servicioActivoCliente = null;
-let serviciosActivosCliente = []; // todos los servicios activos
+let serviciosActivosCliente = [];
+let _servicioSeleccionadoManualmente = null; // ID del servicio elegido por el usuario
 let pollingCliente = null;
 let chatPolling = null;
 let calificacionSeleccionada = 0;
@@ -917,12 +918,18 @@ async function verificarServicioActivo() {
   // Todos los servicios activos
   serviciosActivosCliente = (data || []).filter(r => ['confirmada', 'ofrecida'].includes(r.estado));
 
-  // Preferir el que tiene chef asignado y está más avanzado
-  const activos = serviciosActivosCliente;
-  const activo = activos.find(r => r.chef_id && r.estado_servicio && r.estado_servicio !== 'completado')
-    || activos.find(r => r.chef_id)
-    || activos[0]
-    || null;
+  // Si el usuario seleccionó manualmente, respetar esa elección y actualizarla con datos frescos
+  let activo;
+  if (_servicioSeleccionadoManualmente) {
+    activo = serviciosActivosCliente.find(r => r.id === _servicioSeleccionadoManualmente)
+      || serviciosActivosCliente[0] || null;
+  } else {
+    // Auto-selección: preferir el más avanzado con chef asignado
+    activo = serviciosActivosCliente.find(r => r.chef_id && r.estado_servicio && r.estado_servicio !== 'completado')
+      || serviciosActivosCliente.find(r => r.chef_id)
+      || serviciosActivosCliente[0]
+      || null;
+  }
 
   // Badge en tab
   const tabBtn = document.getElementById('tab-btn-activo');
@@ -1632,6 +1639,7 @@ function toggleChatFlotante() {
 function seleccionarServicioActivo(reservaId) {
   const s = serviciosActivosCliente.find(r => r.id === reservaId);
   if (!s) return;
+  _servicioSeleccionadoManualmente = reservaId; // respetar esta selección en el polling
   servicioActivoCliente = s;
   _chatReservaId = reservaId;
   _mensajesCount = 0;
