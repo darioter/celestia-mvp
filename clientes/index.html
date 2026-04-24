@@ -884,6 +884,7 @@ async function cargarReservas() {
 
 // ─── SERVICIO ACTIVO ──────────────────────────────────────
 let servicioActivoCliente = null;
+let serviciosActivosCliente = []; // todos los servicios activos
 let pollingCliente = null;
 let chatPolling = null;
 let calificacionSeleccionada = 0;
@@ -913,8 +914,11 @@ async function verificarServicioActivo() {
 
   if (error) console.error('verificarServicioActivo:', error);
 
+  // Todos los servicios activos
+  serviciosActivosCliente = (data || []).filter(r => ['confirmada', 'ofrecida'].includes(r.estado));
+
   // Preferir el que tiene chef asignado y está más avanzado
-  const activos = (data || []).filter(r => ['confirmada', 'ofrecida'].includes(r.estado));
+  const activos = serviciosActivosCliente;
   const activo = activos.find(r => r.chef_id && r.estado_servicio && r.estado_servicio !== 'completado')
     || activos.find(r => r.chef_id)
     || activos[0]
@@ -982,10 +986,25 @@ function renderServicioActivoCliente() {
 
   if (!r) {
     el.innerHTML = `<div class="empty-state"><div class="empty-icon">✦</div>No tenés un servicio activo en este momento.<br><a href="/" style="color:var(--gold);text-decoration:none;">Reservar una experiencia →</a></div>`;
+    ocultarChatFlotante();
     return;
   }
 
-  const fmtFecha = f => new Date(f+'T12:00:00').toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long'});
+  // Selector cuando hay más de un servicio activo
+  const selectorHtml = serviciosActivosCliente.length > 1 ? `
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;padding:0 2px;">
+      <div style="font-size:11px;color:var(--text-light);width:100%;margin-bottom:4px;">Tus servicios activos:</div>
+      ${serviciosActivosCliente.map(s => `
+        <button onclick="seleccionarServicioActivo('${s.id}')"
+          style="display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:20px;border:1.5px solid ${s.id===r.id?'var(--navy)':'var(--cream-dark)'};background:${s.id===r.id?'var(--navy)':'transparent'};color:${s.id===r.id?'var(--cream)':'var(--text)'};font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;transition:all 0.15s;">
+          <span>${s.turno==='almuerzo'?'☀':'🌙'}</span>
+          <span>${fmtFecha(s.fecha)}</span>
+          <span style="opacity:0.7;font-size:11px;">${s.menu||'Experiencia'}</span>
+          ${s.chef_id ? '<span style="color:var(--green);font-size:10px;">· Chef asignado</span>' : ''}
+        </button>`).join('')}
+    </div>` : '';
+
+  const fmtFecha = f => new Date(f+'T12:00:00').toLocaleDateString('es-AR',{weekday:'short',day:'numeric',month:'short'});
   const turno = r.turno === 'almuerzo' ? 'Almuerzo · 12:00hs' : 'Cena · 20:00hs';
   const estadoActual = r.estado_servicio || 'aceptado';
   const stepIdx = STEP_ORDER.indexOf(estadoActual);
@@ -1167,6 +1186,7 @@ function renderServicioActivoCliente() {
     r.calificacion ? `<div class="tracking-card" style="text-align:center;color:var(--green);font-size:14px;">✓ Calificaste este servicio con ${'★'.repeat(r.calificacion)}</div>` : '';
 
   el.innerHTML = `
+    ${selectorHtml}
     <div class="tracking-card">
       <div class="tracking-titulo">${r.menu || 'Experiencia Celestia'}</div>
       <div class="tracking-meta">${fmtFecha(r.fecha)} · ${turno} · ${r.personas} personas</div>
@@ -1608,6 +1628,19 @@ function toggleChatFlotante() {
   }
 }
 
+function seleccionarServicioActivo(reservaId) {
+  const s = serviciosActivosCliente.find(r => r.id === reservaId);
+  if (!s) return;
+  servicioActivoCliente = s;
+  _chatReservaId = reservaId;
+  _mensajesCount = 0;
+  renderServicioActivoCliente();
+  // Actualizar título del chat flotante
+  const titulo = document.getElementById('chat-float-titulo');
+  const _ff = f => new Date(f+'T12:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'short'});
+  if (titulo) titulo.textContent = `Chat — ${s.menu || _ff(s.fecha)}`;
+}
+
 function mostrarChatFlotante(reservaId) {
   _chatReservaId = reservaId;
   const btn = document.getElementById('chat-float-btn');
@@ -1617,11 +1650,14 @@ function mostrarChatFlotante(reservaId) {
   const input = document.getElementById('chat-input-cliente');
   if (input) {
     input.onkeydown = e => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        enviarMensajeCliente(reservaId);
-      }
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); enviarMensajeCliente(reservaId); }
     };
+  }
+  // Actualizar título con nombre del servicio
+  const titulo = document.getElementById('chat-float-titulo');
+  if (titulo && servicioActivoCliente) {
+    const _ff2 = f => new Date(f+'T12:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'short'});
+    titulo.textContent = `💬 ${servicioActivoCliente.menu || _ff2(servicioActivoCliente.fecha)}`;
   }
 }
 
@@ -1718,7 +1754,7 @@ async function doNuevaPassword() {
 </button>
 <div class="chat-float-panel" id="chat-float-panel">
   <div class="chat-float-header">
-    <span>💬 Chat con tu chef</span>
+    <span id="chat-float-titulo">💬 Chat con tu chef</span>
     <button onclick="toggleChatFlotante()" style="background:transparent;border:none;color:rgba(250,246,239,0.6);cursor:pointer;font-size:18px;line-height:1;">×</button>
   </div>
   <div class="chat-float-mensajes" id="chat-mensajes-cliente"></div>
