@@ -171,6 +171,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--navy);min-height:100vh;co
 
 /* ─── CHECKLIST ─── */
 .checklist-wrap{padding:0 24px 20px;}
+  .chat-chef-wrap { padding:0 24px 24px; }
+  .chat-chef-titulo { font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:rgba(250,246,239,0.35); margin-bottom:12px; }
+  .chat-chef-mensajes { max-height:260px; overflow-y:auto; display:flex; flex-direction:column; gap:8px; margin-bottom:12px; padding-right:2px; }
+  .chat-chef-msg { max-width:80%; padding:10px 14px; border-radius:14px; font-size:13px; line-height:1.5; }
+  .chat-chef-msg.chef { align-self:flex-end; background:rgba(201,168,76,0.15); color:var(--cream); border-bottom-right-radius:4px; border:1px solid rgba(201,168,76,0.2); }
+  .chat-chef-msg.cliente { align-self:flex-start; background:rgba(255,255,255,0.06); color:var(--cream); border-bottom-left-radius:4px; }
+  .chat-chef-msg.sistema { align-self:center; background:transparent; color:rgba(250,246,239,0.35); font-size:11px; font-style:italic; border:none; padding:4px 0; }
+  .chat-chef-meta { font-size:10px; opacity:0.45; margin-top:3px; }
+  .chat-chef-input-wrap { display:flex; gap:8px; }
+  .chat-chef-input { flex:1; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:10px 14px; font-family:'DM Sans',sans-serif; font-size:13px; color:var(--cream); outline:none; resize:none; transition:border 0.2s; }
+  .chat-chef-input:focus { border-color:rgba(201,168,76,0.4); }
+  .chat-chef-send { background:rgba(201,168,76,0.15); color:var(--gold-light); border:1px solid rgba(201,168,76,0.3); border-radius:10px; padding:10px 16px; cursor:pointer; font-size:13px; font-weight:500; font-family:'DM Sans',sans-serif; transition:all 0.2s; white-space:nowrap; }
+  .chat-chef-send:hover { background:rgba(201,168,76,0.25); }
 .checklist-title{font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(250,246,239,0.35);margin-bottom:12px;}
 .checklist-item{
   display:flex;align-items:center;gap:12px;padding:10px 0;
@@ -1477,6 +1490,18 @@ function renderServicioActivo(r) {
       ${comprasSection}
       ${recetasSection}
 
+      <!-- Chat con el cliente -->
+      <div class="chat-chef-wrap">
+        <div class="chat-chef-titulo">💬 Chat con el cliente</div>
+        <div class="chat-chef-mensajes" id="chat-chef-mensajes-${r.id}">
+          <div style="font-size:12px;color:rgba(250,246,239,0.3);text-align:center;padding:10px;">Cargando mensajes...</div>
+        </div>
+        <div class="chat-chef-input-wrap">
+          <textarea class="chat-chef-input" id="chat-chef-input-${r.id}" rows="2" placeholder="Escribí un mensaje al cliente..."></textarea>
+          <button class="chat-chef-send" onclick="enviarMensajeChef('${r.id}')">Enviar</button>
+        </div>
+      </div>
+
       <div style="padding:0 24px 24px;">
         <button class="btn-accion primary" onclick="finalizarServicio('${r.id}')" ${!checklist.presentacion?'disabled style="opacity:0.4;cursor:not-allowed;"':''}>
           Marcar servicio como completado
@@ -1485,6 +1510,8 @@ function renderServicioActivo(r) {
     </div>`;
 
   elActivo.innerHTML = contenidoPrevio + cardHtml;
+  // Iniciar polling del chat
+  iniciarChatChefPolling(r.id);
 }
 
 async function toggleCheck(reservaId, key) {
@@ -1737,6 +1764,62 @@ function mostrarContadorIA(reservaId, usosActuales, reservadoPara) {
   } else {
     el.innerHTML = `<div style="font-size:11px;color:rgba(250,246,239,0.3);">Usos de IA: ${usosActuales}/${IA_MAX_USOS} · ${restantes - 1} para menú, 1 para ingredientes</div>`;
   }
+}
+
+// ─── CHAT CHEF ────────────────────────────────────────────
+let chatChefPolling = null;
+
+async function cargarMensajesChef(reservaId) {
+  const el = document.getElementById(`chat-chef-mensajes-${reservaId}`);
+  if (!el) return;
+  const { data } = await supa.from('mensajes')
+    .select('*')
+    .eq('reserva_id', reservaId)
+    .order('created_at', { ascending: true });
+  if (!data?.length) {
+    el.innerHTML = '<div style="font-size:12px;color:rgba(250,246,239,0.3);text-align:center;padding:10px;">Sin mensajes aún — escribile al cliente</div>';
+    return;
+  }
+  const fmtHora = ts => new Date(ts).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+  el.innerHTML = data.map(m => {
+    const esChef = m.rol === 'chef';
+    const esSistema = m.rol === 'sistema' || m.texto?.startsWith('📋') || m.texto?.startsWith('✓ El cliente');
+    return `<div class="chat-chef-msg ${esSistema?'sistema':esChef?'chef':'cliente'}">
+      ${m.texto}
+      <div class="chat-chef-meta">${esSistema?'':fmtHora(m.created_at)}</div>
+    </div>`;
+  }).join('');
+  // Auto-scroll al último
+  el.scrollTop = el.scrollHeight;
+}
+
+async function enviarMensajeChef(reservaId) {
+  const input = document.getElementById(`chat-chef-input-${reservaId}`);
+  const texto = input?.value?.trim();
+  if (!texto) return;
+  input.value = '';
+  await supa.from('mensajes').insert({
+    reserva_id: reservaId,
+    autor_id: currentUser.id,
+    rol: 'chef',
+    texto
+  });
+  cargarMensajesChef(reservaId);
+}
+
+// Enter para enviar (Shift+Enter = nueva línea)
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey && e.target.classList.contains('chat-chef-input')) {
+    e.preventDefault();
+    const reservaId = e.target.id.replace('chat-chef-input-', '');
+    enviarMensajeChef(reservaId);
+  }
+});
+
+function iniciarChatChefPolling(reservaId) {
+  if (chatChefPolling) clearInterval(chatChefPolling);
+  cargarMensajesChef(reservaId);
+  chatChefPolling = setInterval(() => cargarMensajesChef(reservaId), 4000);
 }
 
 // ─── GENERACIÓN IA ────────────────────────────────────────
