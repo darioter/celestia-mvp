@@ -647,6 +647,7 @@ let currentUser = null;
 let chefPerfil = null;
 let disponible = true;
 let servicioActivo = null;
+let _servicioSeleccionadoManualmente = null; // ID elegido manualmente por el chef
 let _prevServicioHash = '';
 
 function showToast(msg) {
@@ -1026,7 +1027,13 @@ async function cargarSolicitudes() {
   });
 
   if (activos.length || cancelados.length) {
-    servicioActivo = activos[0] || null;
+    // Respetar selección manual del chef — no cambiar el servicio que está viendo
+    if (_servicioSeleccionadoManualmente) {
+      const mantenido = activos.find(r => r.id === _servicioSeleccionadoManualmente);
+      servicioActivo = mantenido || activos[0] || null;
+    } else {
+      servicioActivo = activos[0] || null;
+    }
 
     // Detectar cambios del cliente y notificar al chef
     if (activos.length && _prevServicioHash) {
@@ -1291,7 +1298,11 @@ function renderServiciosActivos(activos, cancelados = []) {
 
 function seleccionarServicioActivo(idx) {
   const r = (window._serviciosActivos||[])[idx];
-  if (r) { servicioActivo = r; renderServicioActivo(r); }
+  if (r) {
+    _servicioSeleccionadoManualmente = r.id;
+    servicioActivo = r;
+    renderServicioActivo(r);
+  }
 }
 
 function renderServicioActivo(r) {
@@ -1637,6 +1648,7 @@ async function finalizarServicio(id) {
   }).eq('id', id);
   showToast('¡Servicio completado! Muy bien chef 👏');
   servicioActivo = null;
+  _servicioSeleccionadoManualmente = null;
   document.getElementById('activo-content').innerHTML = `
     <div class="empty-state">
       <div class="empty-icon">✦</div>
