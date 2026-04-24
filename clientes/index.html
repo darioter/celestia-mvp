@@ -1097,9 +1097,33 @@ function renderServicioActivoCliente() {
 }
 
 async function confirmarLlegada(reservaId) {
+  const { data: r } = await supa.from('reservas').select('*').eq('id', reservaId).single();
   await supa.from('reservas').update({ llegada_cliente: true }).eq('id', reservaId);
   if (servicioActivoCliente) servicioActivoCliente.llegada_cliente = true;
-  showToast('✓ Llegada confirmada — se libera el adelanto al chef');
+
+  // Si el chef ya marcó llegada → acreditar adelanto
+  if (r?.llegada_chef && !r?.adelanto_liberado) {
+    await supa.from('reservas').update({ adelanto_liberado: true }).eq('id', reservaId);
+    if (servicioActivoCliente) servicioActivoCliente.adelanto_liberado = true;
+    if (r.chef_id) {
+      const { data: chef } = await supa.from('chefs').select('saldo_disponible,saldo_retenido').eq('user_id', r.chef_id).single();
+      if (chef) {
+        const adelanto = r.adelanto_monto || 0;
+        await supa.from('chefs').update({
+          saldo_disponible: (chef.saldo_disponible || 0) + adelanto,
+          saldo_retenido: Math.max(0, (chef.saldo_retenido || 0) - adelanto)
+        }).eq('user_id', r.chef_id);
+        await supa.from('transacciones').insert({
+          reserva_id: reservaId, tipo: 'adelanto_chef', monto: adelanto,
+          estado: 'aprobado', descripcion: 'Adelanto 50% acreditado — doble llegada confirmada'
+        });
+      }
+    }
+    showToast('✓ Llegada confirmada — adelanto acreditado al chef');
+  } else {
+    showToast('✓ Llegada confirmada — esperando confirmación del chef');
+  }
+
   renderServicioActivoCliente();
   await supa.from('mensajes').insert({
     reserva_id: reservaId, autor_id: currentUser.id, rol: 'cliente',

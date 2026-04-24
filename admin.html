@@ -1334,7 +1334,7 @@ async function cargarPagos() {
             <div class="pago-monto-row ${adelantoLib?'cobrado':''}">
               <div>
                 <div class="pago-monto-label">Adelanto 50% — al llegar</div>
-                <div style="font-size:10px;color:rgba(250,246,239,0.25);margin-top:1px;">${ambasLlegadas?'✓ Llegada confirmada':r.llegada_chef?'⏳ Esperando confirmación cliente':'⏳ Esperando llegada'}</div>
+                <div style="font-size:10px;color:rgba(250,246,239,0.25);margin-top:1px;">${ambasLlegadas?'✓ Llegada confirmada — acreditado en billetera':r.llegada_chef?'⏳ Esperando confirmación cliente':r.adelanto_reservado?'🔒 Reservado en billetera chef':'⏳ Se reserva al aceptar'}</div>
               </div>
               <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
                 <div class="pago-monto-valor">${fmt(adelantoMonto)}</div>

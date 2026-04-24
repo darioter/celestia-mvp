@@ -1112,10 +1112,20 @@ async function aceptarServicio(id) {
   const btnEl = document.querySelector(`#sol-${id} .btn-aceptar`);
   if (btnEl) { btnEl.disabled = true; btnEl.textContent = 'Aceptando...'; }
 
+  // Leer la reserva para calcular el adelanto
+  const { data: reserva } = await supa.from('reservas').select('*').eq('id', id).single();
+  const servicio = reserva?.precio_servicio || reserva?.honorario || 0;
+  const baseChef = Math.round(servicio * 0.70);
+  const retPct = (reserva?.retencion_pct || 15) / 100;
+  const adelantoMonto = Math.round(baseChef * 0.50);
+
   const { error } = await supa.from('reservas').update({
     chef_id: currentUser.id,
     estado_servicio: 'aceptado',
-    estado: 'confirmada'
+    estado: 'confirmada',
+    adelanto_monto: adelantoMonto,
+    adelanto_reservado: true,
+    adelanto_reservado_at: new Date().toISOString()
   }).eq('id', id);
 
   if (error) {
@@ -1124,7 +1134,14 @@ async function aceptarServicio(id) {
     return;
   }
 
-  // Leer la reserva completa recién actualizada para tener todos los campos
+  // Registrar en billetera virtual del chef (retenido)
+  const { data: chefData } = await supa.from('chefs').select('saldo_retenido').eq('user_id', currentUser.id).single();
+  const retenidoActual = chefData?.saldo_retenido || 0;
+  await supa.from('chefs').update({
+    saldo_retenido: retenidoActual + adelantoMonto
+  }).eq('user_id', currentUser.id);
+
+  // Leer la reserva completa recién actualizada
   const { data: reservaData } = await supa.from('reservas')
     .select('*, menu_definitivo, menu_definitivo_ok, lista_compras, lista_compras_generada, recetas')
     .eq('id', id)
@@ -1135,7 +1152,7 @@ async function aceptarServicio(id) {
     renderServicioActivo(reservaData);
   }
 
-  showToast('¡Servicio aceptado! Preparate para cocinar 🍽');
+  showToast(`¡Servicio aceptado! ${fmt(adelantoMonto)} reservados en tu billetera 🍽`);
 
   // Ir al tab "Servicio activo"
   const tabActivo = document.querySelector('.nav-tab[onclick*="activo"]');
@@ -1471,21 +1488,47 @@ function renderServicioActivo(r) {
 }
 
 async function toggleCheck(reservaId, key) {
-  const { data } = await supa.from('reservas').select('checklist').eq('id', reservaId).single();
+  const { data } = await supa.from('reservas').select('*').eq('id', reservaId).single();
   const checklist = data?.checklist || {};
   checklist[key] = !checklist[key];
   const estadoActual = calcEstadoServicio(checklist);
   const updates = { checklist, estado_servicio: estadoActual };
-  // Al marcar llegada, setear llegada_chef para la doble confirmación
+
+  // Al marcar llegada del chef
   if (key === 'llegada' && checklist[key]) {
     updates.llegada_chef = true;
+    // Verificar si el cliente ya confirmó → acreditar adelanto
+    if (data.llegada_cliente && !data.adelanto_liberado) {
+      await acreditarAdelanto(reservaId, data);
+      updates.adelanto_liberado = true;
+    }
   }
+
   await supa.from('reservas').update(updates).eq('id', reservaId);
   if (servicioActivo) {
     servicioActivo.checklist = checklist;
-    if (key === 'llegada' && checklist[key]) servicioActivo.llegada_chef = true;
+    servicioActivo.llegada_chef = updates.llegada_chef || servicioActivo.llegada_chef;
+    if (updates.adelanto_liberado) servicioActivo.adelanto_liberado = true;
     renderServicioActivo(servicioActivo);
   }
+}
+
+async function acreditarAdelanto(reservaId, reserva) {
+  const adelanto = reserva?.adelanto_monto || 0;
+  if (!adelanto) return;
+  // Mover de retenido a disponible en billetera chef
+  const { data: chef } = await supa.from('chefs').select('saldo_disponible,saldo_retenido').eq('user_id', currentUser.id).single();
+  if (chef) {
+    await supa.from('chefs').update({
+      saldo_disponible: (chef.saldo_disponible || 0) + adelanto,
+      saldo_retenido: Math.max(0, (chef.saldo_retenido || 0) - adelanto)
+    }).eq('user_id', currentUser.id);
+  }
+  await supa.from('transacciones').insert({
+    reserva_id: reservaId, tipo: 'adelanto_chef', monto: adelanto,
+    estado: 'aprobado', descripcion: `Adelanto 50% acreditado — doble llegada confirmada`
+  });
+  showToast(`✓ ${fmt(adelanto)} acreditados en tu billetera`);
 }
 
 function calcEstadoServicio(checklist) {
@@ -1967,10 +2010,104 @@ async function cargarCobros() {
   const el = document.getElementById('cobros-content');
   el.innerHTML = '<div class="empty-state"><div class="empty-icon">✦</div><div class="empty-text">Cargando...</div></div>';
 
+  // Cargar perfil del chef para la billetera
+  const { data: chef } = await supa.from('chefs').select('saldo_disponible,saldo_retenido,alias_mp').eq('user_id', currentUser.id).single();
+  const saldoDisp = chef?.saldo_disponible || 0;
+  const saldoRet = chef?.saldo_retenido || 0;
+
   const { data } = await supa.from('reservas')
     .select('*')
     .eq('chef_id', currentUser.id)
     .order('fecha', { ascending: false });
+
+  const tieneMPAlias = !!chef?.alias_mp;
+  const fmtFecha = f => new Date(f+'T12:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'long',year:'numeric'});
+
+  el.innerHTML = `
+    ${!tieneMPAlias ? `
+    <div style="background:rgba(230,126,138,0.1);border:1px solid rgba(230,126,138,0.3);border-radius:12px;padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <div style="font-size:13px;color:#E67E8A;font-weight:500;">⚠ Falta tu alias de Mercado Pago</div>
+        <div style="font-size:11px;color:rgba(250,246,239,0.4);margin-top:3px;">Cargalo en Mi perfil para recibir pagos</div>
+      </div>
+      <button onclick="verTab('perfil',document.querySelectorAll('.nav-tab')[4])" style="font-size:12px;color:var(--gold);background:transparent;border:1px solid rgba(201,168,76,0.3);border-radius:20px;padding:5px 12px;cursor:pointer;font-family:'DM Sans',sans-serif;">Ir al perfil</button>
+    </div>` : ''}
+
+    <!-- Billetera virtual -->
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:20px 24px;margin-bottom:20px;">
+      <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(250,246,239,0.35);margin-bottom:14px;">Mi billetera Celestia</div>
+      <div style="display:grid;grid-template-columns:1fr 1px 1fr;gap:0;">
+        <div style="padding-right:24px;">
+          <div style="font-size:12px;color:rgba(250,246,239,0.4);margin-bottom:6px;">Disponible para retirar</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:28px;color:#5DBF87;">${fmt(saldoDisp)}</div>
+          ${saldoDisp > 0 ? `<div style="font-size:11px;color:rgba(93,191,135,0.6);margin-top:4px;">Transferir al alias ${chef?.alias_mp||'—'} desde MP</div>` : `<div style="font-size:11px;color:rgba(250,246,239,0.25);margin-top:4px;">Se acredita al confirmar llegada</div>`}
+        </div>
+        <div style="background:rgba(255,255,255,0.07);"></div>
+        <div style="padding-left:24px;">
+          <div style="font-size:12px;color:rgba(250,246,239,0.4);margin-bottom:6px;">Reservado (en guarda)</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:28px;color:#E8C96A;">${fmt(saldoRet)}</div>
+          <div style="font-size:11px;color:rgba(232,201,106,0.5);margin-top:4px;">Se libera al confirmar llegada al domicilio</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detalle por servicio -->
+    ${!data?.length ? '<div style="font-size:13px;color:rgba(250,246,239,0.3);text-align:center;padding:20px;">No hay servicios registrados.</div>' : data.map(r => {
+      const servicio = r.precio_servicio || r.honorario || 0;
+      const baseChef = Math.round(servicio * 0.70);
+      const retPct = r.retencion_pct || 15;
+      const retencion = r.retencion_chef || Math.round(baseChef * retPct / 100);
+      const adelanto = r.adelanto_monto || Math.round(baseChef * 0.50);
+      const saldoChef = r.saldo_chef_monto || (baseChef - adelanto - retencion);
+      const cancelado = r.estado === 'cancelada';
+
+      const etapas = [
+        { label:'Adelanto 50%', sub: r.adelanto_reservado && !r.adelanto_liberado ? 'En guarda' : r.adelanto_liberado ? 'Acreditado' : 'Al aceptar', monto: adelanto, estado: r.adelanto_liberado ? 'ok' : r.adelanto_reservado ? 'retenido' : 'pendiente' },
+        { label:'Saldo 35%', sub:'Al finalizar + factura', monto: saldoChef, estado: r.saldo_chef_pagado ? 'ok' : 'pendiente' },
+        { label:`Retención ${retPct}%`, sub:'+24hs sin reclamos', monto: retencion, estado: r.retencion_liberada ? 'ok' : 'pendiente' },
+      ];
+      const colores = { ok:'#5DBF87', retenido:'#E8C96A', pendiente:'rgba(250,246,239,0.35)' };
+
+      return `
+      <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:16px;margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+          <div>
+            <div style="font-size:14px;font-weight:500;color:var(--cream);">${r.menu||'Servicio Celestia'}</div>
+            <div style="font-size:12px;color:rgba(250,246,239,0.4);margin-top:2px;">${fmtFecha(r.fecha)} · ${r.personas} personas</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:10px;color:rgba(250,246,239,0.4);">Total chef</div>
+            <div style="font-size:16px;font-weight:600;color:var(--gold-light);">${fmt(baseChef)}</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
+          ${etapas.map(e => `
+            <div style="flex:1;min-width:90px;background:rgba(255,255,255,0.03);border:1px solid ${e.estado==='ok'?'rgba(93,191,135,0.25)':e.estado==='retenido'?'rgba(232,201,106,0.25)':'rgba(255,255,255,0.07)'};border-radius:8px;padding:8px 10px;text-align:center;">
+              <div style="font-size:10px;color:rgba(250,246,239,0.4);margin-bottom:2px;">${e.label}</div>
+              <div style="font-size:13px;font-weight:600;color:${colores[e.estado]};margin-bottom:2px;">${fmt(e.monto)}</div>
+              <div style="font-size:10px;color:${colores[e.estado]};opacity:0.7;">${e.estado==='ok'?'✓ Cobrado':e.estado==='retenido'?'🔒 En guarda':e.sub}</div>
+            </div>`).join('')}
+        </div>
+        ${r.adelanto_reservado && !r.adelanto_liberado ? `
+          <div style="font-size:11px;color:rgba(232,201,106,0.7);text-align:center;padding:6px 0;">🔒 ${fmt(adelanto)} reservados — se acreditan cuando ambos confirmen la llegada</div>` : ''}
+        ${r.estado_servicio === 'completado' && !r.factura_url ? `
+          <div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:12px 14px;margin-top:4px;">
+            <div style="font-size:12px;color:var(--gold-light);margin-bottom:8px;">📄 Subí tu factura para recibir el saldo</div>
+            <div style="font-size:11px;color:rgba(250,246,239,0.35);margin-bottom:10px;">Emití la factura por ${fmt(saldoChef + retencion)} a Celestia (CUIT: completar). Subí el PDF de AFIP.</div>
+            <input type="file" id="factura-file-${r.id}" accept=".pdf,image/*" style="display:none" onchange="subirFactura(this,'${r.id}')">
+            <button onclick="document.getElementById('factura-file-${r.id}').click()" style="background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.4);color:var(--gold-light);font-family:'DM Sans',sans-serif;font-size:12px;padding:8px 16px;border-radius:20px;cursor:pointer;">
+              ↑ Subir factura PDF
+            </button>
+          </div>` : ''}
+        ${r.factura_url ? `
+          <div style="background:rgba(93,191,135,0.08);border:1px solid rgba(93,191,135,0.2);border-radius:10px;padding:10px 14px;margin-top:4px;display:flex;align-items:center;justify-content:space-between;">
+            <div style="font-size:12px;color:#5DBF87;">✓ Factura subida</div>
+            <a href="${r.factura_url}" target="_blank" style="font-size:11px;color:var(--gold);text-decoration:none;border:1px solid rgba(201,168,76,0.3);padding:3px 10px;border-radius:20px;">Ver PDF</a>
+          </div>` : ''}
+        ${cancelado ? `<div style="font-size:11px;color:rgba(230,126,138,0.7);margin-top:6px;">Servicio cancelado${r.cancelacion_motivo?' — '+r.cancelacion_motivo:''}</div>` : ''}
+      </div>`;
+    }).join('')}`;
+}
 
   if (!data || !data.length) {
     el.innerHTML = '<div class="empty-state"><div class="empty-icon">✦</div><div class="empty-text">No hay cobros registrados aún.</div></div>';
