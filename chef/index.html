@@ -1837,12 +1837,18 @@ async function enviarMensajeChef(reservaId) {
 
   const texto = filtrarMensaje(textoOriginal);
   input.value = '';
-  await supa.from('mensajes').insert({
+  const { error } = await supa.from('mensajes').insert({
     reserva_id: reservaId,
     autor_id: currentUser.id,
     rol: 'chef',
     texto
   });
+  if (error) {
+    showToast('Error al enviar: ' + error.message);
+    input.value = textoOriginal; // restaurar texto si falló
+    console.error('enviarMensajeChef error:', error);
+    return;
+  }
   cargarMensajesChef(reservaId);
 }
 
