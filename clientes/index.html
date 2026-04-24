@@ -991,6 +991,8 @@ function renderServicioActivoCliente() {
   }
 
   // Selector cuando hay más de un servicio activo
+  const fmtFecha = f => new Date(f+'T12:00:00').toLocaleDateString('es-AR',{weekday:'short',day:'numeric',month:'short'});
+
   const selectorHtml = serviciosActivosCliente.length > 1 ? `
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;padding:0 2px;">
       <div style="font-size:11px;color:var(--text-light);width:100%;margin-bottom:4px;">Tus servicios activos:</div>
@@ -1004,7 +1006,6 @@ function renderServicioActivoCliente() {
         </button>`).join('')}
     </div>` : '';
 
-  const fmtFecha = f => new Date(f+'T12:00:00').toLocaleDateString('es-AR',{weekday:'short',day:'numeric',month:'short'});
   const turno = r.turno === 'almuerzo' ? 'Almuerzo · 12:00hs' : 'Cena · 20:00hs';
   const estadoActual = r.estado_servicio || 'aceptado';
   const stepIdx = STEP_ORDER.indexOf(estadoActual);
