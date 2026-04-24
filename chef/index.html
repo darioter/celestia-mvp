@@ -1028,11 +1028,12 @@ async function cargarSolicitudes() {
         `campo-idea-${r.id}`,
         `campo-si-${r.id}`,
         `campo-no-${r.id}`,
-        `campo-notas-${r.id}`
+        `campo-notas-${r.id}`,
+        `chat-chef-input-${r.id}`,
       ];
       return campos.some(id => {
         const el = document.getElementById(id);
-        return el && document.activeElement === el;
+        return el && (document.activeElement === el || el.value?.trim().length > 0 && document.activeElement === el);
       });
     });
     if (!estaEditando) renderServiciosActivos(activos, cancelados);
@@ -1766,6 +1767,37 @@ function mostrarContadorIA(reservaId, usosActuales, reservadoPara) {
   }
 }
 
+// ─── FILTRO SEGURIDAD CHAT ────────────────────────────────
+function filtrarMensaje(texto) {
+  let t = texto;
+  // Teléfonos: 11 digitos, formatos +54, 15, etc.
+  t = t.replace(/(\+?54\s?)?(\(?\d{2,4}\)?[\s\-]?)(\d{4}[\s\-]?\d{4})/g, '📵 [teléfono ocultado]');
+  t = t.replace(/\b(15[\s\-]?\d{4}[\s\-]?\d{4})\b/g, '📵 [teléfono ocultado]');
+  t = t.replace(/\b\d{10,11}\b/g, '📵 [teléfono ocultado]');
+  // Emails
+  t = t.replace(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/g, '📵 [email ocultado]');
+  // Redes sociales — @usuario o instagram.com/ facebook.com/ etc
+  t = t.replace(/@[a-zA-Z0-9_.]{3,}/g, '📵 [usuario ocultado]');
+  t = t.replace(/(instagram|facebook|twitter|tiktok|linkedin|whatsapp)\.com\/[^\s]*/gi, '📵 [red social ocultada]');
+  // WhatsApp links
+  t = t.replace(/wa\.me\/[^\s]*/gi, '📵 [contacto ocultado]');
+  t = t.replace(/api\.whatsapp\.com\/[^\s]*/gi, '📵 [contacto ocultado]');
+  // Direcciones con número (ej: "Av Corrientes 1234", "Calle Falsa 123")
+  t = t.replace(/\b(calle|av\.|avenida|pasaje|blvd|boulevard|pje\.?)\s+[a-záéíóúñ\s]+\s+\d{2,5}\b/gi, '📍 [dirección ocultada]');
+  return t;
+}
+
+function mensajeContieneContacto(texto) {
+  const patrones = [
+    /(\+?54\s?)?(\(?\d{2,4}\)?[\s\-]?)(\d{4}[\s\-]?\d{4})/,
+    /\b\d{10,11}\b/,
+    /[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/,
+    /wa\.me\//i,
+    /(instagram|facebook|twitter|tiktok|linkedin|whatsapp)\.com\//i,
+  ];
+  return patrones.some(p => p.test(texto));
+}
+
 // ─── CHAT CHEF ────────────────────────────────────────────
 let chatChefPolling = null;
 
@@ -1795,8 +1827,15 @@ async function cargarMensajesChef(reservaId) {
 
 async function enviarMensajeChef(reservaId) {
   const input = document.getElementById(`chat-chef-input-${reservaId}`);
-  const texto = input?.value?.trim();
-  if (!texto) return;
+  const textoOriginal = input?.value?.trim();
+  if (!textoOriginal) return;
+
+  if (mensajeContieneContacto(textoOriginal)) {
+    showToast('⚠ El mensaje contiene datos de contacto — no está permitido por seguridad');
+    return;
+  }
+
+  const texto = filtrarMensaje(textoOriginal);
   input.value = '';
   await supa.from('mensajes').insert({
     reserva_id: reservaId,
