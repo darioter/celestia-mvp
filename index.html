@@ -2283,7 +2283,7 @@ async function authConGoogle() {
 }
 
 function _guardarEstadoReserva() {
-  sessionStorage.setItem('celestia_reserva_estado', JSON.stringify({
+  localStorage.setItem('celestia_reserva_estado', JSON.stringify({
     menu: state.menu ? { id: state.menu.id, nombre: state.menu.nombre } : null,
     fecha: state.fecha,
     turno: state.turno,
@@ -2294,11 +2294,11 @@ function _guardarEstadoReserva() {
 }
 
 function _restaurarEstadoReserva() {
-  const guardado = sessionStorage.getItem('celestia_reserva_estado');
+  const guardado = localStorage.getItem('celestia_reserva_estado');
   if (!guardado) return false;
   try {
     const s = JSON.parse(guardado);
-    sessionStorage.removeItem('celestia_reserva_estado');
+    localStorage.removeItem('celestia_reserva_estado');
     if (s.fecha) state.fecha = s.fecha;
     if (s.turno) state.turno = s.turno;
     if (s.calcPersonas) state.calcPersonas = s.calcPersonas;
@@ -2386,9 +2386,15 @@ async function cargarPerfilEnFormulario() {
 
 // Iniciar sesión al cargar la página
 (async () => {
-  // Si hay token OAuth en el hash → esperar que Supabase lo procese
+  // Si viene de OAuth (hash con access_token) → esperar que Supabase procese
   if (window.location.hash.includes('access_token')) {
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Supabase necesita tiempo para intercambiar el token del hash
+    await new Promise(resolve => {
+      supa.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_IN' && session) resolve();
+      });
+      setTimeout(resolve, 3000); // fallback
+    });
   }
 
   await iniciarSesion();
@@ -2398,13 +2404,13 @@ async function cargarPerfilEnFormulario() {
   const params = new URLSearchParams(window.location.search);
 
   // Si vuelve de Google OAuth con reserva pendiente → continuar flujo
-  if (params.get('reserva') === 'continuar') {
+  const tieneReservaPendiente = params.get('reserva') === 'continuar' ||
+    (window.location.hash.includes('access_token') && localStorage.getItem('celestia_reserva_estado'));
+
+  if (tieneReservaPendiente && clientePerfil) {
     window.history.replaceState({}, '', window.location.pathname);
-    // Esperar a que Supabase procese el token OAuth del hash
-    await new Promise(resolve => setTimeout(resolve, 800));
-    await iniciarSesion();
-    if (clientePerfil) {
-      _restaurarEstadoReserva();
+    const restaurado = _restaurarEstadoReserva();
+    if (restaurado && state.fecha && state.turno) {
       setTimeout(() => goTo(4), 300);
       return;
     }
