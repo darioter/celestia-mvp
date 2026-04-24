@@ -1316,21 +1316,21 @@ function renderServiciosActivos(activos, cancelados = []) {
 function volverAlSelector() {
   _servicioSeleccionadoManualmente = null;
   servicioActivo = null;
+  // Forzar re-render del selector limpiando el contenido primero
+  const el = document.getElementById('activo-content');
+  if (el) el.innerHTML = '';
   renderServiciosActivos(window._serviciosActivos || [], []);
 }
 
 function seleccionarServicioActivo(idx) {
   const r = (window._serviciosActivos||[])[idx];
-  if (r) {
-    _servicioSeleccionadoManualmente = r.id;
-    servicioActivo = r;
-    renderServicioActivo(r);
-    // Resaltar la solapa seleccionada si el selector sigue visible
-    document.querySelectorAll('[onclick^="seleccionarServicioActivo"]').forEach((btn, i) => {
-      btn.style.color = i === idx ? 'var(--gold-light)' : 'rgba(250,246,239,0.5)';
-      btn.style.borderBottom = i === idx ? '2px solid var(--gold)' : '2px solid transparent';
-    });
-  }
+  if (!r) return;
+  _servicioSeleccionadoManualmente = r.id;
+  servicioActivo = r;
+  // Limpiar contenido previo antes de renderizar el servicio seleccionado
+  const el = document.getElementById('activo-content');
+  if (el) el.innerHTML = '';
+  renderServicioActivo(r);
 }
 
 function renderServicioActivo(r) {
@@ -1538,7 +1538,6 @@ function renderServicioActivo(r) {
 
   const hayMultiples = (window._serviciosActivos||[]).length > 1;
   const elActivo = document.getElementById('activo-content');
-  const contenidoPrevio = elActivo.innerHTML;
 
   const cardHtml = `
     ${hayMultiples ? `
@@ -1616,7 +1615,7 @@ function renderServicioActivo(r) {
       </div>
     </div>`;
 
-  elActivo.innerHTML = contenidoPrevio + cardHtml;
+  elActivo.innerHTML = cardHtml;
   // Iniciar polling del chat
   iniciarChatChefPolling(r.id);
 }
