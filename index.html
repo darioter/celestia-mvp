@@ -2269,16 +2269,63 @@ async function loginYContinuar() {
 }
 
 async function authConGoogle() {
-  // Guardar estado de reserva antes del redirect
-  sessionStorage.setItem('celestia_reserva_estado', JSON.stringify({
-    menu: state.menu, fecha: state.fecha, turno: state.turno,
-    calcPersonas: state.calcPersonas, calcDia: state.calcDia
-  }));
-  await supa.auth.signInWithOAuth({
+  // Guardar estado antes de cualquier redirect
+  _guardarEstadoReserva();
+  // Usar popup para no perder la página
+  const { data, error } = await supa.auth.signInWithOAuth({
     provider: 'google',
-    options: { redirectTo: window.location.origin + '/?reserva=continuar' }
+    options: {
+      skipBrowserRedirect: false,
+      redirectTo: window.location.origin + window.location.pathname + '?reserva=continuar',
+      queryParams: { prompt: 'select_account' }
+    }
   });
 }
+
+function _guardarEstadoReserva() {
+  sessionStorage.setItem('celestia_reserva_estado', JSON.stringify({
+    menu: state.menu ? { id: state.menu.id, nombre: state.menu.nombre } : null,
+    fecha: state.fecha,
+    turno: state.turno,
+    calcPersonas: state.calcPersonas,
+    calcDia: state.calcDia,
+    step: state.step
+  }));
+}
+
+function _restaurarEstadoReserva() {
+  const guardado = sessionStorage.getItem('celestia_reserva_estado');
+  if (!guardado) return false;
+  try {
+    const s = JSON.parse(guardado);
+    sessionStorage.removeItem('celestia_reserva_estado');
+    if (s.fecha) state.fecha = s.fecha;
+    if (s.turno) state.turno = s.turno;
+    if (s.calcPersonas) state.calcPersonas = s.calcPersonas;
+    if (s.calcDia) state.calcDia = s.calcDia;
+    // Restaurar menú desde MENUS array
+    if (s.menu?.id) {
+      const found = (typeof MENUS !== 'undefined' ? MENUS : []).find(m => m.id === s.menu.id);
+      if (found) state.menu = found;
+    }
+    return true;
+  } catch(e) { return false; }
+}
+
+// ─── AUTH STATE CHANGE ───────────────────────────────────
+supa.auth.onAuthStateChange(async (event, session) => {
+  if (event === 'SIGNED_IN' && session) {
+    // Si estaba en la pantalla auth del flujo de reserva → continuar
+    const screenAuth = document.getElementById('screen-auth');
+    if (screenAuth && screenAuth.style.display !== 'none') {
+      await iniciarSesion();
+      if (clientePerfil) {
+        _restaurarEstadoReserva();
+        goTo(4);
+      }
+    }
+  }
+});
 
 // ─── SESIÓN DEL CLIENTE ───────────────────────────────────
 let clientePerfil = null;
@@ -2339,22 +2386,28 @@ async function cargarPerfilEnFormulario() {
 
 // Iniciar sesión al cargar la página
 (async () => {
+  // Si hay token OAuth en el hash → esperar que Supabase lo procese
+  if (window.location.hash.includes('access_token')) {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+
   await iniciarSesion();
   iaVerificarLimite();
 
   // Leer params URL una sola vez
   const params = new URLSearchParams(window.location.search);
 
-  // Si vuelve de Google OAuth con reserva pendiente → ir al paso 4
-  if (params.get('reserva') === 'continuar' && clientePerfil) {
+  // Si vuelve de Google OAuth con reserva pendiente → continuar flujo
+  if (params.get('reserva') === 'continuar') {
     window.history.replaceState({}, '', window.location.pathname);
-    const estadoGuardado = sessionStorage.getItem('celestia_reserva_estado');
-    if (estadoGuardado) {
-      try { Object.assign(state, JSON.parse(estadoGuardado)); } catch(e) {}
-      sessionStorage.removeItem('celestia_reserva_estado');
+    // Esperar a que Supabase procese el token OAuth del hash
+    await new Promise(resolve => setTimeout(resolve, 800));
+    await iniciarSesion();
+    if (clientePerfil) {
+      _restaurarEstadoReserva();
+      setTimeout(() => goTo(4), 300);
+      return;
     }
-    setTimeout(() => goTo(4), 300);
-    return;
   }
 
   // Pre-seleccionar menú desde URL (?menu=1 o ?menu=2)
