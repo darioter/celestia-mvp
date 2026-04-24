@@ -2157,163 +2157,69 @@ async function guardarMenuIA() {
 }
 
 // ─── AUTH FLOW RESERVA ───────────────────────────────────
-async function _verificarAuthYContinuar() {
-  // Verificar sesión real en Supabase
-  const { data } = await supa.auth.getSession();
 
-  if (data?.session) {
-    // Hay sesión — asegurar que el perfil esté cargado
-    if (!clientePerfil) await iniciarSesion();
-    _irAPaso4();
+// Estado de sesión — se setea apenas la página carga
+let _session = null;
+
+// Inicializar sesión al cargar
+async function _initAuth() {
+  const { data } = await supa.auth.getSession();
+  _session = data?.session || null;
+  if (_session) await iniciarSesion();
+}
+
+// goTo(4) llama esto — verifica sesión y decide
+async function _verificarAuthYContinuar() {
+  if (_session || clientePerfil) {
+    // Ya logueado → ir directo al paso 4
+    _mostrarPaso(4);
   } else {
-    // Sin sesión → mostrar pantalla auth
-    _mostrarScreenAuth();
+    // Sin sesión → verificar de nuevo por si acaso
+    const { data } = await supa.auth.getSession();
+    if (data?.session) {
+      _session = data.session;
+      if (!clientePerfil) await iniciarSesion();
+      _mostrarPaso(4);
+    } else {
+      // Guardar estado y mostrar pantalla auth
+      _guardarEstadoReserva();
+      _mostrarPaso('auth');
+    }
   }
 }
 
-function _irAPaso4() {
-  // Ocultar todo y mostrar paso 4 directamente
+// Mostrar cualquier paso limpiamente (sin pasar por goTo para evitar loops)
+function _mostrarPaso(paso) {
   [1, 2, 26, 25, 3, 4, 5, 'auth'].forEach(s => {
     const el = document.getElementById('screen-' + s);
     if (el) el.style.display = 'none';
   });
+  const screen = document.getElementById('screen-' + paso);
+  if (screen) screen.style.display = 'block';
   document.getElementById('screen-success').style.display = 'none';
-  document.getElementById('screen-4').style.display = 'block';
   const floatBtn = document.getElementById('float-continuar');
   if (floatBtn) floatBtn.style.display = 'none';
-  // Steps bar
-  [1,2,3,4,5].forEach(s => {
-    const tab = document.getElementById('step-tab-' + s);
-    if (!tab) return;
-    tab.classList.remove('active','done');
-    if (s === 4) tab.classList.add('active');
-    else if (s < 4) tab.classList.add('done');
-  });
-  state.step = 4;
-  cargarPerfilEnFormulario();
+  if (paso === 4) {
+    [1,2,3,4,5].forEach(s => {
+      const tab = document.getElementById('step-tab-' + s);
+      if (!tab) return;
+      tab.classList.remove('active','done');
+      if (s === 4) tab.classList.add('active');
+      else if (s < 4) tab.classList.add('done');
+    });
+    state.step = 4;
+    cargarPerfilEnFormulario();
+  }
   window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function _mostrarScreenAuth() {
-  [1, 2, 26, 25, 3, 4, 5, 'auth'].forEach(s => {
-    const el = document.getElementById('screen-' + s);
-    if (el) el.style.display = 'none';
-  });
-  document.getElementById('screen-success').style.display = 'none';
-  document.getElementById('screen-auth').style.display = 'block';
-  // Guardar estado para restaurar después del login
-  _guardarEstadoReserva();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-async function _goToAuthThenStep4() {
-  await _verificarAuthYContinuar();
-}
-
-function switchAuthTab(tab) {
-  const esRegistro = tab === 'registro';
-  document.getElementById('auth-form-registro').style.display = esRegistro ? 'block' : 'none';
-  document.getElementById('auth-form-login').style.display = esRegistro ? 'none' : 'block';
-  document.getElementById('auth-tab-registro').style.background = esRegistro ? 'var(--navy)' : 'transparent';
-  document.getElementById('auth-tab-registro').style.color = esRegistro ? 'white' : 'var(--text-mid)';
-  document.getElementById('auth-tab-login').style.background = esRegistro ? 'transparent' : 'var(--navy)';
-  document.getElementById('auth-tab-login').style.color = esRegistro ? 'var(--text-mid)' : 'white';
-  checkAuthForm();
-}
-
-function checkAuthForm() {
-  // Registro
-  const nombre = document.getElementById('auth-nombre')?.value?.trim();
-  const emailReg = document.getElementById('auth-email-reg')?.value?.trim();
-  const passReg = document.getElementById('auth-pass-reg')?.value;
-  const btnReg = document.getElementById('auth-btn-registro');
-  if (btnReg) {
-    const ok = nombre && emailReg && passReg?.length >= 6;
-    btnReg.disabled = !ok;
-    btnReg.style.opacity = ok ? '1' : '0.4';
-  }
-  // Login
-  const emailLogin = document.getElementById('auth-email-login')?.value?.trim();
-  const passLogin = document.getElementById('auth-pass-login')?.value;
-  const btnLogin = document.getElementById('auth-btn-login');
-  if (btnLogin) {
-    const ok = emailLogin && passLogin?.length >= 1;
-    btnLogin.disabled = !ok;
-    btnLogin.style.opacity = ok ? '1' : '0.4';
-  }
-}
-
-async function registrarseYContinuar() {
-  const btn = document.getElementById('auth-btn-registro');
-  const errEl = document.getElementById('auth-error-reg');
-  const nombre = document.getElementById('auth-nombre').value.trim();
-  const email = document.getElementById('auth-email-reg').value.trim();
-  const pass = document.getElementById('auth-pass-reg').value;
-  btn.textContent = 'Creando cuenta...'; btn.disabled = true;
-  errEl.style.display = 'none';
-
-  const { data, error } = await supa.auth.signUp({ email, password: pass, options: { data: { full_name: nombre } } });
-  if (error) {
-    errEl.textContent = error.message === 'User already registered' ? 'Este email ya está registrado — ingresá con tu contraseña' : error.message;
-    errEl.style.display = 'block';
-    btn.textContent = 'Crear cuenta y continuar →'; btn.disabled = false;
-    return;
-  }
-  // Crear perfil en clientes
-  if (data.user) {
-    await supa.from('clientes').upsert({ id: data.user.id, nombre, email }, { onConflict: 'id' });
-    clientePerfil = { id: data.user.id, nombre, email };
-    // Pre-cargar nombre y email en el form
-    const fNombre = document.getElementById('f-nombre');
-    const fEmail = document.getElementById('f-email');
-    if (fNombre) fNombre.value = nombre;
-    if (fEmail) fEmail.value = email;
-  }
-  btn.textContent = '✓ Cuenta creada';
-  await iniciarSesion();
-  setTimeout(() => _irAPaso4(), 400);
-}
-
-async function loginYContinuar() {
-  const btn = document.getElementById('auth-btn-login');
-  const errEl = document.getElementById('auth-error-login');
-  const email = document.getElementById('auth-email-login').value.trim();
-  const pass = document.getElementById('auth-pass-login').value;
-  btn.textContent = 'Ingresando...'; btn.disabled = true;
-  errEl.style.display = 'none';
-
-  const { data, error } = await supa.auth.signInWithPassword({ email, password: pass });
-  if (error) {
-    errEl.textContent = error.message.includes('Invalid') ? 'Email o contraseña incorrectos' : error.message;
-    errEl.style.display = 'block';
-    btn.textContent = 'Ingresar y continuar →'; btn.disabled = false;
-    return;
-  }
-  btn.textContent = '✓ Ingresaste';
-  await iniciarSesion();
-  setTimeout(() => _irAPaso4(), 400);
-}
-
-async function authConGoogle() {
-  // Guardar estado en localStorage ANTES del redirect
-  _guardarEstadoReserva();
-  // Redirigir de vuelta a la landing con flag para continuar
-  await supa.auth.signInWithOAuth({
-    provider: 'google',
-    options: {
-      redirectTo: window.location.origin + '/?reserva=continuar'
-    }
-  });
 }
 
 function _guardarEstadoReserva() {
   localStorage.setItem('celestia_reserva_estado', JSON.stringify({
-    menu: state.menu ? { id: state.menu.id, nombre: state.menu.nombre } : null,
+    menuId: state.menu?.id || null,
     fecha: state.fecha,
     turno: state.turno,
     calcPersonas: state.calcPersonas,
-    calcDia: state.calcDia,
-    step: state.step
+    calcDia: state.calcDia
   }));
 }
 
@@ -2327,37 +2233,107 @@ function _restaurarEstadoReserva() {
     if (s.turno) state.turno = s.turno;
     if (s.calcPersonas) state.calcPersonas = s.calcPersonas;
     if (s.calcDia) state.calcDia = s.calcDia;
-    // Restaurar menú desde MENUS array
-    if (s.menu?.id) {
-      const found = (typeof MENUS !== 'undefined' ? MENUS : []).find(m => m.id === s.menu.id);
-      if (found) state.menu = found;
+    if (s.menuId && typeof MENUS !== 'undefined') {
+      const m = MENUS.find(m => m.id === s.menuId);
+      if (m) state.menu = m;
     }
-    return true;
+    return !!(s.fecha && s.turno);
   } catch(e) { return false; }
 }
 
-// ─── AUTH STATE CHANGE ───────────────────────────────────
+function switchAuthTab(tab) {
+  const esRegistro = tab === 'registro';
+  document.getElementById('auth-form-registro').style.display = esRegistro ? 'block' : 'none';
+  document.getElementById('auth-form-login').style.display = esRegistro ? 'none' : 'block';
+  document.getElementById('auth-tab-registro').style.cssText += `;background:${esRegistro?'var(--navy)':'transparent'};color:${esRegistro?'white':'var(--text-mid)'}`;
+  document.getElementById('auth-tab-login').style.cssText += `;background:${esRegistro?'transparent':'var(--navy)'};color:${esRegistro?'var(--text-mid)':'white'}`;
+  checkAuthForm();
+}
+
+function checkAuthForm() {
+  const nombre = document.getElementById('auth-nombre')?.value?.trim();
+  const emailReg = document.getElementById('auth-email-reg')?.value?.trim();
+  const passReg = document.getElementById('auth-pass-reg')?.value;
+  const btnReg = document.getElementById('auth-btn-registro');
+  if (btnReg) { const ok = !!(nombre && emailReg && passReg?.length >= 6); btnReg.disabled = !ok; btnReg.style.opacity = ok ? '1' : '0.4'; }
+  const emailLogin = document.getElementById('auth-email-login')?.value?.trim();
+  const passLogin = document.getElementById('auth-pass-login')?.value;
+  const btnLogin = document.getElementById('auth-btn-login');
+  if (btnLogin) { const ok = !!(emailLogin && passLogin); btnLogin.disabled = !ok; btnLogin.style.opacity = ok ? '1' : '0.4'; }
+}
+
+async function registrarseYContinuar() {
+  const btn = document.getElementById('auth-btn-registro');
+  const errEl = document.getElementById('auth-error-reg');
+  const nombre = document.getElementById('auth-nombre').value.trim();
+  const email = document.getElementById('auth-email-reg').value.trim();
+  const pass = document.getElementById('auth-pass-reg').value;
+  btn.textContent = 'Creando cuenta...'; btn.disabled = true;
+  errEl.style.display = 'none';
+  const { data, error } = await supa.auth.signUp({ email, password: pass, options: { data: { full_name: nombre } } });
+  if (error) {
+    errEl.textContent = error.message.includes('already') ? 'Email ya registrado — ingresá con tu contraseña' : error.message;
+    errEl.style.display = 'block';
+    btn.textContent = 'Crear cuenta y continuar →'; btn.disabled = false;
+    return;
+  }
+  if (data.user) {
+    await supa.from('clientes').upsert({ id: data.user.id, nombre, email }, { onConflict: 'id' });
+    _session = data.session;
+    clientePerfil = { id: data.user.id, nombre, email };
+    const fNombre = document.getElementById('f-nombre');
+    const fEmail = document.getElementById('f-email');
+    if (fNombre) fNombre.value = nombre;
+    if (fEmail) fEmail.value = email;
+  }
+  btn.textContent = '✓ Cuenta creada';
+  setTimeout(() => _mostrarPaso(4), 400);
+}
+
+async function loginYContinuar() {
+  const btn = document.getElementById('auth-btn-login');
+  const errEl = document.getElementById('auth-error-login');
+  const email = document.getElementById('auth-email-login').value.trim();
+  const pass = document.getElementById('auth-pass-login').value;
+  btn.textContent = 'Ingresando...'; btn.disabled = true;
+  errEl.style.display = 'none';
+  const { data, error } = await supa.auth.signInWithPassword({ email, password: pass });
+  if (error) {
+    errEl.textContent = error.message.includes('Invalid') ? 'Email o contraseña incorrectos' : error.message;
+    errEl.style.display = 'block';
+    btn.textContent = 'Ingresar y continuar →'; btn.disabled = false;
+    return;
+  }
+  _session = data.session;
+  await iniciarSesion();
+  btn.textContent = '✓ Ingresaste';
+  setTimeout(() => _mostrarPaso(4), 400);
+}
+
+async function authConGoogle() {
+  _guardarEstadoReserva();
+  await supa.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: window.location.origin + '/?reserva=continuar' }
+  });
+}
+
+// Manejar retorno de OAuth
 supa.auth.onAuthStateChange(async (event, session) => {
-  if (event === 'SIGNED_IN' && session) {
+  if (event === 'SIGNED_IN' && session && !_session) {
+    _session = session;
     await iniciarSesion();
-    // Si hay una reserva pendiente en localStorage → restaurar y continuar
-    const estadoGuardado = localStorage.getItem('celestia_reserva_estado');
-    if (estadoGuardado) {
-      const restaurado = _restaurarEstadoReserva();
-      if (restaurado && state.fecha && state.turno) {
-        // Limpiar URL si tiene params de OAuth
-        window.history.replaceState({}, '', window.location.pathname);
-        // Pequeña espera para que el perfil esté listo
-        setTimeout(() => {
-          // Ocultar pantalla auth si está visible
-          const screenAuth = document.getElementById('screen-auth');
-          if (screenAuth) screenAuth.style.display = 'none';
-          _irAPaso4();
-        }, 500);
-      }
+    // Si hay reserva pendiente → restaurar y continuar
+    if (localStorage.getItem('celestia_reserva_estado')) {
+      const ok = _restaurarEstadoReserva();
+      if (ok) setTimeout(() => _mostrarPaso(4), 500);
     }
   }
 });
+
+// Legacy alias
+async function _goToAuthThenStep4() { await _verificarAuthYContinuar(); }
+function _irAPaso4() { _mostrarPaso(4); }
 
 // ─── SESIÓN DEL CLIENTE ───────────────────────────────────
 let clientePerfil = null;
@@ -2365,7 +2341,19 @@ let clientePerfil = null;
 async function iniciarSesion() {
   const { data } = await supa.auth.getSession();
   if (!data.session) return;
-  const { data: perfil } = await supa.from('clientes').select('*').eq('id', data.session.user.id).single();
+  _session = data.session;
+  const user = data.session.user;
+
+  // Buscar o crear perfil en clientes
+  let { data: perfil } = await supa.from('clientes').select('*').eq('id', user.id).maybeSingle();
+  if (!perfil) {
+    // Usuario nuevo (ej: primer login con Google) — crear perfil
+    const nombre = user.user_metadata?.full_name || user.email?.split('@')[0] || '';
+    const { data: nuevo } = await supa.from('clientes').upsert({
+      id: user.id, nombre, email: user.email
+    }, { onConflict: 'id' }).select().single();
+    perfil = nuevo;
+  }
   if (!perfil) return;
   clientePerfil = perfil;
 
@@ -2418,23 +2406,18 @@ async function cargarPerfilEnFormulario() {
 
 // Iniciar sesión al cargar la página
 (async () => {
-  // onAuthStateChange maneja el caso OAuth (access_token en hash)
-  await iniciarSesion();
+  await _initAuth();
   iaVerificarLimite();
 
-  // Si ya está logueado y hay reserva pendiente → continuar
-  const estadoGuardado = localStorage.getItem('celestia_reserva_estado');
-  if (estadoGuardado && clientePerfil) {
-    const restaurado = _restaurarEstadoReserva();
-    if (restaurado && state.fecha && state.turno) {
+  // Si vuelve de OAuth con reserva pendiente
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('reserva') === 'continuar' || localStorage.getItem('celestia_reserva_estado')) {
+    if (_session) {
       window.history.replaceState({}, '', window.location.pathname);
-      setTimeout(() => _irAPaso4(), 300);
-      return;
+      const ok = _restaurarEstadoReserva();
+      if (ok) { setTimeout(() => _mostrarPaso(4), 300); return; }
     }
   }
-
-  // Leer params URL
-  const params = new URLSearchParams(window.location.search);
 
   // Pre-seleccionar menú desde URL (?menu=1 o ?menu=2)
   const menuParam = params.get('menu');
