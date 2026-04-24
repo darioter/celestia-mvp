@@ -650,32 +650,35 @@ function actualizarAvatar(nombre, avatarUrl) {
 
 // ─── PERFIL ───────────────────────────────────────────────
 async function cargarPerfil() {
-  const { data } = await supa.from('clientes').select('*').eq('email', currentUser.email).single();
-
-  // Si no existe registro, crearlo con datos de Auth
+  // Buscar por id primero, luego por email
+  let { data } = await supa.from('clientes').select('*').eq('id', currentUser.id).maybeSingle();
   if (!data) {
+    const { data: byEmail } = await supa.from('clientes').select('*').eq('email', currentUser.email).maybeSingle();
+    data = byEmail;
+  }
+  if (!data) {
+    // Crear con upsert para evitar conflictos de PK
     const nombre = currentUser.user_metadata?.full_name || currentUser.email?.split('@')[0] || '';
-    await supa.from('clientes').insert([{
-      id: currentUser.id,
-      nombre,
-      email: currentUser.email
-    }]);
+    const { error } = await supa.from('clientes').upsert({
+      id: currentUser.id, nombre, email: currentUser.email
+    }, { onConflict: 'id' });
+    if (error) console.error('Error creando perfil cliente:', error);
     actualizarAvatar(nombre, null);
-    document.getElementById('p-nombre').value = nombre;
+    const el = document.getElementById('p-nombre');
+    if (el) el.value = nombre;
     return;
   }
-
-  document.getElementById('p-nombre').value = data.nombre || '';
-  document.getElementById('p-tel').value = data.telefono || '';
-  document.getElementById('p-dir').value = data.direccion || '';
-  document.getElementById('p-barrio').value = data.barrio || '';
-  document.getElementById('p-piso').value = data.piso || '';
-  document.getElementById('p-notas').value = data.notas || '';
+  const el = n => document.getElementById(n);
+  if (el('p-nombre')) el('p-nombre').value = data.nombre || '';
+  if (el('p-tel')) el('p-tel').value = data.telefono || '';
+  if (el('p-dir')) el('p-dir').value = data.direccion || '';
+  if (el('p-barrio')) el('p-barrio').value = data.barrio || '';
+  if (el('p-piso')) el('p-piso').value = data.piso || '';
+  if (el('p-notas')) el('p-notas').value = data.notas || '';
   if (data.avatar_url) {
-    const el = document.getElementById('avatar-display');
-    el.innerHTML = `<img src="${data.avatar_url}" alt="avatar">`;
+    const av = document.getElementById('avatar-display');
+    if (av) av.innerHTML = `<img src="${data.avatar_url}" alt="avatar">`;
   }
-  // Mostrar email si no hay nombre aún
   const displayNombre = data.nombre || currentUser.email?.split('@')[0] || '';
   actualizarAvatar(displayNombre, data.avatar_url);
 }
@@ -791,12 +794,9 @@ async function guardarCocina() {
 // ─── RESERVAS ─────────────────────────────────────────────
 async function cargarReservas() {
   document.getElementById('reservas-lista').innerHTML = '<div class="empty-state"><div class="empty-icon">✦</div>Cargando...</div>';
-  const perfil = await supa.from('clientes').select('email,telefono').eq('email', currentUser.email).single();
-  if (!perfil.data) return;
-
-  // Buscar reservas por email o teléfono
+  const email = currentUser.email;
   const { data } = await supa.from('reservas').select('*')
-    .or(`email.eq.${perfil.data.email},tel.eq.${perfil.data.telefono}`)
+    .or(`email.eq.${email},cliente_id.eq.${currentUser.id}`)
     .order('fecha', { ascending: false });
 
   if (!data || data.length === 0) {
@@ -858,11 +858,10 @@ const STEP_ORDER = TRACKING_STEPS.map(s => s.key);
 let _prevServicioClienteHash = null;
 
 async function verificarServicioActivo() {
-  const perfil = await supa.from('clientes').select('email,telefono').eq('email', currentUser.email).single();
-  if (!perfil.data) return;
-
+  // Buscar reservas por email (principal) o cliente_id
+  const email = currentUser.email;
   const { data } = await supa.from('reservas').select('*')
-    .or(`email.eq.${perfil.data.email},tel.eq.${perfil.data.telefono}`)
+    .or(`email.eq.${email},cliente_id.eq.${currentUser.id}`)
     .not('estado_servicio', 'is', null)
     .not('estado', 'eq', 'cancelada')
     .order('fecha', { ascending: true });
@@ -1278,11 +1277,9 @@ async function cargarPagosCliente() {
   const el = document.getElementById('pagos-cliente-content');
   el.innerHTML = '<div class="empty-state"><div class="empty-icon">✦</div>Cargando...</div>';
 
-  const perfil = await supa.from('clientes').select('email,telefono').eq('email', currentUser.email).single();
-  if (!perfil.data) return;
-
+  const email = currentUser.email;
   const { data } = await supa.from('reservas').select('*')
-    .or(`email.eq.${perfil.data.email},tel.eq.${perfil.data.telefono}`)
+    .or(`email.eq.${email},cliente_id.eq.${currentUser.id}`)
     .order('fecha', { ascending: false });
 
   if (!data || !data.length) {
