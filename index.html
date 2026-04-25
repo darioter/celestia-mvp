@@ -2320,13 +2320,18 @@ async function authConGoogle() {
 
 // Manejar retorno de OAuth
 supa.auth.onAuthStateChange(async (event, session) => {
-  if (event === 'SIGNED_IN' && session && !_session) {
+  if (event === 'SIGNED_IN' && session) {
+    const esPrimerLogin = !_session;
     _session = session;
-    await iniciarSesion();
-    // Si hay reserva pendiente → restaurar y continuar
+    if (esPrimerLogin) await iniciarSesion();
     if (localStorage.getItem('celestia_reserva_estado')) {
       const ok = _restaurarEstadoReserva();
-      if (ok) setTimeout(() => _mostrarPaso(4), 500);
+      if (ok) {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('reserva');
+        window.history.replaceState({}, '', url.pathname + (url.search !== '?' ? url.search : ''));
+        setTimeout(() => _mostrarPaso(4), 500);
+      }
     }
   }
 });
@@ -2411,12 +2416,14 @@ async function cargarPerfilEnFormulario() {
 
   // Si vuelve de OAuth con reserva pendiente
   const params = new URLSearchParams(window.location.search);
-  if (params.get('reserva') === 'continuar' || localStorage.getItem('celestia_reserva_estado')) {
+  const hayReservaPendiente = params.get('reserva') === 'continuar' || !!localStorage.getItem('celestia_reserva_estado');
+  if (hayReservaPendiente) {
     if (_session) {
       window.history.replaceState({}, '', window.location.pathname);
       const ok = _restaurarEstadoReserva();
       if (ok) { setTimeout(() => _mostrarPaso(4), 300); return; }
     }
+    return;
   }
 
   // Pre-seleccionar menú desde URL (?menu=1 o ?menu=2)
@@ -2454,25 +2461,33 @@ let fechasBloqueadas = {};
 let diasBloqueados = []; // bloqueos manuales del admin // { 'YYYY-MM-DD': 'reservada'|'confirmada' }
 
 async function cargarFechasBloqueadas() {
+  // Fetch directo a la REST API — evita el lock de auth de Supabase
+  // La tabla tiene RLS con SELECT público, no requiere sesión activa
+  const headers = {
+    'apikey': SUPA_KEY,
+    'Authorization': 'Bearer ' + SUPA_KEY,
+    'Content-Type': 'application/json'
+  };
   try {
     const [resReservas, resBloqueos] = await Promise.all([
-      supa.from('reservas').select('fecha, turno, estado').in('estado', ['reservada', 'confirmada']),
-      supa.from('bloqueos').select('fecha')
+      fetch(SUPA_URL + '/rest/v1/reservas?select=fecha,turno,estado&estado=in.(reservada,confirmada)', { headers }).then(r => r.json()),
+      fetch(SUPA_URL + '/rest/v1/bloqueos?select=fecha', { headers }).then(r => r.json())
     ]);
     fechasBloqueadas = {};
-    if (!resReservas.error) {
-      resReservas.data.forEach(r => {
-        // Normalizar a YYYY-MM-DD por si Supabase devuelve timestamp completo
+    if (Array.isArray(resReservas)) {
+      resReservas.forEach(r => {
         const key = r.fecha ? r.fecha.slice(0, 10) : null;
         if (!key) return;
         if (!fechasBloqueadas[key]) fechasBloqueadas[key] = {};
         fechasBloqueadas[key][r.turno] = r.estado;
       });
     }
-    diasBloqueados = resBloqueos.error ? [] : resBloqueos.data.map(b => b.fecha);
+    diasBloqueados = Array.isArray(resBloqueos)
+      ? resBloqueos.map(b => b.fecha ? b.fecha.slice(0, 10) : null).filter(Boolean)
+      : [];
     console.log('Fechas bloqueadas:', fechasBloqueadas, 'Días bloqueados:', diasBloqueados);
   } catch(e) {
-    console.error('Supabase error:', e);
+    console.error('Error cargando fechas:', e);
   }
   if (state.step === 3) renderCalendar();
 }
