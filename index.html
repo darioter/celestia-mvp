@@ -2158,19 +2158,77 @@ async function guardarMenuIA() {
 
 // ─── AUTH FLOW RESERVA ───────────────────────────────────
 
-// Estado de sesión — se setea apenas la página carga
 let _session = null;
-let _authReady = false; // flag para saber si onAuthStateChange ya disparó
+let _authReady = false;
 
-// onAuthStateChange como fuente primaria de sesión
-// Captura tanto INITIAL_SESSION (sesión existente al cargar) como SIGNED_IN (login nuevo)
+// Leer sesión directamente del localStorage sin pasar por el lock de Supabase
+function _leerSesionLocal() {
+  try {
+    // Supabase guarda la sesión con esta key
+    const key = 'sb-' + SUPA_URL.split('//')[1].split('.')[0] + '-auth-token';
+    const raw = localStorage.getItem(key);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    // Verificar que el token no esté expirado
+    const expiresAt = parsed?.expires_at;
+    if (expiresAt && Date.now() / 1000 > expiresAt) return null;
+    return parsed;
+  } catch(e) { return null; }
+}
+
+// Actualizar header con datos del usuario sin necesitar getSession()
+async function _actualizarHeaderConSesionLocal() {
+  const sesionLocal = _leerSesionLocal();
+  if (!sesionLocal) return false;
+
+  const token = sesionLocal.access_token;
+  const userId = sesionLocal.user?.id;
+  if (!token || !userId) return false;
+
+  // Guardar sesión local
+  _session = sesionLocal;
+
+  // Buscar nombre en clientes via fetch directo (sin lock)
+  try {
+    const res = await fetch(SUPA_URL + '/rest/v1/clientes?id=eq.' + userId + '&select=nombre,email,telefono,direccion,barrio,piso,notas,avatar_url&limit=1', {
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + token }
+    });
+    const rows = await res.json();
+    if (Array.isArray(rows) && rows.length > 0) {
+      clientePerfil = rows[0];
+    } else {
+      // Usuario nuevo — crear perfil
+      const nombre = sesionLocal.user?.user_metadata?.full_name || sesionLocal.user?.email?.split('@')[0] || '';
+      clientePerfil = { id: userId, nombre, email: sesionLocal.user?.email };
+      fetch(SUPA_URL + '/rest/v1/clientes', {
+        method: 'POST',
+        headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', 'Prefer': 'resolution=merge-duplicates' },
+        body: JSON.stringify({ id: userId, nombre, email: sesionLocal.user?.email })
+      }).catch(e => console.warn('Error creando perfil:', e));
+    }
+  } catch(e) {
+    console.warn('Error buscando perfil:', e);
+    const nombre = sesionLocal.user?.user_metadata?.full_name || sesionLocal.user?.email?.split('@')[0] || '';
+    clientePerfil = { id: userId, nombre, email: sesionLocal.user?.email };
+  }
+
+  // Actualizar header
+  const accederBtn = document.getElementById('header-acceder');
+  if (accederBtn && clientePerfil?.nombre) {
+    accederBtn.textContent = `Hola, ${clientePerfil.nombre.split(' ')[0]} →`;
+    accederBtn.style.color = 'var(--gold-light)';
+    accederBtn.style.borderColor = 'rgba(201,168,76,0.5)';
+  }
+  return true;
+}
+
+// onAuthStateChange como respaldo para cuando el lock SÍ está disponible
 supa.auth.onAuthStateChange(async (event, session) => {
   _authReady = true;
   if ((event === 'INITIAL_SESSION' || event === 'SIGNED_IN') && session) {
-    const esPrimerLogin = !_session;
     _session = session;
-    if (esPrimerLogin) await iniciarSesion();
-    // Si hay reserva pendiente (retorno de OAuth)
+    if (!clientePerfil) await _actualizarHeaderConSesionLocal();
+    // Reserva pendiente (retorno OAuth)
     if (event === 'SIGNED_IN' && localStorage.getItem('celestia_reserva_estado')) {
       const ok = _restaurarEstadoReserva();
       if (ok) {
@@ -2182,27 +2240,24 @@ supa.auth.onAuthStateChange(async (event, session) => {
     }
   }
   if (event === 'SIGNED_OUT') {
-    _session = null;
-    clientePerfil = null;
+    _session = null; clientePerfil = null;
     const accederBtn = document.getElementById('header-acceder');
     if (accederBtn) { accederBtn.textContent = 'Acceder →'; accederBtn.style.color = ''; accederBtn.style.borderColor = ''; }
   }
 });
 
-// Inicializar sesión al cargar — fallback por si onAuthStateChange tarda
+// Init: primero intentar con localStorage (instantáneo, sin lock)
+// Si falla, onAuthStateChange lo resuelve cuando el lock se libere
 async function _initAuth() {
-  // Esperar hasta 800ms a que onAuthStateChange dispare INITIAL_SESSION
-  await new Promise(r => setTimeout(r, 100));
-  if (_authReady) return; // ya lo manejó onAuthStateChange
-  // Fallback: getSession directo
-  try {
-    const { data } = await supa.auth.getSession();
-    if (data?.session && !_session) {
-      _session = data.session;
-      await iniciarSesion();
-    }
-  } catch(e) { console.warn('_initAuth fallback error:', e); }
+  await _actualizarHeaderConSesionLocal();
 }
+
+// iniciarSesion se llama después de login/registro exitoso
+async function iniciarSesion() {
+  await _actualizarHeaderConSesionLocal();
+}
+
+// goTo(4) llama esto — verifica sesión y decide
 async function _verificarAuthYContinuar() {
   if (_session || clientePerfil) {
     // Ya logueado → ir directo al paso 4
@@ -2382,34 +2437,21 @@ async function iniciarSesion() {
   if (!data.session) return;
   _session = data.session;
   const user = data.session.user;
-  const token = data.session.access_token || SUPA_KEY;
-  const headers = { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
 
-  let perfil = null;
-  try {
-    const res = await fetch(SUPA_URL + '/rest/v1/clientes?id=eq.' + user.id + '&select=*&limit=1', { headers });
-    const rows = await res.json();
-    if (Array.isArray(rows) && rows.length > 0) perfil = rows[0];
-  } catch(e) { console.warn('Error buscando perfil:', e); }
-
+  // Buscar o crear perfil en clientes
+  let { data: perfil } = await supa.from('clientes').select('*').eq('id', user.id).maybeSingle();
   if (!perfil) {
+    // Usuario nuevo (ej: primer login con Google) — crear perfil
     const nombre = user.user_metadata?.full_name || user.email?.split('@')[0] || '';
-    try {
-      const res = await fetch(SUPA_URL + '/rest/v1/clientes', {
-        method: 'POST',
-        headers: { ...headers, 'Prefer': 'return=representation,resolution=merge-duplicates' },
-        body: JSON.stringify({ id: user.id, nombre, email: user.email })
-      });
-      const rows = await res.json();
-      perfil = (Array.isArray(rows) && rows.length > 0) ? rows[0] : { id: user.id, nombre, email: user.email };
-    } catch(e) {
-      perfil = { id: user.id, nombre: user.user_metadata?.full_name || '', email: user.email };
-    }
+    const { data: nuevo } = await supa.from('clientes').upsert({
+      id: user.id, nombre, email: user.email
+    }, { onConflict: 'id' }).select().single();
+    perfil = nuevo;
   }
-
   if (!perfil) return;
   clientePerfil = perfil;
 
+  // Actualizar botón en header
   const accederBtn = document.getElementById('header-acceder');
   if (accederBtn) {
     accederBtn.textContent = `Hola, ${perfil.nombre?.split(' ')[0] || 'Mi perfil'} →`;
@@ -2541,8 +2583,8 @@ async function guardarReservaSupabase(reserva) {
     ocasion: reserva.ocasion || '', notas: reserva.notas || '',
     honorario: reserva.honorario || 0, ingredientes: reserva.ingredientes || 0, total: reserva.total || 0
   };
-  let authToken = SUPA_KEY;
-  try { const { data } = await supa.auth.getSession(); if (data?.session?.access_token) authToken = data.session.access_token; } catch(e) {}
+  const sesionLocal = _leerSesionLocal();
+  const authToken = sesionLocal?.access_token || SUPA_KEY;
   try {
     const res = await fetch(SUPA_URL + '/rest/v1/reservas', {
       method: 'POST',
