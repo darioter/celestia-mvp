@@ -2163,8 +2163,18 @@ let _session = null;
 
 // Inicializar sesión al cargar
 async function _initAuth() {
-  const { data } = await supa.auth.getSession();
-  _session = data?.session || null;
+  // Intentar obtener sesión, con retry si el lock falla
+  let session = null;
+  for (let i = 0; i < 3; i++) {
+    try {
+      const { data } = await supa.auth.getSession();
+      session = data?.session || null;
+      break;
+    } catch(e) {
+      if (i < 2) await new Promise(r => setTimeout(r, 300));
+    }
+  }
+  _session = session;
   if (_session) await iniciarSesion();
 }
 
@@ -2271,18 +2281,13 @@ async function registrarseYContinuar() {
   btn.textContent = 'Creando cuenta...'; btn.disabled = true;
   errEl.style.display = 'none';
 
-  const { data, error } = await supa.auth.signUp({
-    email, password: pass,
-    options: { data: { full_name: nombre } }
-  });
-
+  const { data, error } = await supa.auth.signUp({ email, password: pass, options: { data: { full_name: nombre } } });
   if (error) {
     errEl.textContent = error.message.includes('already') ? 'Email ya registrado — ingresá con tu contraseña' : error.message;
     errEl.style.display = 'block';
     btn.textContent = 'Crear cuenta y continuar →'; btn.disabled = false;
     return;
   }
-
   const user = data.user;
   if (!user) {
     errEl.textContent = 'Error al crear la cuenta. Intentá de nuevo.';
@@ -2290,44 +2295,28 @@ async function registrarseYContinuar() {
     btn.textContent = 'Crear cuenta y continuar →'; btn.disabled = false;
     return;
   }
-
-  // Crear perfil en clientes via fetch directo (evita lock de auth)
   const token = data.session?.access_token || SUPA_KEY;
   try {
     await fetch(SUPA_URL + '/rest/v1/clientes', {
       method: 'POST',
-      headers: {
-        'apikey': SUPA_KEY,
-        'Authorization': 'Bearer ' + token,
-        'Content-Type': 'application/json',
-        'Prefer': 'resolution=merge-duplicates'
-      },
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', 'Prefer': 'resolution=merge-duplicates' },
       body: JSON.stringify({ id: user.id, nombre, email })
     });
-  } catch(e) { console.warn('Error creando perfil cliente:', e); }
+  } catch(e) { console.warn('Error creando perfil:', e); }
 
-  // Setear sesión y perfil local
   _session = data.session;
   clientePerfil = { id: user.id, nombre, email };
-
-  // Pre-completar formulario
   const fNombre = document.getElementById('f-nombre');
   const fEmail = document.getElementById('f-email');
   if (fNombre) fNombre.value = nombre;
   if (fEmail) fEmail.value = email;
-
-  // Actualizar header
   const accederBtn = document.getElementById('header-acceder');
   if (accederBtn) {
     accederBtn.textContent = `Hola, ${nombre.split(' ')[0]} →`;
     accederBtn.style.color = 'var(--gold-light)';
     accederBtn.style.borderColor = 'rgba(201,168,76,0.5)';
   }
-
   btn.textContent = '✓ Cuenta creada';
-
-  // Si Supabase requiere confirmación de email, data.session viene null
-  // Igual dejamos avanzar — la reserva se guarda igual
   setTimeout(() => _mostrarPaso(4), 400);
 }
 
@@ -2390,14 +2379,8 @@ async function iniciarSesion() {
   _session = data.session;
   const user = data.session.user;
   const token = data.session.access_token || SUPA_KEY;
+  const headers = { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
 
-  const headers = {
-    'apikey': SUPA_KEY,
-    'Authorization': 'Bearer ' + token,
-    'Content-Type': 'application/json'
-  };
-
-  // Buscar perfil via fetch directo
   let perfil = null;
   try {
     const res = await fetch(SUPA_URL + '/rest/v1/clientes?id=eq.' + user.id + '&select=*&limit=1', { headers });
@@ -2405,7 +2388,6 @@ async function iniciarSesion() {
     if (Array.isArray(rows) && rows.length > 0) perfil = rows[0];
   } catch(e) { console.warn('Error buscando perfil:', e); }
 
-  // Si no existe, crear perfil
   if (!perfil) {
     const nombre = user.user_metadata?.full_name || user.email?.split('@')[0] || '';
     try {
@@ -2415,10 +2397,8 @@ async function iniciarSesion() {
         body: JSON.stringify({ id: user.id, nombre, email: user.email })
       });
       const rows = await res.json();
-      if (Array.isArray(rows) && rows.length > 0) perfil = rows[0];
-      else perfil = { id: user.id, nombre, email: user.email };
+      perfil = (Array.isArray(rows) && rows.length > 0) ? rows[0] : { id: user.id, nombre, email: user.email };
     } catch(e) {
-      console.warn('Error creando perfil:', e);
       perfil = { id: user.id, nombre: user.user_metadata?.full_name || '', email: user.email };
     }
   }
@@ -2426,7 +2406,6 @@ async function iniciarSesion() {
   if (!perfil) return;
   clientePerfil = perfil;
 
-  // Actualizar botón en header
   const accederBtn = document.getElementById('header-acceder');
   if (accederBtn) {
     accederBtn.textContent = `Hola, ${perfil.nombre?.split(' ')[0] || 'Mi perfil'} →`;
@@ -2527,8 +2506,9 @@ let diasBloqueados = []; // bloqueos manuales del admin // { 'YYYY-MM-DD': 'rese
 async function cargarFechasBloqueadas() {
   const headers = { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY };
   try {
+    // Incluir todos los estados activos, no solo reservada/confirmada
     const [resReservas, resBloqueos] = await Promise.all([
-      fetch(SUPA_URL + '/rest/v1/reservas?select=fecha,turno,estado&estado=in.(reservada,confirmada)', { headers }).then(r => r.json()),
+      fetch(SUPA_URL + '/rest/v1/reservas?select=fecha,turno,estado&estado=in.(reservada,confirmada,ofrecida,aceptada)', { headers }).then(r => r.json()),
       fetch(SUPA_URL + '/rest/v1/bloqueos?select=fecha', { headers }).then(r => r.json())
     ]);
     fechasBloqueadas = {};
