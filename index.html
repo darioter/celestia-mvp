@@ -3526,6 +3526,9 @@ function startMealPrep() {
   mpCalYear = minDate.getFullYear();
   mpCalMonth = minDate.getMonth();
 
+  // Precargar fechas bloqueadas para el calendario
+  cargarFechasBloqueadas();
+
   // Sync estado de los botones del flujo con el estado actual
   ['pp','jornadas','comidas'].forEach(param => {
     selectMpFlow(param, mpState[param]);
@@ -3779,9 +3782,19 @@ function mpRenderCalendar() {
     const date = new Date(mpCalYear, mpCalMonth, d);
     date.setHours(0, 0, 0, 0);
     const el = document.createElement('div');
-    const isBlocked = date < minDate || !diasHabilitados.includes(date.getDay());
     const dateStr = date.toISOString().slice(0, 10);
     const isSelected = mpState.fecha === dateStr;
+
+    // Bloquear: pasado, fin de semana, días bloqueados admin, fecha con reserva semanal
+    const isPast = date < minDate;
+    const isWeekend = !diasHabilitados.includes(date.getDay());
+    const isAdminBlocked = diasBloqueados && diasBloqueados.includes(dateStr);
+    // Una fecha semanal queda bloqueada si ya tiene reserva en algún turno
+    const tieneSemanal = fechasBloqueadas && fechasBloqueadas[dateStr] &&
+      Object.values(fechasBloqueadas[dateStr]).some(estado =>
+        ['reservada','confirmada','ofrecida','aceptada'].includes(estado)
+      );
+    const isBlocked = isPast || isWeekend || isAdminBlocked || tieneSemanal;
 
     el.className = 'cal-day' + (isBlocked ? ' disabled' : '') + (isSelected ? ' selected' : '');
     el.textContent = d;
