@@ -1637,6 +1637,8 @@ async function rechazarChef(id) {
 
 let adminPolling = null;
 let adminRealtime = null;
+let semanalRealtime = null;
+let semanalPolling = null;
 
 function iniciarRealtimeAdmin() {
   // Polling cada 3 segundos
@@ -1650,6 +1652,24 @@ function iniciarRealtimeAdmin() {
       cargarReservas(true);
     })
     .subscribe();
+}
+
+function iniciarRealtimeSemanal() {
+  if (semanalPolling) clearInterval(semanalPolling);
+  semanalPolling = setInterval(() => { cargarSemanal(); }, 5000);
+
+  if (semanalRealtime) supa.removeChannel(semanalRealtime);
+  semanalRealtime = supa.channel('admin-semanal-' + Date.now())
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'reservas',
+      filter: 'tipo=eq.semanal' }, () => {
+      cargarSemanal();
+    })
+    .subscribe();
+}
+
+function detenerRealtimeSemanal() {
+  if (semanalPolling) { clearInterval(semanalPolling); semanalPolling = null; }
+  if (semanalRealtime) { supa.removeChannel(semanalRealtime); semanalRealtime = null; }
 }
 
 function detenerRealtimeAdmin() {
@@ -1666,6 +1686,8 @@ function verSeccion(seccion, btn) {
   btn.classList.add('active');
   if (seccion === 'reservas') { iniciarRealtimeAdmin(); }
   else { detenerRealtimeAdmin(); }
+  if (seccion === 'semanal') { iniciarRealtimeSemanal(); }
+  else { detenerRealtimeSemanal(); }
   if (seccion === 'bloqueos') cargarBloqueos();
   if (seccion === 'agenda') renderAgenda();
   if (seccion === 'pagos') cargarPagos();
@@ -2073,10 +2095,7 @@ function renderSemanal() {
         <div style="margin-top:8px;"><span class="estado-badge ${r.estado}">${r.estado}</span></div>
       </div>
       <div class="res-acciones">
-        ${r.estado === 'reservada' ? `<button class="accion-btn btn-confirmar" style="background:rgba(124,158,191,0.15);border-color:rgba(124,158,191,0.4);color:#7C9EBF;" onclick="ofrecerAChefsSemanal('${r.id}')">👨‍🍳 Ofrecer a chefs</button>` : ''}
-        ${r.estado === 'ofrecida' && !r.chef_id ? `<div style="font-size:11px;color:rgba(124,158,191,0.7);padding:6px 0;letter-spacing:0.06em;">⏳ Esperando que un chef acepte...</div>` : ''}
-        ${(r.estado === 'ofrecida' || r.estado === 'confirmada') && r.chef_id ? `<div style="font-size:11px;color:#5DBF87;padding:6px 0;">👨‍🍳 Chef asignado</div>` : ''}
-        ${r.estado === 'ofrecida' || r.estado === 'reservada' ? `<button class="accion-btn btn-confirmar" onclick="cambiarEstadoSemanal('${r.id}','confirmada')">✓ Confirmar seña</button>` : ''}
+        ${r.estado !== 'confirmada' ? `<button class="accion-btn btn-confirmar" onclick="cambiarEstadoSemanal('${r.id}','confirmada')">✓ Confirmar</button>` : ''}
         ${r.estado !== 'cancelada' ? `<button class="accion-btn btn-cancelar" onclick="cambiarEstadoSemanal('${r.id}','cancelada')">✕ Cancelar</button>` : ''}
       </div>
       <div class="wa-btns">
@@ -2085,18 +2104,6 @@ function renderSemanal() {
       </div>
     </div>`;
   }).join('');
-}
-
-async function ofrecerAChefsSemanal(id) {
-  if (!confirm('¿Ofrecer esta reserva de chef semanal a los chefs disponibles?')) return;
-  const { error } = await supa.from('reservas').update({
-    estado: 'ofrecida',
-    ofrecida_at: new Date().toISOString()
-  }).eq('id', id);
-  if (error) { alert('Error: ' + error.message); return; }
-  const r = todasSemanal.find(r => r.id === id);
-  if (r) { r.estado = 'ofrecida'; r.ofrecida_at = new Date().toISOString(); }
-  renderSemanal();
 }
 
 async function guardarPrecioSemanal(id) {
