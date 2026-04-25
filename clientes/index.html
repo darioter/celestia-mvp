@@ -887,8 +887,8 @@ async function cargarReservas() {
   const fmtFecha = f => new Date(f+'T12:00:00').toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 
   document.getElementById('reservas-lista').innerHTML = data.map(r => {
-    const senia = Math.round((r.honorario||0) * 0.5);
-    const saldo = (r.honorario||0) - senia;
+    const senia = Math.round(((r.honorario_final||r.honorario)||0) * 0.5);
+    const saldo = ((r.honorario_final||r.honorario)||0) - senia;
     return `
     <div class="reserva-item ${r.estado}">
       <div>
@@ -1483,7 +1483,7 @@ async function cargarPagosCliente() {
   const fmtFecha = f => new Date(f+'T12:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'long',year:'numeric'});
 
   el.innerHTML = data.map(r => {
-    const servicio = r.precio_servicio || r.honorario || 0;
+    const servicio = r.precio_servicio || r.honorario_final || r.honorario || 0;
     const market = r.precio_market || 0;
     const extras = r.precio_extras || 0;
     const express = r.recargo_express || 0;
