@@ -2466,11 +2466,7 @@ supa.auth.onAuthStateChange(async (event, session) => {
           document.getElementById('hero-section').style.display = 'none';
           document.getElementById('mp-steps-bar').style.display = 'flex';
           document.getElementById('mp-content').style.display = 'block';
-          // Ir a paso 3 (datos) con perfil pre-completado
-          setTimeout(() => {
-            mpPrecompletarDatos();
-            mpGoTo(3);
-          }, 500);
+          setTimeout(() => { mpPrecompletarDatos(); mpGoTo(3); }, 500);
         }
       } catch(e) { console.warn('Error restaurando mp estado:', e); }
     }
@@ -3474,6 +3470,14 @@ function startMealPrep() {
 
 // ─── CHEF SEMANAL — AUTH Y GUARDAR ───────────────────────
 
+async function mpLoginConGoogle() {
+  localStorage.setItem('celestia_mp_estado', JSON.stringify(mpState));
+  await supa.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: window.location.origin + '/?mp=continuar' }
+  });
+}
+
 async function mpVerificarAuthYContinuar() {
   const sesion = _leerSesionLocal();
   if (sesion) {
@@ -3533,34 +3537,6 @@ async function mpLoginMidFlow() {
   setTimeout(() => mpGoTo(3), 400);
 }
 
-async function mpLoginConGoogle() {
-  localStorage.setItem('celestia_mp_estado', JSON.stringify(mpState));
-  await supa.auth.signInWithOAuth({
-    provider: 'google',
-    options: { redirectTo: window.location.origin + '/?mp=continuar' }
-  });
-}
-
-async function mpLoginYConfirmar() {
-  const btn = document.getElementById('mp-login-btn');
-  const errEl = document.getElementById('mp-login-error');
-  const email = document.getElementById('mp-login-email').value.trim();
-  const pass = document.getElementById('mp-login-pwd').value;
-  btn.textContent = 'Ingresando...'; btn.disabled = true;
-  errEl.style.display = 'none';
-  const { data, error } = await supa.auth.signInWithPassword({ email, password: pass });
-  if (error) {
-    errEl.textContent = error.message.includes('Invalid') ? 'Email o contraseña incorrectos' : error.message;
-    errEl.style.display = 'block';
-    btn.textContent = 'Ingresar y confirmar →'; btn.disabled = false;
-    return;
-  }
-  _session = data.session;
-  await _actualizarHeaderConSesionLocal();
-  document.getElementById('mp-auth-section').style.display = 'none';
-  document.getElementById('mp-confirm-section').style.display = 'block';
-}
-
 async function mpConfirmarReserva() {
   const btn = document.getElementById('mp-confirm-btn');
   btn.textContent = 'Guardando...'; btn.disabled = true;
@@ -3574,44 +3550,34 @@ async function mpConfirmarReserva() {
   }
 
   const hon = calcMpHonorario(mpState.pp, mpState.jornadas, mpState.comidas);
-  const senia = Math.round(hon * 0.3);
-  const saldo = hon - senia;
+  const senia_cliente = Math.round(hon * 0.5);
+  const saldo_cliente = hon - senia_cliente;
+  const comision_app = Math.round(hon * 0.3);
+  const total_chef = hon - comision_app;
+  const adelanto_chef = Math.round(total_chef * 0.5);
+  const saldo_chef = total_chef - adelanto_chef;
   const ref = 'CS-' + Date.now().toString(36).toUpperCase();
 
   const payload = {
-    ref,
-    tipo: 'semanal',
-    fecha: mpState.fecha,
-    turno: 'almuerzo',
-    estado: 'reservada',
+    ref, tipo: 'semanal', fecha: mpState.fecha, turno: 'almuerzo', estado: 'reservada',
     menu: `Chef Semanal · ${mpState.pp}p · ${mpState.jornadas}j · ${mpState.comidas}`,
     personas: parseInt(mpState.pp) || 0,
-    nombre: mpState.nombre,
-    tel: mpState.tel,
-    email: mpState.email,
-    dir: mpState.dir,
+    nombre: mpState.nombre, tel: mpState.tel, email: mpState.email, dir: mpState.dir,
     notas: mpState.notas || '',
     ocasion: `Jornadas: ${mpState.jornadas} · Comidas: ${mpState.comidas}`,
-    honorario: hon,
-    ingredientes: 0,
-    total: hon,
-    senia_monto: senia,
-    saldo_monto: saldo,
+    honorario: hon, ingredientes: 0, total: hon,
+    senia_monto: senia_cliente, saldo_monto: saldo_cliente,
+    comision_app, pago_chef_inicial: adelanto_chef, pago_chef_final: saldo_chef,
+    retencion_pct: 30,
     jornadas: parseInt(mpState.jornadas) || 1,
-    dia_semana: mpState.dia_semana || '',
-    frecuencia: mpState.comidas || ''
+    dia_semana: mpState.dia_semana || '', frecuencia: mpState.comidas || ''
   };
 
   const authToken = sesion?.access_token || SUPA_KEY;
   try {
     const res = await fetch(SUPA_URL + '/rest/v1/reservas', {
       method: 'POST',
-      headers: {
-        'apikey': SUPA_KEY,
-        'Authorization': 'Bearer ' + authToken,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=representation'
-      },
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + authToken, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
       body: JSON.stringify(payload)
     });
     if (!res.ok) {
@@ -3622,12 +3588,11 @@ async function mpConfirmarReserva() {
     }
     console.log('Chef semanal guardado OK, ref:', ref);
     localStorage.removeItem('celestia_mp_estado');
-    // Generar link WA para confirmar seña
+    // Generar link WA
     const fmt = n => '$' + Number(n).toLocaleString('es-AR');
     const fechaObj = new Date(mpState.fecha + 'T12:00:00');
     const fechaStr = fechaObj.toLocaleDateString('es-AR', {weekday:'long', day:'numeric', month:'long'});
     const jornadasLabel = mpState.jornadas === '1' ? '1 jornada (~8hs)' : '2 jornadas (~16hs en semana)';
-    const senia_cliente = Math.round(hon * 0.5);
     const waMsg = `Hola Celestia 👋 Quiero confirmar mi reserva de *Chef Semanal*.\n\n` +
       `*Ref:* ${ref}\n*Primera jornada:* ${fechaStr}\n*Jornadas:* ${jornadasLabel}\n` +
       `*Personas:* ${mpState.pp}\n*Honorario:* ${fmt(hon)}\n*Seña (50%):* ${fmt(senia_cliente)}\n\n` +
@@ -3649,10 +3614,8 @@ function mpGoTo(step) {
     const el = document.getElementById('mp-screen-' + s);
     if (el) el.style.display = 'none';
   });
-  // Ocultar pantalla auth intermedia
   const authEl = document.getElementById('mp-screen-auth');
   if (authEl) authEl.style.display = 'none';
-
   const screen = document.getElementById('mp-screen-' + step);
   if (screen) screen.style.display = 'block';
 
@@ -3667,7 +3630,7 @@ function mpGoTo(step) {
   if (step === 2) mpRenderCalendar();
   if (step === 4) {
     mpRenderResumen();
-    // Si está logueado mostrar confirmar directo, si no auth
+    // Mostrar sección correcta según si está logueado
     const sesion = _leerSesionLocal();
     document.getElementById('mp-auth-section').style.display = sesion ? 'none' : 'block';
     document.getElementById('mp-confirm-section').style.display = sesion ? 'block' : 'none';
@@ -3842,7 +3805,8 @@ function mpRenderResumen() {
     `\n\nQuedo a la espera de confirmacion para coordinar el menu y los ingredientes. Muchas gracias.`;
 
   const waUrl = `https://wa.me/5491160410607?text=${encodeURIComponent(msg)}`;
-  document.getElementById('mp-wa-link').href = waUrl;
+  const waLinkEl = document.getElementById('mp-wa-link');
+  if (waLinkEl) waLinkEl.href = waUrl;
 }
 
 // Inicializar calculadora del hero
