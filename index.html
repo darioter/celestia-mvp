@@ -1898,11 +1898,11 @@ textarea { resize: vertical; min-height: 80px; }
     </div>
   </div>
 
-  <!-- MP AUTH: pantalla intermedia — fondo oscuro propio -->
-  <div id="mp-screen-auth" style="display:none;background:var(--navy);margin:-40px -20px;padding:40px 20px 80px;min-height:60vh;">
-    <h2 style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--gold-light);margin-bottom:8px;">Ingresá a tu cuenta</h2>
-    <p style="font-size:14px;color:rgba(250,246,239,0.55);margin-bottom:32px;">Para completar tu reserva de chef semanal</p>
-    <div style="max-width:400px;">
+  <!-- MP AUTH: pantalla intermedia full-width oscura -->
+  <div id="mp-screen-auth" style="display:none;position:relative;left:50%;right:50%;margin-left:-50vw;margin-right:-50vw;width:100vw;background:var(--navy);padding:48px 24px 80px;box-sizing:border-box;">
+    <div style="max-width:440px;margin:0 auto;">
+      <h2 style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--gold-light);margin-bottom:8px;">Ingresá a tu cuenta</h2>
+      <p style="font-size:14px;color:rgba(250,246,239,0.55);margin-bottom:32px;">Para completar tu reserva de chef semanal</p>
       <button onclick="mpLoginConGoogle()" style="width:100%;padding:13px;border-radius:10px;border:1.5px solid rgba(201,168,76,0.5);background:rgba(201,168,76,0.08);color:rgba(250,246,239,0.9);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:16px;box-sizing:border-box;">
         <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.703-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 6.293C4.672 4.166 6.656 3.58 9 3.58z"/></svg>
         Continuar con Google
@@ -1910,15 +1910,10 @@ textarea { resize: vertical; min-height: 80px; }
       <div style="display:flex;align-items:center;gap:10px;margin:14px 0;color:rgba(250,246,239,0.3);font-size:11px;letter-spacing:0.08em;">
         <span style="flex:1;height:1px;background:rgba(250,246,239,0.1);"></span>O ingresá con email<span style="flex:1;height:1px;background:rgba(250,246,239,0.1);"></span>
       </div>
-      <input type="email" id="mp-auth-email" placeholder="tu@email.com"
-        style="width:100%;padding:13px 14px;border-radius:10px;border:1px solid rgba(250,246,239,0.15);background:rgba(255,255,255,0.06);color:#FAF6EF;font-family:'DM Sans',sans-serif;font-size:13px;margin-bottom:8px;box-sizing:border-box;outline:none;">
-      <input type="password" id="mp-auth-pwd" placeholder="Contraseña" onkeydown="if(event.key==='Enter')mpLoginMidFlow()"
-        style="width:100%;padding:13px 14px;border-radius:10px;border:1px solid rgba(250,246,239,0.15);background:rgba(255,255,255,0.06);color:#FAF6EF;font-family:'DM Sans',sans-serif;font-size:13px;margin-bottom:8px;box-sizing:border-box;outline:none;">
+      <input type="email" id="mp-auth-email" placeholder="tu@email.com" style="width:100%;padding:13px 14px;border-radius:10px;border:1px solid rgba(250,246,239,0.15);background:rgba(255,255,255,0.07);color:#FAF6EF;font-family:'DM Sans',sans-serif;font-size:13px;margin-bottom:8px;box-sizing:border-box;outline:none;">
+      <input type="password" id="mp-auth-pwd" placeholder="Contraseña" onkeydown="if(event.key==='Enter')mpLoginMidFlow()" style="width:100%;padding:13px 14px;border-radius:10px;border:1px solid rgba(250,246,239,0.15);background:rgba(255,255,255,0.07);color:#FAF6EF;font-family:'DM Sans',sans-serif;font-size:13px;margin-bottom:8px;box-sizing:border-box;outline:none;">
       <div id="mp-auth-error" style="display:none;color:#ef5350;font-size:12px;margin-bottom:8px;"></div>
-      <button id="mp-auth-btn" onclick="mpLoginMidFlow()"
-        style="width:100%;padding:14px;border-radius:10px;border:none;background:var(--gold);color:var(--navy);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:16px;box-sizing:border-box;letter-spacing:0.02em;">
-        Ingresar y continuar →
-      </button>
+      <button id="mp-auth-btn" onclick="mpLoginMidFlow()" style="width:100%;padding:14px;border-radius:10px;border:none;background:var(--gold);color:var(--navy);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:16px;box-sizing:border-box;">Ingresar y continuar →</button>
       <div style="text-align:center;">
         <button onclick="mpGoTo(2)" style="background:none;border:none;color:rgba(250,246,239,0.4);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;text-decoration:underline;">← Volver a elegir fecha</button>
       </div>
@@ -1997,14 +1992,12 @@ textarea { resize: vertical; min-height: 80px; }
     <div id="mp-success-section" style="display:none;margin-top:24px;text-align:center;">
       <div style="font-size:40px;margin-bottom:12px;">🎉</div>
       <div style="font-family:'DM Serif Display',serif;font-size:24px;color:var(--gold-light);margin-bottom:8px;">¡Reserva recibida!</div>
-      <p style="font-size:13px;color:var(--text-mid);margin-bottom:24px;max-width:380px;margin-left:auto;margin-right:auto;">Tu solicitud llegó a Celestia. Confirmá la seña por WhatsApp para reservar la fecha — enseguida te asignamos tu chef y coordinamos el menú.</p>
-      <a id="mp-wa-confirmar" href="#" target="_blank"
-        style="display:inline-flex;align-items:center;gap:10px;padding:14px 28px;border-radius:12px;background:#25D366;color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;text-decoration:none;margin-bottom:14px;">
+      <p style="font-size:13px;color:var(--text-mid);margin-bottom:24px;max-width:360px;margin-left:auto;margin-right:auto;">Tu solicitud llegó a Celestia. Confirmá la seña por WhatsApp para reservar la fecha — enseguida te asignamos un chef.</p>
+      <a id="mp-wa-confirmar" href="#" target="_blank" style="display:inline-flex;align-items:center;gap:10px;padding:14px 28px;border-radius:12px;background:#25D366;color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;text-decoration:none;margin-bottom:14px;">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
         Confirmar seña por WhatsApp
-      </a>
-      <br>
-      <a href="/clientes" style="display:inline-block;padding:10px 24px;border-radius:10px;border:1px solid rgba(201,168,76,0.4);color:var(--gold-light);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;text-decoration:none;">Ver mis reservas →</a>
+      </a><br>
+      <a href="/clientes" style="display:inline-block;padding:10px 24px;border-radius:10px;border:1px solid rgba(201,168,76,0.4);color:var(--gold-light);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;text-decoration:none;margin-top:4px;">Ver mis reservas →</a>
     </div>
 
     <div class="nav-btns" style="justify-content:flex-start;margin-top:24px;">
@@ -2461,7 +2454,7 @@ supa.auth.onAuthStateChange(async (event, session) => {
         setTimeout(() => _mostrarPaso(4), 500);
       }
     }
-    // Restaurar flujo de chef semanal tras OAuth
+    // Restaurar flujo de chef semanal
     if (event === 'SIGNED_IN' && localStorage.getItem('celestia_mp_estado')) {
       try {
         const saved = JSON.parse(localStorage.getItem('celestia_mp_estado'));
@@ -2473,6 +2466,7 @@ supa.auth.onAuthStateChange(async (event, session) => {
           document.getElementById('hero-section').style.display = 'none';
           document.getElementById('mp-steps-bar').style.display = 'flex';
           document.getElementById('mp-content').style.display = 'block';
+          // Ir a paso 3 (datos) con perfil pre-completado
           setTimeout(() => {
             mpPrecompletarDatos();
             mpGoTo(3);
@@ -3480,16 +3474,6 @@ function startMealPrep() {
 
 // ─── CHEF SEMANAL — AUTH Y GUARDAR ───────────────────────
 
-async function mpLoginConGoogle() {
-  // Guardar estado del mpState en localStorage para restaurar tras redirect
-  localStorage.setItem('celestia_mp_estado', JSON.stringify(mpState));
-  await supa.auth.signInWithOAuth({
-    provider: 'google',
-    options: { redirectTo: window.location.origin + '/?mp=continuar' }
-  });
-}
-
-// Verificar auth al avanzar de fecha → datos
 async function mpVerificarAuthYContinuar() {
   const sesion = _leerSesionLocal();
   if (sesion) {
@@ -3498,9 +3482,9 @@ async function mpVerificarAuthYContinuar() {
     mpPrecompletarDatos();
     mpGoTo(3);
   } else {
-    // Mostrar pantalla auth intermedia
     [1,2,3,4].forEach(s => { const el = document.getElementById('mp-screen-' + s); if (el) el.style.display = 'none'; });
-    document.getElementById('mp-screen-auth').style.display = 'block';
+    const authEl = document.getElementById('mp-screen-auth');
+    if (authEl) authEl.style.display = 'block';
     [1,2,3,4].forEach(s => {
       const tab = document.getElementById('mp-tab-' + s);
       if (!tab) return;
@@ -3523,10 +3507,7 @@ function mpPrecompletarDatos() {
     const el = document.getElementById(id);
     if (el && !el.value && val) el.value = val;
   });
-  const ok = ['mp-nombre','mp-tel','mp-email','mp-dir'].every(id => {
-    const el = document.getElementById(id);
-    return el && el.value.trim();
-  });
+  const ok = ['mp-nombre','mp-tel','mp-email','mp-dir'].every(id => document.getElementById(id)?.value?.trim());
   const btn = document.getElementById('mp-btn-next-3');
   if (btn && ok) btn.disabled = false;
 }
@@ -3552,6 +3533,34 @@ async function mpLoginMidFlow() {
   setTimeout(() => mpGoTo(3), 400);
 }
 
+async function mpLoginConGoogle() {
+  localStorage.setItem('celestia_mp_estado', JSON.stringify(mpState));
+  await supa.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: window.location.origin + '/?mp=continuar' }
+  });
+}
+
+async function mpLoginYConfirmar() {
+  const btn = document.getElementById('mp-login-btn');
+  const errEl = document.getElementById('mp-login-error');
+  const email = document.getElementById('mp-login-email').value.trim();
+  const pass = document.getElementById('mp-login-pwd').value;
+  btn.textContent = 'Ingresando...'; btn.disabled = true;
+  errEl.style.display = 'none';
+  const { data, error } = await supa.auth.signInWithPassword({ email, password: pass });
+  if (error) {
+    errEl.textContent = error.message.includes('Invalid') ? 'Email o contraseña incorrectos' : error.message;
+    errEl.style.display = 'block';
+    btn.textContent = 'Ingresar y confirmar →'; btn.disabled = false;
+    return;
+  }
+  _session = data.session;
+  await _actualizarHeaderConSesionLocal();
+  document.getElementById('mp-auth-section').style.display = 'none';
+  document.getElementById('mp-confirm-section').style.display = 'block';
+}
+
 async function mpConfirmarReserva() {
   const btn = document.getElementById('mp-confirm-btn');
   btn.textContent = 'Guardando...'; btn.disabled = true;
@@ -3565,12 +3574,8 @@ async function mpConfirmarReserva() {
   }
 
   const hon = calcMpHonorario(mpState.pp, mpState.jornadas, mpState.comidas);
-  const senia_cliente = Math.round(hon * 0.5);
-  const saldo_cliente = hon - senia_cliente;
-  const comision_app = Math.round(hon * 0.3);
-  const total_chef = hon - comision_app;
-  const adelanto_chef = Math.round(total_chef * 0.5);
-  const saldo_chef = total_chef - adelanto_chef;
+  const senia = Math.round(hon * 0.3);
+  const saldo = hon - senia;
   const ref = 'CS-' + Date.now().toString(36).toUpperCase();
 
   const payload = {
@@ -3590,12 +3595,8 @@ async function mpConfirmarReserva() {
     honorario: hon,
     ingredientes: 0,
     total: hon,
-    senia_monto: senia_cliente,
-    saldo_monto: saldo_cliente,
-    comision_app,
-    pago_chef_inicial: adelanto_chef,
-    pago_chef_final: saldo_chef,
-    retencion_pct: 30,
+    senia_monto: senia,
+    saldo_monto: saldo,
     jornadas: parseInt(mpState.jornadas) || 1,
     dia_semana: mpState.dia_semana || '',
     frecuencia: mpState.comidas || ''
@@ -3621,19 +3622,15 @@ async function mpConfirmarReserva() {
     }
     console.log('Chef semanal guardado OK, ref:', ref);
     localStorage.removeItem('celestia_mp_estado');
-    // Generar link WA para que el cliente confirme la seña
+    // Generar link WA para confirmar seña
     const fmt = n => '$' + Number(n).toLocaleString('es-AR');
-    const fecha = new Date(mpState.fecha + 'T12:00:00');
-    const fechaStr = fecha.toLocaleDateString('es-AR', {weekday:'long', day:'numeric', month:'long'});
+    const fechaObj = new Date(mpState.fecha + 'T12:00:00');
+    const fechaStr = fechaObj.toLocaleDateString('es-AR', {weekday:'long', day:'numeric', month:'long'});
     const jornadasLabel = mpState.jornadas === '1' ? '1 jornada (~8hs)' : '2 jornadas (~16hs en semana)';
-    const waMsg =
-      `Hola Celestia 👋 Quiero confirmar mi reserva de *Chef Semanal*.\n\n` +
-      `*Ref:* ${ref}\n` +
-      `*Primera jornada:* ${fechaStr}\n` +
-      `*Jornadas:* ${jornadasLabel}\n` +
-      `*Personas:* ${mpState.pp}\n` +
-      `*Honorario total:* ${fmt(hon)}\n` +
-      `*Seña (50%):* ${fmt(senia_cliente)}\n\n` +
+    const senia_cliente = Math.round(hon * 0.5);
+    const waMsg = `Hola Celestia 👋 Quiero confirmar mi reserva de *Chef Semanal*.\n\n` +
+      `*Ref:* ${ref}\n*Primera jornada:* ${fechaStr}\n*Jornadas:* ${jornadasLabel}\n` +
+      `*Personas:* ${mpState.pp}\n*Honorario:* ${fmt(hon)}\n*Seña (50%):* ${fmt(senia_cliente)}\n\n` +
       `Quedo a la espera para coordinar menú e ingredientes. ¡Gracias!`;
     const waLink = document.getElementById('mp-wa-confirmar');
     if (waLink) waLink.href = `https://wa.me/5491160410607?text=${encodeURIComponent(waMsg)}`;
@@ -3652,8 +3649,10 @@ function mpGoTo(step) {
     const el = document.getElementById('mp-screen-' + s);
     if (el) el.style.display = 'none';
   });
+  // Ocultar pantalla auth intermedia
   const authEl = document.getElementById('mp-screen-auth');
   if (authEl) authEl.style.display = 'none';
+
   const screen = document.getElementById('mp-screen-' + step);
   if (screen) screen.style.display = 'block';
 
@@ -3668,7 +3667,7 @@ function mpGoTo(step) {
   if (step === 2) mpRenderCalendar();
   if (step === 4) {
     mpRenderResumen();
-    // Mostrar sección correcta según si está logueado
+    // Si está logueado mostrar confirmar directo, si no auth
     const sesion = _leerSesionLocal();
     document.getElementById('mp-auth-section').style.display = sesion ? 'none' : 'block';
     document.getElementById('mp-confirm-section').style.display = sesion ? 'block' : 'none';
