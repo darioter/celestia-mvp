@@ -1471,6 +1471,7 @@ async function cargarPagosCliente() {
   const email = currentUser.email;
   const { data } = await supa.from('reservas').select('*')
     .eq('email', email)
+    .not('estado', 'eq', 'cancelada')
     .order('fecha', { ascending: false });
 
   if (!data || !data.length) {
