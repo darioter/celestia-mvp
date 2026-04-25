@@ -2158,103 +2158,14 @@ async function guardarMenuIA() {
 
 // ─── AUTH FLOW RESERVA ───────────────────────────────────
 
+// Estado de sesión — se setea apenas la página carga
 let _session = null;
-let _authReady = false;
 
-// Leer sesión directamente del localStorage sin pasar por el lock de Supabase
-function _leerSesionLocal() {
-  try {
-    // Supabase guarda la sesión con esta key
-    const key = 'sb-' + SUPA_URL.split('//')[1].split('.')[0] + '-auth-token';
-    const raw = localStorage.getItem(key);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw);
-    // Verificar que el token no esté expirado
-    const expiresAt = parsed?.expires_at;
-    if (expiresAt && Date.now() / 1000 > expiresAt) return null;
-    return parsed;
-  } catch(e) { return null; }
-}
-
-// Actualizar header con datos del usuario sin necesitar getSession()
-async function _actualizarHeaderConSesionLocal() {
-  const sesionLocal = _leerSesionLocal();
-  if (!sesionLocal) return false;
-
-  const token = sesionLocal.access_token;
-  const userId = sesionLocal.user?.id;
-  if (!token || !userId) return false;
-
-  // Guardar sesión local
-  _session = sesionLocal;
-
-  // Buscar nombre en clientes via fetch directo (sin lock)
-  try {
-    const res = await fetch(SUPA_URL + '/rest/v1/clientes?id=eq.' + userId + '&select=nombre,email,telefono,direccion,barrio,piso,notas,avatar_url&limit=1', {
-      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + token }
-    });
-    const rows = await res.json();
-    if (Array.isArray(rows) && rows.length > 0) {
-      clientePerfil = rows[0];
-    } else {
-      // Usuario nuevo — crear perfil
-      const nombre = sesionLocal.user?.user_metadata?.full_name || sesionLocal.user?.email?.split('@')[0] || '';
-      clientePerfil = { id: userId, nombre, email: sesionLocal.user?.email };
-      fetch(SUPA_URL + '/rest/v1/clientes', {
-        method: 'POST',
-        headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', 'Prefer': 'resolution=merge-duplicates' },
-        body: JSON.stringify({ id: userId, nombre, email: sesionLocal.user?.email })
-      }).catch(e => console.warn('Error creando perfil:', e));
-    }
-  } catch(e) {
-    console.warn('Error buscando perfil:', e);
-    const nombre = sesionLocal.user?.user_metadata?.full_name || sesionLocal.user?.email?.split('@')[0] || '';
-    clientePerfil = { id: userId, nombre, email: sesionLocal.user?.email };
-  }
-
-  // Actualizar header
-  const accederBtn = document.getElementById('header-acceder');
-  if (accederBtn && clientePerfil?.nombre) {
-    accederBtn.textContent = `Hola, ${clientePerfil.nombre.split(' ')[0]} →`;
-    accederBtn.style.color = 'var(--gold-light)';
-    accederBtn.style.borderColor = 'rgba(201,168,76,0.5)';
-  }
-  return true;
-}
-
-// onAuthStateChange como respaldo para cuando el lock SÍ está disponible
-supa.auth.onAuthStateChange(async (event, session) => {
-  _authReady = true;
-  if ((event === 'INITIAL_SESSION' || event === 'SIGNED_IN') && session) {
-    _session = session;
-    if (!clientePerfil) await _actualizarHeaderConSesionLocal();
-    // Reserva pendiente (retorno OAuth)
-    if (event === 'SIGNED_IN' && localStorage.getItem('celestia_reserva_estado')) {
-      const ok = _restaurarEstadoReserva();
-      if (ok) {
-        const url = new URL(window.location.href);
-        url.searchParams.delete('reserva');
-        window.history.replaceState({}, '', url.pathname + (url.search !== '?' ? url.search : ''));
-        setTimeout(() => _mostrarPaso(4), 500);
-      }
-    }
-  }
-  if (event === 'SIGNED_OUT') {
-    _session = null; clientePerfil = null;
-    const accederBtn = document.getElementById('header-acceder');
-    if (accederBtn) { accederBtn.textContent = 'Acceder →'; accederBtn.style.color = ''; accederBtn.style.borderColor = ''; }
-  }
-});
-
-// Init: primero intentar con localStorage (instantáneo, sin lock)
-// Si falla, onAuthStateChange lo resuelve cuando el lock se libere
+// Inicializar sesión al cargar
 async function _initAuth() {
-  await _actualizarHeaderConSesionLocal();
-}
-
-// iniciarSesion se llama después de login/registro exitoso
-async function iniciarSesion() {
-  await _actualizarHeaderConSesionLocal();
+  const { data } = await supa.auth.getSession();
+  _session = data?.session || null;
+  if (_session) await iniciarSesion();
 }
 
 // goTo(4) llama esto — verifica sesión y decide
@@ -2366,32 +2277,14 @@ async function registrarseYContinuar() {
     btn.textContent = 'Crear cuenta y continuar →'; btn.disabled = false;
     return;
   }
-  const user = data.user;
-  if (!user) {
-    errEl.textContent = 'Error al crear la cuenta. Intentá de nuevo.';
-    errEl.style.display = 'block';
-    btn.textContent = 'Crear cuenta y continuar →'; btn.disabled = false;
-    return;
-  }
-  const token = data.session?.access_token || SUPA_KEY;
-  try {
-    await fetch(SUPA_URL + '/rest/v1/clientes', {
-      method: 'POST',
-      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', 'Prefer': 'resolution=merge-duplicates' },
-      body: JSON.stringify({ id: user.id, nombre, email })
-    });
-  } catch(e) { console.warn('Error creando perfil:', e); }
-  _session = data.session;
-  clientePerfil = { id: user.id, nombre, email };
-  const fNombre = document.getElementById('f-nombre');
-  const fEmail = document.getElementById('f-email');
-  if (fNombre) fNombre.value = nombre;
-  if (fEmail) fEmail.value = email;
-  const accederBtn = document.getElementById('header-acceder');
-  if (accederBtn) {
-    accederBtn.textContent = `Hola, ${nombre.split(' ')[0]} →`;
-    accederBtn.style.color = 'var(--gold-light)';
-    accederBtn.style.borderColor = 'rgba(201,168,76,0.5)';
+  if (data.user) {
+    await supa.from('clientes').upsert({ id: data.user.id, nombre, email }, { onConflict: 'id' });
+    _session = data.session;
+    clientePerfil = { id: data.user.id, nombre, email };
+    const fNombre = document.getElementById('f-nombre');
+    const fEmail = document.getElementById('f-email');
+    if (fNombre) fNombre.value = nombre;
+    if (fEmail) fEmail.value = email;
   }
   btn.textContent = '✓ Cuenta creada';
   setTimeout(() => _mostrarPaso(4), 400);
@@ -2421,9 +2314,24 @@ async function authConGoogle() {
   _guardarEstadoReserva();
   await supa.auth.signInWithOAuth({
     provider: 'google',
-    options: { redirectTo: window.location.origin + '/?reserva=continuar' }
+    options: {
+      redirectTo: window.location.origin + '/auth/callback?destino=/&reserva=continuar'
+    }
   });
 }
+
+// Manejar retorno de OAuth
+supa.auth.onAuthStateChange(async (event, session) => {
+  if (event === 'SIGNED_IN' && session && !_session) {
+    _session = session;
+    await iniciarSesion();
+    // Si hay reserva pendiente → restaurar y continuar
+    if (localStorage.getItem('celestia_reserva_estado')) {
+      const ok = _restaurarEstadoReserva();
+      if (ok) setTimeout(() => _mostrarPaso(4), 500);
+    }
+  }
+});
 
 // Legacy alias
 async function _goToAuthThenStep4() { await _verificarAuthYContinuar(); }
@@ -2505,14 +2413,12 @@ async function cargarPerfilEnFormulario() {
 
   // Si vuelve de OAuth con reserva pendiente
   const params = new URLSearchParams(window.location.search);
-  const hayReservaPendiente = params.get('reserva') === 'continuar' || !!localStorage.getItem('celestia_reserva_estado');
-  if (hayReservaPendiente) {
+  if (params.get('reserva') === 'continuar' || localStorage.getItem('celestia_reserva_estado')) {
     if (_session) {
       window.history.replaceState({}, '', window.location.pathname);
       const ok = _restaurarEstadoReserva();
       if (ok) { setTimeout(() => _mostrarPaso(4), 300); return; }
     }
-    return;
   }
 
   // Pre-seleccionar menú desde URL (?menu=1 o ?menu=2)
@@ -2550,51 +2456,57 @@ let fechasBloqueadas = {};
 let diasBloqueados = []; // bloqueos manuales del admin // { 'YYYY-MM-DD': 'reservada'|'confirmada' }
 
 async function cargarFechasBloqueadas() {
-  const headers = { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY };
   try {
     const [resReservas, resBloqueos] = await Promise.all([
-      fetch(SUPA_URL + '/rest/v1/reservas?select=fecha,turno,estado&estado=in.(reservada,confirmada,ofrecida,aceptada)', { headers }).then(r => r.json()),
-      fetch(SUPA_URL + '/rest/v1/bloqueos?select=fecha', { headers }).then(r => r.json())
+      supa.from('reservas').select('fecha, turno, estado').in('estado', ['reservada', 'confirmada']),
+      supa.from('bloqueos').select('fecha')
     ]);
     fechasBloqueadas = {};
-    if (Array.isArray(resReservas)) {
-      resReservas.forEach(r => {
-        const key = r.fecha ? r.fecha.slice(0, 10) : null;
-        if (!key) return;
+    if (!resReservas.error) {
+      resReservas.data.forEach(r => {
+        const key = r.fecha;
         if (!fechasBloqueadas[key]) fechasBloqueadas[key] = {};
         fechasBloqueadas[key][r.turno] = r.estado;
       });
     }
-    diasBloqueados = Array.isArray(resBloqueos)
-      ? resBloqueos.map(b => b.fecha ? b.fecha.slice(0, 10) : null).filter(Boolean)
-      : [];
+    diasBloqueados = resBloqueos.error ? [] : resBloqueos.data.map(b => b.fecha);
     console.log('Fechas bloqueadas:', fechasBloqueadas, 'Días bloqueados:', diasBloqueados);
-  } catch(e) { console.error('Error cargando fechas:', e); }
+  } catch(e) {
+    console.error('Supabase error:', e);
+  }
   if (state.step === 3) renderCalendar();
 }
 
 async function guardarReservaSupabase(reserva) {
+  // Asegurar formato YYYY-MM-DD
   const fechaFormateada = reserva.fecha ? reserva.fecha.slice(0, 10) : null;
   console.log('Guardando reserva:', reserva.ref, fechaFormateada, reserva.turno);
-  const payload = {
-    ref: reserva.ref, fecha: fechaFormateada, turno: reserva.turno, estado: 'reservada',
-    menu: reserva.menu, personas: parseInt(reserva.personas) || 0,
-    nombre: reserva.nombre, tel: reserva.tel, email: reserva.email, dir: reserva.dir,
-    ocasion: reserva.ocasion || '', notas: reserva.notas || '',
-    honorario: reserva.honorario || 0, ingredientes: reserva.ingredientes || 0, total: reserva.total || 0
-  };
-  const sesionLocal = _leerSesionLocal();
-  const authToken = sesionLocal?.access_token || SUPA_KEY;
-  try {
-    const res = await fetch(SUPA_URL + '/rest/v1/reservas', {
-      method: 'POST',
-      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + authToken, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
-      body: JSON.stringify(payload)
-    });
-    if (!res.ok) { const err = await res.json().catch(() => ({})); console.error('Error guardando reserva:', err); showToast('Error al guardar: ' + (err.message || res.status)); return; }
-    console.log('Reserva guardada OK');
+  
+  const { data, error } = await supa.from('reservas').insert([{
+    ref: reserva.ref,
+    fecha: fechaFormateada,
+    turno: reserva.turno,
+    estado: 'reservada',
+    menu: reserva.menu,
+    personas: parseInt(reserva.personas) || 0,
+    nombre: reserva.nombre,
+    tel: reserva.tel,
+    email: reserva.email,
+    dir: reserva.dir,
+    ocasion: reserva.ocasion || '',
+    notas: reserva.notas || '',
+    honorario: reserva.honorario || 0,
+    ingredientes: reserva.ingredientes || 0,
+    total: reserva.total || 0
+  }]).select();
+  
+  if (error) {
+    console.error('Error guardando reserva:', JSON.stringify(error));
+    showToast('Error al guardar: ' + (error.message || error.code || JSON.stringify(error)));
+  } else {
+    console.log('Reserva guardada OK:', data);
     await cargarFechasBloqueadas();
-  } catch(e) { console.error('Error de red:', e); showToast('Error de conexión. Reserva guardada localmente.'); }
+  }
 }
 
 // ─── FOTOS DE PLATOS ─────────────────────────────────────

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Celestia · Ingresando...</title>
+<meta name="robots" content="noindex,nofollow">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: #0D1B2A;
+  color: #FAF6EF;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+.logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 28px;
+  color: #E8C96A;
+  letter-spacing: 0.02em;
+}
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 2px solid rgba(201,168,76,0.2);
+  border-top-color: #C9A84C;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.msg {
+  font-size: 13px;
+  color: rgba(250,246,239,0.5);
+  font-weight: 300;
+}
+</style>
+</head>
+<body>
+
+<div class="logo">Celestia</div>
+<div class="spinner"></div>
+<div class="msg">Verificando tu cuenta...</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+const SUPA_URL = 'https://qolpnuscpmzqeacshfvu.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvbHBudXNjcG16cWVhY3NoZnZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NjQ3OTQsImV4cCI6MjA5MTM0MDc5NH0.BJOz5Gwkeb1NqID_gkGKD5YlymifMtOwaf8iQMaBCx8';
+
+const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+(async () => {
+  // Supabase procesa automáticamente el #access_token del hash al inicializar
+  // Esperamos al evento SIGNED_IN para confirmar que la sesión quedó guardada
+  const timeout = setTimeout(() => {
+    // Si tardó más de 5 segundos, redirigir igual
+    redirigir();
+  }, 5000);
+
+  supa.auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_IN' && session) {
+      clearTimeout(timeout);
+      redirigir();
+    }
+  });
+
+  // También intentar con getSession por si el evento ya disparó
+  try {
+    const { data } = await supa.auth.getSession();
+    if (data?.session) {
+      clearTimeout(timeout);
+      redirigir();
+    }
+  } catch(e) {
+    // El lock puede fallar, onAuthStateChange lo maneja
+  }
+})();
+
+function redirigir() {
+  // Leer parámetros de la URL para saber a dónde volver
+  const params = new URLSearchParams(window.location.search);
+  const destino = params.get('destino') || '/';
+  const reserva = params.get('reserva');
+
+  let url = destino;
+  if (reserva) url += (url.includes('?') ? '&' : '?') + 'reserva=' + reserva;
+
+  window.location.replace(url);
+}
+</script>
+</body>
+</html>
