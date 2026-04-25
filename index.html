@@ -2270,23 +2270,64 @@ async function registrarseYContinuar() {
   const pass = document.getElementById('auth-pass-reg').value;
   btn.textContent = 'Creando cuenta...'; btn.disabled = true;
   errEl.style.display = 'none';
-  const { data, error } = await supa.auth.signUp({ email, password: pass, options: { data: { full_name: nombre } } });
+
+  const { data, error } = await supa.auth.signUp({
+    email, password: pass,
+    options: { data: { full_name: nombre } }
+  });
+
   if (error) {
     errEl.textContent = error.message.includes('already') ? 'Email ya registrado — ingresá con tu contraseña' : error.message;
     errEl.style.display = 'block';
     btn.textContent = 'Crear cuenta y continuar →'; btn.disabled = false;
     return;
   }
-  if (data.user) {
-    await supa.from('clientes').upsert({ id: data.user.id, nombre, email }, { onConflict: 'id' });
-    _session = data.session;
-    clientePerfil = { id: data.user.id, nombre, email };
-    const fNombre = document.getElementById('f-nombre');
-    const fEmail = document.getElementById('f-email');
-    if (fNombre) fNombre.value = nombre;
-    if (fEmail) fEmail.value = email;
+
+  const user = data.user;
+  if (!user) {
+    errEl.textContent = 'Error al crear la cuenta. Intentá de nuevo.';
+    errEl.style.display = 'block';
+    btn.textContent = 'Crear cuenta y continuar →'; btn.disabled = false;
+    return;
   }
+
+  // Crear perfil en clientes via fetch directo (evita lock de auth)
+  const token = data.session?.access_token || SUPA_KEY;
+  try {
+    await fetch(SUPA_URL + '/rest/v1/clientes', {
+      method: 'POST',
+      headers: {
+        'apikey': SUPA_KEY,
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=merge-duplicates'
+      },
+      body: JSON.stringify({ id: user.id, nombre, email })
+    });
+  } catch(e) { console.warn('Error creando perfil cliente:', e); }
+
+  // Setear sesión y perfil local
+  _session = data.session;
+  clientePerfil = { id: user.id, nombre, email };
+
+  // Pre-completar formulario
+  const fNombre = document.getElementById('f-nombre');
+  const fEmail = document.getElementById('f-email');
+  if (fNombre) fNombre.value = nombre;
+  if (fEmail) fEmail.value = email;
+
+  // Actualizar header
+  const accederBtn = document.getElementById('header-acceder');
+  if (accederBtn) {
+    accederBtn.textContent = `Hola, ${nombre.split(' ')[0]} →`;
+    accederBtn.style.color = 'var(--gold-light)';
+    accederBtn.style.borderColor = 'rgba(201,168,76,0.5)';
+  }
+
   btn.textContent = '✓ Cuenta creada';
+
+  // Si Supabase requiere confirmación de email, data.session viene null
+  // Igual dejamos avanzar — la reserva se guarda igual
   setTimeout(() => _mostrarPaso(4), 400);
 }
 
@@ -2348,17 +2389,40 @@ async function iniciarSesion() {
   if (!data.session) return;
   _session = data.session;
   const user = data.session.user;
+  const token = data.session.access_token || SUPA_KEY;
 
-  // Buscar o crear perfil en clientes
-  let { data: perfil } = await supa.from('clientes').select('*').eq('id', user.id).maybeSingle();
+  const headers = {
+    'apikey': SUPA_KEY,
+    'Authorization': 'Bearer ' + token,
+    'Content-Type': 'application/json'
+  };
+
+  // Buscar perfil via fetch directo
+  let perfil = null;
+  try {
+    const res = await fetch(SUPA_URL + '/rest/v1/clientes?id=eq.' + user.id + '&select=*&limit=1', { headers });
+    const rows = await res.json();
+    if (Array.isArray(rows) && rows.length > 0) perfil = rows[0];
+  } catch(e) { console.warn('Error buscando perfil:', e); }
+
+  // Si no existe, crear perfil
   if (!perfil) {
-    // Usuario nuevo (ej: primer login con Google) — crear perfil
     const nombre = user.user_metadata?.full_name || user.email?.split('@')[0] || '';
-    const { data: nuevo } = await supa.from('clientes').upsert({
-      id: user.id, nombre, email: user.email
-    }, { onConflict: 'id' }).select().single();
-    perfil = nuevo;
+    try {
+      const res = await fetch(SUPA_URL + '/rest/v1/clientes', {
+        method: 'POST',
+        headers: { ...headers, 'Prefer': 'return=representation,resolution=merge-duplicates' },
+        body: JSON.stringify({ id: user.id, nombre, email: user.email })
+      });
+      const rows = await res.json();
+      if (Array.isArray(rows) && rows.length > 0) perfil = rows[0];
+      else perfil = { id: user.id, nombre, email: user.email };
+    } catch(e) {
+      console.warn('Error creando perfil:', e);
+      perfil = { id: user.id, nombre: user.user_metadata?.full_name || '', email: user.email };
+    }
   }
+
   if (!perfil) return;
   clientePerfil = perfil;
 
@@ -2461,11 +2525,7 @@ let fechasBloqueadas = {};
 let diasBloqueados = []; // bloqueos manuales del admin // { 'YYYY-MM-DD': 'reservada'|'confirmada' }
 
 async function cargarFechasBloqueadas() {
-  const headers = {
-    'apikey': SUPA_KEY,
-    'Authorization': 'Bearer ' + SUPA_KEY,
-    'Content-Type': 'application/json'
-  };
+  const headers = { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY };
   try {
     const [resReservas, resBloqueos] = await Promise.all([
       fetch(SUPA_URL + '/rest/v1/reservas?select=fecha,turno,estado&estado=in.(reservada,confirmada)', { headers }).then(r => r.json()),
@@ -2484,65 +2544,32 @@ async function cargarFechasBloqueadas() {
       ? resBloqueos.map(b => b.fecha ? b.fecha.slice(0, 10) : null).filter(Boolean)
       : [];
     console.log('Fechas bloqueadas:', fechasBloqueadas, 'Días bloqueados:', diasBloqueados);
-  } catch(e) {
-    console.error('Error cargando fechas:', e);
-  }
+  } catch(e) { console.error('Error cargando fechas:', e); }
   if (state.step === 3) renderCalendar();
 }
 
 async function guardarReservaSupabase(reserva) {
   const fechaFormateada = reserva.fecha ? reserva.fecha.slice(0, 10) : null;
   console.log('Guardando reserva:', reserva.ref, fechaFormateada, reserva.turno);
-
   const payload = {
-    ref: reserva.ref,
-    fecha: fechaFormateada,
-    turno: reserva.turno,
-    estado: 'reservada',
-    menu: reserva.menu,
-    personas: parseInt(reserva.personas) || 0,
-    nombre: reserva.nombre,
-    tel: reserva.tel,
-    email: reserva.email,
-    dir: reserva.dir,
-    ocasion: reserva.ocasion || '',
-    notas: reserva.notas || '',
-    honorario: reserva.honorario || 0,
-    ingredientes: reserva.ingredientes || 0,
-    total: reserva.total || 0
+    ref: reserva.ref, fecha: fechaFormateada, turno: reserva.turno, estado: 'reservada',
+    menu: reserva.menu, personas: parseInt(reserva.personas) || 0,
+    nombre: reserva.nombre, tel: reserva.tel, email: reserva.email, dir: reserva.dir,
+    ocasion: reserva.ocasion || '', notas: reserva.notas || '',
+    honorario: reserva.honorario || 0, ingredientes: reserva.ingredientes || 0, total: reserva.total || 0
   };
-
-  // Obtener token de sesión si hay uno disponible
-  let authToken = SUPA_KEY; // fallback: anon key
-  try {
-    const { data } = await supa.auth.getSession();
-    if (data?.session?.access_token) authToken = data.session.access_token;
-  } catch(e) { /* usar anon key si falla */ }
-
+  let authToken = SUPA_KEY;
+  try { const { data } = await supa.auth.getSession(); if (data?.session?.access_token) authToken = data.session.access_token; } catch(e) {}
   try {
     const res = await fetch(SUPA_URL + '/rest/v1/reservas', {
       method: 'POST',
-      headers: {
-        'apikey': SUPA_KEY,
-        'Authorization': 'Bearer ' + authToken,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=representation'
-      },
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + authToken, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
       body: JSON.stringify(payload)
     });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      console.error('Error guardando reserva:', err);
-      showToast('Error al guardar: ' + (err.message || err.code || res.status));
-      return;
-    }
-    const data = await res.json();
-    console.log('Reserva guardada OK:', data);
+    if (!res.ok) { const err = await res.json().catch(() => ({})); console.error('Error guardando reserva:', err); showToast('Error al guardar: ' + (err.message || res.status)); return; }
+    console.log('Reserva guardada OK');
     await cargarFechasBloqueadas();
-  } catch(e) {
-    console.error('Error de red al guardar reserva:', e);
-    showToast('Error de conexión. La reserva se guardó localmente.');
-  }
+  } catch(e) { console.error('Error de red:', e); showToast('Error de conexión. Reserva guardada localmente.'); }
 }
 
 // ─── FOTOS DE PLATOS ─────────────────────────────────────
