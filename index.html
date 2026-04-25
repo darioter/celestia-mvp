@@ -2160,25 +2160,49 @@ async function guardarMenuIA() {
 
 // Estado de sesión — se setea apenas la página carga
 let _session = null;
+let _authReady = false; // flag para saber si onAuthStateChange ya disparó
 
-// Inicializar sesión al cargar
-async function _initAuth() {
-  // Intentar obtener sesión, con retry si el lock falla
-  let session = null;
-  for (let i = 0; i < 3; i++) {
-    try {
-      const { data } = await supa.auth.getSession();
-      session = data?.session || null;
-      break;
-    } catch(e) {
-      if (i < 2) await new Promise(r => setTimeout(r, 300));
+// onAuthStateChange como fuente primaria de sesión
+// Captura tanto INITIAL_SESSION (sesión existente al cargar) como SIGNED_IN (login nuevo)
+supa.auth.onAuthStateChange(async (event, session) => {
+  _authReady = true;
+  if ((event === 'INITIAL_SESSION' || event === 'SIGNED_IN') && session) {
+    const esPrimerLogin = !_session;
+    _session = session;
+    if (esPrimerLogin) await iniciarSesion();
+    // Si hay reserva pendiente (retorno de OAuth)
+    if (event === 'SIGNED_IN' && localStorage.getItem('celestia_reserva_estado')) {
+      const ok = _restaurarEstadoReserva();
+      if (ok) {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('reserva');
+        window.history.replaceState({}, '', url.pathname + (url.search !== '?' ? url.search : ''));
+        setTimeout(() => _mostrarPaso(4), 500);
+      }
     }
   }
-  _session = session;
-  if (_session) await iniciarSesion();
-}
+  if (event === 'SIGNED_OUT') {
+    _session = null;
+    clientePerfil = null;
+    const accederBtn = document.getElementById('header-acceder');
+    if (accederBtn) { accederBtn.textContent = 'Acceder →'; accederBtn.style.color = ''; accederBtn.style.borderColor = ''; }
+  }
+});
 
-// goTo(4) llama esto — verifica sesión y decide
+// Inicializar sesión al cargar — fallback por si onAuthStateChange tarda
+async function _initAuth() {
+  // Esperar hasta 800ms a que onAuthStateChange dispare INITIAL_SESSION
+  await new Promise(r => setTimeout(r, 100));
+  if (_authReady) return; // ya lo manejó onAuthStateChange
+  // Fallback: getSession directo
+  try {
+    const { data } = await supa.auth.getSession();
+    if (data?.session && !_session) {
+      _session = data.session;
+      await iniciarSesion();
+    }
+  } catch(e) { console.warn('_initAuth fallback error:', e); }
+}
 async function _verificarAuthYContinuar() {
   if (_session || clientePerfil) {
     // Ya logueado → ir directo al paso 4
@@ -2280,7 +2304,6 @@ async function registrarseYContinuar() {
   const pass = document.getElementById('auth-pass-reg').value;
   btn.textContent = 'Creando cuenta...'; btn.disabled = true;
   errEl.style.display = 'none';
-
   const { data, error } = await supa.auth.signUp({ email, password: pass, options: { data: { full_name: nombre } } });
   if (error) {
     errEl.textContent = error.message.includes('already') ? 'Email ya registrado — ingresá con tu contraseña' : error.message;
@@ -2303,7 +2326,6 @@ async function registrarseYContinuar() {
       body: JSON.stringify({ id: user.id, nombre, email })
     });
   } catch(e) { console.warn('Error creando perfil:', e); }
-
   _session = data.session;
   clientePerfil = { id: user.id, nombre, email };
   const fNombre = document.getElementById('f-nombre');
@@ -2347,24 +2369,6 @@ async function authConGoogle() {
     options: { redirectTo: window.location.origin + '/?reserva=continuar' }
   });
 }
-
-// Manejar retorno de OAuth
-supa.auth.onAuthStateChange(async (event, session) => {
-  if (event === 'SIGNED_IN' && session) {
-    const esPrimerLogin = !_session;
-    _session = session;
-    if (esPrimerLogin) await iniciarSesion();
-    if (localStorage.getItem('celestia_reserva_estado')) {
-      const ok = _restaurarEstadoReserva();
-      if (ok) {
-        const url = new URL(window.location.href);
-        url.searchParams.delete('reserva');
-        window.history.replaceState({}, '', url.pathname + (url.search !== '?' ? url.search : ''));
-        setTimeout(() => _mostrarPaso(4), 500);
-      }
-    }
-  }
-});
 
 // Legacy alias
 async function _goToAuthThenStep4() { await _verificarAuthYContinuar(); }
@@ -2506,7 +2510,6 @@ let diasBloqueados = []; // bloqueos manuales del admin // { 'YYYY-MM-DD': 'rese
 async function cargarFechasBloqueadas() {
   const headers = { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY };
   try {
-    // Incluir todos los estados activos, no solo reservada/confirmada
     const [resReservas, resBloqueos] = await Promise.all([
       fetch(SUPA_URL + '/rest/v1/reservas?select=fecha,turno,estado&estado=in.(reservada,confirmada,ofrecida,aceptada)', { headers }).then(r => r.json()),
       fetch(SUPA_URL + '/rest/v1/bloqueos?select=fecha', { headers }).then(r => r.json())
