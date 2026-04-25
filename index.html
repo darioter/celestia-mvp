@@ -2320,21 +2320,13 @@ async function authConGoogle() {
 
 // Manejar retorno de OAuth
 supa.auth.onAuthStateChange(async (event, session) => {
-  if (event === 'SIGNED_IN' && session) {
-    const esPrimerLogin = !_session;
+  if (event === 'SIGNED_IN' && session && !_session) {
     _session = session;
-    if (esPrimerLogin) await iniciarSesion();
+    await iniciarSesion();
     // Si hay reserva pendiente → restaurar y continuar
-    // (esto cubre el caso de retorno desde Google/GitHub OAuth)
     if (localStorage.getItem('celestia_reserva_estado')) {
       const ok = _restaurarEstadoReserva();
-      if (ok) {
-        // Limpiar el ?reserva=continuar de la URL sin recargar
-        const url = new URL(window.location.href);
-        url.searchParams.delete('reserva');
-        window.history.replaceState({}, '', url.pathname + (url.search !== '?' ? url.search : ''));
-        setTimeout(() => _mostrarPaso(4), 500);
-      }
+      if (ok) setTimeout(() => _mostrarPaso(4), 500);
     }
   }
 });
@@ -2419,17 +2411,12 @@ async function cargarPerfilEnFormulario() {
 
   // Si vuelve de OAuth con reserva pendiente
   const params = new URLSearchParams(window.location.search);
-  const hayReservaPendiente = params.get('reserva') === 'continuar' || !!localStorage.getItem('celestia_reserva_estado');
-  if (hayReservaPendiente) {
+  if (params.get('reserva') === 'continuar' || localStorage.getItem('celestia_reserva_estado')) {
     if (_session) {
-      // Sesión ya disponible (email/pass o refresh rápido)
       window.history.replaceState({}, '', window.location.pathname);
       const ok = _restaurarEstadoReserva();
       if (ok) { setTimeout(() => _mostrarPaso(4), 300); return; }
     }
-    // _session es null: Supabase todavía procesa el token OAuth del hash.
-    // onAuthStateChange lo captura y restaura la reserva — no hacer nada acá.
-    return;
   }
 
   // Pre-seleccionar menú desde URL (?menu=1 o ?menu=2)
@@ -2475,7 +2462,9 @@ async function cargarFechasBloqueadas() {
     fechasBloqueadas = {};
     if (!resReservas.error) {
       resReservas.data.forEach(r => {
-        const key = r.fecha;
+        // Normalizar a YYYY-MM-DD por si Supabase devuelve timestamp completo
+        const key = r.fecha ? r.fecha.slice(0, 10) : null;
+        if (!key) return;
         if (!fechasBloqueadas[key]) fechasBloqueadas[key] = {};
         fechasBloqueadas[key][r.turno] = r.estado;
       });
