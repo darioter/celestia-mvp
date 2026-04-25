@@ -2461,8 +2461,6 @@ let fechasBloqueadas = {};
 let diasBloqueados = []; // bloqueos manuales del admin // { 'YYYY-MM-DD': 'reservada'|'confirmada' }
 
 async function cargarFechasBloqueadas() {
-  // Fetch directo a la REST API — evita el lock de auth de Supabase
-  // La tabla tiene RLS con SELECT público, no requiere sesión activa
   const headers = {
     'apikey': SUPA_KEY,
     'Authorization': 'Bearer ' + SUPA_KEY,
@@ -2493,11 +2491,10 @@ async function cargarFechasBloqueadas() {
 }
 
 async function guardarReservaSupabase(reserva) {
-  // Asegurar formato YYYY-MM-DD
   const fechaFormateada = reserva.fecha ? reserva.fecha.slice(0, 10) : null;
   console.log('Guardando reserva:', reserva.ref, fechaFormateada, reserva.turno);
-  
-  const { data, error } = await supa.from('reservas').insert([{
+
+  const payload = {
     ref: reserva.ref,
     fecha: fechaFormateada,
     turno: reserva.turno,
@@ -2513,14 +2510,38 @@ async function guardarReservaSupabase(reserva) {
     honorario: reserva.honorario || 0,
     ingredientes: reserva.ingredientes || 0,
     total: reserva.total || 0
-  }]).select();
-  
-  if (error) {
-    console.error('Error guardando reserva:', JSON.stringify(error));
-    showToast('Error al guardar: ' + (error.message || error.code || JSON.stringify(error)));
-  } else {
+  };
+
+  // Obtener token de sesión si hay uno disponible
+  let authToken = SUPA_KEY; // fallback: anon key
+  try {
+    const { data } = await supa.auth.getSession();
+    if (data?.session?.access_token) authToken = data.session.access_token;
+  } catch(e) { /* usar anon key si falla */ }
+
+  try {
+    const res = await fetch(SUPA_URL + '/rest/v1/reservas', {
+      method: 'POST',
+      headers: {
+        'apikey': SUPA_KEY,
+        'Authorization': 'Bearer ' + authToken,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      console.error('Error guardando reserva:', err);
+      showToast('Error al guardar: ' + (err.message || err.code || res.status));
+      return;
+    }
+    const data = await res.json();
     console.log('Reserva guardada OK:', data);
     await cargarFechasBloqueadas();
+  } catch(e) {
+    console.error('Error de red al guardar reserva:', e);
+    showToast('Error de conexión. La reserva se guardó localmente.');
   }
 }
 
