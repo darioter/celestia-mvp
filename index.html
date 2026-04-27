@@ -2303,19 +2303,21 @@ async function _actualizarHeaderConSesionLocal(sesionDirecta) {
   const headers = { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + token };
 
   // ── Verificar si el usuario logueado es un chef ──────────────────────────
-  try {
-    const resChef = await fetch(SUPA_URL + '/rest/v1/chefs?user_id=eq.' + userId + '&select=id&limit=1', { headers });
-    if (resChef.ok) {
-      const chefRows = await resChef.json();
-      if (Array.isArray(chefRows) && chefRows.length > 0) {
-        // Es chef → ignorar silenciosamente, no tocar header ni sesión de cliente
-        return false;
+  // Whitelist: estos user_id nunca son bloqueados aunque estén en la tabla chefs
+  const ADMIN_IDS = ['9a09d224-33d8-45af-b2ff-b5c5346199d2'];
+  if (!ADMIN_IDS.includes(userId)) {
+    try {
+      const resChef = await fetch(SUPA_URL + '/rest/v1/chefs?user_id=eq.' + userId + '&select=id&limit=1', { headers });
+      if (resChef.ok) {
+        const chefRows = await resChef.json();
+        if (Array.isArray(chefRows) && chefRows.length > 0) {
+          // Es chef → ignorar silenciosamente, no tocar header ni sesión de cliente
+          return false;
+        }
       }
+    } catch(e) {
+      console.warn('Error verificando rol chef, asumiendo cliente:', e);
     }
-    // Si la respuesta no es ok (403, 404, etc.) o no hay filas → asumir cliente, continuar
-  } catch(e) {
-    // Error de red u otro → asumir cliente, continuar normalmente
-    console.warn('Error verificando rol chef, asumiendo cliente:', e);
   }
   // ────────────────────────────────────────────────────────────────────────
 
