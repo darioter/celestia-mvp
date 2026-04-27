@@ -49,6 +49,36 @@ header {
   border-bottom:1px solid var(--cream-dark);
 }
 
+/* TABS */
+.tabs {
+  display:flex;
+  gap:0;
+  margin-bottom:40px;
+  border-bottom:2px solid var(--cream-dark);
+}
+.tab-btn {
+  font-family:'DM Sans',sans-serif;
+  font-size:13px;
+  font-weight:500;
+  padding:12px 24px;
+  border:none;
+  background:transparent;
+  color:var(--text-light);
+  cursor:pointer;
+  border-bottom:2px solid transparent;
+  margin-bottom:-2px;
+  transition:all 0.2s;
+  letter-spacing:0.02em;
+}
+.tab-btn.active {
+  color:var(--navy);
+  border-bottom-color:var(--gold);
+}
+.tab-btn:hover:not(.active) { color:var(--text-mid); }
+
+.tab-panel { display:none; }
+.tab-panel.active { display:block; }
+
 .toc {
   background:white;
   border-radius:14px;
@@ -88,6 +118,37 @@ strong { font-weight:600; color:var(--text); }
 }
 .highlight p { margin-bottom:0; }
 
+.badge {
+  display:inline-block;
+  background:rgba(201,168,76,0.12);
+  border:1px solid rgba(201,168,76,0.3);
+  border-radius:40px;
+  padding:3px 12px;
+  font-size:11px;
+  font-weight:500;
+  color:var(--gold);
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  margin-bottom:20px;
+}
+
+.pago-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:12px;
+  margin:20px 0;
+}
+.pago-card {
+  background:white;
+  border:1px solid var(--cream-dark);
+  border-radius:12px;
+  padding:16px;
+  text-align:center;
+}
+.pago-card .monto { font-family:'DM Serif Display',serif; font-size:20px; color:var(--gold); margin-bottom:4px; }
+.pago-card .label { font-size:11px; color:var(--text-light); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:6px; }
+.pago-card .desc { font-size:12px; color:var(--text-mid); font-weight:300; }
+
 .contact-box {
   background:var(--navy);
   border-radius:14px;
@@ -107,6 +168,11 @@ footer {
   color:rgba(250,246,239,0.35);
 }
 footer a { color:rgba(250,246,239,0.5); text-decoration:none; }
+
+@media(max-width:600px) {
+  .pago-grid { grid-template-columns:1fr; }
+  .tab-btn { padding:10px 16px; font-size:12px; }
+}
 </style>
 </head>
 <body>
@@ -121,90 +187,282 @@ footer a { color:rgba(250,246,239,0.5); text-decoration:none; }
   <div class="page-title">Términos y Condiciones</div>
   <div class="page-sub">Última actualización: abril de 2026 · Celestia Chef Privado · CUIT 20-25687023-2</div>
 
-  <div class="toc">
-    <div class="toc-title">Contenido</div>
-    <a href="#servicio">1. El servicio</a>
-    <a href="#reservas">2. Reservas y confirmación</a>
-    <a href="#pagos">3. Pagos y honorarios</a>
-    <a href="#cancelaciones">4. Política de cancelación</a>
-    <a href="#responsabilidades">5. Responsabilidades</a>
-    <a href="#privacidad">6. Privacidad y datos personales</a>
-    <a href="#cookies">7. Política de cookies</a>
-    <a href="#contacto">8. Contacto</a>
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('clientes')">Para clientes</button>
+    <button class="tab-btn" onclick="switchTab('chefs')">Para chefs</button>
+    <button class="tab-btn" onclick="switchTab('plataforma')">La plataforma</button>
   </div>
 
-  <!-- 1 -->
-  <h2 id="servicio">1. El servicio</h2>
-  <p>Celestia Chef Privado es un servicio de gastronomía privada prestado por <strong>Darío Gabriel Castello</strong> (CUIT 20-25687023-2), con domicilio en Buenos Aires, Argentina.</p>
-  <p>El servicio consiste en la planificación, compras, mise en place, ejecución y presentación de menús gastronómicos en el domicilio del cliente, en las modalidades disponibles en <strong>chefprivado.ar</strong>.</p>
-  <p>El servicio está disponible en el Área Metropolitana de Buenos Aires. Para otras localidades consultar disponibilidad y posibles costos adicionales de traslado.</p>
+  <!-- ══════════════════════════════════════════════
+       TAB 1: CLIENTES
+  ══════════════════════════════════════════════ -->
+  <div id="tab-clientes" class="tab-panel active">
 
-  <!-- 2 -->
-  <h2 id="reservas">2. Reservas y confirmación</h2>
-  <p>Las reservas se realizan a través del formulario disponible en <strong>chefprivado.ar</strong> con un mínimo de <strong>48 horas de anticipación</strong>.</p>
-  <p>Una solicitud de reserva no garantiza la fecha hasta que se acredite el pago de la seña correspondiente. La fecha queda bloqueada para otros clientes únicamente una vez confirmado el pago.</p>
-  <p>El menú definitivo y el desglose final de ingredientes se acuerdan entre las partes antes del evento, mediante coordinación por WhatsApp.</p>
+    <div class="toc">
+      <div class="toc-title">Contenido</div>
+      <a href="#c-servicio">1. El servicio</a>
+      <a href="#c-reservas">2. Reservas y confirmación</a>
+      <a href="#c-pagos">3. Pagos y honorarios</a>
+      <a href="#c-cancelaciones">4. Política de cancelación</a>
+      <a href="#c-responsabilidades">5. Responsabilidades</a>
+      <a href="#c-privacidad">6. Privacidad y datos personales</a>
+      <a href="#c-cookies">7. Política de cookies</a>
+      <a href="#c-jurisdiccion">8. Jurisdicción</a>
+      <a href="#c-contacto">9. Contacto</a>
+    </div>
 
-  <!-- 3 -->
-  <h2 id="pagos">3. Pagos y honorarios</h2>
-  <p>El honorario del servicio incluye: planificación del menú, visita previa al domicilio, gestión de compras, mise en place, servicio completo y cierre.</p>
-  <p><strong>Los ingredientes se cotizan por separado</strong> y su costo estimado se indica durante el proceso de reserva. El monto definitivo se acuerda antes del evento.</p>
-  <p>Las bebidas corren por cuenta del anfitrión.</p>
+    <h2 id="c-servicio">1. El servicio</h2>
+    <p>Celestia Chef Privado es una plataforma de intermediación gastronómica operada por <strong>Darío Gabriel Castello</strong> (CUIT 20-25687023-2), con domicilio en Buenos Aires, Argentina.</p>
+    <p>Celestia conecta a clientes con chefs privados verificados. El servicio consiste en la planificación, compras, mise en place, ejecución y presentación de menús gastronómicos en el domicilio del cliente, ejecutados por chefs independientes que operan en la plataforma.</p>
+    <p>Celestia actúa como intermediaria entre el cliente y el chef. La relación entre ambas partes es análoga a la de plataformas de intermediación de servicios: Celestia no es el prestador directo del servicio gastronómico, sino la plataforma que lo facilita y garantiza.</p>
+    <p>El servicio está disponible en el Área Metropolitana de Buenos Aires. Para otras localidades consultar disponibilidad y posibles costos adicionales de traslado.</p>
 
-  <div class="highlight">
-    <p><strong>Esquema de pago:</strong> Se abona una seña del 50% del honorario para confirmar la reserva. El saldo restante se abona el día del evento, antes del inicio del servicio.</p>
+    <h2 id="c-reservas">2. Reservas y confirmación</h2>
+    <p>Las reservas se realizan a través del formulario disponible en <strong>chefprivado.ar</strong> con un mínimo de <strong>48 horas de anticipación</strong>.</p>
+    <p>Una solicitud de reserva no garantiza la fecha hasta que se acredite el pago de la seña correspondiente. La fecha queda bloqueada para otros clientes únicamente una vez confirmado el pago.</p>
+    <p>El menú definitivo y el desglose final de ingredientes se acuerdan entre las partes antes del evento, mediante coordinación por WhatsApp.</p>
+    <p>Todos los chefs disponibles en la plataforma han sido verificados y aprobados por Celestia antes de prestar servicios.</p>
+
+    <h2 id="c-pagos">3. Pagos y honorarios</h2>
+    <p>El precio del servicio incluye: honorario del chef, planificación del menú, gestión de compras, mise en place, ejecución y cierre del servicio.</p>
+    <p><strong>Los ingredientes se cotizan por separado</strong> y su costo estimado se indica durante el proceso de reserva. El monto definitivo se acuerda antes del evento.</p>
+    <p>Las bebidas corren por cuenta del anfitrión salvo acuerdo expreso en contrario.</p>
+
+    <div class="highlight">
+      <p><strong>Esquema de pago:</strong> Se abona una seña del 50% del total al confirmar la reserva. El saldo restante se abona al inicio del servicio, antes de que el chef comience a trabajar.</p>
+    </div>
+
+    <p>Los medios de pago aceptados son transferencia bancaria y MercadoPago. Los datos de pago se informan al momento de la confirmación.</p>
+    <p>Los precios publicados en el sitio son orientativos y pueden variar según la configuración específica de cada servicio.</p>
+
+    <h2 id="c-cancelaciones">4. Política de cancelación</h2>
+
+    <h3>Cancelación por parte del cliente</h3>
+    <ul>
+      <li><strong>Con más de 15 días de anticipación:</strong> devolución del 100% de la seña.</li>
+      <li><strong>Entre 7 y 15 días de anticipación:</strong> devolución del 50% de la seña.</li>
+      <li><strong>Con menos de 7 días de anticipación:</strong> sin devolución de la seña.</li>
+    </ul>
+    <p>Las cancelaciones deben comunicarse por escrito vía WhatsApp o email a <strong>celestiachefs@gmail.com</strong>. La fecha de cancelación es la fecha de recepción del mensaje.</p>
+
+    <h3>Cancelación por parte del chef o la plataforma</h3>
+    <p>En caso de cancelación imputable al chef o a Celestia, se reintegrará el 100% de los montos abonados. El cliente tendrá prioridad para reagendar en la fecha de su preferencia o se le asignará un chef alternativo disponible.</p>
+
+    <h3>Fuerza mayor</h3>
+    <p>Ante situaciones de fuerza mayor (enfermedad, emergencias, causas de caso fortuito), se coordinará la reprogramación del servicio sin penalidad para ninguna de las partes.</p>
+
+    <h2 id="c-responsabilidades">5. Responsabilidades</h2>
+    <p>El cliente es responsable de informar con anticipación cualquier alergia, intolerancia o restricción alimentaria. Celestia y el chef no se responsabilizan por reacciones derivadas de información no declarada.</p>
+    <p>El cliente es responsable de garantizar un espacio de trabajo adecuado y seguro, con acceso a cocina, agua y los servicios necesarios para la prestación del servicio.</p>
+    <p>Celestia verifica a los chefs de la plataforma pero no garantiza resultados específicos ni asume responsabilidad por daños causados por el chef durante la prestación del servicio más allá de lo dispuesto por la legislación argentina aplicable.</p>
+    <p>Celestia no es responsable por demoras, incumplimientos o daños derivados de causas ajenas a su control, incluyendo situaciones de caso fortuito o fuerza mayor.</p>
+
+    <h2 id="c-privacidad">6. Privacidad y datos personales</h2>
+    <p>Los datos personales recopilados (nombre, teléfono, email, dirección) son utilizados exclusivamente para la coordinación y prestación del servicio contratado.</p>
+    <p>No se comparten datos con terceros con fines comerciales. Los datos se almacenan de forma segura en servidores de <strong>Supabase</strong> con encriptación en tránsito y en reposo. El acceso a la plataforma puede realizarse mediante autenticación de Google (OAuth 2.0), cuyos términos son los de Google LLC.</p>
+    <p>El cliente tiene derecho a solicitar el acceso, rectificación o eliminación de sus datos en cualquier momento escribiendo a <strong>celestiachefs@gmail.com</strong>.</p>
+    <p>Celestia cumple con la <strong>Ley 25.326 de Protección de Datos Personales</strong> de la República Argentina.</p>
+
+    <h2 id="c-cookies">7. Política de cookies</h2>
+    <p>El sitio <strong>chefprivado.ar</strong> utiliza cookies técnicas estrictamente necesarias para el funcionamiento del portal de clientes (autenticación de sesión). No se utilizan cookies de rastreo publicitario ni se comparten datos con redes de publicidad.</p>
+    <ul>
+      <li><strong>sb-auth-token:</strong> cookie de sesión del portal de clientes. Necesaria para mantener la sesión activa. Se elimina al cerrar sesión.</li>
+    </ul>
+    <p>Al utilizar el portal de clientes, el usuario acepta el uso de estas cookies técnicas.</p>
+
+    <h2 id="c-jurisdiccion">8. Jurisdicción</h2>
+    <p>Cualquier controversia derivada de estos términos será resuelta por los Tribunales Ordinarios de la Ciudad Autónoma de Buenos Aires, con renuncia a cualquier otro fuero que pudiera corresponder.</p>
+    <p>La legislación aplicable es la de la República Argentina.</p>
+
+    <div class="contact-box">
+      <h3 id="c-contacto">9. Contacto</h3>
+      <p>Para consultas sobre estos términos, cancelaciones o datos personales:</p>
+      <p>📧 <a href="mailto:celestiachefs@gmail.com">celestiachefs@gmail.com</a></p>
+      <p>📱 <a href="https://wa.me/5491160410607">+54 11 6041-0607</a></p>
+      <p>🌐 <a href="https://chefprivado.ar">chefprivado.ar</a></p>
+      <p style="margin-top:16px;font-size:12px;color:rgba(250,246,239,0.4);">Darío Gabriel Castello · CUIT 20-25687023-2 · Buenos Aires, Argentina</p>
+    </div>
+
   </div>
 
-  <p>Los medios de pago aceptados son transferencia bancaria y MercadoPago. Los datos de pago se informan al momento de la confirmación.</p>
+  <!-- ══════════════════════════════════════════════
+       TAB 2: CHEFS
+  ══════════════════════════════════════════════ -->
+  <div id="tab-chefs" class="tab-panel">
 
-  <!-- 4 -->
-  <h2 id="cancelaciones">4. Política de cancelación</h2>
+    <div class="toc">
+      <div class="toc-title">Contenido</div>
+      <a href="#h-plataforma">1. Naturaleza de la relación</a>
+      <a href="#h-ingreso">2. Ingreso y verificación</a>
+      <a href="#h-servicios">3. Prestación de servicios</a>
+      <a href="#h-liquidacion">4. Liquidación y pagos</a>
+      <a href="#h-cancelaciones">5. Cancelaciones y penalidades</a>
+      <a href="#h-obligaciones">6. Obligaciones del chef</a>
+      <a href="#h-suspension">7. Suspensión y baja</a>
+      <a href="#h-datos">8. Datos personales</a>
+      <a href="#h-jurisdiccion">9. Jurisdicción</a>
+    </div>
 
-  <h3>Cancelación por parte del cliente</h3>
-  <ul>
-    <li><strong>Con más de 15 días de anticipación:</strong> devolución del 100% de la seña.</li>
-    <li><strong>Entre 7 y 15 días de anticipación:</strong> devolución del 50% de la seña.</li>
-    <li><strong>Con menos de 7 días de anticipación:</strong> sin devolución de la seña.</li>
-  </ul>
-  <p>Las cancelaciones deben comunicarse por escrito vía WhatsApp o email a <strong>celestiachefs@gmail.com</strong>. La fecha de cancelación es la fecha de recepción del mensaje.</p>
+    <div class="badge">Para chefs de la plataforma</div>
 
-  <h3>Cancelación por parte de Celestia</h3>
-  <p>En caso de cancelación por causas imputables a Celestia, se reintegrará el 100% de los montos abonados. El cliente tendrá prioridad para reagendar en la fecha de su preferencia.</p>
+    <h2 id="h-plataforma">1. Naturaleza de la relación</h2>
+    <p>Celestia es una plataforma de intermediación que conecta chefs independientes con clientes. La incorporación a Celestia <strong>no genera relación de dependencia laboral</strong> ni vínculo de empleo de ningún tipo entre el chef y Celestia.</p>
+    <p>El chef opera como prestador independiente y es responsable de su situación impositiva, previsional y de habilitaciones profesionales ante los organismos correspondientes (AFIP, ANSES, etc.).</p>
+    <p>Celestia actúa como intermediaria, gestiona los pagos, la relación con el cliente y la infraestructura tecnológica de la plataforma.</p>
 
-  <h3>Fuerza mayor</h3>
-  <p>Ante situaciones de fuerza mayor (enfermedad, emergencias, causas de caso fortuito), se coordinará la reprogramación del servicio sin penalidad para ninguna de las partes.</p>
+    <h2 id="h-ingreso">2. Ingreso y verificación</h2>
+    <p>Para incorporarse a la plataforma, el chef debe completar el proceso de solicitud disponible en <strong>chefprivado.ar/chef</strong>, que incluye:</p>
+    <ul>
+      <li>Datos personales y profesionales completos</li>
+      <li>Documentación de identidad (DNI frente y dorso)</li>
+      <li>Carnet de manipulación de alimentos vigente</li>
+      <li>Curriculum vitae gastronómico</li>
+      <li>Entrevista de evaluación con el equipo Celestia</li>
+    </ul>
+    <p>Celestia se reserva el derecho de aprobar o rechazar solicitudes sin obligación de fundar su decisión. La aprobación no garantiza un mínimo de servicios asignados.</p>
 
-  <!-- 5 -->
-  <h2 id="responsabilidades">5. Responsabilidades</h2>
-  <p>El cliente es responsable de informar con anticipación cualquier alergia, intolerancia o restricción alimentaria. Celestia no se responsabiliza por reacciones derivadas de información no declarada.</p>
-  <p>El cliente es responsable de garantizar un espacio de trabajo adecuado y seguro. Celestia no se responsabiliza por daños preexistentes en el domicilio.</p>
-  <p>Los precios publicados en el sitio son orientativos y pueden variar según la configuración específica de cada servicio.</p>
+    <h2 id="h-servicios">3. Prestación de servicios</h2>
+    <p>Una vez aprobado, el chef puede recibir solicitudes de servicio a través de la plataforma. El chef tiene libertad de aceptar o rechazar cada servicio.</p>
+    <p>Al aceptar un servicio, el chef se compromete a:</p>
+    <ul>
+      <li>Confirmar la disponibilidad de la fecha acordada</li>
+      <li>Coordinarse con el cliente por WhatsApp para definir el menú y detalles logísticos</li>
+      <li>Llegar puntualmente al domicilio del cliente</li>
+      <li>Ejecutar el servicio según los estándares de Celestia</li>
+      <li>Gestionar las compras de ingredientes y presentar el comprobante correspondiente</li>
+    </ul>
+    <p>El chef es responsable de la calidad del servicio prestado y de cualquier daño que pudiera ocasionar durante su ejecución.</p>
 
-  <!-- 6 -->
-  <h2 id="privacidad">6. Privacidad y datos personales</h2>
-  <p>Los datos personales recopilados (nombre, teléfono, email, dirección) son utilizados exclusivamente para la coordinación y prestación del servicio contratado.</p>
-  <p>No se comparten datos con terceros con fines comerciales. Los datos se almacenan de forma segura en servidores de <strong>Supabase</strong> con encriptación en tránsito y en reposo.</p>
-  <p>El cliente tiene derecho a solicitar el acceso, rectificación o eliminación de sus datos en cualquier momento escribiendo a <strong>celestiachefs@gmail.com</strong>.</p>
-  <p>Celestia cumple con la <strong>Ley 25.326 de Protección de Datos Personales</strong> de la República Argentina.</p>
+    <h2 id="h-liquidacion">4. Liquidación y pagos</h2>
+    <p>Celestia cobra el total del servicio al cliente y liquida al chef el <strong>70% del honorario base</strong>, reteniendo el 30% como comisión de plataforma. Los ingredientes se liquidan por separado al costo real acreditado.</p>
 
-  <!-- 7 -->
-  <h2 id="cookies">7. Política de cookies</h2>
-  <p>El sitio <strong>chefprivado.ar</strong> utiliza cookies técnicas estrictamente necesarias para el funcionamiento del portal de clientes (autenticación de sesión). No se utilizan cookies de rastreo publicitario ni se comparten datos con redes de publicidad.</p>
+    <div class="pago-grid">
+      <div class="pago-card">
+        <div class="label">Adelanto</div>
+        <div class="monto">50%</div>
+        <div class="desc">Al aceptar el servicio — se reserva para el chef</div>
+      </div>
+      <div class="pago-card">
+        <div class="label">Saldo</div>
+        <div class="monto">35%</div>
+        <div class="desc">Al finalizar el servicio — requiere factura PDF</div>
+      </div>
+      <div class="pago-card">
+        <div class="label">Retención</div>
+        <div class="monto">15%</div>
+        <div class="desc">A las +24hs del servicio — garantía por reclamos</div>
+      </div>
+    </div>
 
-  <h3>Cookies utilizadas</h3>
-  <ul>
-    <li><strong>sb-auth-token:</strong> cookie de sesión del portal de clientes. Necesaria para mantener la sesión activa. Se elimina al cerrar sesión.</li>
-  </ul>
-  <p>Al utilizar el portal de clientes, el usuario acepta el uso de estas cookies técnicas. No es posible deshabilitar estas cookies sin afectar el funcionamiento del servicio de autenticación.</p>
+    <p>Los porcentajes indicados corresponden al 70% del honorario base asignado al chef. La retención del 15% se libera automáticamente a las 24 horas posteriores a la finalización del servicio, salvo que exista un reclamo abierto del cliente.</p>
+    <p>El pago se realiza mediante transferencia bancaria al alias/CBU registrado en el perfil del chef, o vía MercadoPago según lo configurado.</p>
+    <p>Para percibir el saldo del 35% es obligatorio adjuntar factura electrónica (tipo C o equivalente) emitida a nombre de Celestia. El chef es responsable de su situación fiscal ante AFIP.</p>
 
-  <!-- 8 -->
-  <div class="contact-box">
-    <h3 id="contacto">8. Contacto</h3>
-    <p>Para consultas sobre estos términos, cancelaciones o datos personales:</p>
-    <p>📧 <a href="mailto:celestiachefs@gmail.com">celestiachefs@gmail.com</a></p>
-    <p>📱 <a href="https://wa.me/5491160410607">+54 11 6041-0607</a></p>
-    <p>🌐 <a href="https://chefprivado.ar">chefprivado.ar</a></p>
-    <p style="margin-top:16px;font-size:12px;color:rgba(250,246,239,0.4);">Darío Gabriel Castello · CUIT 20-25687023-2 · Buenos Aires, Argentina</p>
+    <h2 id="h-cancelaciones">5. Cancelaciones y penalidades</h2>
+
+    <h3>Cancelación por parte del chef</h3>
+    <p>Si el chef cancela un servicio ya aceptado, Celestia podrá aplicar las siguientes penalidades según la anticipación:</p>
+    <ul>
+      <li><strong>Con más de 7 días:</strong> sin penalidad, pero se registra en el historial del chef.</li>
+      <li><strong>Entre 3 y 7 días:</strong> retención del adelanto ya acreditado.</li>
+      <li><strong>Con menos de 3 días:</strong> retención del adelanto y posible suspensión temporal de la cuenta.</li>
+    </ul>
+    <p>Tres cancelaciones tardías en un período de 6 meses pueden resultar en la baja permanente de la plataforma.</p>
+
+    <h3>Reclamos del cliente</h3>
+    <p>En caso de reclamo del cliente durante el período de retención (24hs post-servicio), Celestia evaluará la situación y podrá retener parcial o totalmente la retención del 15% para gestionar la compensación correspondiente.</p>
+
+    <h2 id="h-obligaciones">6. Obligaciones del chef</h2>
+    <ul>
+      <li>Mantener vigente el carnet de manipulación de alimentos.</li>
+      <li>Respetar los estándares de higiene y seguridad alimentaria aplicables.</li>
+      <li>No contactar directamente a clientes de Celestia para ofrecerles servicios por fuera de la plataforma durante su permanencia y hasta 12 meses después de su baja.</li>
+      <li>Mantener actualizado su perfil, disponibilidad y datos de cobro.</li>
+      <li>Tratar a los clientes con respeto y profesionalismo en todo momento.</li>
+      <li>No subcontratar el servicio a terceros sin autorización expresa de Celestia.</li>
+    </ul>
+
+    <h2 id="h-suspension">7. Suspensión y baja</h2>
+    <p>Celestia puede suspender o dar de baja a un chef de la plataforma en los siguientes casos:</p>
+    <ul>
+      <li>Incumplimiento reiterado de los estándares de servicio.</li>
+      <li>Reclamos graves o reiterados de clientes.</li>
+      <li>Cancelaciones tardías reiteradas.</li>
+      <li>Contacto directo con clientes para derivar servicios fuera de la plataforma.</li>
+      <li>Falsedad en la documentación presentada.</li>
+      <li>Cualquier conducta que afecte la reputación de Celestia.</li>
+    </ul>
+    <p>En caso de baja, los montos ya devengados y no retenidos por reclamos abiertos serán liquidados en el plazo habitual.</p>
+
+    <h2 id="h-datos">8. Datos personales</h2>
+    <p>Los datos del chef (nombre, CUIT, DNI, alias bancario, documentación) son utilizados exclusivamente para la operación de la plataforma, la liquidación de pagos y el cumplimiento de obligaciones legales.</p>
+    <p>El chef puede solicitar la eliminación de sus datos escribiendo a <strong>celestiachefs@gmail.com</strong>, lo cual implica automáticamente la baja de la plataforma.</p>
+    <p>Celestia cumple con la <strong>Ley 25.326 de Protección de Datos Personales</strong> de la República Argentina.</p>
+
+    <h2 id="h-jurisdiccion">9. Jurisdicción</h2>
+    <p>Cualquier controversia derivada de estos términos será resuelta por los Tribunales Ordinarios de la Ciudad Autónoma de Buenos Aires, con renuncia a cualquier otro fuero que pudiera corresponder.</p>
+
+    <div class="contact-box">
+      <h3>Contacto para chefs</h3>
+      <p>Para consultas sobre liquidaciones, documentación o tu perfil:</p>
+      <p>📧 <a href="mailto:celestiachefs@gmail.com">celestiachefs@gmail.com</a></p>
+      <p>📱 <a href="https://wa.me/5491160410607">+54 11 6041-0607</a></p>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       TAB 3: LA PLATAFORMA
+  ══════════════════════════════════════════════ -->
+  <div id="tab-plataforma" class="tab-panel">
+
+    <div class="toc">
+      <div class="toc-title">Contenido</div>
+      <a href="#p-modelo">1. Modelo de intermediación</a>
+      <a href="#p-comision">2. Comisión de plataforma</a>
+      <a href="#p-pagos">3. Gestión de pagos</a>
+      <a href="#p-responsabilidad">4. Limitación de responsabilidad</a>
+      <a href="#p-cambios">5. Modificaciones</a>
+    </div>
+
+    <div class="badge">Condiciones generales</div>
+
+    <h2 id="p-modelo">1. Modelo de intermediación</h2>
+    <p>Celestia opera como plataforma de intermediación entre clientes y chefs independientes. Este modelo es análogo al de otras plataformas de servicios bajo demanda: Celestia no es el empleador de los chefs ni el prestador directo del servicio gastronómico.</p>
+    <p>Celestia es responsable de:</p>
+    <ul>
+      <li>La verificación y aprobación de los chefs que operan en la plataforma.</li>
+      <li>La gestión tecnológica del proceso de reserva y pago.</li>
+      <li>La coordinación entre cliente y chef.</li>
+      <li>La atención de reclamos y resolución de conflictos entre partes.</li>
+    </ul>
+
+    <h2 id="p-comision">2. Comisión de plataforma</h2>
+    <p>Celestia retiene el <strong>30% del honorario base</strong> de cada servicio como comisión por el uso de la plataforma, la gestión de pagos, la infraestructura tecnológica y la garantía de servicio ofrecida al cliente.</p>
+    <p>Este porcentaje puede modificarse con previo aviso de 30 días a los chefs activos en la plataforma.</p>
+
+    <h2 id="p-pagos">3. Gestión de pagos</h2>
+    <p>Celestia gestiona el cobro al cliente en nombre del chef y liquida los montos correspondientes según el esquema descripto en los Términos para Chefs. Los pagos se procesan a través de MercadoPago y transferencias bancarias.</p>
+    <p>Celestia no retiene fondos más allá de los plazos establecidos, salvo en casos de reclamos abiertos o disputas en proceso de resolución.</p>
+
+    <h2 id="p-responsabilidad">4. Limitación de responsabilidad</h2>
+    <p>Celestia no garantiza un nivel mínimo de servicios asignados a los chefs ni un nivel mínimo de disponibilidad de chefs para los clientes, ya que ambos dependen de la oferta y demanda de la plataforma.</p>
+    <p>La responsabilidad de Celestia frente a clientes y chefs se limita, en todos los casos, al monto efectivamente abonado por el servicio en cuestión.</p>
+    <p>Celestia no es responsable por daños indirectos, lucro cesante ni perjuicios que excedan el alcance del servicio específico contratado.</p>
+
+    <h2 id="p-cambios">5. Modificaciones</h2>
+    <p>Celestia puede modificar estos términos en cualquier momento. Los cambios se notificarán con al menos <strong>15 días de anticipación</strong> a clientes y chefs registrados mediante email y/o aviso en la plataforma.</p>
+    <p>El uso continuado de la plataforma tras la notificación implica la aceptación de los nuevos términos.</p>
+
+    <div class="contact-box">
+      <h3>Celestia Chef Privado</h3>
+      <p>Darío Gabriel Castello · CUIT 20-25687023-2</p>
+      <p>📧 <a href="mailto:celestiachefs@gmail.com">celestiachefs@gmail.com</a></p>
+      <p>🌐 <a href="https://chefprivado.ar">chefprivado.ar</a></p>
+      <p style="margin-top:16px;font-size:12px;color:rgba(250,246,239,0.4);">Buenos Aires, Argentina · Ley 25.326 · Tribunales CABA</p>
+    </div>
+
   </div>
 
 </div>
@@ -212,6 +470,31 @@ footer a { color:rgba(250,246,239,0.5); text-decoration:none; }
 <footer>
   <p>© 2026 Celestia Chef Privado · <a href="/">chefprivado.ar</a></p>
 </footer>
+
+<script>
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+    const tabs = ['clientes', 'chefs', 'plataforma'];
+    btn.classList.toggle('active', tabs[i] === tab);
+  });
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Anchor links desde la landing (#privacidad, #cookies)
+window.addEventListener('DOMContentLoaded', () => {
+  const hash = window.location.hash;
+  if (hash === '#privacidad') switchTab('clientes');
+  if (hash === '#cookies') switchTab('clientes');
+  if (hash) {
+    setTimeout(() => {
+      const el = document.querySelector(hash);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  }
+});
+</script>
 
 </body>
 </html>
