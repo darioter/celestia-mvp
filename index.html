@@ -2520,6 +2520,16 @@ async function authConGoogle() {
 // OAuth: cuando Google/GitHub redirige de vuelta
 supa.auth.onAuthStateChange(async (event, session) => {
   if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session) {
+    // Verificar si es chef antes de cualquier otra cosa
+    const _esChef = await (async () => {
+      try {
+        const headers = { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + session.access_token };
+        const res = await fetch(SUPA_URL + '/rest/v1/chefs?user_id=eq.' + session.user.id + '&select=id&limit=1', { headers });
+        const rows = await res.json();
+        return Array.isArray(rows) && rows.length > 0;
+      } catch(e) { return false; }
+    })();
+    if (_esChef) { await supa.auth.signOut(); return; }
     _session = session;
     await _actualizarHeaderConSesionLocal();
     // Restaurar flujo de reserva de experiencia
