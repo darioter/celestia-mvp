@@ -2292,17 +2292,13 @@ async function _actualizarHeaderConSesionLocal() {
   const headers = { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + token };
 
   // ── Verificar si el usuario logueado es un chef ──────────────────────────
-  // Si existe en la tabla chefs, ignorar la sesión en esta landing (es de uso
-  // exclusivo del panel de chefs) y cerrarla silenciosamente para no contaminar
-  // el flujo de clientes.
+  // Si existe en la tabla chefs, ignorar la sesión en esta landing sin cerrarla
+  // (el signOut dispara SIGNED_OUT y rompe el flujo de clientes legítimos).
   try {
     const resChef = await fetch(SUPA_URL + '/rest/v1/chefs?user_id=eq.' + userId + '&select=id&limit=1', { headers });
     const chefRows = await resChef.json();
     if (Array.isArray(chefRows) && chefRows.length > 0) {
-      // Es chef → cerrar sesión silenciosamente y salir sin tocar el header
-      await supa.auth.signOut();
-      _session = null;
-      clientePerfil = null;
+      // Es chef → no tocar nada, simplemente ignorar en esta landing
       return false;
     }
   } catch(e) {
@@ -2520,18 +2516,11 @@ async function authConGoogle() {
 // OAuth: cuando Google/GitHub redirige de vuelta
 supa.auth.onAuthStateChange(async (event, session) => {
   if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session) {
-    // Verificar si es chef antes de cualquier otra cosa
-    const _esChef = await (async () => {
-      try {
-        const headers = { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + session.access_token };
-        const res = await fetch(SUPA_URL + '/rest/v1/chefs?user_id=eq.' + session.user.id + '&select=id&limit=1', { headers });
-        const rows = await res.json();
-        return Array.isArray(rows) && rows.length > 0;
-      } catch(e) { return false; }
-    })();
-    if (_esChef) { await supa.auth.signOut(); return; }
+    // _actualizarHeaderConSesionLocal verifica internamente si es chef
+    // y retorna false sin tocar nada si lo es
+    const esCliente = await _actualizarHeaderConSesionLocal();
+    if (!esCliente) return;
     _session = session;
-    await _actualizarHeaderConSesionLocal();
     // Restaurar flujo de reserva de experiencia
     if (event === 'SIGNED_IN' && localStorage.getItem('celestia_reserva_estado')) {
       const ok = _restaurarEstadoReserva();
