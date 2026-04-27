@@ -2289,8 +2289,28 @@ async function _actualizarHeaderConSesionLocal() {
   const token = sesion.access_token;
   const userId = sesion.user?.id;
   if (!token || !userId) return false;
-  _session = sesion;
   const headers = { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + token };
+
+  // ── Verificar si el usuario logueado es un chef ──────────────────────────
+  // Si existe en la tabla chefs, ignorar la sesión en esta landing (es de uso
+  // exclusivo del panel de chefs) y cerrarla silenciosamente para no contaminar
+  // el flujo de clientes.
+  try {
+    const resChef = await fetch(SUPA_URL + '/rest/v1/chefs?user_id=eq.' + userId + '&select=id&limit=1', { headers });
+    const chefRows = await resChef.json();
+    if (Array.isArray(chefRows) && chefRows.length > 0) {
+      // Es chef → cerrar sesión silenciosamente y salir sin tocar el header
+      await supa.auth.signOut();
+      _session = null;
+      clientePerfil = null;
+      return false;
+    }
+  } catch(e) {
+    console.warn('Error verificando rol chef:', e);
+  }
+  // ────────────────────────────────────────────────────────────────────────
+
+  _session = sesion;
   try {
     const res = await fetch(SUPA_URL + '/rest/v1/clientes?id=eq.' + userId + '&select=*&limit=1', { headers });
     const rows = await res.json();
