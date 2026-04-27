@@ -2348,9 +2348,13 @@ async function _actualizarHeaderConSesionLocal(sesionDirecta) {
   return true;
 }
 
-// Init: usa localStorage directamente (instantáneo, sin lock)
+// Init: pide la sesión real a Supabase y la pasa directamente
+// Esto evita problemas de timing con onAuthStateChange/INITIAL_SESSION
 async function _initAuth() {
-  await _actualizarHeaderConSesionLocal();
+  const { data } = await supa.auth.getSession();
+  if (data?.session) {
+    await _actualizarHeaderConSesionLocal(data.session);
+  }
 }
 
 // iniciarSesion: alias para compatibilidad
