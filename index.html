@@ -2282,9 +2282,9 @@ function _leerSesionLocal() {
   } catch(e) { return null; }
 }
 
-// Actualiza header y clientePerfil sin usar getSession()
-async function _actualizarHeaderConSesionLocal() {
-  const sesion = _leerSesionLocal();
+// Actualiza header y clientePerfil. Acepta sesión directa o la lee de localStorage.
+async function _actualizarHeaderConSesionLocal(sesionDirecta) {
+  const sesion = sesionDirecta || _leerSesionLocal();
   if (!sesion) return false;
   const token = sesion.access_token;
   const userId = sesion.user?.id;
@@ -2292,13 +2292,11 @@ async function _actualizarHeaderConSesionLocal() {
   const headers = { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + token };
 
   // ── Verificar si el usuario logueado es un chef ──────────────────────────
-  // Si existe en la tabla chefs, ignorar la sesión en esta landing sin cerrarla
-  // (el signOut dispara SIGNED_OUT y rompe el flujo de clientes legítimos).
   try {
     const resChef = await fetch(SUPA_URL + '/rest/v1/chefs?user_id=eq.' + userId + '&select=id&limit=1', { headers });
     const chefRows = await resChef.json();
     if (Array.isArray(chefRows) && chefRows.length > 0) {
-      // Es chef → no tocar nada, simplemente ignorar en esta landing
+      // Es chef → ignorar silenciosamente, no tocar header ni sesión de cliente
       return false;
     }
   } catch(e) {
@@ -2516,11 +2514,9 @@ async function authConGoogle() {
 // OAuth: cuando Google/GitHub redirige de vuelta
 supa.auth.onAuthStateChange(async (event, session) => {
   if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session) {
-    // _actualizarHeaderConSesionLocal verifica internamente si es chef
-    // y retorna false sin tocar nada si lo es
-    const esCliente = await _actualizarHeaderConSesionLocal();
+    // Pasar sesión directamente para no depender del timing de localStorage
+    const esCliente = await _actualizarHeaderConSesionLocal(session);
     if (!esCliente) return;
-    _session = session;
     // Restaurar flujo de reserva de experiencia
     if (event === 'SIGNED_IN' && localStorage.getItem('celestia_reserva_estado')) {
       const ok = _restaurarEstadoReserva();
