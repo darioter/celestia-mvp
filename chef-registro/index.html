@@ -453,6 +453,7 @@ async function enviarSolicitud() {
 
     const { error } = await supa.from('chefs').insert({
       id: uid,
+      user_id: uid,
       slug: uid.substring(0, 8) + '-' + nombre.toLowerCase().replace(/\s+/g,'-'),
       nombre,
       apellido,
