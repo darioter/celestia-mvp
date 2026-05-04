@@ -1466,6 +1466,7 @@ function setLang(lang) {
   localStorage.setItem('celestia_lang', lang);
   aplicarI18n();
 }
+window.setLang = setLang;
 
 function aplicarI18n() {
   // Header
