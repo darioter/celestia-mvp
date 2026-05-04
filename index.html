@@ -236,10 +236,15 @@ header {
 }
 .logo span { color: var(--cream); font-style: italic; }
 .tagline {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   font-size: 11px;
   color: var(--text-light);
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
 }
 
 /* ─── HERO ─── */
@@ -1193,7 +1198,14 @@ textarea { resize: vertical; min-height: 80px; }
   /* HEADER mobile */
   header { padding: 0 14px; height: 52px; }
   header img { height: 26px !important; }
-  .tagline { display: none; }
+  .tagline {
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   #header-acceder { font-size: 11px; padding: 5px 10px; }
   .logo-by { display: none; }
 
