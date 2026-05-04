@@ -265,6 +265,23 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); min-height:100
 .save-btn { background:var(--navy); color:var(--cream); border:none; border-radius:40px; padding:13px 32px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500; cursor:pointer; transition:all 0.2s; letter-spacing:0.03em; }
 .save-btn:hover { background:#1A2E42; }
 .save-btn:disabled { opacity:0.5; cursor:default; }
+.form-input.campo-error { border-color: #E05252 !important; background: rgba(224,82,82,0.04); }
+.campo-error-msg { font-size:11px; color:#E05252; margin-top:2px; display:none; }
+.campo-error-msg.visible { display:block; }
+.form-label .req { color: var(--gold); margin-left:2px; font-size:11px; }
+.perfil-incompleto-banner {
+  background: rgba(224,82,82,0.08);
+  border: 1px solid rgba(224,82,82,0.25);
+  border-radius:12px;
+  padding:12px 16px;
+  font-size:13px;
+  color:#E05252;
+  margin-bottom:16px;
+  display:none;
+  align-items:center;
+  gap:10px;
+}
+.perfil-incompleto-banner.visible { display:flex; }
 
 .empty-state { text-align:center; padding:48px 20px; color:var(--text-light); font-size:14px; }
 .empty-icon { font-size:36px; margin-bottom:12px; opacity:0.4; }
@@ -407,26 +424,34 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); min-height:100
           </div>
         </div>
         <div class="card-titulo">Información personal</div>
+        <div class="perfil-incompleto-banner" id="banner-incompleto">
+          <span>⚠</span>
+          <span id="banner-incompleto-texto">Completá los campos obligatorios para poder hacer una reserva.</span>
+        </div>
         <div class="form-grid">
           <div class="form-field">
-            <label class="form-label">Nombre completo</label>
-            <input type="text" class="form-input" id="p-nombre" placeholder="Tu nombre completo">
+            <label class="form-label">Nombre completo <span class="req">*</span></label>
+            <input type="text" class="form-input" id="p-nombre" placeholder="Tu nombre completo" oninput="validarCampo('p-nombre')">
+            <div class="campo-error-msg" id="err-nombre">Este campo es obligatorio</div>
           </div>
           <div class="form-field">
-            <label class="form-label">Teléfono</label>
-            <input type="tel" class="form-input" id="p-tel" placeholder="+54 11 ...">
+            <label class="form-label">Teléfono <span class="req">*</span></label>
+            <input type="tel" class="form-input" id="p-tel" placeholder="+54 11 ..." oninput="validarCampo('p-tel')">
+            <div class="campo-error-msg" id="err-tel">Este campo es obligatorio</div>
           </div>
           <div class="form-field full">
-            <label class="form-label">Dirección del servicio</label>
-            <input type="text" class="form-input" id="p-dir" placeholder="Calle, número">
+            <label class="form-label">Dirección del servicio <span class="req">*</span></label>
+            <input type="text" class="form-input" id="p-dir" placeholder="Calle, número" oninput="validarCampo('p-dir')">
+            <div class="campo-error-msg" id="err-dir">Este campo es obligatorio</div>
           </div>
           <div class="form-field">
-            <label class="form-label">Barrio</label>
-            <input type="text" class="form-input" id="p-barrio" placeholder="Ej: Palermo, San Isidro">
+            <label class="form-label">Barrio <span class="req">*</span></label>
+            <input type="text" class="form-input" id="p-barrio" placeholder="Ej: Palermo, San Fernando" oninput="validarCampo('p-barrio')">
+            <div class="campo-error-msg" id="err-barrio">Este campo es obligatorio</div>
           </div>
           <div class="form-field">
-            <label class="form-label">Ciudad</label>
-            <select class="form-input" id="p-ciudad">
+            <label class="form-label">Ciudad <span class="req">*</span></label>
+            <select class="form-input" id="p-ciudad" onchange="validarCampo('p-ciudad')">
               <option value="">Seleccioná tu ciudad</option>
               <optgroup label="Buenos Aires">
                 <option value="Buenos Aires">CABA / Buenos Aires</option>
@@ -784,6 +809,11 @@ async function cargarPerfil() {
   if (el('p-barrio')) el('p-barrio').value = data.barrio || '';
   if (el('p-ciudad') && data.ciudad) el('p-ciudad').value = data.ciudad;
   if (el('p-piso')) el('p-piso').value = data.piso || '';
+  // Mostrar banner si el perfil está incompleto
+  const camposReq = ['p-nombre','p-tel','p-dir','p-barrio','p-ciudad'];
+  const incompleto = camposReq.some(id => { const e = el(id); return !e || !e.value?.trim(); });
+  const banner = document.getElementById('banner-incompleto');
+  if (banner && incompleto) banner.classList.add('visible');
   if (el('p-notas')) el('p-notas').value = data.notas || '';
   if (data.avatar_url) {
     const av = document.getElementById('avatar-display');
@@ -793,7 +823,31 @@ async function cargarPerfil() {
   actualizarAvatar(displayNombre, data.avatar_url);
 }
 
+function validarCampo(id) {
+  const el = document.getElementById(id);
+  if (!el) return true;
+  const val = el.value?.trim();
+  const vacio = !val || val === '';
+  el.classList.toggle('campo-error', vacio);
+  const errEl = document.getElementById('err-' + id.replace('p-', ''));
+  if (errEl) errEl.classList.toggle('visible', vacio);
+  return !vacio;
+}
+
+function validarPerfil() {
+  const campos = ['p-nombre', 'p-tel', 'p-dir', 'p-barrio', 'p-ciudad'];
+  let ok = true;
+  campos.forEach(id => { if (!validarCampo(id)) ok = false; });
+  const banner = document.getElementById('banner-incompleto');
+  if (banner) banner.classList.toggle('visible', !ok);
+  return ok;
+}
+
 async function guardarPerfil() {
+  if (!validarPerfil()) {
+    document.getElementById('banner-incompleto').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    return;
+  }
   const nombre = document.getElementById('p-nombre').value.trim();
   const { data: existing } = await supa.from('clientes').select('id').eq('email', currentUser.email).single();
   const perfil = {

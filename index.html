@@ -1547,6 +1547,10 @@ textarea { resize: vertical; min-height: 80px; }
       <div class="text" id="disponibilidad-texto">Buscando chefs en tu zona...</div>
     </div>
     <div id="mapa-disponibilidad"></div>
+    <div style="display:flex;align-items:center;gap:6px;margin-top:8px;margin-bottom:4px;">
+      <div style="width:8px;height:8px;background:rgba(255,255,255,0.25);border-radius:50%;flex-shrink:0;"></div>
+      <span style="font-size:11px;color:var(--text-light);font-weight:300;">El mapa muestra tu ciudad de referencia, no tu ubicación real ni la del chef.</span>
+    </div>
     <div class="nav-btns">
       <button class="btn-next" id="btn-next-1" onclick="goTo(2)" disabled>Continuar →</button>
     </div>
@@ -3125,6 +3129,7 @@ const CIUDAD_CENTRO = {
   'Vicente López':{ center: [-34.526, -58.479], zoom: 13 },
   'Tigre':        { center: [-34.426, -58.579], zoom: 13 },
   'Pilar':        { center: [-34.458, -58.913], zoom: 13 },
+  'San Fernando': { center: [-34.443, -58.557], zoom: 13 },
   'Nordelta':     { center: [-34.390, -58.650], zoom: 13 },
   'Morón':        { center: [-34.653, -58.619], zoom: 13 },
   'Quilmes':      { center: [-34.720, -58.253], zoom: 13 },
@@ -3157,9 +3162,10 @@ async function renderChefs() {
   try {
     const barrio = clientePerfil?.barrio || clientePerfil?.localidad || null;
 
-    // Resolver ciudad: campo explícito > parsear barrio > default
+    // Resolver ciudad: campo ciudad siempre tiene prioridad
+    // El barrio solo se usa si no hay ciudad seleccionada
     const _detectarCiudad = (barrio, ciudadExplicita) => {
-      if (ciudadExplicita) return ciudadExplicita;
+      if (ciudadExplicita && ciudadExplicita !== 'Otra') return ciudadExplicita;
       if (!barrio) return 'Buenos Aires';
       const b = barrio.toLowerCase();
       if (b.includes('córdoba') || b.includes('cordoba')) return 'Córdoba';
