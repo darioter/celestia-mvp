@@ -372,6 +372,46 @@ body{font-family:'DM Sans',sans-serif;background:var(--navy);min-height:100vh;co
   .chef-main{padding:20px 16px 80px;}
   .login-box{padding:36px 24px;}
 }
+
+/* Zonas de cobertura */
+.zonas-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.zona-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 30px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+  color: rgba(250,246,239,0.5);
+  font-size: 12px;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.18s;
+  user-select: none;
+}
+.zona-tag:hover {
+  border-color: rgba(201,168,76,0.4);
+  color: rgba(250,246,239,0.8);
+}
+.zona-tag.activa {
+  background: rgba(201,168,76,0.15);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+.zona-grupo-label {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(250,246,239,0.25);
+  margin: 14px 0 6px;
+  font-weight: 500;
+}
 </style>
 </head>
 <body>
@@ -514,6 +554,60 @@ body{font-family:'DM Sans',sans-serif;background:var(--navy);min-height:100vh;co
         <div class="form-group">
           <label class="form-label">Bio profesional</label>
           <textarea class="form-input form-textarea" id="chef-bio" placeholder="Contá tu historia, tu estilo de cocina, tu experiencia..."></textarea>
+        </div>
+
+        <div style="border-top:1px solid rgba(255,255,255,0.08);margin:20px 0;padding-top:20px;">
+          <div class="perfil-card-title" style="font-size:14px;margin-bottom:4px;">Zonas de cobertura</div>
+          <div style="font-size:12px;color:rgba(250,246,239,0.3);margin-bottom:14px;font-weight:300;">Seleccioná las zonas donde podés prestar servicios. Esto determina qué solicitudes recibís.</div>
+
+          <div class="zona-grupo-label">Ciudad de Buenos Aires</div>
+          <div class="zonas-grid" id="zonas-grid">
+            <span class="zona-tag" data-zona="Palermo" onclick="toggleZona(this)">Palermo</span>
+            <span class="zona-tag" data-zona="Belgrano" onclick="toggleZona(this)">Belgrano</span>
+            <span class="zona-tag" data-zona="Núñez" onclick="toggleZona(this)">Núñez</span>
+            <span class="zona-tag" data-zona="Recoleta" onclick="toggleZona(this)">Recoleta</span>
+            <span class="zona-tag" data-zona="Barrio Norte" onclick="toggleZona(this)">Barrio Norte</span>
+            <span class="zona-tag" data-zona="San Telmo" onclick="toggleZona(this)">San Telmo</span>
+            <span class="zona-tag" data-zona="Puerto Madero" onclick="toggleZona(this)">Puerto Madero</span>
+            <span class="zona-tag" data-zona="Caballito" onclick="toggleZona(this)">Caballito</span>
+            <span class="zona-tag" data-zona="Villa Crespo" onclick="toggleZona(this)">Villa Crespo</span>
+            <span class="zona-tag" data-zona="Almagro" onclick="toggleZona(this)">Almagro</span>
+            <span class="zona-tag" data-zona="Colegiales" onclick="toggleZona(this)">Colegiales</span>
+            <span class="zona-tag" data-zona="Villa Urquiza" onclick="toggleZona(this)">Villa Urquiza</span>
+            <span class="zona-tag" data-zona="Flores" onclick="toggleZona(this)">Flores</span>
+            <span class="zona-tag" data-zona="Devoto" onclick="toggleZona(this)">Devoto</span>
+          </div>
+
+          <div class="zona-grupo-label">GBA Norte</div>
+          <div class="zonas-grid">
+            <span class="zona-tag" data-zona="San Isidro" onclick="toggleZona(this)">San Isidro</span>
+            <span class="zona-tag" data-zona="Vicente López" onclick="toggleZona(this)">Vicente López</span>
+            <span class="zona-tag" data-zona="Tigre" onclick="toggleZona(this)">Tigre</span>
+            <span class="zona-tag" data-zona="Nordelta" onclick="toggleZona(this)">Nordelta</span>
+            <span class="zona-tag" data-zona="Pilar" onclick="toggleZona(this)">Pilar</span>
+            <span class="zona-tag" data-zona="San Fernando" onclick="toggleZona(this)">San Fernando</span>
+          </div>
+
+          <div class="zona-grupo-label">GBA Oeste / Sur</div>
+          <div class="zonas-grid">
+            <span class="zona-tag" data-zona="La Matanza" onclick="toggleZona(this)">La Matanza</span>
+            <span class="zona-tag" data-zona="Morón" onclick="toggleZona(this)">Morón</span>
+            <span class="zona-tag" data-zona="Quilmes" onclick="toggleZona(this)">Quilmes</span>
+            <span class="zona-tag" data-zona="Lomas de Zamora" onclick="toggleZona(this)">Lomas de Zamora</span>
+            <span class="zona-tag" data-zona="Avellaneda" onclick="toggleZona(this)">Avellaneda</span>
+          </div>
+
+          <div class="zona-grupo-label">Interior del país</div>
+          <div class="zonas-grid">
+            <span class="zona-tag" data-zona="Córdoba" onclick="toggleZona(this)">Córdoba</span>
+            <span class="zona-tag" data-zona="Rosario" onclick="toggleZona(this)">Rosario</span>
+            <span class="zona-tag" data-zona="Mendoza" onclick="toggleZona(this)">Mendoza</span>
+            <span class="zona-tag" data-zona="Mar del Plata" onclick="toggleZona(this)">Mar del Plata</span>
+            <span class="zona-tag" data-zona="Bariloche" onclick="toggleZona(this)">Bariloche</span>
+            <span class="zona-tag" data-zona="Salta" onclick="toggleZona(this)">Salta</span>
+            <span class="zona-tag" data-zona="Patagonia" onclick="toggleZona(this)">Patagonia</span>
+            <span class="zona-tag" data-zona="A consultar" onclick="toggleZona(this)">A consultar</span>
+          </div>
         </div>
 
         <div style="border-top:1px solid rgba(255,255,255,0.08);margin:20px 0;padding-top:20px;">
@@ -823,6 +917,15 @@ function actualizarUI() {
   document.getElementById('chef-esp').value = chefPerfil.especialidades?.[0] || chefPerfil.especialidad || '';
   document.getElementById('chef-tel').value = chefPerfil.telefono || '';
   document.getElementById('chef-bio').value = chefPerfil.bio || '';
+  // Cargar zonas guardadas
+  const zonasGuardadas = chefPerfil.zonas_cobertura || [];
+  document.querySelectorAll('.zona-tag').forEach(tag => {
+    tag.classList.toggle('activa', zonasGuardadas.includes(tag.dataset.zona));
+  });
+}
+
+function toggleZona(el) {
+  el.classList.toggle('activa');
 }
 
 async function guardarPerfilChef() {
@@ -830,6 +933,7 @@ async function guardarPerfilChef() {
   const nombre = nombreCompleto[0] || '';
   const apellido = nombreCompleto.slice(1).join(' ') || '';
   const esp = document.getElementById('chef-esp').value.trim();
+  const zonasSeleccionadas = Array.from(document.querySelectorAll('.zona-tag.activa')).map(t => t.dataset.zona);
   const perfil = {
     nombre,
     apellido,
@@ -838,6 +942,7 @@ async function guardarPerfilChef() {
     bio: document.getElementById('chef-bio').value.trim(),
     alias_mp: document.getElementById('chef-alias-mp')?.value.trim() || null,
     cuit: document.getElementById('chef-cuit')?.value.trim() || null,
+    zonas_cobertura: zonasSeleccionadas,
   };
   const { error } = await supa.from('chefs').update(perfil).eq('user_id', currentUser.id);
   if (error) { showToast('Error: ' + error.message); console.error(error); return; }
