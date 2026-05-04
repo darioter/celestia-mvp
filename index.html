@@ -1200,11 +1200,11 @@ textarea { resize: vertical; min-height: 80px; }
   header img { height: 26px !important; }
   .tagline {
     font-size: 9px;
-    letter-spacing: 0.08em;
-    max-width: 160px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    letter-spacing: 0.06em;
+    max-width: 180px;
+    white-space: normal;
+    text-align: center;
+    line-height: 1.5;
   }
   #header-acceder { font-size: 11px; padding: 5px 10px; }
   .logo-by { display: none; }
@@ -2475,10 +2475,17 @@ async function _actualizarHeaderConSesionLocal(sesionDirecta) {
     };
     if (ciudad) {
       const provincia = _provinciaDeCiudad(ciudad);
-      const partes = ['ARGENTINA'];
-      if (provincia && provincia !== ciudad.toUpperCase()) partes.push(provincia);
-      partes.push(ciudad.toUpperCase());
-      window._setTaglineCiudad(partes.join(' · '));
+      const linea1 = ['ARGENTINA'];
+      if (provincia && provincia !== ciudad.toUpperCase()) linea1.push(provincia);
+      const ciudadUpper = ciudad.toUpperCase();
+      // En mobile mostrar en dos líneas, en desktop en una
+      const esMobile = window.innerWidth <= 600;
+      if (esMobile && linea1.length >= 1) {
+        window._setTaglineCiudad(linea1.join(' · ') + '
+' + ciudadUpper);
+      } else {
+        window._setTaglineCiudad([...linea1, ciudadUpper].join(' · '));
+      }
     }
   }
   return true;
@@ -4715,7 +4722,13 @@ function resetFlow() {
   function animarCambio(nuevoTexto, callback) {
     el.classList.add('fade-out');
     setTimeout(() => {
-      el.textContent = nuevoTexto;
+      // Soportar saltos de línea con 
+ → <br>
+      if (nuevoTexto.includes('\n')) {
+        el.innerHTML = nuevoTexto.split('\n').map(l => `<span style="display:block;text-align:center;">${l}</span>`).join('');
+      } else {
+        el.textContent = nuevoTexto;
+      }
       el.classList.remove('fade-out');
       el.classList.add('fade-in');
       setTimeout(() => el.classList.remove('fade-in'), 400);
