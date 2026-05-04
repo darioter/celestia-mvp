@@ -1329,213 +1329,6 @@ textarea { resize: vertical; min-height: 80px; }
     .disponibilidad-banner .text strong { color: var(--gold); font-weight: 600; }
   </style>
 
-<script>
-// ── i18n Celestia ─────────────────────────────────────────────────────────────
-var LANG = (function() {
-  var saved = localStorage.getItem('celestia_lang');
-  if (saved) return saved;
-  var nav = (navigator.language || navigator.userLanguage || 'es').toLowerCase();
-  if (nav.startsWith('pt')) return 'pt';
-  if (nav.startsWith('en')) return 'en';
-  return 'es';
-})();
-
-var I18N = {
-  es: {
-    acceder: 'Acceder →',
-    hola: 'Hola, {nombre} →',
-    hero_label: '✦ Experiencia gastronómica privada',
-    hero_h1: 'El lujo de un chef privado,',
-    hero_h1_em: 'ahora al alcance de tu mano.',
-    hero_p: 'Celestia transforma la forma de vivir la alta cocina en casa. Cocina, presentación y servicio de nivel restaurante, diseñada especialmente para vos.',
-    btn_reservar: 'Reservar una experiencia →',
-    btn_chef_semanal: 'Chef semanal →',
-    btn_ia: '✦ Explorá tu menú con IA',
-    tab_chef_privado: 'Chef privado',
-    tab_chef_semanal: 'Chef semanal',
-    aplicar_chef: 'Aplicar como chef',
-    // Sección cómo funciona
-    como_funciona: '✦ Cómo funciona',
-    como_h3: 'Una experiencia de restaurante, en la intimidad de tu casa',
-    como_p: 'Daro llega a tu domicilio, cocina en vivo y presenta cada paso. Vos y tus invitados disfrutan — sin moverse, sin esperar, sin reservar con meses de anticipación.',
-    paso1_t: 'Reservá y coordinamos', paso1_d: 'Elegís el menú, la fecha y el turno. Daro confirma y coordinan los últimos detalles por WhatsApp.',
-    paso2_t: 'Visita previa y compras', paso2_d: 'Daro visita tu cocina, planifica y compra los ingredientes del menú acordado.',
-    paso3_t: 'El servicio', paso3_d: 'Llega de buena presencia, presenta la idea rectora de la cena y sirve cada paso con su historia. El vino lo elegís vos.',
-    paso4_t: 'Cierre y pago', paso4_d: 'Daro ordena la cocina y se retira. El saldo se abona al final del servicio — con propina sugerida del 15%.',
-    // Sección semanal
-    semanal_tag: '✦ Tu semana resuelta',
-    semanal_h3: 'Una o dos jornadas que dejan toda la semana lista',
-    semanal_p: 'Daro cocina en tu casa, deja todo fraccionado, etiquetado y listo para regenerar. Desayunos, almuerzos, meriendas, cenas y postres — variados y de calidad, sin que tengas que mover un dedo.',
-    semanal_btn: 'Solicitar chef semanal →',
-    semanal_p1_t: 'Planificación personalizada', semanal_p1_d: 'Armamos juntos el menú de la semana según tus gustos, restricciones y rutinas.',
-    semanal_p2_t: 'Compras y producción', semanal_p2_d: 'Daro compra todo y cocina en tu cocina en 1 o 2 jornadas de 7 a 9 horas cada una.',
-    semanal_p3_t: 'Fraccionado y etiquetado', semanal_p3_d: 'Todo ordenado, etiquetado con instrucciones de regenerado. Tu heladera lista de lunes a viernes.',
-    semanal_porciones_t: '56+ porciones semanales', semanal_porciones_d: 'Para una familia de 4: desayunos, almuerzos, meriendas, cenas, postres y snacks — todo resuelto.',
-    // IA
-    ia_tag: '✦ Nuevo', ia_h3: 'Asistente IA Celestia',
-    ia_p: 'Contanos la ocasión y en 3 intercambios te proponemos un menú personalizado para que Daro lleve a tu mesa.',
-    ia_btn: 'Explorá tu menú con IA',
-    ia_intro: 'Contame la ocasión y te armo una propuesta en 3 intercambios.',
-    ia_sub: 'Solo ideas — la técnica y la magia las pone Daro.',
-    ia_saludo: 'Hola! Soy el asistente de Celestia. Contame un poco sobre la ocasión — ¿cuántas personas son, qué tipo de evento es, tienen alguna preferencia o restricción?',
-    // Footer
-    footer_terminos: 'Términos y condiciones', footer_privacidad: 'Privacidad', footer_cookies: 'Cookies',
-  },
-  en: {
-    acceder: 'Sign in →',
-    hola: 'Hi, {nombre} →',
-    hero_label: '✦ Private culinary experience',
-    hero_h1: 'The luxury of a private chef,',
-    hero_h1_em: 'now within your reach.',
-    hero_p: 'Celestia transforms the way you experience fine dining at home. Restaurant-level cooking, presentation and service, designed especially for you.',
-    btn_reservar: 'Book an experience →',
-    btn_chef_semanal: 'Weekly chef →',
-    btn_ia: '✦ Explore your menu with AI',
-    tab_chef_privado: 'Private chef',
-    tab_chef_semanal: 'Weekly chef',
-    aplicar_chef: 'Apply as chef',
-    como_funciona: '✦ How it works',
-    como_h3: 'A restaurant experience, in the privacy of your home',
-    como_p: 'Your chef arrives, cooks live and presents every course. You and your guests enjoy — without moving, without waiting, without booking months in advance.',
-    paso1_t: 'Book and coordinate', paso1_d: 'Choose the menu, date and time slot. Your chef confirms and coordinates the last details via WhatsApp.',
-    paso2_t: 'Pre-visit and shopping', paso2_d: 'Your chef visits your kitchen, plans and buys the ingredients for the agreed menu.',
-    paso3_t: 'The service', paso3_d: 'Arrives looking sharp, introduces the concept of the dinner and serves each course with its story. You choose the wine.',
-    paso4_t: 'Wrap-up and payment', paso4_d: 'Your chef tidies the kitchen and leaves. The balance is paid at the end of the service — suggested tip 15%.',
-    semanal_tag: '✦ Your week sorted',
-    semanal_h3: 'One or two sessions that get your whole week covered',
-    semanal_p: 'Your chef cooks at your home, leaves everything portioned, labelled and ready to reheat. Breakfasts, lunches, snacks, dinners and desserts — varied and high quality, without lifting a finger.',
-    semanal_btn: 'Request weekly chef →',
-    semanal_p1_t: 'Personalised planning', semanal_p1_d: 'We design the weekly menu together based on your tastes, restrictions and routines.',
-    semanal_p2_t: 'Shopping and cooking', semanal_p2_d: 'Your chef buys everything and cooks in your kitchen in 1 or 2 sessions of 7 to 9 hours each.',
-    semanal_p3_t: 'Portioned and labelled', semanal_p3_d: 'Everything organised, labelled with reheating instructions. Your fridge ready Monday to Friday.',
-    semanal_porciones_t: '56+ weekly portions', semanal_porciones_d: 'For a family of 4: breakfasts, lunches, snacks, dinners, desserts and more — all covered.',
-    ia_tag: '✦ New', ia_h3: 'Celestia AI Assistant',
-    ia_p: 'Tell us about the occasion and in 3 exchanges we'll suggest a personalised menu for your chef to bring to your table.',
-    ia_btn: 'Explore your menu with AI',
-    ia_intro: 'Tell me about the occasion and I'll put together a proposal in 3 exchanges.',
-    ia_sub: 'Just ideas — the technique and magic are your chef's.',
-    ia_saludo: 'Hi! I'm the Celestia assistant. Tell me a bit about the occasion — how many people, what kind of event, any preferences or restrictions?',
-    footer_terminos: 'Terms and conditions', footer_privacidad: 'Privacy', footer_cookies: 'Cookies',
-  },
-  pt: {
-    acceder: 'Entrar →',
-    hola: 'Olá, {nombre} →',
-    hero_label: '✦ Experiência gastronômica privada',
-    hero_h1: 'O luxo de um chef privado,',
-    hero_h1_em: 'agora ao seu alcance.',
-    hero_p: 'A Celestia transforma a forma de viver a alta gastronomia em casa. Cozinha, apresentação e serviço de nível restaurante, desenhada especialmente para você.',
-    btn_reservar: 'Reservar uma experiência →',
-    btn_chef_semanal: 'Chef semanal →',
-    btn_ia: '✦ Explore seu menu com IA',
-    tab_chef_privado: 'Chef privado',
-    tab_chef_semanal: 'Chef semanal',
-    aplicar_chef: 'Candidatar-se como chef',
-    como_funciona: '✦ Como funciona',
-    como_h3: 'Uma experiência de restaurante, na intimidade da sua casa',
-    como_p: 'O chef chega à sua casa, cozinha ao vivo e apresenta cada etapa. Você e seus convidados desfrutam — sem sair, sem esperar, sem reservar com meses de antecedência.',
-    paso1_t: 'Reserve e coordenamos', paso1_d: 'Você escolhe o menu, a data e o turno. O chef confirma e combinam os últimos detalhes pelo WhatsApp.',
-    paso2_t: 'Visita prévia e compras', paso2_d: 'O chef visita sua cozinha, planeja e compra os ingredientes do menu combinado.',
-    paso3_t: 'O serviço', paso3_d: 'Chega bem apresentado, introduz o conceito do jantar e serve cada etapa com sua história. O vinho você escolhe.',
-    paso4_t: 'Encerramento e pagamento', paso4_d: 'O chef organiza a cozinha e se retira. O saldo é pago no final do serviço — gorjeta sugerida de 15%.',
-    semanal_tag: '✦ Sua semana resolvida',
-    semanal_h3: 'Uma ou duas jornadas que deixam a semana toda pronta',
-    semanal_p: 'O chef cozinha na sua casa, deixa tudo porcionado, rotulado e pronto para aquecer. Cafés da manhã, almoços, lanches, jantares e sobremesas — variados e de qualidade, sem você mover um dedo.',
-    semanal_btn: 'Solicitar chef semanal →',
-    semanal_p1_t: 'Planejamento personalizado', semanal_p1_d: 'Criamos juntos o menu da semana de acordo com seus gostos, restrições e rotinas.',
-    semanal_p2_t: 'Compras e produção', semanal_p2_d: 'O chef compra tudo e cozinha na sua cozinha em 1 ou 2 jornadas de 7 a 9 horas cada.',
-    semanal_p3_t: 'Porcionado e rotulado', semanal_p3_d: 'Tudo organizado, rotulado com instruções de aquecimento. Sua geladeira pronta de segunda a sexta.',
-    semanal_porciones_t: '56+ porções semanais', semanal_porciones_d: 'Para uma família de 4: cafés da manhã, almoços, lanches, jantares, sobremesas e snacks — tudo resolvido.',
-    ia_tag: '✦ Novo', ia_h3: 'Assistente IA Celestia',
-    ia_p: 'Conte-nos a ocasião e em 3 trocas propomos um menu personalizado para o chef trazer à sua mesa.',
-    ia_btn: 'Explore seu menu com IA',
-    ia_intro: 'Conte-me sobre a ocasião e preparo uma proposta em 3 trocas.',
-    ia_sub: 'Só ideias — a técnica e a magia ficam com o chef.',
-    ia_saludo: 'Olá! Sou o assistente da Celestia. Conte-me um pouco sobre a ocasião — quantas pessoas são, que tipo de evento é, têm alguma preferência ou restrição?',
-    footer_terminos: 'Termos e condições', footer_privacidad: 'Privacidade', footer_cookies: 'Cookies',
-  }
-};
-
-function t(key, vars) {
-  var str = (I18N[LANG] || I18N['es'])[key] || (I18N['es'][key] || key);
-  if (vars) Object.keys(vars).forEach(function(k){ str = str.replace('{'+k+'}', vars[k]); });
-  return str;
-}
-
-function setLang(lang) {
-  LANG = lang;
-  localStorage.setItem('celestia_lang', lang);
-  aplicarI18n();
-}
-window.setLang = setLang;
-
-function aplicarI18n() {
-  // Header
-  var accederBtn = document.getElementById('header-acceder');
-  if (accederBtn && !accederBtn._logueado) accederBtn.textContent = t('acceder');
-  // Hero
-  var el;
-  el = document.getElementById('i18n-hero-label'); if(el) el.textContent = t('hero_label');
-  el = document.getElementById('i18n-hero-h1'); if(el) el.textContent = t('hero_h1');
-  el = document.getElementById('i18n-hero-em'); if(el) el.textContent = t('hero_h1_em');
-  el = document.getElementById('i18n-hero-p'); if(el) el.textContent = t('hero_p');
-  el = document.getElementById('i18n-btn-reservar'); if(el) el.textContent = t('btn_reservar');
-  el = document.getElementById('i18n-btn-semanal'); if(el) el.textContent = t('btn_chef_semanal');
-  el = document.getElementById('i18n-btn-ia'); if(el) el.textContent = t('btn_ia');
-  el = document.getElementById('i18n-tab-chef'); if(el) el.textContent = t('tab_chef_privado');
-  el = document.getElementById('i18n-tab-semanal'); if(el) el.textContent = t('tab_chef_semanal');
-  el = document.getElementById('i18n-aplicar-chef'); if(el) el.textContent = t('aplicar_chef');
-  // Sección cómo funciona
-  el = document.getElementById('i18n-como-tag'); if(el) el.textContent = t('como_funciona');
-  el = document.getElementById('i18n-como-h3'); if(el) el.textContent = t('como_h3');
-  el = document.getElementById('i18n-como-p'); if(el) el.textContent = t('como_p');
-  el = document.getElementById('i18n-paso1-t'); if(el) el.textContent = t('paso1_t');
-  el = document.getElementById('i18n-paso1-d'); if(el) el.textContent = t('paso1_d');
-  el = document.getElementById('i18n-paso2-t'); if(el) el.textContent = t('paso2_t');
-  el = document.getElementById('i18n-paso2-d'); if(el) el.textContent = t('paso2_d');
-  el = document.getElementById('i18n-paso3-t'); if(el) el.textContent = t('paso3_t');
-  el = document.getElementById('i18n-paso3-d'); if(el) el.textContent = t('paso3_d');
-  el = document.getElementById('i18n-paso4-t'); if(el) el.textContent = t('paso4_t');
-  el = document.getElementById('i18n-paso4-d'); if(el) el.textContent = t('paso4_d');
-  // Semanal
-  el = document.getElementById('i18n-semanal-tag'); if(el) el.textContent = t('semanal_tag');
-  el = document.getElementById('i18n-semanal-h3'); if(el) el.textContent = t('semanal_h3');
-  el = document.getElementById('i18n-semanal-p'); if(el) el.textContent = t('semanal_p');
-  el = document.getElementById('i18n-semanal-btn'); if(el) el.textContent = t('semanal_btn');
-  el = document.getElementById('i18n-semanal-p1-t'); if(el) el.textContent = t('semanal_p1_t');
-  el = document.getElementById('i18n-semanal-p1-d'); if(el) el.textContent = t('semanal_p1_d');
-  el = document.getElementById('i18n-semanal-p2-t'); if(el) el.textContent = t('semanal_p2_t');
-  el = document.getElementById('i18n-semanal-p2-d'); if(el) el.textContent = t('semanal_p2_d');
-  el = document.getElementById('i18n-semanal-p3-t'); if(el) el.textContent = t('semanal_p3_t');
-  el = document.getElementById('i18n-semanal-p3-d'); if(el) el.textContent = t('semanal_p3_d');
-  el = document.getElementById('i18n-semanal-porc-t'); if(el) el.textContent = t('semanal_porciones_t');
-  el = document.getElementById('i18n-semanal-porc-d'); if(el) el.textContent = t('semanal_porciones_d');
-  // IA
-  el = document.getElementById('i18n-ia-tag'); if(el) el.textContent = t('ia_tag');
-  el = document.getElementById('i18n-ia-h3'); if(el) el.textContent = t('ia_h3');
-  el = document.getElementById('i18n-ia-p'); if(el) el.textContent = t('ia_p');
-  el = document.getElementById('i18n-ia-btn'); if(el) el.textContent = t('ia_btn');
-  el = document.getElementById('i18n-ia-intro'); if(el) el.textContent = t('ia_intro');
-  el = document.getElementById('i18n-ia-sub'); if(el) el.textContent = t('ia_sub');
-  // Footer
-  el = document.getElementById('i18n-footer-terminos'); if(el) el.textContent = t('footer_terminos');
-  el = document.getElementById('i18n-footer-privacidad'); if(el) el.textContent = t('footer_privacidad');
-  el = document.getElementById('i18n-footer-cookies'); if(el) el.textContent = t('footer_cookies');
-  // Selector activo
-  ['es','en','pt'].forEach(function(l){
-    var btn = document.getElementById('lang-btn-'+l);
-    if(btn) btn.style.opacity = (l === LANG) ? '1' : '0.4';
-  });
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  aplicarI18n();
-  // Event listeners para los botones de idioma
-  ['es','en','pt'].forEach(function(lang) {
-    var btn = document.getElementById('lang-btn-' + lang);
-    if (btn) btn.addEventListener('click', function() { setLang(lang); });
-  });
-});
-</script>
 </head>
 <body>
 
@@ -4914,6 +4707,212 @@ function resetFlow() {
 })();
 </script>
 
+
+<script>
+// ── i18n Celestia ─────────────────────────────────────────────────────────────
+var LANG = (function() {
+  var saved = localStorage.getItem('celestia_lang');
+  if (saved) return saved;
+  var nav = (navigator.language || navigator.userLanguage || 'es').toLowerCase();
+  if (nav.startsWith('pt')) return 'pt';
+  if (nav.startsWith('en')) return 'en';
+  return 'es';
+})();
+
+var I18N = {
+  es: {
+    acceder: 'Acceder →',
+    hola: 'Hola, {nombre} →',
+    hero_label: '✦ Experiencia gastronómica privada',
+    hero_h1: 'El lujo de un chef privado,',
+    hero_h1_em: 'ahora al alcance de tu mano.',
+    hero_p: 'Celestia transforma la forma de vivir la alta cocina en casa. Cocina, presentación y servicio de nivel restaurante, diseñada especialmente para vos.',
+    btn_reservar: 'Reservar una experiencia →',
+    btn_chef_semanal: 'Chef semanal →',
+    btn_ia: '✦ Explorá tu menú con IA',
+    tab_chef_privado: 'Chef privado',
+    tab_chef_semanal: 'Chef semanal',
+    aplicar_chef: 'Aplicar como chef',
+    // Sección cómo funciona
+    como_funciona: '✦ Cómo funciona',
+    como_h3: 'Una experiencia de restaurante, en la intimidad de tu casa',
+    como_p: 'Daro llega a tu domicilio, cocina en vivo y presenta cada paso. Vos y tus invitados disfrutan — sin moverse, sin esperar, sin reservar con meses de anticipación.',
+    paso1_t: 'Reservá y coordinamos', paso1_d: 'Elegís el menú, la fecha y el turno. Daro confirma y coordinan los últimos detalles por WhatsApp.',
+    paso2_t: 'Visita previa y compras', paso2_d: 'Daro visita tu cocina, planifica y compra los ingredientes del menú acordado.',
+    paso3_t: 'El servicio', paso3_d: 'Llega de buena presencia, presenta la idea rectora de la cena y sirve cada paso con su historia. El vino lo elegís vos.',
+    paso4_t: 'Cierre y pago', paso4_d: 'Daro ordena la cocina y se retira. El saldo se abona al final del servicio — con propina sugerida del 15%.',
+    // Sección semanal
+    semanal_tag: '✦ Tu semana resuelta',
+    semanal_h3: 'Una o dos jornadas que dejan toda la semana lista',
+    semanal_p: 'Daro cocina en tu casa, deja todo fraccionado, etiquetado y listo para regenerar. Desayunos, almuerzos, meriendas, cenas y postres — variados y de calidad, sin que tengas que mover un dedo.',
+    semanal_btn: 'Solicitar chef semanal →',
+    semanal_p1_t: 'Planificación personalizada', semanal_p1_d: 'Armamos juntos el menú de la semana según tus gustos, restricciones y rutinas.',
+    semanal_p2_t: 'Compras y producción', semanal_p2_d: 'Daro compra todo y cocina en tu cocina en 1 o 2 jornadas de 7 a 9 horas cada una.',
+    semanal_p3_t: 'Fraccionado y etiquetado', semanal_p3_d: 'Todo ordenado, etiquetado con instrucciones de regenerado. Tu heladera lista de lunes a viernes.',
+    semanal_porciones_t: '56+ porciones semanales', semanal_porciones_d: 'Para una familia de 4: desayunos, almuerzos, meriendas, cenas, postres y snacks — todo resuelto.',
+    // IA
+    ia_tag: '✦ Nuevo', ia_h3: 'Asistente IA Celestia',
+    ia_p: 'Contanos la ocasión y en 3 intercambios te proponemos un menú personalizado para que Daro lleve a tu mesa.',
+    ia_btn: 'Explorá tu menú con IA',
+    ia_intro: 'Contame la ocasión y te armo una propuesta en 3 intercambios.',
+    ia_sub: 'Solo ideas — la técnica y la magia las pone Daro.',
+    ia_saludo: 'Hola! Soy el asistente de Celestia. Contame un poco sobre la ocasión — ¿cuántas personas son, qué tipo de evento es, tienen alguna preferencia o restricción?',
+    // Footer
+    footer_terminos: 'Términos y condiciones', footer_privacidad: 'Privacidad', footer_cookies: 'Cookies',
+  },
+  en: {
+    acceder: 'Sign in →',
+    hola: 'Hi, {nombre} →',
+    hero_label: '✦ Private culinary experience',
+    hero_h1: 'The luxury of a private chef,',
+    hero_h1_em: 'now within your reach.',
+    hero_p: 'Celestia transforms the way you experience fine dining at home. Restaurant-level cooking, presentation and service, designed especially for you.',
+    btn_reservar: 'Book an experience →',
+    btn_chef_semanal: 'Weekly chef →',
+    btn_ia: '✦ Explore your menu with AI',
+    tab_chef_privado: 'Private chef',
+    tab_chef_semanal: 'Weekly chef',
+    aplicar_chef: 'Apply as chef',
+    como_funciona: '✦ How it works',
+    como_h3: 'A restaurant experience, in the privacy of your home',
+    como_p: 'Your chef arrives, cooks live and presents every course. You and your guests enjoy — without moving, without waiting, without booking months in advance.',
+    paso1_t: 'Book and coordinate', paso1_d: 'Choose the menu, date and time slot. Your chef confirms and coordinates the last details via WhatsApp.',
+    paso2_t: 'Pre-visit and shopping', paso2_d: 'Your chef visits your kitchen, plans and buys the ingredients for the agreed menu.',
+    paso3_t: 'The service', paso3_d: 'Arrives looking sharp, introduces the concept of the dinner and serves each course with its story. You choose the wine.',
+    paso4_t: 'Wrap-up and payment', paso4_d: 'Your chef tidies the kitchen and leaves. The balance is paid at the end of the service — suggested tip 15%.',
+    semanal_tag: '✦ Your week sorted',
+    semanal_h3: 'One or two sessions that get your whole week covered',
+    semanal_p: 'Your chef cooks at your home, leaves everything portioned, labelled and ready to reheat. Breakfasts, lunches, snacks, dinners and desserts — varied and high quality, without lifting a finger.',
+    semanal_btn: 'Request weekly chef →',
+    semanal_p1_t: 'Personalised planning', semanal_p1_d: 'We design the weekly menu together based on your tastes, restrictions and routines.',
+    semanal_p2_t: 'Shopping and cooking', semanal_p2_d: 'Your chef buys everything and cooks in your kitchen in 1 or 2 sessions of 7 to 9 hours each.',
+    semanal_p3_t: 'Portioned and labelled', semanal_p3_d: 'Everything organised, labelled with reheating instructions. Your fridge ready Monday to Friday.',
+    semanal_porciones_t: '56+ weekly portions', semanal_porciones_d: 'For a family of 4: breakfasts, lunches, snacks, dinners, desserts and more — all covered.',
+    ia_tag: '✦ New', ia_h3: 'Celestia AI Assistant',
+    ia_p: 'Tell us about the occasion and in 3 exchanges we'll suggest a personalised menu for your chef to bring to your table.',
+    ia_btn: 'Explore your menu with AI',
+    ia_intro: 'Tell me about the occasion and I'll put together a proposal in 3 exchanges.',
+    ia_sub: 'Just ideas — the technique and magic are your chef's.',
+    ia_saludo: 'Hi! I'm the Celestia assistant. Tell me a bit about the occasion — how many people, what kind of event, any preferences or restrictions?',
+    footer_terminos: 'Terms and conditions', footer_privacidad: 'Privacy', footer_cookies: 'Cookies',
+  },
+  pt: {
+    acceder: 'Entrar →',
+    hola: 'Olá, {nombre} →',
+    hero_label: '✦ Experiência gastronômica privada',
+    hero_h1: 'O luxo de um chef privado,',
+    hero_h1_em: 'agora ao seu alcance.',
+    hero_p: 'A Celestia transforma a forma de viver a alta gastronomia em casa. Cozinha, apresentação e serviço de nível restaurante, desenhada especialmente para você.',
+    btn_reservar: 'Reservar uma experiência →',
+    btn_chef_semanal: 'Chef semanal →',
+    btn_ia: '✦ Explore seu menu com IA',
+    tab_chef_privado: 'Chef privado',
+    tab_chef_semanal: 'Chef semanal',
+    aplicar_chef: 'Candidatar-se como chef',
+    como_funciona: '✦ Como funciona',
+    como_h3: 'Uma experiência de restaurante, na intimidade da sua casa',
+    como_p: 'O chef chega à sua casa, cozinha ao vivo e apresenta cada etapa. Você e seus convidados desfrutam — sem sair, sem esperar, sem reservar com meses de antecedência.',
+    paso1_t: 'Reserve e coordenamos', paso1_d: 'Você escolhe o menu, a data e o turno. O chef confirma e combinam os últimos detalhes pelo WhatsApp.',
+    paso2_t: 'Visita prévia e compras', paso2_d: 'O chef visita sua cozinha, planeja e compra os ingredientes do menu combinado.',
+    paso3_t: 'O serviço', paso3_d: 'Chega bem apresentado, introduz o conceito do jantar e serve cada etapa com sua história. O vinho você escolhe.',
+    paso4_t: 'Encerramento e pagamento', paso4_d: 'O chef organiza a cozinha e se retira. O saldo é pago no final do serviço — gorjeta sugerida de 15%.',
+    semanal_tag: '✦ Sua semana resolvida',
+    semanal_h3: 'Uma ou duas jornadas que deixam a semana toda pronta',
+    semanal_p: 'O chef cozinha na sua casa, deixa tudo porcionado, rotulado e pronto para aquecer. Cafés da manhã, almoços, lanches, jantares e sobremesas — variados e de qualidade, sem você mover um dedo.',
+    semanal_btn: 'Solicitar chef semanal →',
+    semanal_p1_t: 'Planejamento personalizado', semanal_p1_d: 'Criamos juntos o menu da semana de acordo com seus gostos, restrições e rotinas.',
+    semanal_p2_t: 'Compras e produção', semanal_p2_d: 'O chef compra tudo e cozinha na sua cozinha em 1 ou 2 jornadas de 7 a 9 horas cada.',
+    semanal_p3_t: 'Porcionado e rotulado', semanal_p3_d: 'Tudo organizado, rotulado com instruções de aquecimento. Sua geladeira pronta de segunda a sexta.',
+    semanal_porciones_t: '56+ porções semanais', semanal_porciones_d: 'Para uma família de 4: cafés da manhã, almoços, lanches, jantares, sobremesas e snacks — tudo resolvido.',
+    ia_tag: '✦ Novo', ia_h3: 'Assistente IA Celestia',
+    ia_p: 'Conte-nos a ocasião e em 3 trocas propomos um menu personalizado para o chef trazer à sua mesa.',
+    ia_btn: 'Explore seu menu com IA',
+    ia_intro: 'Conte-me sobre a ocasião e preparo uma proposta em 3 trocas.',
+    ia_sub: 'Só ideias — a técnica e a magia ficam com o chef.',
+    ia_saludo: 'Olá! Sou o assistente da Celestia. Conte-me um pouco sobre a ocasião — quantas pessoas são, que tipo de evento é, têm alguma preferência ou restrição?',
+    footer_terminos: 'Termos e condições', footer_privacidad: 'Privacidade', footer_cookies: 'Cookies',
+  }
+};
+
+function t(key, vars) {
+  var str = (I18N[LANG] || I18N['es'])[key] || (I18N['es'][key] || key);
+  if (vars) Object.keys(vars).forEach(function(k){ str = str.replace('{'+k+'}', vars[k]); });
+  return str;
+}
+
+function setLang(lang) {
+  LANG = lang;
+  localStorage.setItem('celestia_lang', lang);
+  aplicarI18n();
+}
+window.setLang = setLang;
+
+function aplicarI18n() {
+  // Header
+  var accederBtn = document.getElementById('header-acceder');
+  if (accederBtn && !accederBtn._logueado) accederBtn.textContent = t('acceder');
+  // Hero
+  var el;
+  el = document.getElementById('i18n-hero-label'); if(el) el.textContent = t('hero_label');
+  el = document.getElementById('i18n-hero-h1'); if(el) el.textContent = t('hero_h1');
+  el = document.getElementById('i18n-hero-em'); if(el) el.textContent = t('hero_h1_em');
+  el = document.getElementById('i18n-hero-p'); if(el) el.textContent = t('hero_p');
+  el = document.getElementById('i18n-btn-reservar'); if(el) el.textContent = t('btn_reservar');
+  el = document.getElementById('i18n-btn-semanal'); if(el) el.textContent = t('btn_chef_semanal');
+  el = document.getElementById('i18n-btn-ia'); if(el) el.textContent = t('btn_ia');
+  el = document.getElementById('i18n-tab-chef'); if(el) el.textContent = t('tab_chef_privado');
+  el = document.getElementById('i18n-tab-semanal'); if(el) el.textContent = t('tab_chef_semanal');
+  el = document.getElementById('i18n-aplicar-chef'); if(el) el.textContent = t('aplicar_chef');
+  // Sección cómo funciona
+  el = document.getElementById('i18n-como-tag'); if(el) el.textContent = t('como_funciona');
+  el = document.getElementById('i18n-como-h3'); if(el) el.textContent = t('como_h3');
+  el = document.getElementById('i18n-como-p'); if(el) el.textContent = t('como_p');
+  el = document.getElementById('i18n-paso1-t'); if(el) el.textContent = t('paso1_t');
+  el = document.getElementById('i18n-paso1-d'); if(el) el.textContent = t('paso1_d');
+  el = document.getElementById('i18n-paso2-t'); if(el) el.textContent = t('paso2_t');
+  el = document.getElementById('i18n-paso2-d'); if(el) el.textContent = t('paso2_d');
+  el = document.getElementById('i18n-paso3-t'); if(el) el.textContent = t('paso3_t');
+  el = document.getElementById('i18n-paso3-d'); if(el) el.textContent = t('paso3_d');
+  el = document.getElementById('i18n-paso4-t'); if(el) el.textContent = t('paso4_t');
+  el = document.getElementById('i18n-paso4-d'); if(el) el.textContent = t('paso4_d');
+  // Semanal
+  el = document.getElementById('i18n-semanal-tag'); if(el) el.textContent = t('semanal_tag');
+  el = document.getElementById('i18n-semanal-h3'); if(el) el.textContent = t('semanal_h3');
+  el = document.getElementById('i18n-semanal-p'); if(el) el.textContent = t('semanal_p');
+  el = document.getElementById('i18n-semanal-btn'); if(el) el.textContent = t('semanal_btn');
+  el = document.getElementById('i18n-semanal-p1-t'); if(el) el.textContent = t('semanal_p1_t');
+  el = document.getElementById('i18n-semanal-p1-d'); if(el) el.textContent = t('semanal_p1_d');
+  el = document.getElementById('i18n-semanal-p2-t'); if(el) el.textContent = t('semanal_p2_t');
+  el = document.getElementById('i18n-semanal-p2-d'); if(el) el.textContent = t('semanal_p2_d');
+  el = document.getElementById('i18n-semanal-p3-t'); if(el) el.textContent = t('semanal_p3_t');
+  el = document.getElementById('i18n-semanal-p3-d'); if(el) el.textContent = t('semanal_p3_d');
+  el = document.getElementById('i18n-semanal-porc-t'); if(el) el.textContent = t('semanal_porciones_t');
+  el = document.getElementById('i18n-semanal-porc-d'); if(el) el.textContent = t('semanal_porciones_d');
+  // IA
+  el = document.getElementById('i18n-ia-tag'); if(el) el.textContent = t('ia_tag');
+  el = document.getElementById('i18n-ia-h3'); if(el) el.textContent = t('ia_h3');
+  el = document.getElementById('i18n-ia-p'); if(el) el.textContent = t('ia_p');
+  el = document.getElementById('i18n-ia-btn'); if(el) el.textContent = t('ia_btn');
+  el = document.getElementById('i18n-ia-intro'); if(el) el.textContent = t('ia_intro');
+  el = document.getElementById('i18n-ia-sub'); if(el) el.textContent = t('ia_sub');
+  // Footer
+  el = document.getElementById('i18n-footer-terminos'); if(el) el.textContent = t('footer_terminos');
+  el = document.getElementById('i18n-footer-privacidad'); if(el) el.textContent = t('footer_privacidad');
+  el = document.getElementById('i18n-footer-cookies'); if(el) el.textContent = t('footer_cookies');
+  // Selector activo
+  ['es','en','pt'].forEach(function(l){
+    var btn = document.getElementById('lang-btn-'+l);
+    if(btn) btn.style.opacity = (l === LANG) ? '1' : '0.4';
+  });
+}
+
+// Ejecutar directo — ya estamos al final del body
+aplicarI18n();
+['es','en','pt'].forEach(function(lang) {
+  var btn = document.getElementById('lang-btn-' + lang);
+  if (btn) btn.addEventListener('click', function() { setLang(lang); });
+});
+</script>
 
 <script>
 // ── Tagline rotador ──────────────────────────────────────────────────────────
