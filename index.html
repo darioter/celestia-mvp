@@ -4553,70 +4553,7 @@ function descargarTicket() {
     <body>
       ${ticket.outerHTML}
     
-
-<script>
-// ── Tagline rotador estilo Uber ─────────────────────────────────────────────
-(function() {
-  const SECUENCIA_BASE = [
-    'ARGENTINA',
-    'BUENOS AIRES',
-    'MENDOZA',
-    'CÓRDOBA',
-    'PATAGONIA',
-    'ROSARIO',
-    'BARILOCHE',
-  ];
-
-  let secuencia = [...SECUENCIA_BASE];
-  let idx = 0;
-  let rotadorInterval = null;
-  let detenido = false;
-
-  const el = document.getElementById('tagline-rotador');
-  if (!el) return;
-
-  function animarCambio(nuevoTexto, callback) {
-    el.classList.add('fade-out');
-    setTimeout(() => {
-      el.textContent = nuevoTexto;
-      el.classList.remove('fade-out');
-      el.classList.add('fade-in');
-      setTimeout(() => el.classList.remove('fade-in'), 400);
-      if (callback) callback();
-    }, 400);
-  }
-
-  function avanzar() {
-    if (detenido) return;
-    idx = (idx + 1) % secuencia.length;
-    animarCambio(secuencia[idx]);
-  }
-
-  function iniciarRotador() {
-    if (rotadorInterval) clearInterval(rotadorInterval);
-    rotadorInterval = setInterval(avanzar, 2200);
-  }
-
-  function detenerEnCiudad(ciudad) {
-    if (!ciudad || detenido) return;
-    detenido = true;
-    clearInterval(rotadorInterval);
-    // Primero mostrar la ciudad del cliente como destino final
-    animarCambio(ciudad.toUpperCase());
-  }
-
-  // Iniciar rotación
-  iniciarRotador();
-
-  // Cuando el cliente está logueado, terminar en su ciudad
-  // Se llama desde _actualizarHeaderConSesionLocal cuando carga el perfil
-  window._setTaglineCiudad = function(ciudad) {
-    if (!ciudad) return;
-    detenerEnCiudad(ciudad);
-  };
-})();
-</script>
-</body>
+  </body>
     </html>
   `);
   win.document.close();
@@ -4632,70 +4569,7 @@ function descargarTicketSemanal() {
     <meta charset="UTF-8"><title>Celestia · Chef Semanal ${ref}</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'DM Sans',sans-serif;background:#FAF6EF;padding:32px;color:#1A1A2E;}@media print{body{padding:0;background:white;}}</style>
-  </head><body>${ticket.outerHTML}
-<script>
-// ── Tagline rotador estilo Uber ─────────────────────────────────────────────
-(function() {
-  const SECUENCIA_BASE = [
-    'ARGENTINA',
-    'BUENOS AIRES',
-    'MENDOZA',
-    'CÓRDOBA',
-    'PATAGONIA',
-    'ROSARIO',
-    'BARILOCHE',
-  ];
-
-  let secuencia = [...SECUENCIA_BASE];
-  let idx = 0;
-  let rotadorInterval = null;
-  let detenido = false;
-
-  const el = document.getElementById('tagline-rotador');
-  if (!el) return;
-
-  function animarCambio(nuevoTexto, callback) {
-    el.classList.add('fade-out');
-    setTimeout(() => {
-      el.textContent = nuevoTexto;
-      el.classList.remove('fade-out');
-      el.classList.add('fade-in');
-      setTimeout(() => el.classList.remove('fade-in'), 400);
-      if (callback) callback();
-    }, 400);
-  }
-
-  function avanzar() {
-    if (detenido) return;
-    idx = (idx + 1) % secuencia.length;
-    animarCambio(secuencia[idx]);
-  }
-
-  function iniciarRotador() {
-    if (rotadorInterval) clearInterval(rotadorInterval);
-    rotadorInterval = setInterval(avanzar, 2200);
-  }
-
-  function detenerEnCiudad(ciudad) {
-    if (!ciudad || detenido) return;
-    detenido = true;
-    clearInterval(rotadorInterval);
-    // Primero mostrar la ciudad del cliente como destino final
-    animarCambio(ciudad.toUpperCase());
-  }
-
-  // Iniciar rotación
-  iniciarRotador();
-
-  // Cuando el cliente está logueado, terminar en su ciudad
-  // Se llama desde _actualizarHeaderConSesionLocal cuando carga el perfil
-  window._setTaglineCiudad = function(ciudad) {
-    if (!ciudad) return;
-    detenerEnCiudad(ciudad);
-  };
-})();
-</script>
-</body></html>`);
+  </head><body>${ticket.outerHTML}</body></html>`);
   win.document.close();
   setTimeout(() => win.print(), 800);
 }
