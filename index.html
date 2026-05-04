@@ -2481,8 +2481,7 @@ async function _actualizarHeaderConSesionLocal(sesionDirecta) {
       // En mobile mostrar en dos líneas, en desktop en una
       const esMobile = window.innerWidth <= 600;
       if (esMobile && linea1.length >= 1) {
-        window._setTaglineCiudad(linea1.join(' · ') + '
-' + ciudadUpper);
+        window._setTaglineCiudad(linea1.join(' · ') + '|' + ciudadUpper);
       } else {
         window._setTaglineCiudad([...linea1, ciudadUpper].join(' · '));
       }
@@ -4724,8 +4723,9 @@ function resetFlow() {
     setTimeout(() => {
       // Soportar saltos de línea con 
  → <br>
-      if (nuevoTexto.includes('\n')) {
-        el.innerHTML = nuevoTexto.split('\n').map(l => `<span style="display:block;text-align:center;">${l}</span>`).join('');
+      if (nuevoTexto.includes('|')) {
+        var partes = nuevoTexto.split('|');
+        el.innerHTML = partes.map(function(l){ return '<span style="display:block;text-align:center;">' + l + '</span>'; }).join('');
       } else {
         el.textContent = nuevoTexto;
       }
@@ -4768,4 +4768,3 @@ function resetFlow() {
 </script>
 </body>
 </html>
-"<!-- deploy -->" 
