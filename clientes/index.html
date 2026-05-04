@@ -421,8 +421,38 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); min-height:100
             <input type="text" class="form-input" id="p-dir" placeholder="Calle, número">
           </div>
           <div class="form-field">
-            <label class="form-label">Barrio / Ciudad</label>
-            <input type="text" class="form-input" id="p-barrio" placeholder="Palermo, CABA">
+            <label class="form-label">Barrio</label>
+            <input type="text" class="form-input" id="p-barrio" placeholder="Ej: Palermo, San Isidro">
+          </div>
+          <div class="form-field">
+            <label class="form-label">Ciudad</label>
+            <select class="form-input" id="p-ciudad">
+              <option value="">Seleccioná tu ciudad</option>
+              <optgroup label="Buenos Aires">
+                <option value="Buenos Aires">CABA / Buenos Aires</option>
+                <option value="San Isidro">San Isidro</option>
+                <option value="Vicente López">Vicente López</option>
+                <option value="Tigre">Tigre</option>
+                <option value="Nordelta">Nordelta</option>
+                <option value="Pilar">Pilar</option>
+                <option value="San Fernando">San Fernando</option>
+                <option value="Morón">Morón</option>
+                <option value="Quilmes">Quilmes</option>
+                <option value="La Matanza">La Matanza</option>
+                <option value="Lomas de Zamora">Lomas de Zamora</option>
+                <option value="Avellaneda">Avellaneda</option>
+              </optgroup>
+              <optgroup label="Interior">
+                <option value="Córdoba">Córdoba</option>
+                <option value="Rosario">Rosario</option>
+                <option value="Mendoza">Mendoza</option>
+                <option value="Mar del Plata">Mar del Plata</option>
+                <option value="Bariloche">Bariloche</option>
+                <option value="Salta">Salta</option>
+                <option value="Patagonia">Patagonia</option>
+              </optgroup>
+              <option value="Otra">Otra ciudad</option>
+            </select>
           </div>
           <div class="form-field">
             <label class="form-label">Piso / Depto (opcional)</label>
@@ -752,6 +782,7 @@ async function cargarPerfil() {
   if (el('p-tel')) el('p-tel').value = data.telefono || '';
   if (el('p-dir')) el('p-dir').value = data.direccion || '';
   if (el('p-barrio')) el('p-barrio').value = data.barrio || '';
+  if (el('p-ciudad') && data.ciudad) el('p-ciudad').value = data.ciudad;
   if (el('p-piso')) el('p-piso').value = data.piso || '';
   if (el('p-notas')) el('p-notas').value = data.notas || '';
   if (data.avatar_url) {
@@ -771,6 +802,7 @@ async function guardarPerfil() {
     telefono: document.getElementById('p-tel').value.trim(),
     direccion: document.getElementById('p-dir').value.trim(),
     barrio: document.getElementById('p-barrio').value.trim(),
+    ciudad: document.getElementById('p-ciudad')?.value || null,
     piso: document.getElementById('p-piso').value.trim(),
     notas: document.getElementById('p-notas').value.trim()
   };

@@ -3156,7 +3156,28 @@ async function renderChefs() {
 
   try {
     const barrio = clientePerfil?.barrio || clientePerfil?.localidad || null;
-    const ciudad = clientePerfil?.ciudad || barrio || 'Buenos Aires';
+
+    // Resolver ciudad: campo explícito > parsear barrio > default
+    const _detectarCiudad = (barrio, ciudadExplicita) => {
+      if (ciudadExplicita) return ciudadExplicita;
+      if (!barrio) return 'Buenos Aires';
+      const b = barrio.toLowerCase();
+      if (b.includes('córdoba') || b.includes('cordoba')) return 'Córdoba';
+      if (b.includes('rosario')) return 'Rosario';
+      if (b.includes('mendoza')) return 'Mendoza';
+      if (b.includes('mar del plata') || b.includes('mdp')) return 'Mar del Plata';
+      if (b.includes('bariloche')) return 'Bariloche';
+      if (b.includes('salta')) return 'Salta';
+      if (b.includes('san isidro')) return 'San Isidro';
+      if (b.includes('vicente lópez') || b.includes('vicente lopez')) return 'Vicente López';
+      if (b.includes('tigre')) return 'Tigre';
+      if (b.includes('nordelta')) return 'Nordelta';
+      if (b.includes('pilar')) return 'Pilar';
+      if (b.includes('morón') || b.includes('moron')) return 'Morón';
+      if (b.includes('quilmes')) return 'Quilmes';
+      return 'Buenos Aires';
+    };
+    const ciudad = _detectarCiudad(barrio, clientePerfil?.ciudad);
 
     // Consultar chefs activos
     const headers = { 'apikey': SUPA_KEY };
@@ -3222,6 +3243,17 @@ async function renderChefs() {
     L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
       maxZoom: 19,
     }).addTo(_mapaLeaflet);
+
+    // Punto de referencia del cliente — centro de su ciudad, sin dirección exacta
+    const iconoCliente = L.divIcon({
+      className: '',
+      html: '<div style="width:12px;height:12px;background:#fff;border:2px solid rgba(255,255,255,0.4);border-radius:50%;box-shadow:0 0 0 6px rgba(255,255,255,0.08);"></div>',
+      iconSize: [12, 12],
+      iconAnchor: [6, 6],
+    });
+    L.marker(mapConfig.center, { icon: iconoCliente })
+      .addTo(_mapaLeaflet)
+      .bindTooltip('Tu zona', { permanent: false, direction: 'top', className: 'leaflet-tooltip-celestia' });
 
     // Puntos pulsantes por zona
     const icono = _crearIconoPulso();
