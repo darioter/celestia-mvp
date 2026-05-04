@@ -2444,8 +2444,30 @@ async function _actualizarHeaderConSesionLocal(sesionDirecta) {
   }
   // Detener el rotador en la ciudad del cliente
   if (typeof window._setTaglineCiudad === 'function') {
-    const ciudadCliente = clientePerfil?.ciudad || clientePerfil?.barrio || null;
-    if (ciudadCliente) window._setTaglineCiudad(ciudadCliente);
+    const ciudad = clientePerfil?.ciudad || clientePerfil?.barrio || null;
+    const barrio = clientePerfil?.barrio || null;
+    // Construir cadena PAIS · PROVINCIA · CIUDAD
+    const _provinciaDeCiudad = (c) => {
+      if (!c) return null;
+      const gba = ['San Isidro','Vicente López','Tigre','Nordelta','Pilar','San Fernando','Morón','Quilmes','La Matanza','Lomas de Zamora','Avellaneda'];
+      if (c === 'Buenos Aires' || c === 'CABA') return 'BUENOS AIRES';
+      if (gba.includes(c)) return 'BUENOS AIRES';
+      if (c === 'Córdoba') return 'CÓRDOBA';
+      if (c === 'Rosario') return 'SANTA FE';
+      if (c === 'Mendoza') return 'MENDOZA';
+      if (c === 'Mar del Plata') return 'BUENOS AIRES';
+      if (c === 'Bariloche') return 'RÍO NEGRO';
+      if (c === 'Salta') return 'SALTA';
+      if (c === 'Patagonia') return 'PATAGONIA';
+      return null;
+    };
+    if (ciudad) {
+      const provincia = _provinciaDeCiudad(ciudad);
+      const partes = ['ARGENTINA'];
+      if (provincia && provincia !== ciudad.toUpperCase()) partes.push(provincia);
+      partes.push(ciudad.toUpperCase());
+      window._setTaglineCiudad(partes.join(' · '));
+    }
   }
   return true;
 }
