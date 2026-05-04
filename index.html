@@ -1228,6 +1228,81 @@ textarea { resize: vertical; min-height: 80px; }
   30% { opacity: 1; transform: scale(1); }
 }
 </style>
+  <!-- Leaflet para mapa de disponibilidad -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <style>
+    /* Mapa Celestia */
+    #mapa-disponibilidad {
+      width: 100%;
+      height: 340px;
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      margin-bottom: 20px;
+    }
+    .leaflet-container { background: #0D1B2A !important; }
+    /* Pulso estilo Uber */
+    .chef-marker-wrap { position: relative; }
+    .chef-dot {
+      width: 14px; height: 14px;
+      background: #C9A84C;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      box-shadow: 0 0 0 0 rgba(201,168,76,0.6);
+      animation: pulse-chef 2s infinite;
+    }
+    .chef-pulse {
+      position: absolute;
+      top: -8px; left: -8px;
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: rgba(201,168,76,0.25);
+      animation: pulse-ring 2s infinite;
+    }
+    .leaflet-tooltip-celestia {
+      background: #0D1B2A;
+      border: 1px solid rgba(201,168,76,0.3);
+      color: #E8C96A;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      border-radius: 6px;
+      padding: 4px 10px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    }
+    .leaflet-tooltip-celestia::before { border-top-color: rgba(201,168,76,0.3) !important; }
+    @keyframes pulse-chef {
+      0%   { box-shadow: 0 0 0 0 rgba(201,168,76,0.6); }
+      70%  { box-shadow: 0 0 0 10px rgba(201,168,76,0); }
+      100% { box-shadow: 0 0 0 0 rgba(201,168,76,0); }
+    }
+    @keyframes pulse-ring {
+      0%   { transform: scale(0.8); opacity: 0.8; }
+      70%  { transform: scale(1.6); opacity: 0; }
+      100% { transform: scale(0.8); opacity: 0; }
+    }
+    .disponibilidad-banner {
+      background: rgba(201,168,76,0.08);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 12px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .disponibilidad-banner .dot-live {
+      width: 8px; height: 8px;
+      background: #C9A84C;
+      border-radius: 50%;
+      flex-shrink: 0;
+      animation: pulse-chef 1.5s infinite;
+    }
+    .disponibilidad-banner .text { font-size: 13px; color: var(--text-mid); }
+    .disponibilidad-banner .text strong { color: var(--gold); font-weight: 600; }
+  </style>
 </head>
 <body>
 
@@ -1466,9 +1541,12 @@ textarea { resize: vertical; min-height: 80px; }
 
   <!-- PASO 1: CHEFS -->
   <div id="screen-1" class="screen" style="display:none">
-    <h2 class="section-title">Tu chef</h2>
-    <p class="section-sub" id="chef-disponibilidad-sub" style="min-height:20px;"></p>
-    <div class="chef-grid" id="chef-grid"></div>
+    <h2 class="section-title">Chefs disponibles</h2>
+    <div class="disponibilidad-banner" id="disponibilidad-banner" style="display:none">
+      <div class="dot-live"></div>
+      <div class="text" id="disponibilidad-texto">Buscando chefs en tu zona...</div>
+    </div>
+    <div id="mapa-disponibilidad"></div>
     <div class="nav-btns">
       <button class="btn-next" id="btn-next-1" onclick="goTo(2)" disabled>Continuar →</button>
     </div>
@@ -2934,6 +3012,8 @@ function _iniciarFlujoPrincipal() {
 }
 
 function goTo(step) {
+  // Si venimos del paso 1, destruir mapa para liberar memoria
+  if (step !== 1 && _mapaLeaflet) { _destruirMapa(); }
   // Si va al paso 4 → verificar sesión async
   if (step === 4) {
     _verificarAuthYContinuar();
@@ -3004,79 +3084,177 @@ function goTo(step) {
 }
 
 // ─── PASO 1: CHEFS ───────────────────────────────────────
-async function renderChefs() {
-  const grid = document.getElementById('chef-grid');
-  const subEl = document.getElementById('chef-disponibilidad-sub');
+// ── Coordenadas por zona ────────────────────────────────────────────────────
+const ZONA_COORDS = {
+  // CABA
+  'Palermo':       [-34.5881, -58.4269], 'Belgrano':    [-34.5606, -58.4577],
+  'Núñez':         [-34.5452, -58.4614], 'Recoleta':    [-34.5885, -58.3940],
+  'Barrio Norte':  [-34.5905, -58.3970], 'San Telmo':   [-34.6225, -58.3737],
+  'Puerto Madero': [-34.6100, -58.3635], 'Caballito':   [-34.6189, -58.4420],
+  'Villa Crespo':  [-34.5989, -58.4397], 'Almagro':     [-34.6087, -58.4195],
+  'Colegiales':    [-34.5726, -58.4467], 'Villa Urquiza':[-34.5721,-58.4901],
+  'Flores':        [-34.6319, -58.4637], 'Devoto':      [-34.5989, -58.5226],
+  // GBA Norte
+  'San Isidro':    [-34.4712, -58.5234], 'Vicente López':[-34.5260,-58.4797],
+  'Tigre':         [-34.4262, -58.5794], 'Nordelta':    [-34.3900, -58.6500],
+  'Pilar':         [-34.4585, -58.9139], 'San Fernando':[-34.4437,-58.5574],
+  // GBA Oeste/Sur
+  'La Matanza':    [-34.6974, -58.6089], 'Morón':       [-34.6530, -58.6196],
+  'Quilmes':       [-34.7206, -58.2538], 'Lomas de Zamora':[-34.7602,-58.3979],
+  'Avellaneda':    [-34.6631, -58.3652],
+  // Interior
+  'Córdoba':       [-31.4201, -64.1888], 'Rosario':     [-32.9442, -60.6505],
+  'Mendoza':       [-32.8908, -68.8272], 'Mar del Plata':[-38.0023,-57.5575],
+  'Bariloche':     [-41.1335, -71.3103], 'Salta':       [-24.7859, -65.4117],
+  'Patagonia':     [-45.8667, -67.5000],
+};
 
-  // Mostrar loading
-  grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-light);font-size:14px;">Buscando chefs disponibles...</div>';
-  if (subEl) subEl.textContent = '';
+// Centro y zoom por ciudad/región del cliente
+const CIUDAD_CENTRO = {
+  'Buenos Aires': { center: [-34.603, -58.381], zoom: 12 },
+  'CABA':         { center: [-34.603, -58.381], zoom: 12 },
+  'Córdoba':      { center: [-31.420, -64.188], zoom: 13 },
+  'Rosario':      { center: [-32.944, -60.650], zoom: 13 },
+  'Mendoza':      { center: [-32.890, -68.827], zoom: 13 },
+  'Mar del Plata':{ center: [-38.002, -57.557], zoom: 13 },
+  'Bariloche':    { center: [-41.133, -71.310], zoom: 13 },
+  'Salta':        { center: [-24.786, -65.411], zoom: 13 },
+  'Patagonia':    { center: [-45.866, -67.500], zoom: 8  },
+  // GBA
+  'San Isidro':   { center: [-34.471, -58.523], zoom: 13 },
+  'Vicente López':{ center: [-34.526, -58.479], zoom: 13 },
+  'Tigre':        { center: [-34.426, -58.579], zoom: 13 },
+  'Pilar':        { center: [-34.458, -58.913], zoom: 13 },
+  'Nordelta':     { center: [-34.390, -58.650], zoom: 13 },
+  'Morón':        { center: [-34.653, -58.619], zoom: 13 },
+  'Quilmes':      { center: [-34.720, -58.253], zoom: 13 },
+};
+
+let _mapaLeaflet = null;
+
+function _destruirMapa() {
+  if (_mapaLeaflet) { _mapaLeaflet.remove(); _mapaLeaflet = null; }
+}
+
+function _crearIconoPulso() {
+  return L.divIcon({
+    className: '',
+    html: '<div class="chef-marker-wrap"><div class="chef-pulse"></div><div class="chef-dot"></div></div>',
+    iconSize: [14, 14],
+    iconAnchor: [7, 7],
+    popupAnchor: [0, -14],
+  });
+}
+
+async function renderChefs() {
+  _destruirMapa();
+
+  const banner = document.getElementById('disponibilidad-banner');
+  const textoEl = document.getElementById('disponibilidad-texto');
+  if (banner) banner.style.display = 'flex';
+  if (textoEl) textoEl.innerHTML = 'Buscando chefs en tu zona...';
 
   try {
-    // Obtener ubicación del cliente
     const barrio = clientePerfil?.barrio || clientePerfil?.localidad || null;
+    const ciudad = clientePerfil?.ciudad || barrio || 'Buenos Aires';
 
-    // Consultar chefs activos en Supabase
-    let query = SUPA_URL + '/rest/v1/chefs?estado=eq.activo&select=id,nombre,apellido,foto_url,especialidades,bio,zonas_cobertura&limit=10';
+    // Consultar chefs activos
     const headers = { 'apikey': SUPA_KEY };
-    const res = await fetch(query, { headers });
+    const res = await fetch(SUPA_URL + '/rest/v1/chefs?estado=eq.activo&select=id,nombre,apellido,zonas_cobertura&limit=20', { headers });
     const chefsSupa = res.ok ? await res.json() : [];
 
-    // Filtrar por zona si el cliente tiene barrio guardado
-    let chefsDisponibles = chefsSupa;
-    if (barrio && Array.isArray(chefsSupa) && chefsSupa.length > 0) {
-      const chefsEnZona = chefsSupa.filter(c =>
+    // Filtrar por zona del cliente
+    let chefsDisponibles = Array.isArray(chefsSupa) ? chefsSupa : [];
+    if (barrio && chefsDisponibles.length > 0) {
+      const enZona = chefsDisponibles.filter(c =>
         Array.isArray(c.zonas_cobertura) && c.zonas_cobertura.some(z =>
           z.toLowerCase().includes(barrio.toLowerCase()) ||
           barrio.toLowerCase().includes(z.toLowerCase())
         )
       );
-      chefsDisponibles = chefsEnZona.length > 0 ? chefsEnZona : chefsSupa;
+      if (enZona.length > 0) chefsDisponibles = enZona;
     }
 
-    // Actualizar subtítulo con disponibilidad
-    if (subEl) {
-      if (chefsDisponibles.length > 0 && barrio) {
-        subEl.innerHTML = `<span style="color:var(--gold);font-weight:500;">${chefsDisponibles.length} chef${chefsDisponibles.length > 1 ? 's' : ''} disponible${chefsDisponibles.length > 1 ? 's' : ''}</span> en tu zona`;
-      } else if (chefsDisponibles.length > 0) {
-        subEl.textContent = 'Chefs disponibles en tu área';
+    // Asignar chef internamente
+    if (chefsDisponibles.length > 0) {
+      state.chef = { ...CHEFS[0], ...chefsDisponibles[0] };
+      document.getElementById('btn-next-1').disabled = false;
+    } else {
+      // Fallback hardcoded
+      state.chef = CHEFS[0];
+      document.getElementById('btn-next-1').disabled = false;
+    }
+
+    // Banner de disponibilidad
+    const n = chefsDisponibles.length || 1;
+    if (textoEl) textoEl.innerHTML = `<strong>${n} chef${n > 1 ? 's' : ''} disponible${n > 1 ? 's' : ''}</strong> cerca tuyo — asignación automática al confirmar`;
+
+    // ── Construir mapa ──────────────────────────────────────────────────────
+    const mapConfig = CIUDAD_CENTRO[ciudad] || CIUDAD_CENTRO['Buenos Aires'];
+
+    // Recolectar zonas de cobertura de los chefs disponibles
+    let zonasActivas = [];
+    chefsDisponibles.forEach(c => {
+      if (Array.isArray(c.zonas_cobertura)) zonasActivas.push(...c.zonas_cobertura);
+    });
+    // Si no hay zonas, usar defaults de la ciudad
+    if (zonasActivas.length === 0) {
+      if (ciudad.includes('Buenos Aires') || ciudad.includes('CABA') || !CIUDAD_CENTRO[ciudad]) {
+        zonasActivas = ['Palermo','Belgrano','Recoleta','San Isidro','Vicente López','Tigre','Puerto Madero','San Telmo'];
       } else {
-        subEl.textContent = 'Consultá disponibilidad por WhatsApp';
+        zonasActivas = [ciudad];
       }
     }
+    // Deduplicar
+    zonasActivas = [...new Set(zonasActivas)];
 
-    // Si no hay chefs de Supabase, usar el hardcoded como fallback
-    if (!Array.isArray(chefsSupa) || chefsSupa.length === 0) {
-      _renderChefsHardcoded(grid);
-      return;
-    }
+    // Crear mapa
+    _mapaLeaflet = L.map('mapa-disponibilidad', {
+      center: mapConfig.center,
+      zoom: mapConfig.zoom,
+      zoomControl: false,
+      attributionControl: false,
+      scrollWheelZoom: false,
+      dragging: true,
+    });
 
-    // Renderizar chefs de Supabase — el cliente no elige, solo ve disponibilidad
-    // Se asigna el chef internamente (el primero de la lista priorizada)
-    const chefAsignado = chefsDisponibles[0];
-    state.chef = { ...CHEFS[0], ...chefAsignado };
-    document.getElementById('btn-next-1').disabled = false;
+    // Tile oscuro estilo Celestia
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      maxZoom: 19,
+    }).addTo(_mapaLeaflet);
 
-    // Mostrar solo el conteo y disponibilidad, sin revelar quién es ni permitir elección
-    grid.innerHTML = `
-      <div style="text-align:center;padding:48px 24px;">
-        <div style="font-size:48px;margin-bottom:16px;">✦</div>
-        <div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--navy);margin-bottom:8px;">
-          ${chefsDisponibles.length} chef${chefsDisponibles.length > 1 ? 's disponibles' : ' disponible'} en tu zona
-        </div>
-        <div style="font-size:14px;color:var(--text-light);font-weight:300;max-width:340px;margin:0 auto;">
-          Recibirás la confirmación con los datos del chef asignado una vez que completes tu reserva.
-        </div>
-      </div>`;
+    // Puntos pulsantes por zona
+    const icono = _crearIconoPulso();
+    zonasActivas.forEach(zona => {
+      const coords = ZONA_COORDS[zona];
+      if (!coords) return;
+      // Pequeño offset aleatorio para que no se superpongan exacto
+      const lat = coords[0] + (Math.random() - 0.5) * 0.008;
+      const lng = coords[1] + (Math.random() - 0.5) * 0.008;
+      L.marker([lat, lng], { icon: icono })
+        .addTo(_mapaLeaflet)
+        .bindTooltip(zona, { permanent: false, direction: 'top', className: 'leaflet-tooltip-celestia' });
+    });
 
   } catch(e) {
     console.warn('Error cargando chefs:', e);
-    _renderChefsHardcoded(grid);
+    state.chef = CHEFS[0];
+    document.getElementById('btn-next-1').disabled = false;
+    if (textoEl) textoEl.innerHTML = '<strong>Chefs disponibles</strong> en tu zona';
+    // Mapa fallback AMBA
+    _mapaLeaflet = L.map('mapa-disponibilidad', {
+      center: [-34.603, -58.381], zoom: 12,
+      zoomControl: false, attributionControl: false, scrollWheelZoom: false,
+    });
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(_mapaLeaflet);
+    const icono = _crearIconoPulso();
+    [[-34.5881,-58.4269],[-34.5606,-58.4577],[-34.5885,-58.3940],[-34.4712,-58.5234],[-34.5260,-58.4797]]
+      .forEach(c => L.marker(c, { icon: icono }).addTo(_mapaLeaflet));
   }
 }
 
 function _renderChefsHardcoded(grid) {
-  // Fallback: usar el chef hardcodeado original
+  // Fallback legacy — ya no se usa el grid pero se mantiene por compatibilidad
   if (document.getElementById('chef-disponibilidad-sub')) {
     document.getElementById('chef-disponibilidad-sub').textContent = '';
   }
