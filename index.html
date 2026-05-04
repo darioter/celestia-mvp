@@ -1328,6 +1328,100 @@ textarea { resize: vertical; min-height: 80px; }
     .disponibilidad-banner .text { font-size: 13px; color: var(--text-mid); }
     .disponibilidad-banner .text strong { color: var(--gold); font-weight: 600; }
   </style>
+
+<script>
+// ── i18n Celestia ─────────────────────────────────────────────────────────────
+var LANG = (function() {
+  var saved = localStorage.getItem('celestia_lang');
+  if (saved) return saved;
+  var nav = (navigator.language || navigator.userLanguage || 'es').toLowerCase();
+  if (nav.startsWith('pt')) return 'pt';
+  if (nav.startsWith('en')) return 'en';
+  return 'es';
+})();
+
+var I18N = {
+  es: {
+    acceder: 'Acceder →',
+    hola: 'Hola, {nombre} →',
+    hero_label: '✦ Experiencia gastronómica privada',
+    hero_h1: 'El lujo de un chef privado,',
+    hero_h1_em: 'ahora al alcance de tu mano.',
+    hero_p: 'Celestia transforma la forma de vivir la alta cocina en casa. Cocina, presentación y servicio de nivel restaurante, diseñada especialmente para vos.',
+    btn_reservar: 'Reservar una experiencia →',
+    btn_chef_semanal: 'Chef semanal →',
+    btn_ia: '✦ Explorá tu menú con IA',
+    tab_chef_privado: 'Chef privado',
+    tab_chef_semanal: 'Chef semanal',
+    aplicar_chef: 'Aplicar como chef',
+  },
+  en: {
+    acceder: 'Sign in →',
+    hola: 'Hi, {nombre} →',
+    hero_label: '✦ Private culinary experience',
+    hero_h1: 'The luxury of a private chef,',
+    hero_h1_em: 'now within your reach.',
+    hero_p: 'Celestia transforms the way you experience fine dining at home. Restaurant-level cooking, presentation and service, designed especially for you.',
+    btn_reservar: 'Book an experience →',
+    btn_chef_semanal: 'Weekly chef →',
+    btn_ia: '✦ Explore your menu with AI',
+    tab_chef_privado: 'Private chef',
+    tab_chef_semanal: 'Weekly chef',
+    aplicar_chef: 'Apply as chef',
+  },
+  pt: {
+    acceder: 'Entrar →',
+    hola: 'Olá, {nombre} →',
+    hero_label: '✦ Experiência gastronômica privada',
+    hero_h1: 'O luxo de um chef privado,',
+    hero_h1_em: 'agora ao seu alcance.',
+    hero_p: 'A Celestia transforma a forma de viver a alta gastronomia em casa. Cozinha, apresentação e serviço de nível restaurante, desenhada especialmente para você.',
+    btn_reservar: 'Reservar uma experiência →',
+    btn_chef_semanal: 'Chef semanal →',
+    btn_ia: '✦ Explore seu menu com IA',
+    tab_chef_privado: 'Chef privado',
+    tab_chef_semanal: 'Chef semanal',
+    aplicar_chef: 'Candidatar-se como chef',
+  }
+};
+
+function t(key, vars) {
+  var str = (I18N[LANG] || I18N['es'])[key] || (I18N['es'][key] || key);
+  if (vars) Object.keys(vars).forEach(function(k){ str = str.replace('{'+k+'}', vars[k]); });
+  return str;
+}
+
+function setLang(lang) {
+  LANG = lang;
+  localStorage.setItem('celestia_lang', lang);
+  aplicarI18n();
+}
+
+function aplicarI18n() {
+  // Header
+  var accederBtn = document.getElementById('header-acceder');
+  if (accederBtn && !accederBtn._logueado) accederBtn.textContent = t('acceder');
+  // Hero
+  var el;
+  el = document.getElementById('i18n-hero-label'); if(el) el.textContent = t('hero_label');
+  el = document.getElementById('i18n-hero-h1'); if(el) el.textContent = t('hero_h1');
+  el = document.getElementById('i18n-hero-em'); if(el) el.textContent = t('hero_h1_em');
+  el = document.getElementById('i18n-hero-p'); if(el) el.textContent = t('hero_p');
+  el = document.getElementById('i18n-btn-reservar'); if(el) el.textContent = t('btn_reservar');
+  el = document.getElementById('i18n-btn-semanal'); if(el) el.textContent = t('btn_chef_semanal');
+  el = document.getElementById('i18n-btn-ia'); if(el) el.textContent = t('btn_ia');
+  el = document.getElementById('i18n-tab-chef'); if(el) el.textContent = t('tab_chef_privado');
+  el = document.getElementById('i18n-tab-semanal'); if(el) el.textContent = t('tab_chef_semanal');
+  el = document.getElementById('i18n-aplicar-chef'); if(el) el.textContent = t('aplicar_chef');
+  // Selector activo
+  ['es','en','pt'].forEach(function(l){
+    var btn = document.getElementById('lang-btn-'+l);
+    if(btn) btn.style.opacity = (l === LANG) ? '1' : '0.4';
+  });
+}
+
+document.addEventListener('DOMContentLoaded', aplicarI18n);
+</script>
 </head>
 <body>
 
@@ -1337,19 +1431,28 @@ textarea { resize: vertical; min-height: 80px; }
     <span style="font-size:12px;font-weight:300;color:rgba(250,246,239,0.45);font-family:'DM Sans',sans-serif;letter-spacing:0.04em;" class="logo-by">by Daro Castello</span>
   </div>
   <div class="tagline" id="tagline-rotador">ARGENTINA</div>
-  <a id="header-acceder" href="/clientes" style="font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:rgba(250,246,239,0.7);text-decoration:none;border:1px solid rgba(201,168,76,0.3);padding:6px 14px;border-radius:20px;transition:all 0.2s;letter-spacing:0.04em;">Acceder →</a>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <div style="display:flex;gap:6px;align-items:center;">
+      <button id="lang-btn-es" onclick="setLang('es')" style="font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.08em;color:rgba(250,246,239,0.8);background:transparent;border:none;cursor:pointer;padding:2px 4px;opacity:1;">ES</button>
+      <span style="color:rgba(250,246,239,0.2);font-size:10px;">|</span>
+      <button id="lang-btn-en" onclick="setLang('en')" style="font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.08em;color:rgba(250,246,239,0.8);background:transparent;border:none;cursor:pointer;padding:2px 4px;opacity:0.4;">EN</button>
+      <span style="color:rgba(250,246,239,0.2);font-size:10px;">|</span>
+      <button id="lang-btn-pt" onclick="setLang('pt')" style="font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.08em;color:rgba(250,246,239,0.8);background:transparent;border:none;cursor:pointer;padding:2px 4px;opacity:0.4;">PT</button>
+    </div>
+    <a id="header-acceder" href="/clientes" style="font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:rgba(250,246,239,0.7);text-decoration:none;border:1px solid rgba(201,168,76,0.3);padding:6px 14px;border-radius:20px;transition:all 0.2s;letter-spacing:0.04em;">Acceder →</a>
+  </div>
 </header>
 
 <!-- HERO (solo se ve en paso 0) -->
 <div id="hero-section">
   <div class="hero">
-    <div class="hero-label">✦ Experiencia gastronómica privada</div>
-    <h1>El lujo de un chef privado,<br><em>ahora al alcance de tu mano.</em></h1>
-    <p>Celestia transforma la forma de vivir la alta cocina en casa. Cocina, presentación y servicio de nivel restaurante, diseñada especialmente para vos.</p>
+    <div class="hero-label" id="i18n-hero-label">✦ Experiencia gastronómica privada</div>
+    <h1><span id="i18n-hero-h1">El lujo de un chef privado,</span><br><em id="i18n-hero-em">ahora al alcance de tu mano.</em></h1>
+    <p id="i18n-hero-p">Celestia transforma la forma de vivir la alta cocina en casa. Cocina, presentación y servicio de nivel restaurante, diseñada especialmente para vos.</p>
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-      <button class="cta-btn" onclick="startFlow()">Reservar una experiencia →</button>
-      <button class="cta-btn" onclick="startMealPrep()" style="background:transparent;border:1.5px solid var(--gold);color:var(--gold-light);">Chef semanal →</button>
-      <button class="cta-btn" onclick="toggleChatIA()" style="background:transparent;border:1.5px solid rgba(250,246,239,0.25);color:rgba(250,246,239,0.65);">✦ Explorá tu menú con IA</button>
+      <button id="i18n-btn-reservar" class="cta-btn" onclick="startFlow()">Reservar una experiencia →</button>
+      <button id="i18n-btn-semanal" class="cta-btn" onclick="startMealPrep()" style="background:transparent;border:1.5px solid var(--gold);color:var(--gold-light);">Chef semanal →</button>
+      <button id="i18n-btn-ia" class="cta-btn" onclick="toggleChatIA()" style="background:transparent;border:1.5px solid rgba(250,246,239,0.25);color:rgba(250,246,239,0.65);">✦ Explorá tu menú con IA</button>
     </div>
   </div>
 
@@ -1362,11 +1465,11 @@ textarea { resize: vertical; min-height: 80px; }
     <div style="display:flex;border-bottom:1.5px solid var(--cream-dark);margin-bottom:40px;">
       <button id="tab-btn-chef" onclick="switchServiceTab('chef')"
         style="font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;color:var(--navy);padding:12px 28px;border:none;background:none;cursor:pointer;border-bottom:2.5px solid var(--gold);margin-bottom:-1.5px;letter-spacing:0.02em;">
-        Chef privado
+        <span id="i18n-tab-chef">Chef privado</span>
       </button>
       <button id="tab-btn-meal" onclick="switchServiceTab('meal')"
         style="font-family:'DM Sans',sans-serif;font-size:14px;font-weight:400;color:var(--text-light);padding:12px 28px;border:none;background:none;cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1.5px;letter-spacing:0.02em;">
-        Chef semanal
+        <span id="i18n-tab-semanal">Chef semanal</span>
       </button>
     </div>
 
@@ -2450,7 +2553,8 @@ async function _actualizarHeaderConSesionLocal(sesionDirecta) {
   }
   const accederBtn = document.getElementById('header-acceder');
   if (accederBtn && clientePerfil?.nombre) {
-    accederBtn.textContent = `Hola, ${clientePerfil.nombre.split(' ')[0]} →`;
+    accederBtn._logueado = true;
+    accederBtn.textContent = t('hola', {nombre: clientePerfil.nombre.split(' ')[0]});
     accederBtn.style.color = 'var(--gold-light)';
     accederBtn.style.borderColor = 'rgba(201,168,76,0.5)';
   }
