@@ -262,9 +262,19 @@ footer a { color:rgba(250,246,239,0.5); text-decoration:none; }
     <p>Celestia no es responsable por demoras, incumplimientos o daños derivados de causas ajenas a su control, incluyendo situaciones de caso fortuito o fuerza mayor.</p>
 
     <h2 id="c-privacidad">6. Privacidad y datos personales</h2>
-    <p>Los datos personales recopilados (nombre, teléfono, email, dirección) son utilizados exclusivamente para la coordinación y prestación del servicio contratado.</p>
+    <p>Los datos personales recopilados (nombre, teléfono, email, dirección, barrio y ciudad) son utilizados exclusivamente para la coordinación y prestación del servicio contratado.</p>
     <p>No se comparten datos con terceros con fines comerciales. Los datos se almacenan de forma segura en servidores de <strong>Supabase</strong> (Supabase Inc., EE.UU.) con encriptación en tránsito y en reposo.</p>
     <p>El acceso a la plataforma puede realizarse mediante autenticación de <strong>Google (OAuth 2.0)</strong>. Al usar esta opción, Google puede acceder a datos básicos del perfil (nombre, email, foto) según su propia política de privacidad disponible en <a href="https://policies.google.com/privacy" target="_blank">policies.google.com/privacy</a>. Celestia no almacena contraseñas de Google ni tiene acceso a cuentas de Google más allá de los datos de perfil básicos autorizados por el usuario.</p>
+
+    <h3>Uso de datos de ubicación</h3>
+    <p>La ciudad y barrio ingresados por el cliente en su perfil son utilizados para:</p>
+    <ul>
+      <li>Mostrar disponibilidad de chefs en su zona de referencia, de forma aproximada y sin revelar la dirección exacta del cliente ni del chef.</li>
+      <li>En versiones futuras de la plataforma: seguimiento en tiempo real de la llegada del chef al domicilio del cliente durante un servicio activo. Esta función será opcional y requerirá consentimiento explícito al momento de su implementación.</li>
+    </ul>
+    <p>El mapa de disponibilidad mostrado en la plataforma utiliza la <strong>ciudad seleccionada</strong> como referencia geográfica aproximada. No se procesa ni almacena la ubicación GPS del cliente. La dirección exacta del domicilio solo es accesible al chef asignado una vez confirmada la reserva.</p>
+    <p>Al completar su perfil con datos de ciudad y barrio, el cliente presta conformidad con estos usos.</p>
+
     <p>El cliente tiene derecho a solicitar el acceso, rectificación o eliminación de sus datos en cualquier momento escribiendo a <strong>celestiachefs@gmail.com</strong>.</p>
     <p>Celestia cumple con la <strong>Ley 25.326 de Protección de Datos Personales</strong> de la República Argentina.</p>
 
@@ -408,6 +418,17 @@ footer a { color:rgba(250,246,239,0.5); text-decoration:none; }
 
     <h2 id="h-datos">8. Datos personales</h2>
     <p>Los datos del chef (nombre, CUIT, DNI, alias bancario, documentación) son utilizados exclusivamente para la operación de la plataforma, la liquidación de pagos y el cumplimiento de obligaciones legales.</p>
+
+    <h3>Ubicación durante el servicio</h3>
+    <p>En versiones futuras de la plataforma, Celestia podrá implementar seguimiento de ubicación del chef en tiempo real durante los servicios activos, con el fin de informar al cliente sobre la llegada del chef. Esta función:</p>
+    <ul>
+      <li>Solo estará activa durante el período del servicio (desde que el chef confirma su salida hasta la finalización del servicio).</li>
+      <li>No registrará ni almacenará el historial de ubicaciones del chef fuera del servicio activo.</li>
+      <li>Requerirá consentimiento explícito del chef al momento de su implementación.</li>
+      <li>Solo compartirá la ubicación aproximada con el cliente asignado, no con terceros.</li>
+    </ul>
+    <p>La ubicación del chef nunca es visible en el mapa de disponibilidad de la landing ni en ningún contexto fuera del servicio activo confirmado.</p>
+
     <p>El chef puede solicitar la eliminación de sus datos escribiendo a <strong>celestiachefs@gmail.com</strong>, lo cual implica automáticamente la baja de la plataforma.</p>
     <p>Celestia cumple con la <strong>Ley 25.326 de Protección de Datos Personales</strong> de la República Argentina.</p>
 
@@ -446,8 +467,9 @@ footer a { color:rgba(250,246,239,0.5); text-decoration:none; }
       <a href="#p-modelo">1. Modelo de intermediación</a>
       <a href="#p-comision">2. Comisión de plataforma</a>
       <a href="#p-pagos">3. Gestión de pagos</a>
-      <a href="#p-responsabilidad">4. Limitación de responsabilidad</a>
-      <a href="#p-cambios">5. Modificaciones</a>
+      <a href="#p-ubicacion">4. Datos de ubicación</a>
+      <a href="#p-responsabilidad">5. Limitación de responsabilidad</a>
+      <a href="#p-cambios">6. Modificaciones</a>
     </div>
 
     <div class="badge">Condiciones generales</div>
@@ -470,12 +492,22 @@ footer a { color:rgba(250,246,239,0.5); text-decoration:none; }
     <p>Celestia gestiona el cobro al cliente en nombre del chef y liquida los montos correspondientes según el esquema descripto en los Términos para Chefs. Los pagos se procesan a través de MercadoPago y transferencias bancarias.</p>
     <p>Celestia no retiene fondos más allá de los plazos establecidos, salvo en casos de reclamos abiertos o disputas en proceso de resolución.</p>
 
-    <h2 id="p-responsabilidad">4. Limitación de responsabilidad</h2>
+    <h2 id="p-ubicacion">4. Datos de ubicación</h2>
+    <p>Celestia recopila datos de ciudad y barrio de clientes, y en el futuro podrá recopilar ubicación en tiempo real de chefs durante servicios activos. En todos los casos:</p>
+    <ul>
+      <li>Los datos de ubicación se usan exclusivamente para la operación del servicio.</li>
+      <li>No se comparten con terceros con fines publicitarios ni comerciales.</li>
+      <li>La dirección exacta del cliente solo es accesible al chef asignado una vez confirmada la reserva.</li>
+      <li>El seguimiento en tiempo real del chef solo operará con consentimiento explícito y únicamente durante servicios activos.</li>
+    </ul>
+    <p>Celestia cumple con la <strong>Ley 25.326 de Protección de Datos Personales</strong> de la República Argentina y sus modificatorias.</p>
+
+    <h2 id="p-responsabilidad">5. Limitación de responsabilidad</h2>
     <p>Celestia no garantiza un nivel mínimo de servicios asignados a los chefs ni un nivel mínimo de disponibilidad de chefs para los clientes, ya que ambos dependen de la oferta y demanda de la plataforma.</p>
     <p>La responsabilidad de Celestia frente a clientes y chefs se limita, en todos los casos, al monto efectivamente abonado por el servicio en cuestión.</p>
     <p>Celestia no es responsable por daños indirectos, lucro cesante ni perjuicios que excedan el alcance del servicio específico contratado.</p>
 
-    <h2 id="p-cambios">5. Modificaciones</h2>
+    <h2 id="p-cambios">6. Modificaciones</h2>
     <p>Celestia puede modificar estos términos en cualquier momento. Los cambios se notificarán con al menos <strong>15 días de anticipación</strong> a clientes y chefs registrados mediante email y/o aviso en la plataforma.</p>
     <p>El uso continuado de la plataforma tras la notificación implica la aceptación de los nuevos términos.</p>
 
