@@ -1527,7 +1527,14 @@ function aplicarI18n() {
   });
 }
 
-document.addEventListener('DOMContentLoaded', aplicarI18n);
+document.addEventListener('DOMContentLoaded', function() {
+  aplicarI18n();
+  // Event listeners para los botones de idioma
+  ['es','en','pt'].forEach(function(lang) {
+    var btn = document.getElementById('lang-btn-' + lang);
+    if (btn) btn.addEventListener('click', function() { setLang(lang); });
+  });
+});
 </script>
 </head>
 <body>
