@@ -1692,9 +1692,9 @@ textarea { resize: vertical; min-height: 80px; }
       <div id="auth-form-registro">
         <input type="text" id="auth-nombre" id="i18n-ph-nombre" placeholder="Tu nombre completo" oninput="checkAuthForm()"
           style="width:100%;border:1.5px solid var(--cream-dark);border-radius:12px;padding:13px 16px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--navy);outline:none;margin-bottom:10px;box-sizing:border-box;">
-        <input type="email" id="auth-email-reg" placeholder="tu@email.com" oninput="checkAuthForm()"
+        <input type="email" id="auth-email-reg" data-i18n-ph="auth_email_ph" placeholder="tu@email.com" oninput="checkAuthForm()"
           style="width:100%;border:1.5px solid var(--cream-dark);border-radius:12px;padding:13px 16px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--navy);outline:none;margin-bottom:10px;box-sizing:border-box;">
-        <input type="password" id="auth-pass-reg" placeholder="Contraseña (mínimo 6 caracteres)" oninput="checkAuthForm()"
+        <input type="password" id="auth-pass-reg" data-i18n-ph="auth_pass_reg_ph" placeholder="Contraseña (mínimo 6 caracteres)" oninput="checkAuthForm()"
           style="width:100%;border:1.5px solid var(--cream-dark);border-radius:12px;padding:13px 16px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--navy);outline:none;margin-bottom:16px;box-sizing:border-box;">
         <div id="auth-error-reg" style="display:none;font-size:12px;color:#E53935;margin-bottom:10px;text-align:center;"></div>
         <button id="auth-btn-registro" onclick="registrarseYContinuar()" disabled data-i18n="auth_btn_registro"
@@ -1705,9 +1705,9 @@ textarea { resize: vertical; min-height: 80px; }
 
       <!-- Formulario login -->
       <div id="auth-form-login" style="display:none;">
-        <input type="email" id="auth-email-login" placeholder="tu@email.com" oninput="checkAuthForm()"
+        <input type="email" id="auth-email-login" data-i18n-ph="auth_email_ph" placeholder="tu@email.com" oninput="checkAuthForm()"
           style="width:100%;border:1.5px solid var(--cream-dark);border-radius:12px;padding:13px 16px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--navy);outline:none;margin-bottom:10px;box-sizing:border-box;">
-        <input type="password" id="auth-pass-login" placeholder="Contraseña" oninput="checkAuthForm()"
+        <input type="password" id="auth-pass-login" data-i18n-ph="auth_pass_ph" placeholder="Contraseña" oninput="checkAuthForm()"
           style="width:100%;border:1.5px solid var(--cream-dark);border-radius:12px;padding:13px 16px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--navy);outline:none;margin-bottom:16px;box-sizing:border-box;">
         <div id="auth-error-login" style="display:none;font-size:12px;color:#E53935;margin-bottom:10px;text-align:center;"></div>
         <button id="auth-btn-login" onclick="loginYContinuar()" disabled
@@ -2693,6 +2693,15 @@ supa.auth.onAuthStateChange(async (event, session) => {
     if (window._pendingStartFlow) {
       setTimeout(() => _iniciarFlujoPrincipal(), 200);
       return;
+    }
+    // Si estaba en la pantalla de auth dentro del flujo, continuar al paso 1
+    if (event === 'SIGNED_IN') {
+      const screenAuth = document.getElementById('screen-auth');
+      const mainContent = document.getElementById('main-content');
+      if (screenAuth && screenAuth.style.display !== 'none' && mainContent && mainContent.style.display !== 'none') {
+        setTimeout(() => _mostrarPaso(4), 300);
+        return;
+      }
     }
     // Restaurar flujo de reserva de experiencia
     if (event === 'SIGNED_IN' && localStorage.getItem('celestia_reserva_estado')) {
@@ -4947,6 +4956,10 @@ function aplicarI18n() {
   el = document.getElementById('i18n-auth-btn-reg'); if(el) el.textContent = t('auth_btn_registro');
   el = document.getElementById('i18n-auth-btn-log'); if(el) el.textContent = t('auth_btn_login');
   el = document.getElementById('i18n-auth-info'); if(el) el.textContent = t('auth_info');
+  // Placeholders dinámicos
+  document.querySelectorAll('[data-i18n-ph]').forEach(function(inp) {
+    inp.placeholder = t(inp.getAttribute('data-i18n-ph'));
+  });
   // Botones nav
   el = document.getElementById('i18n-btn-next-1'); if(el) el.textContent = t('btn_continuar');
   el = document.getElementById('i18n-ver-desglose'); if(el) el.textContent = t('btn_ver_desglose');
