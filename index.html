@@ -1387,7 +1387,7 @@ textarea { resize: vertical; min-height: 80px; }
           <div id="i18n-como-tag" style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;">✦ Cómo funciona</div>
           <h3 id="i18n-como-h3" style="font-family:'DM Serif Display',serif;font-size:26px;color:var(--navy);margin-bottom:16px;line-height:1.2;">Una experiencia de restaurante, en la intimidad de tu casa</h3>
           <p id="i18n-como-p" style="font-size:14px;color:var(--text-mid);font-weight:300;line-height:1.75;margin-bottom:24px;">Daro llega a tu domicilio, cocina en vivo y presenta cada paso. Vos y tus invitados disfrutan — sin moverse, sin esperar, sin reservar con meses de anticipación.</p>
-          <button class="cta-btn" onclick="startFlow()" style="font-size:13px;padding:12px 28px;">Reservar una experiencia →</button>
+          <button class="cta-btn" onclick="startFlow()" style="font-size:13px;padding:12px 28px;"><span id="i18n-btn-reservar-2">Reservar una experiencia →</span></button>
         </div>
         <div style="display:flex;flex-direction:column;gap:16px;">
           <div style="display:flex;gap:16px;align-items:flex-start;">
@@ -4676,7 +4676,7 @@ function resetFlow() {
       style="display:inline-block;background:var(--gold);color:var(--navy);font-family:'DM Sans',sans-serif;
       font-size:13px;font-weight:600;padding:10px 24px;border-radius:40px;text-decoration:none;
       letter-spacing:0.04em;">
-      Aplicar como chef
+      <span id="i18n-aplicar-chef-2">Aplicar como chef</span>
     </a>
   </div>
 </div>
@@ -4863,6 +4863,8 @@ function aplicarI18n() {
   el = document.getElementById('i18n-tab-chef'); if(el) el.textContent = t('tab_chef_privado');
   el = document.getElementById('i18n-tab-semanal'); if(el) el.textContent = t('tab_chef_semanal');
   el = document.getElementById('i18n-aplicar-chef'); if(el) el.textContent = t('aplicar_chef');
+  el = document.getElementById('i18n-aplicar-chef-2'); if(el) el.textContent = t('aplicar_chef');
+  el = document.getElementById('i18n-btn-reservar-2'); if(el) el.textContent = t('btn_reservar');
   // Sección cómo funciona
   el = document.getElementById('i18n-como-tag'); if(el) el.textContent = t('como_funciona');
   el = document.getElementById('i18n-como-h3'); if(el) el.textContent = t('como_h3');
