@@ -1584,7 +1584,7 @@ textarea { resize: vertical; min-height: 80px; }
     <div id="mapa-disponibilidad"></div>
     <div style="display:flex;align-items:center;gap:6px;margin-top:8px;margin-bottom:4px;">
       <div style="width:8px;height:8px;background:rgba(255,255,255,0.25);border-radius:50%;flex-shrink:0;"></div>
-      <span style="font-size:11px;color:var(--text-light);font-weight:300;">El mapa muestra tu ciudad de referencia, no tu ubicación real ni la del chef.</span>
+      <span id="i18n-mapa-nota" style="font-size:11px;color:var(--text-light);font-weight:300;">El mapa muestra tu ciudad de referencia, no tu ubicación real ni la del chef.</span>
     </div>
     <div class="nav-btns">
       <button class="btn-next" id="btn-next-1" onclick="goTo(2)" disabled><span id="i18n-btn-next-1">Continuar →</span></button>
@@ -1608,7 +1608,7 @@ textarea { resize: vertical; min-height: 80px; }
   <!-- PASO 2B: CALCULADORA DEL MENÚ ELEGIDO -->
   <div id="screen-26" class="screen" style="display:none">
     <h2 class="section-title" id="s26-titulo">Menú elegido</h2>
-    <p class="section-sub">Ajustá los detalles de tu experiencia</p>
+    <p class="section-sub" id="i18n-p26-sub">Ajustá los detalles de tu experiencia</p>
     <div id="s26-content"></div>
     <div class="nav-btns">
       <button class="btn-back" onclick="goTo(2)"><span class="i18n-cambiar-menu">← Cambiar menú</span></button>
@@ -1618,8 +1618,8 @@ textarea { resize: vertical; min-height: 80px; }
 
   <!-- PASO 2.5: DESGLOSE DETALLADO -->
   <div id="screen-25" class="screen" style="display:none">
-    <h2 class="section-title">Resumen de tu experiencia</h2>
-    <p class="section-sub">Desglose estimado antes de elegir la fecha</p>
+    <h2 class="section-title" id="i18n-p25-titulo">Resumen de tu experiencia</h2>
+    <p class="section-sub" id="i18n-p25-sub">Desglose estimado antes de elegir la fecha</p>
     <div id="desglose-content"></div>
     <div class="nav-btns">
       <button class="btn-back" onclick="goTo(2)"><span class="i18n-cambiar-menu">← Cambiar menú</span></button>
@@ -1646,12 +1646,12 @@ textarea { resize: vertical; min-height: 80px; }
     <div class="turno-grid">
       <div class="turno-card" id="turno-almuerzo" onclick="selectTurno('almuerzo')">
         <div class="turno-icon">☀️</div>
-        <div class="turno-name">Almuerzo</div>
+        <div class="turno-name" id="i18n-almuerzo-nombre">Almuerzo</div>
         <div class="turno-time">12:00 – 15:30</div>
       </div>
       <div class="turno-card" id="turno-cena" onclick="selectTurno('cena')">
         <div class="turno-icon">🌙</div>
-        <div class="turno-name">Cena</div>
+        <div class="turno-name" id="i18n-cena-nombre">Cena</div>
         <div class="turno-time">20:00 – 23:30</div>
       </div>
     </div>
@@ -1784,14 +1784,14 @@ textarea { resize: vertical; min-height: 80px; }
     <div class="resumen-card" id="resumen-card"></div>
 
     <button id="btn-confirmar-reserva" onclick="confirmarReservaExperiencia()" style="width:100%;padding:16px;border-radius:12px;border:none;background:var(--gold);color:var(--navy);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:0.02em;margin-bottom:12px;">
-      ✓ Confirmar reserva
+      <span id="i18n-btn-confirmar">✓ Confirmar reserva</span>
     </button>
     <p style="text-align:center;font-size:12px;color:var(--text-light);margin-bottom:32px;">
-      En breve nos comunicamos para coordinar todos los detalles
+      <span id="i18n-confirmar-sub">En breve nos comunicamos para coordinar todos los detalles</span>
     </p>
 
     <div class="nav-btns" style="justify-content:flex-start;">
-      <button class="btn-back" onclick="goTo(4)">← Editar datos</button>
+      <button class="btn-back" onclick="goTo(4)"><span id="i18n-editar-datos">← Editar datos</span></button>
     </div>
   </div>
 
@@ -1802,8 +1802,8 @@ textarea { resize: vertical; min-height: 80px; }
       <!-- Header ticket -->
       <div style="text-align:center;margin-bottom:32px;">
         <div style="font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;">✦ Celestia · Chef Privado</div>
-        <h2 style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--navy);margin-bottom:8px;">¡Reserva confirmada!</h2>
-        <p style="font-size:14px;color:var(--text-mid);font-weight:300;">Pronto nos comunicamos con vos para coordinar todos los detalles.<br><span style="font-size:13px;color:var(--text-light);">La fecha queda reservada una vez acreditada la seña.</span></p>
+        <h2 style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--navy);margin-bottom:8px;"><span id="i18n-reserva-confirmada">¡Reserva confirmada!</span></h2>
+        <p style="font-size:14px;color:var(--text-mid);font-weight:300;"><span id="i18n-reserva-sub">Pronto nos comunicamos con vos para coordinar todos los detalles.</span><br><span style="font-size:13px;color:var(--text-light);"><span id="i18n-reserva-seña">La fecha queda reservada una vez acreditada la seña.</span></span></p>
       </div>
 
       <!-- Ticket -->
@@ -1817,7 +1817,7 @@ textarea { resize: vertical; min-height: 80px; }
               <div style="font-size:11px;color:rgba(250,246,239,0.5);letter-spacing:0.1em;text-transform:uppercase;">by Daro Castello</div>
             </div>
             <div style="text-align:right;">
-              <div style="font-size:10px;color:rgba(250,246,239,0.4);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Reserva</div>
+              <div style="font-size:10px;color:rgba(250,246,239,0.4);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;"><span id="i18n-ticket-reserva">Reserva</span></div>
               <div id="ticket-ref" style="font-family:'DM Serif Display',serif;font-size:18px;color:var(--gold-light);"></div>
             </div>
           </div>
@@ -1829,12 +1829,12 @@ textarea { resize: vertical; min-height: 80px; }
           <!-- Servicio y fecha -->
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid var(--cream-dark);">
             <div>
-              <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-light);margin-bottom:6px;">Servicio</div>
+              <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-light);margin-bottom:6px;"><span id="i18n-ticket-servicio">Servicio</span></div>
               <div id="ticket-menu" style="font-size:15px;font-weight:500;color:var(--navy);"></div>
               <div id="ticket-personas" style="font-size:13px;color:var(--text-mid);font-weight:300;margin-top:2px;"></div>
             </div>
             <div>
-              <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-light);margin-bottom:6px;">Fecha y turno</div>
+              <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-light);margin-bottom:6px;"><span id="i18n-ticket-fecha">Fecha y turno</span></div>
               <div id="ticket-fecha" style="font-size:15px;font-weight:500;color:var(--navy);"></div>
               <div id="ticket-turno" style="font-size:13px;color:var(--text-mid);font-weight:300;margin-top:2px;"></div>
             </div>
@@ -1843,11 +1843,11 @@ textarea { resize: vertical; min-height: 80px; }
           <!-- Dirección y anfitrión -->
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid var(--cream-dark);">
             <div>
-              <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-light);margin-bottom:6px;">Dirección</div>
+              <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-light);margin-bottom:6px;"><span id="i18n-ticket-dir">Dirección</span></div>
               <div id="ticket-dir" style="font-size:14px;color:var(--text-mid);font-weight:300;line-height:1.5;"></div>
             </div>
             <div>
-              <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-light);margin-bottom:6px;">Anfitrión</div>
+              <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-light);margin-bottom:6px;"><span id="i18n-ticket-anfitrion">Anfitrión</span></div>
               <div id="ticket-nombre" style="font-size:14px;font-weight:500;color:var(--navy);"></div>
               <div id="ticket-tel" style="font-size:13px;color:var(--text-mid);font-weight:300;margin-top:2px;"></div>
             </div>
@@ -1888,10 +1888,10 @@ textarea { resize: vertical; min-height: 80px; }
       <!-- Acciones -->
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;">
         <button onclick="descargarTicket()" style="display:inline-flex;align-items:center;gap:8px;background:var(--navy);color:var(--gold-light);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:12px 24px;border-radius:40px;border:none;cursor:pointer;">
-          Descargar ticket
+          <span id="i18n-descargar-ticket">Descargar ticket</span>
         </button>
         <button onclick="resetFlow()" style="display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:400;padding:12px 24px;border-radius:40px;border:1.5px solid var(--cream-dark);cursor:pointer;">
-          Nueva reserva
+          <span id="i18n-nueva-reserva">Nueva reserva</span>
         </button>
       </div>
 
@@ -3572,7 +3572,7 @@ function renderMenus() {
       <div style="padding:12px 20px 14px;" onclick="event.stopPropagation()">
         <button onclick="selectMenu(${m.id})" id="btn-select-menu-${m.id}" type="button"
           style="width:100%;padding:12px;border-radius:40px;border:1.5px solid ${isSelected ? 'var(--gold)' : 'rgba(13,27,42,0.15)'};background:${isSelected ? 'var(--gold)' : 'var(--cream-dark)'};font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:${isSelected ? 'var(--navy)' : 'var(--text-mid)'};cursor:pointer;transition:all 0.2s;letter-spacing:0.02em;">
-          ${isSelected ? '✓ Seleccionado' : 'Elegir este menú'}
+          ${isSelected ? t('seleccionado') : t('elegir_menu')}
         </button>
       </div>
     </div>`;
@@ -3631,7 +3631,7 @@ function updateCalc(menuId) {
 
   let html = `
     <div class="calc-total-row" style="padding-top:10px;margin-top:0;border-top:1px solid rgba(201,168,76,0.15);">
-      <span class="calc-total-label">Honorario del servicio</span>
+      <span class="calc-total-label" id="i18n-honorario-label">Honorario del servicio</span>
       <span class="calc-total-value">${fmt(hon.base)}</span>
     </div>
     <div class="calc-pp">${fmt(Math.round(hon.base / personas))} por persona · ${diaLabel}</div>`;
@@ -3640,7 +3640,7 @@ function updateCalc(menuId) {
     html += `<div class="asistente-note" style="margin-top:10px;">+ ${fmt(hon.asistente)} asistente · grupos de 7 a 12 personas</div>`;
   }
 
-  html += `<div class="calc-context" style="margin-top:10px;">Honorario puro de servicio. El desglose con ingredientes y menú de ejemplo aparece en el siguiente paso.</div>`;
+  html += `<div class="calc-context" style="margin-top:10px;"><span id="i18n-honorario-nota">Honorario puro de servicio. El desglose con ingredientes y menú de ejemplo aparece en el siguiente paso.</span></div>`;
 
   resultEl.innerHTML = html;
 }
@@ -3661,7 +3661,7 @@ function renderDesglose() {
       <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;">✦ ${menu.nombre} · ${personas} personas · ${diaLabel}</div>
 
       <div class="calc-row">
-        <span class="calc-row-label">Honorario del servicio</span>
+        <span class="calc-row-label" id="i18n-p25-honorario">Honorario del servicio</span>
         <span class="calc-row-value">${fmt(hon.base)}</span>
       </div>`;
 
@@ -3677,7 +3677,7 @@ function renderDesglose() {
   if (ingredientes && menu.ejemplo) {
     html += `
       <div class="calc-row" style="margin-top:12px;">
-        <span class="calc-row-label">Ingredientes estimados</span>
+        <span class="calc-row-label" id="i18n-p25-ingredientes">Ingredientes estimados</span>
         <span class="calc-row-value">${fmt(ingredientes)}</span>
       </div>
 
@@ -3725,7 +3725,7 @@ function renderCalcMenu() {
           <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--cream);">${m.nombre}</div>
           <div style="font-size:12px;color:rgba(250,246,239,0.45);margin-top:2px;">👥 ${m.personas}</div>
         </div>
-        <div class="calc-title">✦ Calculá tu experiencia</div>
+        <div class="calc-title"><span id="i18n-calc-titulo">✦ Calculá tu experiencia</span></div>
         <div class="calc-controls">
           <div class="calc-control">
             <label>Personas</label>
@@ -3738,12 +3738,12 @@ function renderCalcMenu() {
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
               <button type="button" onclick="selectDia(${m.id},'semana')" id="calc-dia-semana-${m.id}"
                 style="background:rgba(255,255,255,0.06);border:1.5px solid rgba(201,168,76,0.25);border-radius:10px;padding:10px 8px;cursor:pointer;text-align:center;transition:all 0.15s;">
-                <div style="font-size:11px;font-weight:500;color:var(--gold-light);letter-spacing:0.06em;margin-bottom:3px;">ENTRE SEMANA</div>
+                <div style="font-size:11px;font-weight:500;color:var(--gold-light);letter-spacing:0.06em;margin-bottom:3px;"><span id="i18n-entre-semana">ENTRE SEMANA</span></div>
                 <div style="font-size:10px;color:rgba(250,246,239,0.5);line-height:1.4;">Lunes a viernes<br>mediodía</div>
               </button>
               <button type="button" onclick="selectDia(${m.id},'finde')" id="calc-dia-finde-${m.id}"
                 style="background:rgba(201,168,76,0.15);border:1.5px solid var(--gold);border-radius:10px;padding:10px 8px;cursor:pointer;text-align:center;transition:all 0.15s;">
-                <div style="font-size:11px;font-weight:500;color:var(--gold-light);letter-spacing:0.06em;margin-bottom:3px;">FIN DE SEMANA</div>
+                <div style="font-size:11px;font-weight:500;color:var(--gold-light);letter-spacing:0.06em;margin-bottom:3px;"><span id="i18n-fin-semana">FIN DE SEMANA</span></div>
                 <div style="font-size:10px;color:rgba(250,246,239,0.5);line-height:1.4;">Viernes noche,<br>sábado y domingo</div>
               </button>
             </div>
@@ -3773,7 +3773,7 @@ function selectMenu(id) {
       radio.innerHTML = isThis ? '<div style="width:8px;height:8px;border-radius:50%;background:var(--navy);"></div>' : '';
     }
     if (btn) {
-      btn.textContent = isThis ? '✓ Seleccionado' : 'Elegir este menú';
+      btn.textContent = isThis ? t('seleccionado') : t('elegir_menu');
       btn.style.background = isThis ? 'var(--gold)' : 'var(--cream-dark)';
       btn.style.borderColor = isThis ? 'var(--gold)' : 'rgba(13,27,42,0.15)';
       btn.style.color = isThis ? 'var(--navy)' : 'var(--text-mid)';
@@ -3795,8 +3795,8 @@ function renderCalendar() {
   const nota = document.getElementById('cal-dias-nota');
   if (nota) {
     nota.textContent = esFin
-      ? '✦ Días disponibles: viernes noche · sábado · domingo'
-      : '✦ Días disponibles: lunes a viernes · mediodía';
+      ? t('dias_finde')
+      : t('dias_semana');
   }
 
   DIAS.forEach(d => {
@@ -4925,6 +4925,45 @@ var I18N = {
     confirmar_btn: '✓ Confirmar reserva',
     // Turno labels
     almuerzo_label: 'Almuerzo 12:00hs', cena_label: 'Cena 20:00hs',
+    // Paso 2 — menú
+    elegir_menu: 'Elegir este menú', seleccionado: '✓ Seleccionado',
+    fecha_urgente: '⚡ Fecha urgente',
+    // Pantalla 26 — detalle menú
+    p26_sub: 'Ajustá los detalles de tu experiencia',
+    calc_titulo: '✦ Calculá tu experiencia',
+    calc_personas: 'Personas', calc_dia: 'Día del servicio',
+    entre_semana: 'Entre semana', entre_semana_sub: 'Lunes a viernes · mediodía',
+    fin_semana: 'Fin de semana', fin_semana_sub: 'Viernes noche, sábado y domingo',
+    honorario_servicio: 'Honorario del servicio', ingredientes_est: 'Ingredientes estimados',
+    honorario_nota: 'Honorario puro de servicio. El desglose con ingredientes y menú de ejemplo aparece en el siguiente paso.',
+    // Pantalla 25 — desglose
+    p25_titulo: 'Resumen de tu experiencia', p25_sub: 'Desglose estimado antes de elegir la fecha',
+    por_ejemplo: 'Por ejemplo',
+    total_estimado: 'Total estimado', pp_label: 'por persona',
+    honorario_desc: 'El honorario incluye la planificación del menú, la visita previa a tu domicilio, la gestión de compras, el mise en place, el servicio completo y el cierre. Los ingredientes se cotizan por separado y su costo es orientativo — el menú definitivo y el desglose final se acuerdan con vos antes del evento. Las bebidas corren por cuenta del anfitrión; si lo deseás, Daro puede recomendar maridajes según el menú elegido.',
+    dias_finde: '✦ Días disponibles: viernes noche · sábado · domingo',
+    dias_semana: '✦ Días disponibles: lunes a viernes · mediodía',
+    // Paso 3 calendario
+    turno_label: 'Turno',
+    almuerzo_nombre: 'Almuerzo', cena_nombre: 'Cena',
+    // Paso 5
+    confirmar_sub: 'En breve nos comunicamos para coordinar todos los detalles',
+    editar_datos: '← Editar datos',
+    // Ticket éxito
+    reserva_confirmada: '¡Reserva confirmada!',
+    reserva_confirmada_sub: 'Pronto nos comunicamos con vos para coordinar todos los detalles.',
+    reserva_seña: 'La fecha queda reservada una vez acreditada la seña.',
+    ticket_label_reserva: 'Reserva',
+    ticket_label_servicio: 'Servicio', ticket_label_fecha: 'Fecha y turno',
+    ticket_label_dir: 'Dirección', ticket_label_anfitrion: 'Anfitrión',
+    ticket_honorario: 'Honorario del servicio', ticket_ingredientes: 'Ingredientes estimados',
+    ticket_total: 'Total estimado',
+    ticket_info_pago: '✦ Información de pago',
+    ticket_alias: 'Alias Mercado Pago', ticket_seña: 'Seña sugerida (50%)',
+    ticket_saldo: 'El saldo restante se abona al finalizar el servicio. Propina sugerida 15%',
+    descargar_ticket: 'Descargar ticket', nueva_reserva: 'Nueva reserva',
+    // Nota mapa paso 1
+    mapa_nota: 'El mapa muestra tu ciudad de referencia, no tu ubicación real ni la del chef.',
     btn_ver_desglose: 'Ver desglose →', btn_elegir_fecha: 'Elegir fecha →', btn_ver_resumen: 'Ver resumen →',
   },
   en: {
@@ -4996,6 +5035,38 @@ var I18N = {
     guardando: 'Saving...',
     confirmar_btn: '✓ Confirm booking',
     almuerzo_label: 'Lunch 12:00hs', cena_label: 'Dinner 20:00hs',
+    elegir_menu: 'Choose this menu', seleccionado: '✓ Selected',
+    fecha_urgente: '⚡ Urgent date',
+    p26_sub: 'Adjust the details of your experience',
+    calc_titulo: '✦ Calculate your experience',
+    calc_personas: 'Guests', calc_dia: 'Service day',
+    entre_semana: 'Weekday', entre_semana_sub: 'Monday to Friday · noon',
+    fin_semana: 'Weekend', fin_semana_sub: 'Friday night, Saturday and Sunday',
+    honorario_servicio: 'Service fee', ingredientes_est: 'Estimated ingredients',
+    honorario_nota: 'Service fee only. The breakdown with ingredients and sample menu appears in the next step.',
+    p25_titulo: 'Your experience summary', p25_sub: 'Estimated breakdown before choosing the date',
+    por_ejemplo: 'For example',
+    total_estimado: 'Estimated total', pp_label: 'per person',
+    honorario_desc: 'The fee includes menu planning, a pre-visit to your home, shopping, mise en place, full service and close. Ingredients are quoted separately and the cost is indicative — the final menu and breakdown are agreed with you before the event. Beverages are the host's responsibility; your chef can recommend pairings if you wish.',
+    dias_finde: '✦ Available: Friday night · Saturday · Sunday',
+    dias_semana: '✦ Available: Monday to Friday · noon',
+    turno_label: 'Time slot',
+    almuerzo_nombre: 'Lunch', cena_nombre: 'Dinner',
+    confirmar_sub: 'We'll be in touch shortly to coordinate all the details',
+    editar_datos: '← Edit details',
+    reserva_confirmada: 'Booking confirmed!',
+    reserva_confirmada_sub: 'We'll be in touch shortly to coordinate all the details.',
+    reserva_seña: 'The date is reserved once the deposit is credited.',
+    ticket_label_reserva: 'Booking',
+    ticket_label_servicio: 'Service', ticket_label_fecha: 'Date & time slot',
+    ticket_label_dir: 'Address', ticket_label_anfitrion: 'Host',
+    ticket_honorario: 'Service fee', ticket_ingredientes: 'Estimated ingredients',
+    ticket_total: 'Estimated total',
+    ticket_info_pago: '✦ Payment information',
+    ticket_alias: 'MercadoPago alias', ticket_seña: 'Suggested deposit (50%)',
+    ticket_saldo: 'Balance paid at the end of the service. Suggested tip 15%',
+    descargar_ticket: 'Download ticket', nueva_reserva: 'New booking',
+    mapa_nota: 'The map shows your reference city, not your exact location or the chef's.',
     btn_ver_desglose: 'See breakdown →', btn_elegir_fecha: 'Choose date →', btn_ver_resumen: 'See summary →',
   },
   pt: {
@@ -5067,6 +5138,38 @@ var I18N = {
     guardando: 'Salvando...',
     confirmar_btn: '✓ Confirmar reserva',
     almuerzo_label: 'Almoço 12:00hs', cena_label: 'Jantar 20:00hs',
+    elegir_menu: 'Escolher este menu', seleccionado: '✓ Selecionado',
+    fecha_urgente: '⚡ Data urgente',
+    p26_sub: 'Ajuste os detalhes da sua experiência',
+    calc_titulo: '✦ Calcule sua experiência',
+    calc_personas: 'Pessoas', calc_dia: 'Dia do serviço',
+    entre_semana: 'Dia de semana', entre_semana_sub: 'Segunda a sexta · meio-dia',
+    fin_semana: 'Fim de semana', fin_semana_sub: 'Sexta à noite, sábado e domingo',
+    honorario_servicio: 'Honorário do serviço', ingredientes_est: 'Ingredientes estimados',
+    honorario_nota: 'Apenas honorário do serviço. O detalhamento com ingredientes e menu de exemplo aparece no próximo passo.',
+    p25_titulo: 'Resumo da sua experiência', p25_sub: 'Estimativa antes de escolher a data',
+    por_ejemplo: 'Por exemplo',
+    total_estimado: 'Total estimado', pp_label: 'por pessoa',
+    honorario_desc: 'O honorário inclui planejamento do menu, visita prévia à sua casa, compras, mise en place, serviço completo e encerramento. Os ingredientes são cotados separadamente e o custo é indicativo — o menu definitivo e o detalhamento final são acordados com você antes do evento. As bebidas ficam por conta do anfitrião; o chef pode recomendar harmonizações se desejar.',
+    dias_finde: '✦ Disponível: sexta à noite · sábado · domingo',
+    dias_semana: '✦ Disponível: segunda a sexta · meio-dia',
+    turno_label: 'Turno',
+    almuerzo_nombre: 'Almoço', cena_nombre: 'Jantar',
+    confirmar_sub: 'Em breve entraremos em contato para coordenar todos os detalhes',
+    editar_datos: '← Editar dados',
+    reserva_confirmada: 'Reserva confirmada!',
+    reserva_confirmada_sub: 'Em breve entraremos em contato para coordenar todos os detalhes.',
+    reserva_seña: 'A data fica reservada após a confirmação do sinal.',
+    ticket_label_reserva: 'Reserva',
+    ticket_label_servicio: 'Serviço', ticket_label_fecha: 'Data e turno',
+    ticket_label_dir: 'Endereço', ticket_label_anfitrion: 'Anfitrião',
+    ticket_honorario: 'Honorário do serviço', ticket_ingredientes: 'Ingredientes estimados',
+    ticket_total: 'Total estimado',
+    ticket_info_pago: '✦ Informações de pagamento',
+    ticket_alias: 'Alias MercadoPago', ticket_seña: 'Sinal sugerido (50%)',
+    ticket_saldo: 'Saldo pago ao final do serviço. Gorjeta sugerida 15%',
+    descargar_ticket: 'Baixar ticket', nueva_reserva: 'Nova reserva',
+    mapa_nota: 'O mapa mostra sua cidade de referência, não sua localização real nem a do chef.',
     btn_ver_desglose: 'Ver detalhes →', btn_elegir_fecha: 'Escolher data →', btn_ver_resumen: 'Ver resumo →',
   }
 };
@@ -5146,6 +5249,39 @@ function aplicarI18n() {
   document.querySelectorAll('[data-i18n-ph]').forEach(function(inp) {
     inp.placeholder = t(inp.getAttribute('data-i18n-ph'));
   });
+  // Textos dinámicos del flujo
+  el = document.getElementById('i18n-mapa-nota'); if(el) el.textContent = t('mapa_nota');
+  el = document.getElementById('i18n-fecha-urgente'); if(el) el.textContent = t('fecha_urgente');
+  el = document.getElementById('i18n-p26-sub'); if(el) el.textContent = t('p26_sub');
+  el = document.getElementById('i18n-calc-titulo'); if(el) el.textContent = t('calc_titulo');
+  el = document.getElementById('i18n-calc-personas'); if(el) el.textContent = t('calc_personas');
+  el = document.getElementById('i18n-calc-dia'); if(el) el.textContent = t('calc_dia');
+  el = document.getElementById('i18n-entre-semana'); if(el) el.textContent = t('entre_semana');
+  el = document.getElementById('i18n-entre-semana-sub'); if(el) el.textContent = t('entre_semana_sub');
+  el = document.getElementById('i18n-fin-semana'); if(el) el.textContent = t('fin_semana');
+  el = document.getElementById('i18n-fin-semana-sub'); if(el) el.textContent = t('fin_semana_sub');
+  el = document.getElementById('i18n-honorario-label'); if(el) el.textContent = t('honorario_servicio');
+  el = document.getElementById('i18n-honorario-nota'); if(el) el.textContent = t('honorario_nota');
+  el = document.getElementById('i18n-p25-titulo'); if(el) el.textContent = t('p25_titulo');
+  el = document.getElementById('i18n-p25-sub'); if(el) el.textContent = t('p25_sub');
+  el = document.getElementById('i18n-p25-honorario'); if(el) el.textContent = t('honorario_servicio');
+  el = document.getElementById('i18n-p25-ingredientes'); if(el) el.textContent = t('ingredientes_est');
+  el = document.getElementById('i18n-turno-label'); if(el) el.textContent = t('turno_label');
+  el = document.getElementById('i18n-almuerzo-nombre'); if(el) el.textContent = t('almuerzo_nombre');
+  el = document.getElementById('i18n-cena-nombre'); if(el) el.textContent = t('cena_nombre');
+  el = document.getElementById('i18n-btn-confirmar'); if(el) el.textContent = t('confirmar_btn');
+  el = document.getElementById('i18n-confirmar-sub'); if(el) el.textContent = t('confirmar_sub');
+  el = document.getElementById('i18n-editar-datos'); if(el) el.textContent = t('editar_datos');
+  el = document.getElementById('i18n-reserva-confirmada'); if(el) el.textContent = t('reserva_confirmada');
+  el = document.getElementById('i18n-reserva-sub'); if(el) el.textContent = t('reserva_confirmada_sub');
+  el = document.getElementById('i18n-reserva-seña'); if(el) el.textContent = t('reserva_seña');
+  el = document.getElementById('i18n-ticket-reserva'); if(el) el.textContent = t('ticket_label_reserva');
+  el = document.getElementById('i18n-ticket-servicio'); if(el) el.textContent = t('ticket_label_servicio');
+  el = document.getElementById('i18n-ticket-fecha'); if(el) el.textContent = t('ticket_label_fecha');
+  el = document.getElementById('i18n-ticket-dir'); if(el) el.textContent = t('ticket_label_dir');
+  el = document.getElementById('i18n-ticket-anfitrion'); if(el) el.textContent = t('ticket_label_anfitrion');
+  el = document.getElementById('i18n-descargar-ticket'); if(el) el.textContent = t('descargar_ticket');
+  el = document.getElementById('i18n-nueva-reserva'); if(el) el.textContent = t('nueva_reserva');
   // Botones nav
   el = document.getElementById('i18n-btn-next-1'); if(el) el.textContent = t('btn_continuar');
   el = document.getElementById('i18n-ver-desglose'); if(el) el.textContent = t('btn_ver_desglose');
