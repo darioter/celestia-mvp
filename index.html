@@ -2561,12 +2561,20 @@ function _mostrarPaso(paso) {
 }
 
 function _guardarEstadoReserva() {
+  // Detectar el paso actual
+  const pasos = [1, 2, 26, 25, 3, 4, 5];
+  let pasoActual = 1;
+  pasos.forEach(p => {
+    const el = document.getElementById('screen-' + p);
+    if (el && el.style.display !== 'none') pasoActual = p;
+  });
   localStorage.setItem('celestia_reserva_estado', JSON.stringify({
     menuId: state.menu?.id || null,
     fecha: state.fecha,
     turno: state.turno,
     calcPersonas: state.calcPersonas,
-    calcDia: state.calcDia
+    calcDia: state.calcDia,
+    pasoActual: pasoActual
   }));
 }
 
@@ -2584,7 +2592,9 @@ function _restaurarEstadoReserva() {
       const m = MENUS.find(m => m.id === s.menuId);
       if (m) state.menu = m;
     }
-    return !!(s.fecha && s.turno);
+    // Devolver el paso al que había llegado (o 4 si tenía fecha+turno)
+    if (s.pasoActual && s.pasoActual >= 2) return s.pasoActual;
+    return !!(s.fecha && s.turno) ? 4 : false;
   } catch(e) { return false; }
 }
 
@@ -2650,7 +2660,18 @@ async function registrarseYContinuar() {
     accederBtn.style.borderColor = 'rgba(201,168,76,0.5)';
   }
   btn.textContent = '✓ Cuenta creada';
-  setTimeout(() => _mostrarPaso(4), 400);
+  // Nuevo usuario → ir a completar perfil antes de reservar
+  setTimeout(() => {
+    resetFlow(); // volver a la landing logueado
+    // Mostrar toast indicando que complete el perfil
+    showToast(LANG === 'en'
+      ? '✓ Account created! Complete your profile to book.'
+      : LANG === 'pt'
+      ? '✓ Conta criada! Complete seu perfil para reservar.'
+      : '✓ Cuenta creada. Completá tu perfil para continuar.');
+    // Redirigir al portal de clientes después de 2 segundos
+    setTimeout(() => { window.location.href = '/clientes?nuevo=1'; }, 2000);
+  }, 400);
 }
 
 async function loginYContinuar() {
@@ -2670,7 +2691,14 @@ async function loginYContinuar() {
   _session = data.session;
   await iniciarSesion();
   btn.textContent = '✓ Ingresaste';
-  setTimeout(() => _mostrarPaso(4), 400);
+  const estadoGuardado = localStorage.getItem('celestia_reserva_estado');
+  if (estadoGuardado) {
+    const pasoRest = _restaurarEstadoReserva();
+    const irA = (typeof pasoRest === 'number' && pasoRest >= 2) ? pasoRest : 4;
+    setTimeout(() => _mostrarPaso(irA), 400);
+  } else {
+    setTimeout(() => _mostrarPaso(4), 400);
+  }
 }
 
 async function authConGoogle() {
@@ -2699,18 +2727,26 @@ supa.auth.onAuthStateChange(async (event, session) => {
       const screenAuth = document.getElementById('screen-auth');
       const mainContent = document.getElementById('main-content');
       if (screenAuth && screenAuth.style.display !== 'none' && mainContent && mainContent.style.display !== 'none') {
-        setTimeout(() => _mostrarPaso(4), 300);
+        const estadoGuardado = localStorage.getItem('celestia_reserva_estado');
+        if (estadoGuardado) {
+          const pasoRest = _restaurarEstadoReserva();
+          const irA = (typeof pasoRest === 'number' && pasoRest >= 2) ? pasoRest : 4;
+          setTimeout(() => _mostrarPaso(irA), 300);
+        } else {
+          setTimeout(() => _mostrarPaso(4), 300);
+        }
         return;
       }
     }
     // Restaurar flujo de reserva de experiencia
     if (event === 'SIGNED_IN' && localStorage.getItem('celestia_reserva_estado')) {
-      const ok = _restaurarEstadoReserva();
-      if (ok) {
+      const pasoRestaurado = _restaurarEstadoReserva();
+      if (pasoRestaurado) {
         const url = new URL(window.location.href);
         url.searchParams.delete('reserva');
         window.history.replaceState({}, '', url.pathname + (url.search !== '?' ? url.search : ''));
-        setTimeout(() => _mostrarPaso(4), 500);
+        const irAPaso = (typeof pasoRestaurado === 'number') ? pasoRestaurado : 4;
+        setTimeout(() => _mostrarPaso(irAPaso), 500);
       }
     }
     // Restaurar flujo de chef semanal
@@ -2793,8 +2829,12 @@ async function cargarPerfilEnFormulario() {
   if (hayReservaPendiente) {
     if (_session) {
       window.history.replaceState({}, '', window.location.pathname);
-      const ok = _restaurarEstadoReserva();
-      if (ok) { setTimeout(() => _mostrarPaso(4), 300); return; }
+      const pasoRest = _restaurarEstadoReserva();
+      if (pasoRest) {
+        const irA = (typeof pasoRest === 'number') ? pasoRest : 4;
+        setTimeout(() => _mostrarPaso(irA), 300);
+        return;
+      }
     }
     return;
   }
@@ -2908,6 +2948,73 @@ const CHEFS = [
     menus: [1,2,3]
   }
 ];
+
+// ── Traducciones de menús ──────────────────────────────────────────────────
+const MENUS_I18N = {
+  1: {
+    es: { nombre: "Menú de tres pasos", tag: "Íntimo", personas: "2 a 12 personas",
+      desc: "Una cena íntima con estructura clásica. Entrada, principal y postre pensados como un recorrido, no como tres platos separados. Cada paso tiene una razón de ser y una historia que Daro cuenta al momento de servir.",
+      ideal: "Cenas en pareja, reuniones íntimas, ocasiones que merecen algo especial sin una producción larga.",
+      cursos: ["Entrada de temporada", "Plato principal de autor", "Postre artesanal"],
+      ejemplo_nombre: "Menú Patagonia",
+      pasos: ["Entrada", "Principal", "Postre"], precio: "A convenir" },
+    en: { nombre: "Three-course menu", tag: "Intimate", personas: "2 to 12 guests",
+      desc: "An intimate dinner with a classic structure. Starter, main and dessert conceived as a journey, not three separate dishes. Each course has a purpose and a story your chef shares as it is served.",
+      ideal: "Couples dinners, intimate gatherings, occasions that deserve something special without a long production.",
+      cursos: ["Seasonal starter", "Signature main course", "Artisan dessert"],
+      ejemplo_nombre: "Patagonia Menu",
+      pasos: ["Starter", "Main", "Dessert"], precio: "On request" },
+    pt: { nombre: "Menu de três etapas", tag: "Íntimo", personas: "2 a 12 pessoas",
+      desc: "Um jantar íntimo com estrutura clássica. Entrada, prato principal e sobremesa pensados como um percurso, não como três pratos separados. Cada etapa tem um propósito e uma história que o chef conta ao servir.",
+      ideal: "Jantares a dois, reuniões íntimas, ocasiões que merecem algo especial sem uma longa produção.",
+      cursos: ["Entrada da temporada", "Prato principal autoral", "Sobremesa artesanal"],
+      ejemplo_nombre: "Menu Patagônia",
+      pasos: ["Entrada", "Principal", "Sobremesa"], precio: "A combinar" }
+  },
+  2: {
+    es: { nombre: "Experiencia de 7 pasos", tag: "Degustación", personas: "2 a 12 personas",
+      desc: "Una jornada gastronómica completa. Siete momentos diseñados para que cada invitado viva la cena como un recorrido con inicio, desarrollo y cierre. Daro presenta la idea rectora al comenzar y cada paso llega acompañado de su historia.",
+      ideal: "Celebraciones, eventos de negocios, ocasiones donde la experiencia es el regalo.",
+      cursos: ["Bocado de bienvenida", "Entrada fría", "Entrada caliente", "Intermedio", "Principal", "Tabla de quesos", "Postre"],
+      ejemplo_nombre: "Degustación Norte Argentino",
+      pasos: ["Bienvenida", "Entrada fría", "Entrada caliente", "Intermedio", "Principal", "Quesos", "Postre"], precio: "A convenir" },
+    en: { nombre: "7-course experience", tag: "Tasting", personas: "2 to 12 guests",
+      desc: "A complete gastronomic journey. Seven moments designed so each guest experiences the dinner as a progression with a beginning, a development and a close. Your chef introduces the concept at the start and each course arrives with its story.",
+      ideal: "Celebrations, business events, occasions where the experience itself is the gift.",
+      cursos: ["Welcome bite", "Cold starter", "Hot starter", "Intermezzo", "Main course", "Cheese board", "Dessert"],
+      ejemplo_nombre: "North Argentine Tasting",
+      pasos: ["Welcome", "Cold starter", "Hot starter", "Intermezzo", "Main", "Cheese", "Dessert"], precio: "On request" },
+    pt: { nombre: "Experiência de 7 etapas", tag: "Degustação", personas: "2 a 12 pessoas",
+      desc: "Uma jornada gastronômica completa. Sete momentos desenhados para que cada convidado viva o jantar como um percurso com início, desenvolvimento e encerramento. O chef apresenta o conceito ao começar e cada etapa chega acompanhada de sua história.",
+      ideal: "Celebrações, eventos de negócios, ocasiões onde a experiência é o presente.",
+      cursos: ["Boas-vindas", "Entrada fria", "Entrada quente", "Intermezzo", "Prato principal", "Tábua de queijos", "Sobremesa"],
+      ejemplo_nombre: "Degustação Norte Argentino",
+      pasos: ["Boas-vindas", "Entrada fria", "Entrada quente", "Intermezzo", "Principal", "Queijos", "Sobremesa"], precio: "A combinar" }
+  },
+  3: {
+    es: { nombre: "Corporativos y Eventos", tag: "Eventos", personas: "12+ personas",
+      desc: "Servicios gastronómicos para empresas, lanzamientos, cenas de directorio, teambuildings y eventos especiales. Cada propuesta se diseña desde cero según el objetivo, el espacio y los comensales.",
+      ideal: "Empresas, marcas, lanzamientos, cenas de negocios, eventos corporativos de cualquier escala.",
+      cursos: ["Propuesta gastronómica a medida", "Coordinación de equipamiento y personal", "Menú diseñado según el evento y los invitados", "Servicio completo desde la planificación"],
+      precio: "Consultar" },
+    en: { nombre: "Corporate & Events", tag: "Events", personas: "12+ guests",
+      desc: "Gastronomic services for companies, product launches, board dinners, team-buildings and special events. Each proposal is designed from scratch according to the goal, the venue and the guests.",
+      ideal: "Companies, brands, launches, business dinners, corporate events of any scale.",
+      cursos: ["Custom gastronomic proposal", "Equipment and staff coordination", "Menu designed for the event and guests", "Full service from planning to close"],
+      precio: "Enquire" },
+    pt: { nombre: "Corporativos e Eventos", tag: "Eventos", personas: "12+ pessoas",
+      desc: "Serviços gastronômicos para empresas, lançamentos, jantares de diretoria, team-buildings e eventos especiais. Cada proposta é desenhada do zero segundo o objetivo, o espaço e os convidados.",
+      ideal: "Empresas, marcas, lançamentos, jantares de negócios, eventos corporativos de qualquer escala.",
+      cursos: ["Proposta gastronômica personalizada", "Coordenação de equipamento e pessoal", "Menu desenhado para o evento e os convidados", "Serviço completo desde o planejamento"],
+      precio: "Consultar" }
+  }
+};
+
+// Función para obtener menú traducido
+function getMenuTraducido(menuBase) {
+  const tr = MENUS_I18N[menuBase.id]?.[LANG] || MENUS_I18N[menuBase.id]?.['es'] || {};
+  return { ...menuBase, ...tr };
+}
 
 const MENUS = [
   {
@@ -3409,7 +3516,7 @@ function selectChef(id) {
 // ─── PASO 2: MENÚS ───────────────────────────────────────
 function renderMenus() {
   const availableIds = state.chef?.menus || [];
-  const availableMenus = MENUS.filter(m => availableIds.includes(m.id));
+  const availableMenus = MENUS.filter(m => availableIds.includes(m.id)).map(getMenuTraducido);
   document.getElementById('menu-sub').textContent = t('menu_sub');
 
   const grid = document.getElementById('menu-grid');
@@ -3503,7 +3610,8 @@ function selectDia(menuId, valor) {
 }
 
 function updateCalc(menuId) {
-  const menu = MENUS.find(m => m.id === menuId);
+  const menuBase = MENUS.find(m => m.id === menuId);
+  const menu = menuBase ? getMenuTraducido(menuBase) : null;
   const ppSel = document.getElementById(`calc-pp-${menuId}`);
   const resultEl = document.getElementById(`calc-result-${menuId}`);
   if (!ppSel || !resultEl) return;
@@ -3649,7 +3757,8 @@ function renderCalcMenu() {
 }
 
 function selectMenu(id) {
-  state.menu = MENUS.find(m => m.id === id);
+  const menuBase = MENUS.find(m => m.id === id);
+  state.menu = menuBase ? getMenuTraducido(menuBase) : null;
   document.querySelectorAll('.menu-card').forEach(el => el.classList.remove('selected'));
   document.getElementById('menu-card-' + id)?.classList.add('selected');
   document.getElementById('btn-next-2').disabled = false;
@@ -4973,6 +5082,17 @@ function setLang(lang) {
   localStorage.setItem('celestia_lang', lang);
   aplicarI18n();
 }
+window.setLang = setLang;
+
+// Re-renderizar menús al cambiar idioma si el paso 2 está visible
+var _origSetLang = setLang;
+setLang = function(lang) {
+  _origSetLang(lang);
+  const screen2 = document.getElementById('screen-2');
+  if (screen2 && screen2.style.display !== 'none') {
+    renderMenus && renderMenus();
+  }
+};
 window.setLang = setLang;
 
 function aplicarI18n() {
