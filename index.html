@@ -1599,8 +1599,8 @@ textarea { resize: vertical; min-height: 80px; }
     <!-- Botón flotante continuar -->
     <div id="float-continuar" style="display:block;position:fixed;bottom:0;left:0;right:0;padding:16px 20px;background:linear-gradient(to top,var(--cream) 70%,transparent);z-index:200;">
       <div style="max-width:600px;margin:0 auto;display:flex;gap:12px;">
-        <button class="btn-back" onclick="goTo(1)" style="flex-shrink:0;">← Volver</button>
-        <button class="btn-next" id="btn-next-2" onclick="goTo(26)" disabled style="flex:1;">Continuar →</button>
+        <button class="btn-back" onclick="goTo(1)" style="flex-shrink:0;"><span class="i18n-volver">← Volver</span></button>
+        <button class="btn-next" id="btn-next-2" onclick="goTo(26)" disabled style="flex:1;"><span id="i18n-btn-next-2">Continuar →</span></button>
       </div>
     </div>
   </div>
@@ -1642,7 +1642,7 @@ textarea { resize: vertical; min-height: 80px; }
       <div class="cal-grid" id="cal-grid"></div>
     </div>
 
-    <h3 style="font-family:'DM Serif Display',serif;font-size:18px;color:var(--navy);margin-bottom:14px;">Turno</h3>
+    <h3 style="font-family:'DM Serif Display',serif;font-size:18px;color:var(--navy);margin-bottom:14px;"><span id="i18n-turno-label-3">Turno</span></h3>
     <div class="turno-grid">
       <div class="turno-card" id="turno-almuerzo" onclick="selectTurno('almuerzo')">
         <div class="turno-icon">☀️</div>
@@ -1659,7 +1659,7 @@ textarea { resize: vertical; min-height: 80px; }
     <!-- EXPRESS -->
     <div class="nav-btns">
       <button class="btn-back" onclick="goTo(2)"><span class="i18n-volver">← Volver</span></button>
-      <button class="btn-next" id="btn-next-3" onclick="goTo(4)" disabled>Continuar →</button>
+      <button class="btn-next" id="btn-next-3" onclick="goTo(4)" disabled><span id="i18n-btn-next-3">Continuar →</span></button>
     </div>
   </div>
 
@@ -1749,7 +1749,7 @@ textarea { resize: vertical; min-height: 80px; }
       </div>
       <div class="form-row full">
         <div class="form-group">
-          <label>Dirección del evento *</label>
+          <label><span id="i18n-dir-evento">Dirección del evento *</span></label>
           <input type="text" id="f-dir" placeholder="Calle, número, barrio" oninput="checkForm4()">
         </div>
       </div>
@@ -1985,8 +1985,8 @@ textarea { resize: vertical; min-height: 80px; }
     </div>
 
     <div class="nav-btns">
-      <button class="btn-back" onclick="exitMealPrep()">← Volver al inicio</button>
-      <button class="btn-next" id="mp-btn-next-1" onclick="mpGoTo(2)">Elegir fecha →</button>
+      <button class="btn-back" onclick="exitMealPrep()"><span id="i18n-mp-volver-inicio">← Volver al inicio</span></button>
+      <button class="btn-next" id="mp-btn-next-1" onclick="mpGoTo(2)"><span id="i18n-mp-btn-next-1">Elegir fecha →</span></button>
     </div>
   </div>
 
@@ -2006,8 +2006,8 @@ textarea { resize: vertical; min-height: 80px; }
     </div>
 
     <div class="nav-btns">
-      <button class="btn-back" onclick="mpGoTo(1)">← Volver</button>
-      <button class="btn-next" id="mp-btn-next-2" onclick="mpVerificarAuthYContinuar()" disabled>Continuar →</button>
+      <button class="btn-back" onclick="mpGoTo(1)"><span class="i18n-volver">← Volver</span></button>
+      <button class="btn-next" id="mp-btn-next-2" onclick="mpVerificarAuthYContinuar()" disabled><span id="i18n-mp-btn-next-2">Continuar →</span></button>
     </div>
   </div>
 
@@ -2056,7 +2056,7 @@ textarea { resize: vertical; min-height: 80px; }
       </div>
       <div class="form-row full">
         <div class="form-group">
-          <label>Dirección *</label>
+          <label><span id="i18n-mp-dir">Dirección *</span></label>
           <input type="text" id="mp-dir" placeholder="Calle, número, barrio" oninput="checkMpForm()">
         </div>
       </div>
@@ -2068,7 +2068,7 @@ textarea { resize: vertical; min-height: 80px; }
       </div>
     </div>
     <div class="nav-btns">
-      <button class="btn-back" onclick="mpGoTo(2)">← Volver</button>
+      <button class="btn-back" onclick="mpGoTo(2)"><span class="i18n-volver">← Volver</span></button>
       <button class="btn-next" id="mp-btn-next-3" onclick="mpGoTo(4)" disabled>Ver resumen →</button>
     </div>
   </div>
@@ -2176,7 +2176,7 @@ textarea { resize: vertical; min-height: 80px; }
     </div>
 
     <div class="nav-btns" style="justify-content:flex-start;margin-top:24px;">
-      <button class="btn-back" onclick="mpGoTo(3)">← Editar datos</button>
+      <button class="btn-back" onclick="mpGoTo(3)"><span id="i18n-mp-editar-datos">← Editar datos</span></button>
     </div>
   </div>
 
@@ -4872,6 +4872,7 @@ var I18N = {
     semanal_h3: 'Una o dos jornadas que dejan toda la semana lista',
     semanal_p: 'Daro cocina en tu casa, deja todo fraccionado, etiquetado y listo para regenerar. Desayunos, almuerzos, meriendas, cenas y postres — variados y de calidad, sin que tengas que mover un dedo.',
     semanal_btn: 'Solicitar chef semanal →',
+    btn_volver_inicio: '← Volver al inicio',
     semanal_p1_t: 'Planificación personalizada', semanal_p1_d: 'Armamos juntos el menú de la semana según tus gustos, restricciones y rutinas.',
     semanal_p2_t: 'Compras y producción', semanal_p2_d: 'Daro compra todo y cocina en tu cocina en 1 o 2 jornadas de 7 a 9 horas cada una.',
     semanal_p3_t: 'Fraccionado y etiquetado', semanal_p3_d: 'Todo ordenado, etiquetado con instrucciones de regenerado. Tu heladera lista de lunes a viernes.',
@@ -4918,6 +4919,7 @@ var I18N = {
     p5_titulo: 'Confirmá tu reserva', p5_sub: 'Revisá los detalles antes de confirmar',
     // Botones nav
     btn_continuar: 'Continuar →', btn_volver: '← Volver', btn_cambiar_menu: '← Cambiar menú',
+    btn_volver_inicio: '← Volver al inicio',
     // Dinámicos flujo
     buscando_chefs: 'Buscando chefs en tu zona...',
     chefs_cerca: '<strong>{n} chef{s} disponible{s2}</strong> cerca tuyo — asignación automática al confirmar',
@@ -4932,6 +4934,7 @@ var I18N = {
     resumen_chef: 'Chef', resumen_servicio: 'Servicio', resumen_fecha: 'Fecha',
     resumen_turno: 'Turno', resumen_honorario: 'Honorario', resumen_ingredientes: 'Ingredientes est.',
     resumen_total: 'Total estimado', resumen_presencia: 'Presencia', resumen_dir: 'Dirección',
+    dir_evento: 'Dirección del evento *', dir_label: 'Dirección *',
     resumen_contacto: 'Contacto', resumen_ocasion: 'Ocasión', resumen_notas: 'Notas',
     ingredientes_sub: 'estimado · sujeto al menú final',
     // Ticket
@@ -5045,6 +5048,7 @@ var I18N = {
     p4_titulo: 'Your details', p4_sub: 'To coordinate the service with you',
     p5_titulo: 'Confirm your booking', p5_sub: 'Review the details before confirming',
     btn_continuar: 'Continue →', btn_volver: '← Back', btn_cambiar_menu: '← Change menu',
+    btn_volver_inicio: '← Back to start',
     buscando_chefs: 'Searching chefs in your area...',
     chefs_cerca: '<strong>{n} chef{s} available</strong> near you — automatic assignment on confirmation',
     chefs_zona: '<strong>Chefs available</strong> in your area',
@@ -5057,6 +5061,7 @@ var I18N = {
     resumen_chef: 'Chef', resumen_servicio: 'Service', resumen_fecha: 'Date',
     resumen_turno: 'Time slot', resumen_honorario: 'Fee', resumen_ingredientes: 'Ingredients est.',
     resumen_total: 'Estimated total', resumen_presencia: 'Presence', resumen_dir: 'Address',
+    dir_evento: 'Event address *', dir_label: 'Address *',
     resumen_contacto: 'Contact', resumen_ocasion: 'Occasion', resumen_notas: 'Notes',
     ingredientes_sub: 'estimate · subject to final menu',
     ticket_personas: '{n} guests',
@@ -5159,6 +5164,7 @@ var I18N = {
     p4_titulo: 'Seus dados', p4_sub: 'Para coordenar o serviço com você',
     p5_titulo: 'Confirme sua reserva', p5_sub: 'Revise os detalhes antes de confirmar',
     btn_continuar: 'Continuar →', btn_volver: '← Voltar', btn_cambiar_menu: '← Mudar cardápio',
+    btn_volver_inicio: '← Voltar ao início',
     buscando_chefs: 'Buscando chefs na sua área...',
     chefs_cerca: '<strong>{n} chef{s} disponível{s2}</strong> perto de você — atribuição automática na confirmação',
     chefs_zona: '<strong>Chefs disponíveis</strong> na sua área',
@@ -5171,6 +5177,7 @@ var I18N = {
     resumen_chef: 'Chef', resumen_servicio: 'Serviço', resumen_fecha: 'Data',
     resumen_turno: 'Turno', resumen_honorario: 'Honorário', resumen_ingredientes: 'Ingredientes est.',
     resumen_total: 'Total estimado', resumen_presencia: 'Presença', resumen_dir: 'Endereço',
+    dir_evento: 'Endereço do evento *', dir_label: 'Endereço *',
     resumen_contacto: 'Contato', resumen_ocasion: 'Ocasião', resumen_notas: 'Notas',
     ingredientes_sub: 'estimativa · sujeito ao menu final',
     ticket_personas: '{n} pessoas',
@@ -5384,6 +5391,16 @@ function aplicarI18n() {
   el = document.getElementById('i18n-footer-terminos'); if(el) el.textContent = t('footer_terminos');
   el = document.getElementById('i18n-footer-privacidad'); if(el) el.textContent = t('footer_privacidad');
   el = document.getElementById('i18n-footer-cookies'); if(el) el.textContent = t('footer_cookies');
+  // Nuevos elementos i18n
+  el = document.getElementById('i18n-btn-next-2'); if(el) el.textContent = t('btn_continuar');
+  el = document.getElementById('i18n-btn-next-3'); if(el) el.textContent = t('btn_continuar');
+  el = document.getElementById('i18n-turno-label-3'); if(el) el.textContent = t('turno_label');
+  el = document.getElementById('i18n-dir-evento'); if(el) el.textContent = t('dir_evento');
+  el = document.getElementById('i18n-mp-btn-next-1'); if(el) el.textContent = t('btn_elegir_fecha');
+  el = document.getElementById('i18n-mp-btn-next-2'); if(el) el.textContent = t('btn_continuar');
+  el = document.getElementById('i18n-mp-dir'); if(el) el.textContent = t('dir_label');
+  el = document.getElementById('i18n-mp-editar-datos'); if(el) el.textContent = t('editar_datos');
+  el = document.getElementById('i18n-mp-volver-inicio'); if(el) el.textContent = t('btn_volver_inicio');
   // Selector activo
   var _lang = window.LANG || LANG || 'es';
   ['es','en','pt'].forEach(function(l){
