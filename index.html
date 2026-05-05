@@ -1486,7 +1486,7 @@ textarea { resize: vertical; min-height: 80px; }
         <button onclick="toggleChatIA()" id="btn-toggle-chat"
           style="display:inline-flex;align-items:center;gap:10px;background:var(--navy);color:var(--cream);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:13px 24px;border-radius:40px;border:none;cursor:pointer;transition:all 0.2s;white-space:nowrap;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-          Explorá tu menú con IA
+          <span id="i18n-btn-ia-2">Explorá tu menú con IA</span>
         </button>
       </div>
 
@@ -2198,7 +2198,7 @@ function toggleChatIA() {
   const visible = chat.style.display !== 'none';
   chat.style.display = visible ? 'none' : 'block';
   if (btn) btn.innerHTML = visible
-    ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Explorá tu menú con IA`
+    ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> ${t("ia_btn")}`
     : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M18 6L6 18M6 6l12 12"></path></svg> Cerrar asistente`;
   if (!visible) {
     setTimeout(() => {
@@ -4865,6 +4865,7 @@ function aplicarI18n() {
   el = document.getElementById('i18n-aplicar-chef'); if(el) el.textContent = t('aplicar_chef');
   el = document.getElementById('i18n-aplicar-chef-2'); if(el) el.textContent = t('aplicar_chef');
   el = document.getElementById('i18n-btn-reservar-2'); if(el) el.textContent = t('btn_reservar');
+  el = document.getElementById('i18n-btn-ia-2'); if(el) el.textContent = t('ia_btn');
   // Sección cómo funciona
   el = document.getElementById('i18n-como-tag'); if(el) el.textContent = t('como_funciona');
   el = document.getElementById('i18n-como-h3'); if(el) el.textContent = t('como_h3');
