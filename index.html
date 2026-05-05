@@ -2619,7 +2619,7 @@ async function registrarseYContinuar() {
   errEl.style.display = 'none';
   const { data, error } = await supa.auth.signUp({ email, password: pass, options: { data: { full_name: nombre } } });
   if (error) {
-    errEl.textContent = error.message.includes('already') ? 'Email ya registrado — ingresá con tu contraseña' : error.message;
+    errEl.textContent = error.message.includes('already') ? t('err_email_registrado') : error.message;
     errEl.style.display = 'block';
     btn.textContent = 'Crear cuenta y continuar →'; btn.disabled = false;
     return;
@@ -2662,7 +2662,7 @@ async function loginYContinuar() {
   errEl.style.display = 'none';
   const { data, error } = await supa.auth.signInWithPassword({ email, password: pass });
   if (error) {
-    errEl.textContent = error.message.includes('Invalid') ? 'Email o contraseña incorrectos' : error.message;
+    errEl.textContent = error.message.includes('Invalid') ? t('err_credenciales') : error.message;
     errEl.style.display = 'block';
     btn.textContent = 'Ingresar y continuar →'; btn.disabled = false;
     return;
@@ -3235,7 +3235,7 @@ async function renderChefs() {
   const banner = document.getElementById('disponibilidad-banner');
   const textoEl = document.getElementById('disponibilidad-texto');
   if (banner) banner.style.display = 'flex';
-  if (textoEl) textoEl.innerHTML = 'Buscando chefs en tu zona...';
+  if (textoEl) textoEl.innerHTML = t('buscando_chefs');
 
   try {
     const barrio = clientePerfil?.barrio || clientePerfil?.localidad || null;
@@ -3292,7 +3292,7 @@ async function renderChefs() {
 
     // Banner de disponibilidad
     const n = chefsDisponibles.length || 1;
-    if (textoEl) textoEl.innerHTML = `<strong>${n} chef${n > 1 ? 's' : ''} disponible${n > 1 ? 's' : ''}</strong> cerca tuyo — asignación automática al confirmar`;
+    if (textoEl) textoEl.innerHTML = t('chefs_cerca').replace('{n}', n).replace('{s}', n > 1 ? 's' : '').replace('{s2}', n > 1 ? 's' : '');
 
     // ── Construir mapa ──────────────────────────────────────────────────────
     const mapConfig = CIUDAD_CENTRO[ciudad] || CIUDAD_CENTRO['Buenos Aires'];
@@ -3356,7 +3356,7 @@ async function renderChefs() {
     console.warn('Error cargando chefs:', e);
     state.chef = CHEFS[0];
     document.getElementById('btn-next-1').disabled = false;
-    if (textoEl) textoEl.innerHTML = '<strong>Chefs disponibles</strong> en tu zona';
+    if (textoEl) textoEl.innerHTML = t('chefs_zona');
     // Mapa fallback AMBA
     _mapaLeaflet = L.map('mapa-disponibilidad', {
       center: [-34.603, -58.381], zoom: 12,
@@ -3410,7 +3410,7 @@ function selectChef(id) {
 function renderMenus() {
   const availableIds = state.chef?.menus || [];
   const availableMenus = MENUS.filter(m => availableIds.includes(m.id));
-  document.getElementById('menu-sub').textContent = `Seleccioná la propuesta que mejor se adapta a tu ocasión`;
+  document.getElementById('menu-sub').textContent = t('menu_sub');
 
   const grid = document.getElementById('menu-grid');
   grid.innerHTML = availableMenus.map(m => {
@@ -3826,9 +3826,9 @@ function renderTurnos() {
 
   // Mostrar etiqueta "ocupado" si corresponde
   document.getElementById('turno-almuerzo').querySelector('.turno-time').textContent =
-    almuerzoOcupado ? 'Ocupado' : '12:00 – 15:30';
+    almuerzoOcupado ? t('ocupado') : t('turno_almuerzo');
   document.getElementById('turno-cena').querySelector('.turno-time').textContent =
-    cenaOcupada ? 'Ocupado' : '20:00 – 23:30';
+    cenaOcupada ? t('ocupado') : t('turno_cena');
 }
 
 function prevMonth() {
@@ -4019,7 +4019,7 @@ async function mpLoginMidFlow() {
   errEl.style.display = 'none';
   const { data, error } = await supa.auth.signInWithPassword({ email, password: pass });
   if (error) {
-    errEl.textContent = error.message.includes('Invalid') ? 'Email o contraseña incorrectos' : error.message;
+    errEl.textContent = error.message.includes('Invalid') ? t('err_credenciales') : error.message;
     errEl.style.display = 'block';
     btn.textContent = 'Ingresar y continuar →'; btn.disabled = false;
     return;
@@ -4033,13 +4033,13 @@ async function mpLoginMidFlow() {
 
 async function mpConfirmarReserva() {
   const btn = document.getElementById('mp-confirm-btn');
-  btn.textContent = 'Guardando...'; btn.disabled = true;
+  btn.textContent = t('guardando'); btn.disabled = true;
 
   const sesion = _leerSesionLocal();
   if (!sesion) {
     document.getElementById('mp-auth-section').style.display = 'block';
     document.getElementById('mp-confirm-section').style.display = 'none';
-    btn.textContent = '✓ Confirmar reserva'; btn.disabled = false;
+    btn.textContent = t('confirmar_btn'); btn.disabled = false;
     return;
   }
 
@@ -4077,7 +4077,7 @@ async function mpConfirmarReserva() {
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
       showToast('Error al guardar: ' + (err.message || res.status));
-      btn.textContent = '✓ Confirmar reserva'; btn.disabled = false;
+      btn.textContent = t('confirmar_btn'); btn.disabled = false;
       return;
     }
     console.log('Chef semanal guardado OK, ref:', ref);
@@ -4109,7 +4109,7 @@ async function mpConfirmarReserva() {
   } catch(e) {
     console.error('Error:', e);
     showToast('Error de conexión. Intentá de nuevo.');
-    btn.textContent = '✓ Confirmar reserva'; btn.disabled = false;
+    btn.textContent = t('confirmar_btn'); btn.disabled = false;
   }
 }
 
@@ -4359,50 +4359,50 @@ function renderResumen() {
   const total = hon.total + (ingredientes || 0);
   const fmt = n => '$' + n.toLocaleString('es-AR');
   document.getElementById('resumen-card').innerHTML = `
-    <div class="resumen-title">✦ Detalle de tu reserva</div>
+    <div class="resumen-title">${t('resumen_titulo')}</div>
     <div class="resumen-row">
-      <div class="resumen-label">Chef</div>
+      <div class="resumen-label">${t('resumen_chef')}</div>
       <div class="resumen-val"><strong>${state.chef.nombre}</strong><br><small style="opacity:.6">${state.chef.specialty}</small></div>
     </div>
     <div class="resumen-row">
-      <div class="resumen-label">Servicio</div>
-      <div class="resumen-val"><strong>${state.menu.nombre}</strong><br><small style="opacity:.6">${fin ? 'Fin de semana' : 'Semana'} · ${personas} personas</small></div>
+      <div class="resumen-label">${t('resumen_servicio')}</div>
+      <div class="resumen-val"><strong>${state.menu.nombre}</strong><br><small style="opacity:.6">${fin ? t('finde') : t('semana')} · ${personas} ${t('resumen_contacto') === 'Contact' ? 'guests' : t('resumen_contacto') === 'Contato' ? 'pessoas' : 'personas'}</small></div>
     </div>
     <div class="resumen-row">
-      <div class="resumen-label">Fecha</div>
+      <div class="resumen-label">${t('resumen_fecha')}</div>
       <div class="resumen-val">${fechaStr}</div>
     </div>
     <div class="resumen-row">
-      <div class="resumen-label">Turno</div>
+      <div class="resumen-label">${t('resumen_turno')}</div>
       <div class="resumen-val">${turnoStr}</div>
     </div>
     <div class="resumen-row">
-      <div class="resumen-label">Honorario</div>
+      <div class="resumen-label">${t('resumen_honorario')}</div>
       <div class="resumen-val">${fmt(hon.base)}${hon.asistente > 0 ? `<br><small style="opacity:.6">+ ${fmt(hon.asistente)} asistente</small>` : ''}</div>
     </div>
     ${ingredientes ? `
     <div class="resumen-row">
-      <div class="resumen-label">Ingredientes est.</div>
-      <div class="resumen-val">${fmt(ingredientes)}<br><small style="opacity:.6">estimado · sujeto al menú final</small></div>
+      <div class="resumen-label">${t('resumen_ingredientes')}</div>
+      <div class="resumen-val">${fmt(ingredientes)}<br><small style="opacity:.6">${t('ingredientes_sub')}</small></div>
     </div>
     <div class="resumen-row" style="background:rgba(201,168,76,0.08);margin:0 -32px;padding:12px 32px;border-radius:0;">
-      <div class="resumen-label" style="color:var(--gold-light);">Total estimado</div>
+      <div class="resumen-label" style="color:var(--gold-light);">${t('resumen_total')}</div>
       <div class="resumen-val" style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--gold-light);">${fmt(total)}</div>
     </div>` : ''}
     <div class="resumen-row">
-      <div class="resumen-label">Presencia</div>
+      <div class="resumen-label">${t('resumen_presencia')}</div>
 
     </div>
     <div class="resumen-row">
-      <div class="resumen-label">Dirección</div>
+      <div class="resumen-label">${t('resumen_dir')}</div>
       <div class="resumen-val">${state.dir}</div>
     </div>
     <div class="resumen-row">
-      <div class="resumen-label">Contacto</div>
+      <div class="resumen-label">${t('resumen_contacto')}</div>
       <div class="resumen-val">${state.nombre}<br><small style="opacity:.6">${state.tel} · ${state.email}</small></div>
     </div>
-    ${state.ocasion ? `<div class="resumen-row"><div class="resumen-label">Ocasión</div><div class="resumen-val">${state.ocasion}</div></div>` : ''}
-    ${state.notas ? `<div class="resumen-row"><div class="resumen-label">Notas</div><div class="resumen-val">${state.notas}</div></div>` : ''}
+    ${state.ocasion ? `<div class="resumen-row"><div class="resumen-label">${t('resumen_ocasion')}</div><div class="resumen-val">${state.ocasion}</div></div>` : ''}
+    ${state.notas ? `<div class="resumen-row"><div class="resumen-label">${t('resumen_notas')}</div><div class="resumen-val">${state.notas}</div></div>` : ''}
   `;
 
   // Construir mensaje WhatsApp
@@ -4413,7 +4413,7 @@ function renderResumen() {
     `*Chef:* ${state.chef.nombre}\n` +
     `*Servicio:* ${state.menu.nombre}\n` +
     `*Fecha:* ${fecha2}\n` +
-    `*Turno:* ${state.turno === 'almuerzo' ? 'Almuerzo 12:00hs' : 'Cena 20:00hs'}\n` +
+    `*Turno:* ${state.turno === 'almuerzo' ? t('almuerzo_label') : t('cena_label')}\n` +
     `*Personas:* ${state.personas}\n` +
     `*Direccion:* ${state.dir}\n\n` +
     `*Honorario:* ${fmt(hon.base)}${hon.asistente > 0 ? ` + ${fmt(hon.asistente)} asistente` : ''}\n` +
@@ -4433,12 +4433,12 @@ function renderResumen() {
 
 function confirmarReservaExperiencia() {
   const btn = document.getElementById('btn-confirmar-reserva');
-  btn.textContent = 'Guardando...'; btn.disabled = true;
+  btn.textContent = t('guardando'); btn.disabled = true;
   try {
     markSent();
   } catch(e) {
     console.error(e);
-    btn.textContent = '✓ Confirmar reserva'; btn.disabled = false;
+    btn.textContent = t('confirmar_btn'); btn.disabled = false;
     showToast('Error al guardar. Intentá de nuevo.');
   }
 }
@@ -4484,7 +4484,7 @@ function markSent() {
   // Poblar ticket
   document.getElementById('ticket-ref').textContent = ref;
   document.getElementById('ticket-menu').textContent = state.menu.nombre;
-  document.getElementById('ticket-personas').textContent = personas + ' personas';
+  document.getElementById('ticket-personas').textContent = t('ticket_personas').replace('{n}', personas);
   document.getElementById('ticket-fecha').textContent = fechaStr;
   document.getElementById('ticket-turno').textContent = turnoStr;
   document.getElementById('ticket-dir').textContent = state.dir;
@@ -4790,6 +4790,32 @@ var I18N = {
     p5_titulo: 'Confirmá tu reserva', p5_sub: 'Revisá los detalles antes de confirmar',
     // Botones nav
     btn_continuar: 'Continuar →', btn_volver: '← Volver', btn_cambiar_menu: '← Cambiar menú',
+    // Dinámicos flujo
+    buscando_chefs: 'Buscando chefs en tu zona...',
+    chefs_cerca: '<strong>{n} chef{s} disponible{s2}</strong> cerca tuyo — asignación automática al confirmar',
+    chefs_zona: '<strong>Chefs disponibles</strong> en tu zona',
+    menu_sub: 'Seleccioná la propuesta que mejor se adapta a tu ocasión',
+    ocupado: 'Ocupado',
+    turno_almuerzo: '12:00 – 15:30',
+    turno_cena: '20:00 – 23:30',
+    finde: 'Fin de semana', semana: 'Semana',
+    // Resumen
+    resumen_titulo: '✦ Detalle de tu reserva',
+    resumen_chef: 'Chef', resumen_servicio: 'Servicio', resumen_fecha: 'Fecha',
+    resumen_turno: 'Turno', resumen_honorario: 'Honorario', resumen_ingredientes: 'Ingredientes est.',
+    resumen_total: 'Total estimado', resumen_presencia: 'Presencia', resumen_dir: 'Dirección',
+    resumen_contacto: 'Contacto', resumen_ocasion: 'Ocasión', resumen_notas: 'Notas',
+    ingredientes_sub: 'estimado · sujeto al menú final',
+    // Ticket
+    ticket_personas: '{n} personas',
+    // Auth errores
+    err_email_registrado: 'Email ya registrado — ingresá con tu contraseña',
+    err_credenciales: 'Email o contraseña incorrectos',
+    // Confirmación
+    guardando: 'Guardando...',
+    confirmar_btn: '✓ Confirmar reserva',
+    // Turno labels
+    almuerzo_label: 'Almuerzo 12:00hs', cena_label: 'Cena 20:00hs',
     btn_ver_desglose: 'Ver desglose →', btn_elegir_fecha: 'Elegir fecha →', btn_ver_resumen: 'Ver resumen →',
   },
   en: {
@@ -4841,6 +4867,26 @@ var I18N = {
     p4_titulo: 'Your details', p4_sub: 'To coordinate the service with you',
     p5_titulo: 'Confirm your booking', p5_sub: 'Review the details before confirming',
     btn_continuar: 'Continue →', btn_volver: '← Back', btn_cambiar_menu: '← Change menu',
+    buscando_chefs: 'Searching chefs in your area...',
+    chefs_cerca: '<strong>{n} chef{s} available</strong> near you — automatic assignment on confirmation',
+    chefs_zona: '<strong>Chefs available</strong> in your area',
+    menu_sub: 'Select the proposal that best fits your occasion',
+    ocupado: 'Unavailable',
+    turno_almuerzo: '12:00 – 15:30',
+    turno_cena: '20:00 – 23:30',
+    finde: 'Weekend', semana: 'Weekday',
+    resumen_titulo: '✦ Your booking details',
+    resumen_chef: 'Chef', resumen_servicio: 'Service', resumen_fecha: 'Date',
+    resumen_turno: 'Time slot', resumen_honorario: 'Fee', resumen_ingredientes: 'Ingredients est.',
+    resumen_total: 'Estimated total', resumen_presencia: 'Presence', resumen_dir: 'Address',
+    resumen_contacto: 'Contact', resumen_ocasion: 'Occasion', resumen_notas: 'Notes',
+    ingredientes_sub: 'estimate · subject to final menu',
+    ticket_personas: '{n} guests',
+    err_email_registrado: 'Email already registered — sign in with your password',
+    err_credenciales: 'Incorrect email or password',
+    guardando: 'Saving...',
+    confirmar_btn: '✓ Confirm booking',
+    almuerzo_label: 'Lunch 12:00hs', cena_label: 'Dinner 20:00hs',
     btn_ver_desglose: 'See breakdown →', btn_elegir_fecha: 'Choose date →', btn_ver_resumen: 'See summary →',
   },
   pt: {
@@ -4892,6 +4938,26 @@ var I18N = {
     p4_titulo: 'Seus dados', p4_sub: 'Para coordenar o serviço com você',
     p5_titulo: 'Confirme sua reserva', p5_sub: 'Revise os detalhes antes de confirmar',
     btn_continuar: 'Continuar →', btn_volver: '← Voltar', btn_cambiar_menu: '← Mudar cardápio',
+    buscando_chefs: 'Buscando chefs na sua área...',
+    chefs_cerca: '<strong>{n} chef{s} disponível{s2}</strong> perto de você — atribuição automática na confirmação',
+    chefs_zona: '<strong>Chefs disponíveis</strong> na sua área',
+    menu_sub: 'Selecione a proposta que melhor se adapta à sua ocasião',
+    ocupado: 'Indisponível',
+    turno_almuerzo: '12:00 – 15:30',
+    turno_cena: '20:00 – 23:30',
+    finde: 'Fim de semana', semana: 'Semana',
+    resumen_titulo: '✦ Detalhes da sua reserva',
+    resumen_chef: 'Chef', resumen_servicio: 'Serviço', resumen_fecha: 'Data',
+    resumen_turno: 'Turno', resumen_honorario: 'Honorário', resumen_ingredientes: 'Ingredientes est.',
+    resumen_total: 'Total estimado', resumen_presencia: 'Presença', resumen_dir: 'Endereço',
+    resumen_contacto: 'Contato', resumen_ocasion: 'Ocasião', resumen_notas: 'Notas',
+    ingredientes_sub: 'estimativa · sujeito ao menu final',
+    ticket_personas: '{n} pessoas',
+    err_email_registrado: 'Email já cadastrado — entre com sua senha',
+    err_credenciales: 'Email ou senha incorretos',
+    guardando: 'Salvando...',
+    confirmar_btn: '✓ Confirmar reserva',
+    almuerzo_label: 'Almoço 12:00hs', cena_label: 'Jantar 20:00hs',
     btn_ver_desglose: 'Ver detalhes →', btn_elegir_fecha: 'Escolher data →', btn_ver_resumen: 'Ver resumo →',
   }
 };
