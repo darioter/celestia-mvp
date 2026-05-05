@@ -1547,28 +1547,28 @@ textarea { resize: vertical; min-height: 80px; }
 <!-- STEPS BAR -->
 <div id="steps-bar" class="steps-bar" style="display:none">
   <div class="step-item" id="step-tab-1">
-    <div class="step-num">1</div> Chef
+    <div class="step-num">1</div> <span id="i18n-step-chef">Chef</span>
   </div>
   <div class="step-divider"></div>
   <div class="step-item" id="step-tab-2">
-    <div class="step-num">2</div> Menú
+    <div class="step-num">2</div> <span id="i18n-step-menu">Menú</span>
   </div>
   <div class="step-divider"></div>
   <div class="step-item" id="step-tab-25" style="display:none">
-    <div class="step-num">·</div> Detalle
+    <div class="step-num">·</div> <span id="i18n-step-detalle">Detalle</span>
   </div>
   <div class="step-divider" id="step-div-25" style="display:none"></div>
   <div class="step-divider"></div>
   <div class="step-item" id="step-tab-3">
-    <div class="step-num">3</div> Fecha
+    <div class="step-num">3</div> <span id="i18n-step-fecha">Fecha</span>
   </div>
   <div class="step-divider"></div>
   <div class="step-item" id="step-tab-4">
-    <div class="step-num">4</div> Datos
+    <div class="step-num">4</div> <span id="i18n-step-datos">Datos</span>
   </div>
   <div class="step-divider"></div>
   <div class="step-item" id="step-tab-5">
-    <div class="step-num">5</div> Confirmar
+    <div class="step-num">5</div> <span id="i18n-step-confirmar">Confirmar</span>
   </div>
 </div>
 
@@ -1576,7 +1576,7 @@ textarea { resize: vertical; min-height: 80px; }
 
   <!-- PASO 1: CHEFS -->
   <div id="screen-1" class="screen" style="display:none">
-    <h2 class="section-title">Chefs disponibles</h2>
+    <h2 class="section-title" id="i18n-p1-titulo">Chefs disponibles</h2>
     <div class="disponibilidad-banner" id="disponibilidad-banner" style="display:none">
       <div class="dot-live"></div>
       <div class="text" id="disponibilidad-texto">Buscando chefs en tu zona...</div>
@@ -1587,14 +1587,14 @@ textarea { resize: vertical; min-height: 80px; }
       <span style="font-size:11px;color:var(--text-light);font-weight:300;">El mapa muestra tu ciudad de referencia, no tu ubicación real ni la del chef.</span>
     </div>
     <div class="nav-btns">
-      <button class="btn-next" id="btn-next-1" onclick="goTo(2)" disabled>Continuar →</button>
+      <button class="btn-next" id="btn-next-1" onclick="goTo(2)" disabled><span id="i18n-btn-next-1">Continuar →</span></button>
     </div>
   </div>
 
   <!-- PASO 2: MENÚS -->
   <div id="screen-2" class="screen" style="display:none">
-    <h2 class="section-title">Elegí el menú</h2>
-    <p class="section-sub" id="menu-sub">Seleccioná la propuesta gastronómica para tu evento</p>
+    <h2 class="section-title" id="i18n-p2-titulo">Elegí el menú</h2>
+    <p class="section-sub" id="menu-sub"><span id="i18n-p2-sub">Seleccioná la propuesta gastronómica para tu evento</span></p>
     <div class="menu-grid" id="menu-grid"></div>
     <!-- Botón flotante continuar -->
     <div id="float-continuar" style="display:block;position:fixed;bottom:0;left:0;right:0;padding:16px 20px;background:linear-gradient(to top,var(--cream) 70%,transparent);z-index:200;">
@@ -1611,8 +1611,8 @@ textarea { resize: vertical; min-height: 80px; }
     <p class="section-sub">Ajustá los detalles de tu experiencia</p>
     <div id="s26-content"></div>
     <div class="nav-btns">
-      <button class="btn-back" onclick="goTo(2)">← Cambiar menú</button>
-      <button class="btn-next" onclick="goTo(25)">Ver desglose →</button>
+      <button class="btn-back" onclick="goTo(2)"><span class="i18n-cambiar-menu">← Cambiar menú</span></button>
+      <button class="btn-next" onclick="goTo(25)"><span id="i18n-ver-desglose">Ver desglose →</span></button>
     </div>
   </div>
 
@@ -1622,15 +1622,15 @@ textarea { resize: vertical; min-height: 80px; }
     <p class="section-sub">Desglose estimado antes de elegir la fecha</p>
     <div id="desglose-content"></div>
     <div class="nav-btns">
-      <button class="btn-back" onclick="goTo(2)">← Cambiar menú</button>
-      <button class="btn-next" onclick="goTo(3)">Elegir fecha →</button>
+      <button class="btn-back" onclick="goTo(2)"><span class="i18n-cambiar-menu">← Cambiar menú</span></button>
+      <button class="btn-next" onclick="goTo(3)"><span id="i18n-elegir-fecha">Elegir fecha →</span></button>
     </div>
   </div>
 
   <!-- PASO 3: FECHA Y TURNO -->
   <div id="screen-3" class="screen" style="display:none">
-    <h2 class="section-title">¿Cuándo?</h2>
-    <p class="section-sub" id="cal-sub">Los servicios requieren un mínimo de 48hs de anticipación</p>
+    <h2 class="section-title" id="i18n-p3-titulo">¿Cuándo?</h2>
+    <p class="section-sub" id="cal-sub"><span id="i18n-p3-sub">Los servicios requieren un mínimo de 48hs de anticipación</span></p>
     <div id="cal-dias-nota" style="display:inline-flex;align-items:center;gap:8px;background:var(--gold-pale);border-radius:40px;padding:6px 14px;font-size:12px;color:var(--text-mid);margin-bottom:20px;font-weight:400;"></div>
     
     <div class="calendar-wrap">
@@ -1658,15 +1658,15 @@ textarea { resize: vertical; min-height: 80px; }
 
     <!-- EXPRESS -->
     <div class="nav-btns">
-      <button class="btn-back" onclick="goTo(2)">← Volver</button>
+      <button class="btn-back" onclick="goTo(2)"><span class="i18n-volver">← Volver</span></button>
       <button class="btn-next" id="btn-next-3" onclick="goTo(4)" disabled>Continuar →</button>
     </div>
   </div>
 
   <!-- PASO AUTH: CREAR CUENTA / LOGIN -->
   <div id="screen-auth" class="screen" style="display:none">
-    <h2 class="section-title">Creá tu cuenta</h2>
-    <p class="section-sub">Para confirmar tu reserva necesitamos validar tu identidad</p>
+    <h2 class="section-title" id="i18n-auth-titulo">Creá tu cuenta</h2>
+    <p class="section-sub" id="i18n-auth-sub">Para confirmar tu reserva necesitamos validar tu identidad</p>
 
     <div style="max-width:420px;margin:0 auto;">
 
@@ -1678,26 +1678,26 @@ textarea { resize: vertical; min-height: 80px; }
 
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
         <div style="flex:1;height:1px;background:var(--cream-dark);"></div>
-        <span style="font-size:12px;color:var(--text-light);">o con tu email</span>
+        <span style="font-size:12px;color:var(--text-light);"><span id="i18n-auth-o">o con tu email</span></span>
         <div style="flex:1;height:1px;background:var(--cream-dark);"></div>
       </div>
 
       <!-- Tabs login/registro -->
       <div style="display:flex;border:1.5px solid var(--cream-dark);border-radius:40px;overflow:hidden;margin-bottom:20px;">
-        <button id="auth-tab-registro" onclick="switchAuthTab('registro')" style="flex:1;padding:10px;border:none;background:var(--navy);color:white;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;">Crear cuenta</button>
-        <button id="auth-tab-login" onclick="switchAuthTab('login')" style="flex:1;padding:10px;border:none;background:transparent;color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all 0.2s;">Ya tengo cuenta</button>
+        <button id="auth-tab-registro" onclick="switchAuthTab('registro')" style="flex:1;padding:10px;border:none;background:var(--navy);color:white;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;"><span id="i18n-auth-tab-reg">Crear cuenta</span></button>
+        <button id="auth-tab-login" onclick="switchAuthTab('login')" style="flex:1;padding:10px;border:none;background:transparent;color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all 0.2s;"><span id="i18n-auth-tab-log">Ya tengo cuenta</span></button>
       </div>
 
       <!-- Formulario registro -->
       <div id="auth-form-registro">
-        <input type="text" id="auth-nombre" placeholder="Tu nombre completo" oninput="checkAuthForm()"
+        <input type="text" id="auth-nombre" id="i18n-ph-nombre" placeholder="Tu nombre completo" oninput="checkAuthForm()"
           style="width:100%;border:1.5px solid var(--cream-dark);border-radius:12px;padding:13px 16px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--navy);outline:none;margin-bottom:10px;box-sizing:border-box;">
         <input type="email" id="auth-email-reg" placeholder="tu@email.com" oninput="checkAuthForm()"
           style="width:100%;border:1.5px solid var(--cream-dark);border-radius:12px;padding:13px 16px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--navy);outline:none;margin-bottom:10px;box-sizing:border-box;">
         <input type="password" id="auth-pass-reg" placeholder="Contraseña (mínimo 6 caracteres)" oninput="checkAuthForm()"
           style="width:100%;border:1.5px solid var(--cream-dark);border-radius:12px;padding:13px 16px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--navy);outline:none;margin-bottom:16px;box-sizing:border-box;">
         <div id="auth-error-reg" style="display:none;font-size:12px;color:#E53935;margin-bottom:10px;text-align:center;"></div>
-        <button id="auth-btn-registro" onclick="registrarseYContinuar()" disabled
+        <button id="auth-btn-registro" onclick="registrarseYContinuar()" disabled data-i18n="auth_btn_registro"
           style="width:100%;background:var(--navy);color:white;border:none;border-radius:40px;padding:14px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;opacity:0.4;transition:all 0.2s;">
           Crear cuenta y continuar →
         </button>
@@ -1722,14 +1722,14 @@ textarea { resize: vertical; min-height: 80px; }
     </div>
 
     <div class="nav-btns" style="margin-top:32px;">
-      <button class="btn-back" onclick="goTo(3)">← Volver</button>
+      <button class="btn-back" onclick="goTo(3)"><span class="i18n-volver">← Volver</span></button>
     </div>
   </div>
 
   <!-- PASO 4: DATOS DE CONTACTO -->
   <div id="screen-4" class="screen" style="display:none">
-    <h2 class="section-title">Tus datos</h2>
-    <p class="section-sub">Para coordinar el servicio con vos</p>
+    <h2 class="section-title" id="i18n-p4-titulo">Tus datos</h2>
+    <p class="section-sub" id="i18n-p4-sub">Para coordinar el servicio con vos</p>
     <div class="form-wrap">
       <div class="form-row">
         <div class="form-group">
@@ -1771,15 +1771,15 @@ textarea { resize: vertical; min-height: 80px; }
       </div>
     </div>
     <div class="nav-btns">
-      <button class="btn-back" onclick="goTo(3)">← Volver</button>
-      <button class="btn-next" id="btn-next-4" onclick="goTo(5)" disabled>Ver resumen →</button>
+      <button class="btn-back" onclick="goTo(3)"><span class="i18n-volver">← Volver</span></button>
+      <button class="btn-next" id="btn-next-4" onclick="goTo(5)" disabled><span id="i18n-ver-resumen">Ver resumen →</span></button>
     </div>
   </div>
 
   <!-- PASO 5: CONFIRMAR -->
   <div id="screen-5" class="screen" style="display:none">
-    <h2 class="section-title">Confirmá tu reserva</h2>
-    <p class="section-sub">Revisá los detalles antes de confirmar</p>
+    <h2 class="section-title" id="i18n-p5-titulo">Confirmá tu reserva</h2>
+    <p class="section-sub" id="i18n-p5-sub">Revisá los detalles antes de confirmar</p>
 
     <div class="resumen-card" id="resumen-card"></div>
 
@@ -4759,6 +4759,29 @@ var I18N = {
     ia_saludo: 'Hola! Soy el asistente de Celestia. Contame un poco sobre la ocasión — ¿cuántas personas son, qué tipo de evento es, tienen alguna preferencia o restricción?',
     // Footer
     footer_terminos: 'Términos y condiciones', footer_privacidad: 'Privacidad', footer_cookies: 'Cookies',
+    // Steps bar
+    step_chef: 'Chef', step_menu: 'Menú', step_detalle: 'Detalle', step_fecha: 'Fecha', step_datos: 'Datos', step_confirmar: 'Confirmar',
+    // Paso 1
+    p1_titulo: 'Chefs disponibles',
+    // Paso 2
+    p2_titulo: 'Elegí el menú', p2_sub: 'Seleccioná la propuesta gastronómica para tu evento',
+    // Paso 3
+    p3_titulo: '¿Cuándo?', p3_sub: 'Los servicios requieren un mínimo de 48hs de anticipación',
+    // Auth
+    auth_titulo: 'Creá tu cuenta', auth_sub: 'Para confirmar tu reserva necesitamos validar tu identidad',
+    auth_google: 'Continuar con Google', auth_o: 'o con tu email',
+    auth_tab_registro: 'Crear cuenta', auth_tab_login: 'Ya tengo cuenta',
+    auth_nombre_ph: 'Tu nombre completo', auth_email_ph: 'tu@email.com',
+    auth_pass_reg_ph: 'Contraseña (mínimo 6 caracteres)', auth_pass_ph: 'Contraseña',
+    auth_btn_registro: 'Crear cuenta y continuar →', auth_btn_login: 'Ingresar y continuar →',
+    auth_info: 'Tu cuenta te permite ver el estado de tu reserva, chatear con el chef y gestionar tus pagos.',
+    // Paso 4
+    p4_titulo: 'Tus datos', p4_sub: 'Para coordinar el servicio con vos',
+    // Paso 5
+    p5_titulo: 'Confirmá tu reserva', p5_sub: 'Revisá los detalles antes de confirmar',
+    // Botones nav
+    btn_continuar: 'Continuar →', btn_volver: '← Volver', btn_cambiar_menu: '← Cambiar menú',
+    btn_ver_desglose: 'Ver desglose →', btn_elegir_fecha: 'Elegir fecha →', btn_ver_resumen: 'Ver resumen →',
   },
   en: {
     acceder: 'Sign in →',
@@ -4795,6 +4818,21 @@ var I18N = {
     ia_sub: 'Just ideas — the technique and magic are your chef\'s.',
     ia_saludo: 'Hi! I\'m the Celestia assistant. Tell me a bit about the occasion — how many people, what kind of event, any preferences or restrictions?',
     footer_terminos: 'Terms and conditions', footer_privacidad: 'Privacy', footer_cookies: 'Cookies',
+    step_chef: 'Chef', step_menu: 'Menu', step_detalle: 'Detail', step_fecha: 'Date', step_datos: 'Details', step_confirmar: 'Confirm',
+    p1_titulo: 'Available chefs',
+    p2_titulo: 'Choose your menu', p2_sub: 'Select the gastronomic proposal for your event',
+    p3_titulo: 'When?', p3_sub: 'Services require a minimum of 48hs notice',
+    auth_titulo: 'Create your account', auth_sub: 'To confirm your booking we need to verify your identity',
+    auth_google: 'Continue with Google', auth_o: 'or with your email',
+    auth_tab_registro: 'Create account', auth_tab_login: 'I already have an account',
+    auth_nombre_ph: 'Your full name', auth_email_ph: 'you@email.com',
+    auth_pass_reg_ph: 'Password (minimum 6 characters)', auth_pass_ph: 'Password',
+    auth_btn_registro: 'Create account and continue →', auth_btn_login: 'Sign in and continue →',
+    auth_info: 'Your account lets you track your booking status, chat with the chef and manage your payments.',
+    p4_titulo: 'Your details', p4_sub: 'To coordinate the service with you',
+    p5_titulo: 'Confirm your booking', p5_sub: 'Review the details before confirming',
+    btn_continuar: 'Continue →', btn_volver: '← Back', btn_cambiar_menu: '← Change menu',
+    btn_ver_desglose: 'See breakdown →', btn_elegir_fecha: 'Choose date →', btn_ver_resumen: 'See summary →',
   },
   pt: {
     acceder: 'Entrar →',
@@ -4831,6 +4869,21 @@ var I18N = {
     ia_sub: 'Só ideias — a técnica e a magia ficam com o chef.',
     ia_saludo: 'Olá! Sou o assistente da Celestia. Conte-me um pouco sobre a ocasião — quantas pessoas são, que tipo de evento é, têm alguma preferência ou restrição?',
     footer_terminos: 'Termos e condições', footer_privacidad: 'Privacidade', footer_cookies: 'Cookies',
+    step_chef: 'Chef', step_menu: 'Cardápio', step_detalle: 'Detalhe', step_fecha: 'Data', step_dados: 'Dados', step_confirmar: 'Confirmar',
+    p1_titulo: 'Chefs disponíveis',
+    p2_titulo: 'Escolha o cardápio', p2_sub: 'Selecione a proposta gastronômica para o seu evento',
+    p3_titulo: 'Quando?', p3_sub: 'Os serviços exigem no mínimo 48hs de antecedência',
+    auth_titulo: 'Crie sua conta', auth_sub: 'Para confirmar sua reserva precisamos verificar sua identidade',
+    auth_google: 'Continuar com Google', auth_o: 'ou com seu email',
+    auth_tab_registro: 'Criar conta', auth_tab_login: 'Já tenho uma conta',
+    auth_nombre_ph: 'Seu nome completo', auth_email_ph: 'voce@email.com',
+    auth_pass_reg_ph: 'Senha (mínimo 6 caracteres)', auth_pass_ph: 'Senha',
+    auth_btn_registro: 'Criar conta e continuar →', auth_btn_login: 'Entrar e continuar →',
+    auth_info: 'Sua conta permite acompanhar o status da reserva, conversar com o chef e gerenciar seus pagamentos.',
+    p4_titulo: 'Seus dados', p4_sub: 'Para coordenar o serviço com você',
+    p5_titulo: 'Confirme sua reserva', p5_sub: 'Revise os detalhes antes de confirmar',
+    btn_continuar: 'Continuar →', btn_volver: '← Voltar', btn_cambiar_menu: '← Mudar cardápio',
+    btn_ver_desglose: 'Ver detalhes →', btn_elegir_fecha: 'Escolher data →', btn_ver_resumen: 'Ver resumo →',
   }
 };
 
@@ -4866,6 +4919,41 @@ function aplicarI18n() {
   el = document.getElementById('i18n-aplicar-chef-2'); if(el) el.textContent = t('aplicar_chef');
   el = document.getElementById('i18n-btn-reservar-2'); if(el) el.textContent = t('btn_reservar');
   el = document.getElementById('i18n-btn-ia-2'); if(el) el.textContent = t('ia_btn');
+  // Steps bar
+  el = document.getElementById('i18n-step-chef'); if(el) el.textContent = t('step_chef');
+  el = document.getElementById('i18n-step-menu'); if(el) el.textContent = t('step_menu');
+  el = document.getElementById('i18n-step-detalle'); if(el) el.textContent = t('step_detalle');
+  el = document.getElementById('i18n-step-fecha'); if(el) el.textContent = t('step_fecha');
+  el = document.getElementById('i18n-step-datos'); if(el) el.textContent = t('step_datos');
+  el = document.getElementById('i18n-step-confirmar'); if(el) el.textContent = t('step_confirmar');
+  // Pasos
+  el = document.getElementById('i18n-p1-titulo'); if(el) el.textContent = t('p1_titulo');
+  el = document.getElementById('i18n-p2-titulo'); if(el) el.textContent = t('p2_titulo');
+  el = document.getElementById('i18n-p2-sub'); if(el) el.textContent = t('p2_sub');
+  el = document.getElementById('i18n-p3-titulo'); if(el) el.textContent = t('p3_titulo');
+  el = document.getElementById('i18n-p3-sub'); if(el) el.textContent = t('p3_sub');
+  el = document.getElementById('i18n-p4-titulo'); if(el) el.textContent = t('p4_titulo');
+  el = document.getElementById('i18n-p4-sub'); if(el) el.textContent = t('p4_sub');
+  el = document.getElementById('i18n-p5-titulo'); if(el) el.textContent = t('p5_titulo');
+  el = document.getElementById('i18n-p5-sub'); if(el) el.textContent = t('p5_sub');
+  // Auth
+  el = document.getElementById('i18n-auth-titulo'); if(el) el.textContent = t('auth_titulo');
+  el = document.getElementById('i18n-auth-sub'); if(el) el.textContent = t('auth_sub');
+  el = document.getElementById('i18n-auth-google'); if(el) el.textContent = t('auth_google');
+  el = document.getElementById('i18n-auth-o'); if(el) el.textContent = t('auth_o');
+  el = document.getElementById('i18n-auth-tab-reg'); if(el) el.textContent = t('auth_tab_registro');
+  el = document.getElementById('i18n-auth-tab-log'); if(el) el.textContent = t('auth_tab_login');
+  el = document.getElementById('i18n-ph-nombre'); if(el) el.placeholder = t('auth_nombre_ph');
+  el = document.getElementById('i18n-auth-btn-reg'); if(el) el.textContent = t('auth_btn_registro');
+  el = document.getElementById('i18n-auth-btn-log'); if(el) el.textContent = t('auth_btn_login');
+  el = document.getElementById('i18n-auth-info'); if(el) el.textContent = t('auth_info');
+  // Botones nav
+  el = document.getElementById('i18n-btn-next-1'); if(el) el.textContent = t('btn_continuar');
+  el = document.getElementById('i18n-ver-desglose'); if(el) el.textContent = t('btn_ver_desglose');
+  el = document.getElementById('i18n-elegir-fecha'); if(el) el.textContent = t('btn_elegir_fecha');
+  el = document.getElementById('i18n-ver-resumen'); if(el) el.textContent = t('btn_ver_resumen');
+  document.querySelectorAll('.i18n-volver').forEach(function(e){ e.textContent = t('btn_volver'); });
+  document.querySelectorAll('.i18n-cambiar-menu').forEach(function(e){ e.textContent = t('btn_cambiar_menu'); });
   // Sección cómo funciona
   el = document.getElementById('i18n-como-tag'); if(el) el.textContent = t('como_funciona');
   el = document.getElementById('i18n-como-h3'); if(el) el.textContent = t('como_h3');
