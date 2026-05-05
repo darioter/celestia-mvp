@@ -2657,7 +2657,7 @@ async function registrarseYContinuar() {
   if (fEmail) fEmail.value = email;
   const accederBtn = document.getElementById('header-acceder');
   if (accederBtn) {
-    accederBtn.textContent = `Hola, ${nombre.split(' ')[0]} →`;
+    accederBtn.textContent = t('hola', {nombre: nombre.split(' ')[0]});
     accederBtn.style.color = 'var(--gold-light)';
     accederBtn.style.borderColor = 'rgba(201,168,76,0.5)';
   }
@@ -2771,7 +2771,7 @@ supa.auth.onAuthStateChange(async (event, session) => {
   if (event === 'SIGNED_OUT') {
     _session = null; clientePerfil = null;
     const btn = document.getElementById('header-acceder');
-    if (btn) { btn.textContent = 'Acceder →'; btn.style.color = ''; btn.style.borderColor = ''; }
+    if (btn) { btn._logueado = false; btn.textContent = t('acceder'); btn.style.color = ''; btn.style.borderColor = ''; }
   }
 });
 
@@ -4783,7 +4783,6 @@ function resetFlow() {
     if (el) el.value = '';
   });
   // f-visibilidad removed
-  if (vis) vis.value = '';
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -5254,7 +5253,13 @@ window.setLang = setLang;
 function aplicarI18n() {
   // Header
   var accederBtn = document.getElementById('header-acceder');
-  if (accederBtn && !accederBtn._logueado) accederBtn.textContent = t('acceder');
+  if (accederBtn) {
+    if (accederBtn._logueado && typeof clientePerfil !== 'undefined' && clientePerfil?.nombre) {
+      accederBtn.textContent = t('hola', {nombre: clientePerfil.nombre.split(' ')[0]});
+    } else if (!accederBtn._logueado) {
+      accederBtn.textContent = t('acceder');
+    }
+  }
   // Hero
   var el;
   el = document.getElementById('i18n-hero-label'); if(el) el.textContent = t('hero_label');
