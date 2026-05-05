@@ -3175,6 +3175,8 @@ function startFlow() {
   if (!_session && !clientePerfil) {
     _guardarEstadoReserva && _guardarEstadoReserva();
     document.getElementById('hero-section').style.display = 'none';
+    document.getElementById('mp-steps-bar').style.display = 'none';
+    document.getElementById('mp-content').style.display = 'none';
     document.getElementById('steps-bar').style.display = 'flex';
     document.getElementById('main-content').style.display = 'block';
     _mostrarPaso('auth');
@@ -3188,6 +3190,8 @@ function startFlow() {
 function _iniciarFlujoPrincipal() {
   window._pendingStartFlow = false;
   document.getElementById('hero-section').style.display = 'none';
+  document.getElementById('mp-steps-bar').style.display = 'none';
+  document.getElementById('mp-content').style.display = 'none';
   document.getElementById('steps-bar').style.display = 'flex';
   document.getElementById('main-content').style.display = 'block';
 
@@ -4054,6 +4058,8 @@ function selectMpFlow(param, valor) {
 
 function startMealPrep() {
   document.getElementById('hero-section').style.display = 'none';
+  document.getElementById('steps-bar').style.display = 'none';
+  document.getElementById('main-content').style.display = 'none';
   document.getElementById('mp-steps-bar').style.display = 'flex';
   document.getElementById('mp-content').style.display = 'block';
 
