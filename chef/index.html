@@ -2413,6 +2413,7 @@ async function cargarCobros() {
     .order('fecha', { ascending: false });
 
   const tieneMPAlias = !!chef?.alias_mp;
+  const fmt = n => n ? '$' + Number(n).toLocaleString('es-AR') : '—';
   const fmtFecha = f => new Date(f+'T12:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'long',year:'numeric'});
 
   el.innerHTML = `
