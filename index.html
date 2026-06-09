@@ -2802,13 +2802,13 @@ async function _actualizarHeaderConSesionLocal(sesionDirecta) {
     accederBtn.textContent = t('hola', {nombre: clientePerfil.nombre.split(' ')[0]});
     accederBtn.style.color = 'var(--gold-light)';
     accederBtn.style.borderColor = 'rgba(201,168,76,0.5)';
-  // FIX: también actualizar el botón del beta landing
-  const blAcc = document.querySelector('#beta-landing .bl-acc');
-  if (blAcc) {
-    blAcc.textContent = '✦ ' + clientePerfil.nombre.split(' ')[0];
-    blAcc.href = '/clientes';
-    blAcc.style.color = 'var(--gdl, #C9A84C)';
-    blAcc.style.borderColor = 'rgba(201,168,76,0.5)';
+    const blAcc = document.querySelector('#beta-landing .bl-acc');
+    if (blAcc) { blAcc.textContent = clientePerfil.nombre.split(' ')[0]; blAcc.href = '/clientes'; blAcc.style.color = '#C9A84C'; }
+
+
+
+
+
   }
   // Detener el rotador en la ciudad del cliente
   if (typeof window._setTaglineCiudad === 'function') {
