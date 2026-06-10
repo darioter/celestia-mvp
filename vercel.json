@@ -1,1 +1,6 @@
-﻿{"rewrites":[{"source":"/","destination":"/index-beta.html"},{"source":"/beta","destination":"/index-beta.html"}]}
+{
+  "rewrites": [
+    { "source": "/", "destination": "/index-beta.html" },
+    { "source": "/beta", "destination": "/index-beta.html" }
+  ]
+}
