@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -2802,6 +2802,8 @@ async function _actualizarHeaderConSesionLocal(sesionDirecta) {
     accederBtn.textContent = t('hola', {nombre: clientePerfil.nombre.split(' ')[0]});
     accederBtn.style.color = 'var(--gold-light)';
     accederBtn.style.borderColor = 'rgba(201,168,76,0.5)';
+    const blAcc = document.querySelector('#beta-landing .bl-acc');
+    if (blAcc) { blAcc.textContent = clientePerfil.nombre.split(' ')[0]; blAcc.href = '/clientes'; blAcc.style.color = '#C9A84C'; }
   }
   // Detener el rotador en la ciudad del cliente
   if (typeof window._setTaglineCiudad === 'function') {
@@ -2996,6 +2998,8 @@ async function registrarseYContinuar() {
     accederBtn.textContent = t('hola', {nombre: nombre.split(' ')[0]});
     accederBtn.style.color = 'var(--gold-light)';
     accederBtn.style.borderColor = 'rgba(201,168,76,0.5)';
+    const blAcc = document.querySelector('#beta-landing .bl-acc');
+    if (blAcc) { blAcc.textContent = clientePerfil.nombre.split(' ')[0]; blAcc.href = '/clientes'; blAcc.style.color = '#C9A84C'; }
   }
   btn.textContent = '✓ Cuenta creada';
   // Nuevo usuario → ir a completar perfil antes de reservar
