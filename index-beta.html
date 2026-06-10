@@ -2805,9 +2805,11 @@ async function _actualizarHeaderConSesionLocal(sesionDirecta) {
     const blAcc = document.querySelector('#beta-landing .bl-acc');
     if (blAcc) { blAcc.textContent = clientePerfil.nombre.split(' ')[0]; blAcc.href = '/clientes'; blAcc.style.color = '#C9A84C'; }
   }
+  // Detener el rotador en la ciudad del cliente
   if (typeof window._setTaglineCiudad === 'function') {
     const ciudad = clientePerfil?.ciudad || clientePerfil?.barrio || null;
     const barrio = clientePerfil?.barrio || null;
+    // Construir cadena PAIS · PROVINCIA · CIUDAD
     const _provinciaDeCiudad = (c) => {
       if (!c) return null;
       const gba = ['San Isidro','Vicente López','Tigre','Nordelta','Pilar','San Fernando','Morón','Quilmes','La Matanza','Lomas de Zamora','Avellaneda'];
