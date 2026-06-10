@@ -2807,7 +2807,7 @@ async function _actualizarHeaderConSesionLocal(sesionDirecta) {
   }
   if (typeof window._setTaglineCiudad === 'function') {
     const ciudad = clientePerfil?.ciudad || clientePerfil?.barrio || null;
-    // Construir cadena PAIS · PROVINCIA · CIUDAD
+    const barrio = clientePerfil?.barrio || null;
     const _provinciaDeCiudad = (c) => {
       if (!c) return null;
       const gba = ['San Isidro','Vicente López','Tigre','Nordelta','Pilar','San Fernando','Morón','Quilmes','La Matanza','Lomas de Zamora','Avellaneda'];
