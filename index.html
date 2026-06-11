@@ -1592,7 +1592,7 @@ body.beta-mode > #bl-ia-panel.open { display: flex !important; }
 #bl-ia-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9998;backdrop-filter:blur(3px)}
 #bl-ia-overlay.open{display:block!important}
 #bl-ia-panel{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:90%;max-width:660px;z-index:9999;background:#0D1B2A;border:1px solid rgba(201,168,76,.35);border-radius:16px;box-shadow:0 20px 80px rgba(0,0,0,.9);flex-direction:column;max-height:560px;overflow:hidden}
-#bl-ia-panel.open{transform:translate(-50%,-50%)!important;display:flex!important}
+#bl-ia-panel.open{transform:translate(-50%,-50%)!important;display:flex!important}@media(max-width:600px){#bl-ia-panel{width:95%!important;max-height:70vh!important;top:auto!important;bottom:10px!important;transform:translateX(-50%)!important;}#bl-ia-panel.open{transform:translateX(-50%)!important;}}
 #bl-ia-panel-header{display:flex;align-items:center;justify-content:space-between;padding:18px 24px 16px;border-bottom:1px solid rgba(201,168,76,.15);flex-shrink:0;background:#0a1520}
 #bl-ia-panel-header .bl-ia-title{font-family:'DM Serif Display',serif;font-size:18px;color:#FAF6EF;display:flex;align-items:center;gap:10px}
 #bl-ia-panel-header .bl-ia-title span{font-size:9px;color:rgba(201,168,76,.65);font-family:'DM Sans',sans-serif;font-weight:300;letter-spacing:.14em;background:rgba(201,168,76,.1);padding:2px 10px;border-radius:20px;border:0.5px solid rgba(201,168,76,.2)}
