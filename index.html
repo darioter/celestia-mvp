@@ -1881,7 +1881,7 @@ body.beta-mode > #bl-ia-panel.open { display: flex !important; }
   </div>
 </div>
 
-
+<div id="bl-ia-overlay" onclick="closeIAPanel()"></div><div id="bl-ia-panel"><div id="bl-ia-panel-header"><div class="bl-ia-title">&#10022; Cre&aacute; tu men&uacute; con IA <span>CELESTIA CHEF</span></div><button id="bl-ia-close" onclick="closeIAPanel()">&#10005;</button></div><div id="bl-ia-messages"><div class="bl-ia-msg assistant">&#128104;&#8205;&#127859; &iexcl;Hola! Soy el asistente de Celestia. Cont&aacute;me tus gustos, restricciones alimentarias y qu&eacute; ocasi&oacute;n est&aacute;s planeando &mdash; dise&ntilde;o un men&uacute; personalizado para vos.</div></div><div id="bl-ia-suggestions"><div class="bl-ia-chip" onclick="blIASend(this.textContent)">Men&uacute; vegetariano para 4 personas</div><div class="bl-ia-chip" onclick="blIASend(this.textContent)">Cena rom&aacute;ntica sin gluten</div><div class="bl-ia-chip" onclick="blIASend(this.textContent)">Cumplea&ntilde;os de 7 pasos</div><div class="bl-ia-chip" onclick="blIASend(this.textContent)">Maridaje con vinos argentinos</div></div><div id="bl-ia-input-row"><input id="bl-ia-input" type="text" placeholder="Cont&aacute;me tus gustos y ocasi&oacute;n..." onkeydown="if(event.key==='Enter')blIASend()"><button id="bl-ia-send" onclick="blIASend()">&#10148;</button></div></div>
 <!-- STEPS BAR -->
 <div id="steps-bar" class="steps-bar" style="display:none">
   <div class="step-item" id="step-tab-1">
@@ -5072,8 +5072,7 @@ function descargarTicket() {
     <body>
       ${ticket.outerHTML}
     
-  <div id="bl-ia-overlay" onclick="closeIAPanel()"></div><div id="bl-ia-panel"><div id="bl-ia-panel-header"><div class="bl-ia-title">&#10022; Cre&aacute; tu men&uacute; con IA <span>CELESTIA CHEF</span></div><button id="bl-ia-close" onclick="closeIAPanel()">&#10005;</button></div><div id="bl-ia-messages"><div class="bl-ia-msg assistant">&#128104;&#8205;&#127859; &iexcl;Hola! Soy el asistente de Celestia. Cont&aacute;me tus gustos, restricciones alimentarias y qu&eacute; ocasi&oacute;n est&aacute;s planeando &mdash; dise&ntilde;o un men&uacute; personalizado para vos.</div></div><div id="bl-ia-suggestions"><div class="bl-ia-chip" onclick="blIASend(this.textContent)">Men&uacute; vegetariano para 4 personas</div><div class="bl-ia-chip" onclick="blIASend(this.textContent)">Cena rom&aacute;ntica sin gluten</div><div class="bl-ia-chip" onclick="blIASend(this.textContent)">Cumplea&ntilde;os de 7 pasos</div><div class="bl-ia-chip" onclick="blIASend(this.textContent)">Maridaje con vinos argentinos</div></div><div id="bl-ia-input-row"><input id="bl-ia-input" type="text" placeholder="Cont&aacute;me tus gustos y ocasi&oacute;n..." onkeydown="if(event.key==='Enter')blIASend()"><button id="bl-ia-send" onclick="blIASend()">&#10148;</button></div></div>
-</body>
+  </body>
     </html>
   `);
   win.document.close();
