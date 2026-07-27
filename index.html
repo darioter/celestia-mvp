@@ -5091,6 +5091,11 @@ function descargarTicketSemanal() {
 }
 
 function resetFlow() {
+  // Fix: reactivar landing beta al volver (si no, queda visible el index viejo)
+  document.body.classList.add('beta-mode');
+  const _bl = document.getElementById('beta-landing');
+  if (_bl) _bl.classList.remove('hidden');
+
   Object.assign(state, {
     step:0, chef:null, menu:null, fecha:null, turno:null,
     calcPersonas:4, calcDia:'finde',
