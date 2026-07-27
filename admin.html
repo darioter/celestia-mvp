@@ -1578,6 +1578,13 @@ async function cargarChefs() {
         ${c.telefono ? `<a href="https://wa.me/${c.telefono.replace(/\D/g,'')}" target="_blank" style="font-size:12px;color:#5DBF87;background:rgba(45,122,79,0.08);border:1px solid rgba(45,122,79,0.25);padding:6px 14px;border-radius:20px;text-decoration:none;">WA ${c.telefono}</a>` : ''}
       </div>
 
+      ${c.telefono ? `
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+        <button onclick="waPlantilla('${c.telefono}','${(c.nombre||'').replace(/'/g,"\\'")}','recibido')" style="font-size:11px;font-weight:500;padding:6px 12px;border-radius:20px;cursor:pointer;border:1px solid rgba(37,209,102,0.3);background:rgba(37,209,102,0.08);color:#25D166;">✓ Recibimos solicitud</button>
+        <button onclick="waPlantilla('${c.telefono}','${(c.nombre||'').replace(/'/g,"\\'")}','falta_doc')" style="font-size:11px;font-weight:500;padding:6px 12px;border-radius:20px;cursor:pointer;border:1px solid rgba(201,168,76,0.3);background:rgba(201,168,76,0.08);color:var(--gold);">📄 Falta documento</button>
+        <button onclick="waPlantilla('${c.telefono}','${(c.nombre||'').replace(/'/g,"\\'")}','pedir_imagen')" style="font-size:11px;font-weight:500;padding:6px 12px;border-radius:20px;cursor:pointer;border:1px solid rgba(124,158,191,0.3);background:rgba(124,158,191,0.08);color:#7C9EBF;">📷 Pedir imagen</button>
+      </div>` : ''}
+
       ${c.estado === 'pendiente' ? `
       <div style="display:flex;gap:10px;margin-top:14px;border-top:1px solid rgba(255,255,255,0.06);padding-top:14px;">
         <button onclick="aprobarChef('${c.id}','${c.nombre||''}','${c.email||''}')" style="flex:1;padding:10px;border-radius:40px;border:none;background:var(--gold);color:var(--navy);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">✓ Aprobar chef</button>
@@ -1594,6 +1601,24 @@ async function cargarChefs() {
         <button onclick="rechazarChef('${c.id}')" style="padding:8px 16px;border-radius:40px;border:1px solid rgba(155,35,53,0.3);background:transparent;color:rgba(230,126,138,0.6);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;margin-left:auto;">Suspender</button>
       </div>` : ''}
     </div>`).join('');
+}
+
+function waPlantilla(telefono, nombre, tipo) {
+  let msg = '';
+  if (tipo === 'recibido') {
+    msg = `Hola ${nombre}! 👋 Recibimos tu solicitud para sumarte como chef de Celestia. La estamos revisando y te contactamos a la brevedad. ¡Gracias por tu interés!`;
+  } else if (tipo === 'falta_doc') {
+    const doc = prompt('¿Qué documento falta?', 'certificado de manipulación de alimentos');
+    if (!doc) return;
+    msg = `Hola ${nombre}! Estamos revisando tu documentación y nos falta: ${doc}. ¿Nos lo podés enviar para continuar con el proceso?`;
+  } else if (tipo === 'pedir_imagen') {
+    const desc = prompt('¿Qué imagen necesitás pedirle?', 'una foto tuya cocinando o de un plato representativo');
+    if (!desc) return;
+    msg = `Hola ${nombre}! Para completar tu perfil necesitamos que nos envíes ${desc}. ¡Gracias!`;
+  } else {
+    return;
+  }
+  window.open(`https://wa.me/${telefono.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`, '_blank');
 }
 
 async function validarDocs(id) {
