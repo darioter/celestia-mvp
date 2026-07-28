@@ -908,6 +908,7 @@
       <button class="filter-btn" onclick="verSeccion('bloqueos',this)">Bloquear días</button>
       <button class="filter-btn" onclick="verSeccion('chefs',this)">Chefs</button>
       <button class="filter-btn" onclick="verSeccion('casos',this)">Casos de éxito</button>
+      <button class="filter-btn" onclick="verSeccion('platos',this)">Platos</button>
     </div>
 
     <!-- SECCIÓN PAGOS -->
@@ -1061,6 +1062,60 @@
 
       <div id="casos-grid" style="display:flex;flex-direction:column;gap:16px;margin-top:24px;">
         <div class="loading">Cargando casos...</div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN PLATOS (Explorar platos) -->
+    <div id="seccion-platos" style="display:none;">
+      <div class="section-title">✦ Explorar platos — catálogo propio</div>
+      <div style="font-size:12px;color:rgba(250,246,239,0.45);margin-bottom:20px;max-width:640px;">
+        Base de platos que ven los clientes en "Explorar platos" desde la landing. Se puede seguir alimentando en cualquier momento.
+      </div>
+
+      <div class="caso-card caso-nuevo" id="plato-form-nuevo">
+        <div class="caso-form-grid">
+          <input type="text" class="bloqueo-input" id="plato-titulo" placeholder="Título (ej: Ceviche Clásico)">
+          <select class="bloqueo-input" id="plato-cocina">
+            <option value="italiana">Italiana</option>
+            <option value="japonesa">Japonesa</option>
+            <option value="argentina">Argentina</option>
+            <option value="mexicana">Mexicana</option>
+            <option value="asiatica">Asiática</option>
+            <option value="peruana">Peruana</option>
+            <option value="internacional">Internacional</option>
+          </select>
+          <input type="text" class="bloqueo-input" id="plato-imagen" placeholder="URL de imagen">
+          <input type="number" class="bloqueo-input" id="plato-tiempo" placeholder="Minutos" style="width:120px;">
+          <input type="number" class="bloqueo-input" id="plato-porciones" placeholder="Porciones" style="width:120px;">
+          <input type="number" step="0.1" min="1" max="5" class="bloqueo-input" id="plato-puntaje" placeholder="Puntaje (1-5)" style="width:140px;">
+          <textarea class="bloqueo-input caso-textarea" id="plato-descripcion" placeholder="Descripción corta"></textarea>
+          <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:rgba(250,246,239,0.6);">
+            <label><input type="checkbox" id="plato-vegetariano"> Vegetariano</label>
+            <label><input type="checkbox" id="plato-vegano"> Vegano</label>
+            <label><input type="checkbox" id="plato-sin-gluten"> Sin gluten</label>
+            <label><input type="checkbox" id="plato-saludable"> Saludable</label>
+          </div>
+        </div>
+        <button class="bloqueo-agregar" onclick="crearPlatoCatalogo()" style="margin-top:12px;">+ Agregar plato</button>
+      </div>
+
+      <div style="display:flex;gap:10px;margin:20px 0;flex-wrap:wrap;align-items:center;">
+        <input type="text" class="bloqueo-input" id="plato-buscar" placeholder="Buscar por título..." style="max-width:240px;" oninput="renderPlatosCatalogo()">
+        <select class="bloqueo-input" id="plato-filtro-cocina" style="max-width:200px;" onchange="renderPlatosCatalogo()">
+          <option value="">Todas las cocinas</option>
+          <option value="italiana">Italiana</option>
+          <option value="japonesa">Japonesa</option>
+          <option value="argentina">Argentina</option>
+          <option value="mexicana">Mexicana</option>
+          <option value="asiatica">Asiática</option>
+          <option value="peruana">Peruana</option>
+          <option value="internacional">Internacional</option>
+        </select>
+        <span style="font-size:12px;color:rgba(250,246,239,0.45);" id="platos-contador"></span>
+      </div>
+
+      <div id="platos-grid" style="display:flex;flex-direction:column;gap:10px;">
+        <div class="loading">Cargando platos...</div>
       </div>
     </div>
 
@@ -1777,7 +1832,7 @@ function detenerRealtimeAdmin() {
 }
 
 function verSeccion(seccion, btn) {
-  ['reservas','semanal','agenda','pagos','bloqueos','chefs','casos'].forEach(s => {
+  ['reservas','semanal','agenda','pagos','bloqueos','chefs','casos','platos'].forEach(s => {
     const el = document.getElementById('seccion-'+s);
     if (el) el.style.display = seccion === s ? 'block' : 'none';
   });
@@ -1793,6 +1848,7 @@ function verSeccion(seccion, btn) {
   if (seccion === 'chefs') cargarChefs();
   if (seccion === 'semanal') cargarSemanal();
   if (seccion === 'casos') cargarCasos();
+  if (seccion === 'platos') cargarPlatosCatalogo();
 }
 
 // ─── CASOS DE ÉXITO ─────────────────────────────────────
@@ -1900,6 +1956,141 @@ async function eliminarCaso(id) {
   const { error } = await supa.from('casos_exito').delete().eq('id', id);
   if (error) { alert('Error: ' + error.message); return; }
   cargarCasos();
+}
+
+// ─── PLATOS (Explorar platos) ───────────────────────────
+let todosPlatosCatalogo = [];
+let platoAbierto = null;
+const COCINA_LABEL_ADM = { italiana:'Italiana', japonesa:'Japonesa', argentina:'Argentina', mexicana:'Mexicana', asiatica:'Asiática', peruana:'Peruana', internacional:'Internacional' };
+
+function escapeHtmlPlatoAdm(s) { return (s || '').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escapeAttrPlatoAdm(s) { return escapeHtmlPlatoAdm(s).replace(/"/g,'&quot;'); }
+
+async function cargarPlatosCatalogo() {
+  document.getElementById('platos-grid').innerHTML = '<div class="loading">Cargando...</div>';
+  const { data, error } = await supa.from('platos_catalogo').select('*').order('cocina', { ascending: true }).order('titulo', { ascending: true });
+  if (error) { document.getElementById('platos-grid').innerHTML = '<div class="loading">Error al cargar platos</div>'; return; }
+  todosPlatosCatalogo = data || [];
+  renderPlatosCatalogo();
+}
+
+function togglePlato(id) {
+  platoAbierto = platoAbierto === id ? null : id;
+  renderPlatosCatalogo();
+}
+
+function renderPlatosCatalogo() {
+  const buscarEl = document.getElementById('plato-buscar');
+  const filtroEl = document.getElementById('plato-filtro-cocina');
+  const q = (buscarEl && buscarEl.value || '').trim().toLowerCase();
+  const cocinaF = filtroEl ? filtroEl.value : '';
+  let lista = todosPlatosCatalogo;
+  if (q) lista = lista.filter(p => p.titulo.toLowerCase().includes(q));
+  if (cocinaF) lista = lista.filter(p => p.cocina === cocinaF);
+  const contador = document.getElementById('platos-contador');
+  if (contador) contador.textContent = lista.length + ' de ' + todosPlatosCatalogo.length + ' platos';
+
+  if (lista.length === 0) {
+    document.getElementById('platos-grid').innerHTML = '<div class="empty-state"><div class="empty-state-icon">✦</div>No hay platos con estos filtros</div>';
+    return;
+  }
+
+  document.getElementById('platos-grid').innerHTML = lista.map(p => {
+    const abierto = platoAbierto === p.id;
+    return `
+    <div class="caso-card" data-id="${p.id}">
+      <div style="display:flex;gap:12px;align-items:center;cursor:pointer;" onclick="togglePlato(${p.id})">
+        ${p.imagen_url ? `<img src="${p.imagen_url}" style="width:52px;height:52px;object-fit:cover;border-radius:8px;">` : ''}
+        <div style="flex:1;">
+          <div style="font-weight:600;">${escapeHtmlPlatoAdm(p.titulo)}</div>
+          <div style="font-size:12px;color:rgba(250,246,239,0.5);">${COCINA_LABEL_ADM[p.cocina] || p.cocina} · ★ ${p.puntaje ?? '—'} · ${p.activo ? 'Visible' : 'Oculto'}</div>
+        </div>
+        <div style="font-size:18px;">${abierto ? '−' : '+'}</div>
+      </div>
+      ${abierto ? `
+      <div class="caso-form-grid" style="margin-top:14px;">
+        <input type="text" class="bloqueo-input" id="plato-titulo-${p.id}" value="${escapeAttrPlatoAdm(p.titulo)}">
+        <select class="bloqueo-input" id="plato-cocina-${p.id}">
+          ${Object.keys(COCINA_LABEL_ADM).map(k => `<option value="${k}" ${p.cocina===k?'selected':''}>${COCINA_LABEL_ADM[k]}</option>`).join('')}
+        </select>
+        <input type="text" class="bloqueo-input" id="plato-imagen-${p.id}" value="${escapeAttrPlatoAdm(p.imagen_url)}" placeholder="URL de imagen">
+        <input type="number" class="bloqueo-input" id="plato-tiempo-${p.id}" value="${p.tiempo_minutos ?? ''}" style="width:120px;">
+        <input type="number" class="bloqueo-input" id="plato-porciones-${p.id}" value="${p.porciones ?? ''}" style="width:120px;">
+        <input type="number" step="0.1" min="1" max="5" class="bloqueo-input" id="plato-puntaje-${p.id}" value="${p.puntaje ?? ''}" style="width:140px;">
+        <textarea class="bloqueo-input caso-textarea" id="plato-descripcion-${p.id}">${escapeHtmlPlatoAdm(p.descripcion)}</textarea>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:rgba(250,246,239,0.6);">
+          <label><input type="checkbox" id="plato-vegetariano-${p.id}" ${p.vegetariano?'checked':''}> Vegetariano</label>
+          <label><input type="checkbox" id="plato-vegano-${p.id}" ${p.vegano?'checked':''}> Vegano</label>
+          <label><input type="checkbox" id="plato-sin-gluten-${p.id}" ${p.sin_gluten?'checked':''}> Sin gluten</label>
+          <label><input type="checkbox" id="plato-saludable-${p.id}" ${p.saludable?'checked':''}> Saludable</label>
+          <label><input type="checkbox" id="plato-activo-${p.id}" ${p.activo?'checked':''}> Visible en landing</label>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap;">
+        <button class="bloqueo-agregar" onclick="guardarPlatoCatalogo(${p.id})">Guardar cambios</button>
+        <button class="bloqueo-eliminar" onclick="eliminarPlatoCatalogo(${p.id})">✕ Eliminar</button>
+      </div>
+      ` : ''}
+    </div>
+  `;
+  }).join('');
+}
+
+async function crearPlatoCatalogo() {
+  const titulo = document.getElementById('plato-titulo').value.trim();
+  if (!titulo) { alert('Completá al menos el título'); return; }
+  const cocina = document.getElementById('plato-cocina').value;
+  const imagen_url = document.getElementById('plato-imagen').value.trim() || null;
+  const tiempo_minutos = Number(document.getElementById('plato-tiempo').value) || null;
+  const porciones = Number(document.getElementById('plato-porciones').value) || null;
+  const puntaje = Number(document.getElementById('plato-puntaje').value) || 4.5;
+  const descripcion = document.getElementById('plato-descripcion').value.trim();
+  const vegetariano = document.getElementById('plato-vegetariano').checked;
+  const vegano = document.getElementById('plato-vegano').checked;
+  const sin_gluten = document.getElementById('plato-sin-gluten').checked;
+  const saludable = document.getElementById('plato-saludable').checked;
+
+  const { error } = await supa.from('platos_catalogo').insert([{ titulo, descripcion, imagen_url, cocina, tiempo_minutos, porciones, puntaje, vegetariano, vegano, sin_gluten, saludable, activo: true }]);
+  if (error) { alert('Error: ' + error.message); return; }
+  ['plato-titulo','plato-imagen','plato-tiempo','plato-porciones','plato-puntaje','plato-descripcion'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  ['plato-vegetariano','plato-vegano','plato-sin-gluten','plato-saludable'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.checked = false;
+  });
+  showToast('Plato agregado');
+  cargarPlatosCatalogo();
+}
+
+async function guardarPlatoCatalogo(id) {
+  const titulo = document.getElementById(`plato-titulo-${id}`).value.trim();
+  const cocina = document.getElementById(`plato-cocina-${id}`).value;
+  const imagen_url = document.getElementById(`plato-imagen-${id}`).value.trim() || null;
+  const tiempo_minutos = Number(document.getElementById(`plato-tiempo-${id}`).value) || null;
+  const porciones = Number(document.getElementById(`plato-porciones-${id}`).value) || null;
+  const puntaje = Number(document.getElementById(`plato-puntaje-${id}`).value) || null;
+  const descripcion = document.getElementById(`plato-descripcion-${id}`).value.trim();
+  const vegetariano = document.getElementById(`plato-vegetariano-${id}`).checked;
+  const vegano = document.getElementById(`plato-vegano-${id}`).checked;
+  const sin_gluten = document.getElementById(`plato-sin-gluten-${id}`).checked;
+  const saludable = document.getElementById(`plato-saludable-${id}`).checked;
+  const activo = document.getElementById(`plato-activo-${id}`).checked;
+
+  const update = { titulo, cocina, imagen_url, tiempo_minutos, porciones, puntaje, descripcion, vegetariano, vegano, sin_gluten, saludable, activo, updated_at: new Date().toISOString() };
+  const { error } = await supa.from('platos_catalogo').update(update).eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  showToast('Cambios guardados');
+  cargarPlatosCatalogo();
+}
+
+async function eliminarPlatoCatalogo(id) {
+  if (!confirm('¿Eliminar este plato del catálogo?')) return;
+  const { error } = await supa.from('platos_catalogo').delete().eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  showToast('Plato eliminado');
+  cargarPlatosCatalogo();
 }
 
 async function cargarBloqueos() {
