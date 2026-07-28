@@ -405,6 +405,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); min-height:100
       <button class="portal-tab" id="tab-btn-pagos" onclick="verTab('pagos',this)">Mis pagos</button>
       <button class="portal-tab" onclick="verTab('reservas',this)">Mis reservas</button>
       <button class="portal-tab" onclick="verTab('menus',this)">Mis menús</button>
+      <button class="portal-tab" onclick="verTab('platos',this)">Mis platos</button>
     </div>
 
     <!-- TAB: PERFIL -->
@@ -583,6 +584,15 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); min-height:100
       </div>
     </div>
 
+    <!-- TAB: MIS PLATOS -->
+    <div class="seccion" id="tab-platos">
+      <div class="seccion-titulo">Mis platos guardados</div>
+      <div class="seccion-sub">Platos que elegiste explorando el catálogo, para usar en tu próxima experiencia.</div>
+      <div id="platos-lista">
+        <div class="empty-state"><div class="empty-icon">✦</div>Cargando...</div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -685,6 +695,7 @@ function verTab(tab, btn) {
   btn.classList.add('active');
   if (tab === 'reservas') cargarReservas();
   if (tab === 'menus') cargarMenusGuardados();
+  if (tab === 'platos') cargarPlatosGuardados();
   if (tab === 'activo') renderServicioActivoCliente();
   if (tab === 'pagos') cargarPagosCliente();
 }
@@ -760,6 +771,45 @@ async function eliminarMenu(id) {
   if (!confirm('¿Eliminar este menú guardado?')) return;
   await supa.from('menus_guardados').delete().eq('id', id);
   cargarMenusGuardados();
+}
+
+function escHtmlPlato(s) { return (s || '').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+async function cargarPlatosGuardados() {
+  const el = document.getElementById('platos-lista');
+  el.innerHTML = '<div class="empty-state"><div class="empty-icon">✦</div>Cargando...</div>';
+  const { data, error } = await supa
+    .from('platos_guardados')
+    .select('*')
+    .eq('cliente_id', currentUser.id)
+    .order('created_at', { ascending: false });
+
+  if (error || !data || data.length === 0) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">✦</div>Todavía no guardaste ningún plato.<br><a href="/" style="color:var(--gold);text-decoration:none;font-size:13px;">Explorá platos →</a></div>`;
+    return;
+  }
+
+  el.innerHTML = data.map(p => {
+    const meta = [p.resumen, p.tiempo_minutos ? p.tiempo_minutos + ' min' : null, p.porciones ? p.porciones + ' porciones' : null].filter(Boolean).join(' · ');
+    return `
+    <div style="background:var(--white);border:1px solid var(--cream-dark);border-radius:14px;padding:20px 22px;margin-bottom:14px;display:flex;gap:16px;align-items:center;">
+      ${p.imagen_url ? `<img src="${p.imagen_url}" style="width:72px;height:72px;object-fit:cover;border-radius:10px;flex-shrink:0;">` : ''}
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:500;color:var(--navy);margin-bottom:4px;">${escHtmlPlato(p.titulo)}</div>
+        <div style="font-size:12px;color:var(--text-light);margin-bottom:8px;">${escHtmlPlato(meta)}</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          ${p.fuente_url ? `<a href="${p.fuente_url}" target="_blank" rel="noopener" style="font-size:12px;color:var(--gold);text-decoration:none;">Ver receta →</a>` : ''}
+          <button onclick="eliminarPlato('${p.id}')" style="font-size:12px;color:var(--text-light);background:transparent;border:1px solid var(--cream-dark);padding:6px 14px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;">Eliminar</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function eliminarPlato(id) {
+  if (!confirm('¿Eliminar este plato guardado?')) return;
+  await supa.from('platos_guardados').delete().eq('id', id);
+  cargarPlatosGuardados();
 }
 
 function iniciales(nombre) {
