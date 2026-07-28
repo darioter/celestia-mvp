@@ -1,4 +1,5 @@
 export const config = { runtime: 'edge' };
+// redeploy trigger: activar SPOONACULAR_API_KEY
 
 // Mapeo de los filtros en español del front a los valores que entiende Spoonacular.
 // Spoonacular no tiene "Argentina" ni "Perú" como cocina propia — se aproxima con "Latin American".
