@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Celestia — Exportar Slides</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #07091200;
+    font-family: 'Montserrat', sans-serif;
+    padding: 40px 20px 60px;
+    min-height: 100vh;
+    background: #0a0e1a;
+  }
+
+  /* top header */
+  .page-header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .page-header img { height: 52px; margin-bottom: 16px; filter: drop-shadow(0 0 12px #e8c87840); }
+  .page-header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px; font-weight: 400;
+    letter-spacing: 0.22em; color: #e8c87880;
+    text-transform: uppercase;
+  }
+
+  /* grid */
+  .slides-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    gap: 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* card wrapper */
+  .slide-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+  .slide-label {
+    font-size: 9px; font-weight: 600;
+    letter-spacing: 0.18em; color: #e8c87860;
+    text-transform: uppercase;
+    align-self: flex-start;
+  }
+
+  /* The actual slide — 9:16 */
+  .slide-frame {
+    width: 270px;
+    height: 480px;
+    border-radius: 18px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 8px 40px #00000060, 0 0 0 1px #e8c87825;
+  }
+  .slide-inner {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 24px;
+    position: relative;
+  }
+
+  /* Stars */
+  .star-dot {
+    position: absolute;
+    border-radius: 50%;
+    background: #e8c878;
+    opacity: 0.3;
+  }
+
+  /* Download btn */
+  .dl-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border: 1px solid #e8c87840;
+    background: #e8c87810;
+    color: #e8c878;
+    border-radius: 6px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    justify-content: center;
+  }
+  .dl-btn:hover { background: #e8c87825; border-color: #e8c87860; box-shadow: 0 0 16px #e8c87820; }
+  .dl-btn:active { transform: scale(0.97); }
+
+  /* divider */
+  .gold-line { width: 44px; height: 1px; background: linear-gradient(90deg, transparent, #e8c878, transparent); margin: 12px auto; }
+  .gold-line-wide { width: 70px; height: 1px; background: linear-gradient(90deg, transparent, #e8c878, transparent); margin: 10px auto; }
+  .deco-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid #e8c87818;
+  }
+
+  /* text styles */
+  .t-eyebrow {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 9px; letter-spacing: 0.22em;
+    color: #e8c878; text-transform: uppercase; font-weight: 400;
+    text-align: center;
+  }
+  .t-h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 30px; font-weight: 300; color: #f0e4c8;
+    line-height: 1.15; text-align: center;
+    letter-spacing: 0.02em; text-wrap: balance;
+    margin: 10px 0 0;
+  }
+  .t-h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; font-weight: 300; color: #f0e4c8;
+    line-height: 1.2; text-align: center;
+    text-wrap: balance; margin: 10px 0 18px;
+  }
+  .t-sub {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 8px; letter-spacing: 0.18em;
+    color: #e8c87870; text-transform: uppercase;
+    text-align: center; font-weight: 300; margin-top: 12px;
+  }
+  .t-body {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 9px; color: #e8c87875;
+    line-height: 1.6; text-align: center; font-weight: 300;
+    margin-bottom: 20px;
+  }
+  .gold-em { color: #e8c878; font-style: italic; }
+
+  /* feature card */
+  .feat-card {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: 8px; width: 100%;
+    background: #ffffff08; border: 1px solid #e8c87818;
+    margin-bottom: 7px; text-align: left;
+  }
+  .feat-dot {
+    width: 22px; height: 22px; border-radius: 50%;
+    border: 1px solid #e8c87845; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .feat-dot-inner { width: 5px; height: 5px; border-radius: 50%; background: #e8c878; }
+  .feat-title { font-family: 'Cormorant Garamond', serif; font-size: 14px; color: #f0e4c8; }
+  .feat-sub { font-family: 'Montserrat', sans-serif; font-size: 8px; color: #e8c87860; margin-top: 1px; letter-spacing: 0.05em; }
+
+  /* step card */
+  .step-card {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 14px; border-radius: 10px; width: 100%;
+    background: #ffffff08; border: 1px solid #e8c87818;
+    margin-bottom: 8px; text-align: left;
+  }
+  .step-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px; font-weight: 300; color: #e8c878;
+    line-height: 1; min-width: 28px;
+  }
+  .step-title { font-family: 'Cormorant Garamond', serif; font-size: 15px; color: #f0e4c8; padding-top: 3px; }
+  .step-sub { font-family: 'Montserrat', sans-serif; font-size: 8px; color: #e8c87860; margin-top: 2px; letter-spacing: 0.05em; }
+
+  /* cta btn */
+  .cta-btn {
+    display: inline-block;
+    padding: 12px 28px;
+    border: 1px solid #e8c878;
+    border-radius: 3px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 0.18em; color: #e8c878;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, #e8c87815, #e8c87808);
+    box-shadow: 0 0 24px #e8c87820;
+  }
+
+  /* contact card */
+  .contact-card {
+    display: flex; align-items: center; gap: 11px;
+    padding: 10px 13px; border-radius: 8px; width: 100%;
+    background: #ffffff08; border: 1px solid #e8c87818;
+    margin-bottom: 7px; text-align: left;
+  }
+  .contact-icon { color: #e8c878; font-size: 8px; }
+  .contact-label { font-family: 'Montserrat', sans-serif; font-size: 7px; color: #e8c87870; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+  .contact-val { font-family: 'Cormorant Garamond', serif; font-size: 13px; color: #f0e4c8; margin-top: 1px; }
+
+  /* text copy section */
+  .copy-section {
+    width: 100%;
+    background: #e8c87808;
+    border: 1px solid #e8c87818;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-top: 2px;
+  }
+  .copy-title {
+    font-size: 8px; font-weight: 600; letter-spacing: 0.12em;
+    color: #e8c87870; text-transform: uppercase; margin-bottom: 8px;
+  }
+  .copy-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px; color: #f0e4c8bb; line-height: 1.6;
+    white-space: pre-wrap;
+  }
+  .copy-hashtags {
+    font-size: 9px; color: #e8c87855; margin-top: 8px;
+    line-height: 1.7; font-family: 'Montserrat', sans-serif; font-weight: 300;
+  }
+
+  /* progress label */
+  .progress-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 7px; letter-spacing: 0.14em;
+    color: #e8c87845; text-align: center; margin-top: 8px;
+    text-transform: uppercase;
+  }
+
+  /* top bar on slide */
+  .slide-top-bar {
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #e8c878, #f5e19e);
+    box-shadow: 0 0 8px #e8c87880;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <img src="assets/logo-cp-transparent.png" alt="Celestia" />
+  <h1>Slides para estados de WhatsApp</h1>
+</div>
+
+<div class="slides-grid" id="slidesGrid">
+
+  <!-- SLIDE 1: Bienvenida -->
+  <div class="slide-card">
+    <div class="slide-label">01 — Bienvenida</div>
+    <div class="slide-frame" id="slide-1">
+      <div class="slide-inner" style="background: radial-gradient(ellipse at 50% 0%, #1e2d4e 0%, #12192e 70%);">
+        <div class="slide-top-bar" style="width:17%"></div>
+        <!-- stars -->
+        <div class="star-dot" style="width:1.5px;height:1.5px;top:15%;left:20%;opacity:0.4"></div>
+        <div class="star-dot" style="width:1px;height:1px;top:25%;left:70%;opacity:0.3"></div>
+        <div class="star-dot" style="width:2px;height:2px;top:10%;left:55%;opacity:0.5"></div>
+        <div class="star-dot" style="width:1px;height:1px;top:40%;left:88%;opacity:0.25"></div>
+        <div class="star-dot" style="width:1.5px;height:1.5px;top:60%;left:12%;opacity:0.35"></div>
+        <div class="star-dot" style="width:1px;height:1px;top:75%;left:80%;opacity:0.3"></div>
+        <div class="star-dot" style="width:2px;height:2px;top:85%;left:35%;opacity:0.2"></div>
+
+        <div class="deco-ring" style="width:170px;height:170px;top:50%;left:50%;transform:translate(-50%,-50%) translateY(-15px);opacity:0.4"></div>
+        <div class="deco-ring" style="width:220px;height:220px;top:50%;left:50%;transform:translate(-50%,-50%) translateY(-15px);opacity:0.2"></div>
+
+        <div style="margin-bottom:22px;position:relative;">
+          <img src="assets/logo-cp-transparent.png" alt="Celestia" style="width:190px;filter:drop-shadow(0 0 16px #e8c87840)" />
+        </div>
+        <div class="gold-line" style="position:relative"></div>
+        <p class="t-eyebrow" style="margin-top:14px;position:relative">Gastronomía de autor</p>
+        <h1 class="t-h1" style="position:relative">El lujo de un chef privado,<br><em class="gold-em">al alcance de tu mano.</em></h1>
+        <div class="gold-line" style="margin-top:16px;position:relative"></div>
+        <p class="t-sub" style="position:relative">En la intimidad de tu hogar</p>
+      </div>
+    </div>
+    <button class="dl-btn" onclick="downloadSlide('slide-1','01-celestia-bienvenida')">
+      ↓ Descargar PNG
+    </button>
+    <div class="copy-section">
+      <div class="copy-title">Texto para descripción</div>
+      <div class="copy-text">✨ Tu chef privado llega a tu hogar.
+Experiencias gastronómicas de autor, diseñadas para vos.</div>
+      <div class="copy-hashtags">#CelestiaChefPrivado #ChefPrivado #GastronomiaDeAutor #CenaEnCasa #ExperienciaGastronómica</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: Propuesta -->
+  <div class="slide-card">
+    <div class="slide-label">02 — La plataforma</div>
+    <div class="slide-frame" id="slide-2">
+      <div class="slide-inner" style="background: linear-gradient(160deg, #12192e 0%, #0d1525 100%);">
+        <div class="slide-top-bar" style="width:33%"></div>
+        <div class="star-dot" style="width:1.5px;height:1.5px;top:8%;left:30%;opacity:0.4"></div>
+        <div class="star-dot" style="width:1px;height:1px;top:18%;left:75%;opacity:0.3"></div>
+        <div class="star-dot" style="width:2px;height:2px;top:70%;left:85%;opacity:0.35"></div>
+
+        <p class="t-eyebrow" style="position:relative">La plataforma</p>
+        <div class="gold-line" style="position:relative"></div>
+        <h2 class="t-h2" style="position:relative">Todo bajo control,<br><em class="gold-em">desde tu celular</em></h2>
+
+        <div class="feat-card">
+          <div class="feat-dot"><div class="feat-dot-inner"></div></div>
+          <div>
+            <div class="feat-title">Asignación inteligente</div>
+            <div class="feat-sub">Tu chef, confirmado al instante</div>
+          </div>
+        </div>
+        <div class="feat-card">
+          <div class="feat-dot"><div class="feat-dot-inner"></div></div>
+          <div>
+            <div class="feat-title">Seguimiento en tiempo real</div>
+            <div class="feat-sub">Sabés dónde está y qué hace</div>
+          </div>
+        </div>
+        <div class="feat-card">
+          <div class="feat-dot"><div class="feat-dot-inner"></div></div>
+          <div>
+            <div class="feat-title">Pago seguro al finalizar</div>
+            <div class="feat-sub">Tu dinero protegido siempre</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="dl-btn" onclick="downloadSlide('slide-2','02-celestia-propuesta')">
+      ↓ Descargar PNG
+    </button>
+    <div class="copy-section">
+      <div class="copy-title">Texto para descripción</div>
+      <div class="copy-text">📲 Con Celestia todo está en tu mano.
+Asignación de chef al instante, seguimiento en tiempo real y pago seguro al finalizar.</div>
+      <div class="copy-hashtags">#CelestiaChefPrivado #ChefPrivado #AppGastronomia #TechFood #ExperienciaGastronómica</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: Proceso 1/2 -->
+  <div class="slide-card">
+    <div class="slide-label">03 — Proceso (1/2)</div>
+    <div class="slide-frame" id="slide-3">
+      <div class="slide-inner" style="background: radial-gradient(ellipse at 30% 70%, #1a2a40 0%, #0d1422 100%);">
+        <div class="slide-top-bar" style="width:50%"></div>
+        <div class="star-dot" style="width:1.5px;height:1.5px;top:12%;left:65%;opacity:0.4"></div>
+        <div class="star-dot" style="width:1px;height:1px;top:30%;left:15%;opacity:0.3"></div>
+        <div class="star-dot" style="width:2px;height:2px;top:80%;left:75%;opacity:0.3"></div>
+
+        <p class="t-eyebrow" style="position:relative">Cómo funciona</p>
+        <div class="gold-line" style="position:relative"></div>
+        <h2 class="t-h2" style="position:relative">Reservás en minutos.<br><em class="gold-em">En serio.</em></h2>
+
+        <div class="step-card">
+          <span class="step-num">01</span>
+          <div>
+            <div class="step-title">Creá el servicio</div>
+            <div class="step-sub">Fecha, hora, tipo de experiencia</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">02</span>
+          <div>
+            <div class="step-title">Elegí el modo de compra</div>
+            <div class="step-sub">Vos, tu chef, o market automático</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">03</span>
+          <div>
+            <div class="step-title">Chef asignado</div>
+            <div class="step-sub">Confirmación y ETA al instante</div>
+          </div>
+        </div>
+        <p class="progress-label">1 de 2</p>
+      </div>
+    </div>
+    <button class="dl-btn" onclick="downloadSlide('slide-3','03-celestia-proceso-1')">
+      ↓ Descargar PNG
+    </button>
+    <div class="copy-section">
+      <div class="copy-title">Texto para descripción</div>
+      <div class="copy-text">📅 Reservar es así de simple:
+1. Creás el servicio con fecha y hora.
+2. Elegís cómo se compran los ingredientes.
+3. Se te asigna un chef al instante.</div>
+      <div class="copy-hashtags">#CelestiaChefPrivado #ComoFunciona #ChefADomicilio #ReservaOnline #ExperienciaGastronómica</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: Proceso 2/2 -->
+  <div class="slide-card">
+    <div class="slide-label">04 — Proceso (2/2)</div>
+    <div class="slide-frame" id="slide-4">
+      <div class="slide-inner" style="background: linear-gradient(180deg, #0d1422 0%, #12192e 100%);">
+        <div class="slide-top-bar" style="width:67%"></div>
+        <div class="star-dot" style="width:1.5px;height:1.5px;top:20%;left:80%;opacity:0.4"></div>
+        <div class="star-dot" style="width:1px;height:1px;top:10%;left:25%;opacity:0.3"></div>
+        <div class="star-dot" style="width:2px;height:2px;top:65%;left:10%;opacity:0.35"></div>
+
+        <p class="t-eyebrow" style="position:relative">Cómo funciona</p>
+        <div class="gold-line" style="position:relative"></div>
+        <h2 class="t-h2" style="position:relative">Vos disfrutás.<br><em class="gold-em">Nosotros hacemos el resto.</em></h2>
+
+        <div class="step-card">
+          <span class="step-num">04</span>
+          <div>
+            <div class="step-title">Seguimiento en tiempo real</div>
+            <div class="step-sub">Ruta del chef, estado y ETA</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">05</span>
+          <div>
+            <div class="step-title">Tu chef ejecuta</div>
+            <div class="step-sub">Checklist: compras, llegada, cocción</div>
+          </div>
+        </div>
+        <div class="step-card">
+          <span class="step-num">06</span>
+          <div>
+            <div class="step-title">Pagás al finalizar</div>
+            <div class="step-sub">Calificás y cerrás el servicio</div>
+          </div>
+        </div>
+        <p class="progress-label">2 de 2</p>
+      </div>
+    </div>
+    <button class="dl-btn" onclick="downloadSlide('slide-4','04-celestia-proceso-2')">
+      ↓ Descargar PNG
+    </button>
+    <div class="copy-section">
+      <div class="copy-title">Texto para descripción</div>
+      <div class="copy-text">👨‍🍳 Mientras tu chef trabaja, vos seguís todo desde la app.
+Ruta en tiempo real, checklist de avance y pago seguro al finalizar.</div>
+      <div class="copy-hashtags">#CelestiaChefPrivado #TrackingEnTiempoReal #ChefPrivado #PagoSeguro #VeladaPerfecta</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: CTA -->
+  <div class="slide-card">
+    <div class="slide-label">05 — Modo Express</div>
+    <div class="slide-frame" id="slide-5">
+      <div class="slide-inner" style="background: radial-gradient(ellipse at 70% 30%, #1a2a3e 0%, #0a1020 100%);">
+        <div class="slide-top-bar" style="width:83%"></div>
+        <div class="deco-ring" style="width:150px;height:150px;top:50%;left:50%;transform:translate(-50%,-50%);opacity:0.35"></div>
+        <div class="deco-ring" style="width:200px;height:200px;top:50%;left:50%;transform:translate(-50%,-50%);opacity:0.15"></div>
+        <div class="star-dot" style="width:1.5px;height:1.5px;top:15%;left:20%;opacity:0.4"></div>
+        <div class="star-dot" style="width:1px;height:1px;top:80%;left:75%;opacity:0.3"></div>
+
+        <p class="t-eyebrow" style="position:relative;margin-bottom:4px">También disponible Express</p>
+        <div class="gold-line" style="position:relative"></div>
+        <h1 class="t-h1" style="position:relative;margin-bottom:10px">¿Urgente?<br><em class="gold-em">Modo Express.</em></h1>
+        <p class="t-body" style="position:relative;margin:0 0 20px">Chef disponible rápido. Si cancela, la app reasigna automáticamente.</p>
+        <div class="cta-btn" style="position:relative">Reservar ahora →</div>
+        <div class="gold-line-wide" style="margin-top:20px;position:relative"></div>
+      </div>
+    </div>
+    <button class="dl-btn" onclick="downloadSlide('slide-5','05-celestia-reserva')">
+      ↓ Descargar PNG
+    </button>
+    <div class="copy-section">
+      <div class="copy-title">Texto para descripción</div>
+      <div class="copy-text">⚡ ¿Lo necesitás para hoy?
+Con el Modo Express de Celestia tu chef llega rápido. Si cancela, la app reasigna automáticamente.</div>
+      <div class="copy-hashtags">#CelestiaChefPrivado #ModoExpress #ChefUrgente #ChefPrivado #ReasignaciónAutomática</div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: Contacto -->
+  <div class="slide-card">
+    <div class="slide-label">06 — Contacto</div>
+    <div class="slide-frame" id="slide-6">
+      <div class="slide-inner" style="background: linear-gradient(135deg, #12192e 0%, #1a2540 100%);">
+        <div class="slide-top-bar" style="width:100%"></div>
+        <div class="star-dot" style="width:1.5px;height:1.5px;top:18%;left:70%;opacity:0.4"></div>
+        <div class="star-dot" style="width:1px;height:1px;top:50%;left:88%;opacity:0.3"></div>
+        <div class="star-dot" style="width:2px;height:2px;top:78%;left:20%;opacity:0.35"></div>
+
+        <div style="margin-bottom:18px;position:relative">
+          <img src="assets/logo-cp-transparent.png" alt="Celestia" style="width:160px;filter:drop-shadow(0 0 10px #e8c87830)" />
+        </div>
+        <div class="gold-line" style="position:relative"></div>
+        <p class="t-eyebrow" style="margin-top:12px;position:relative">Escribinos hoy</p>
+        <h2 class="t-h2" style="position:relative;font-size:18px;margin-bottom:22px">Empezá a planificar<br>tu velada perfecta</h2>
+
+        <div class="contact-card">
+          <span class="contact-icon">✦</span>
+          <div>
+            <div class="contact-label">WhatsApp</div>
+            <div class="contact-val">+54 9 11 6041-0607</div>
+          </div>
+        </div>
+        <div class="contact-card">
+          <span class="contact-icon">✦</span>
+          <div>
+            <div class="contact-label">Instagram</div>
+            <div class="contact-val">@celestiachefprivado</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="dl-btn" onclick="downloadSlide('slide-6','06-celestia-contacto')">
+      ↓ Descargar PNG
+    </button>
+    <div class="copy-section">
+      <div class="copy-title">Texto para descripción</div>
+      <div class="copy-text">📲 Descargá Celestia y reservá tu primer chef privado.
+Seguinos en Instagram para novedades y experiencias exclusivas.</div>
+      <div class="copy-hashtags">#CelestiaChefPrivado #DescargáLaApp #ChefPrivado #BuenosAires #GastronomíaDeAutor</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Download all -->
+<div style="text-align:center;margin-top:48px">
+  <button class="dl-btn" style="max-width:300px;margin:0 auto;font-size:11px;padding:14px 28px;box-shadow:0 0 30px #e8c87820" onclick="downloadAll()">
+    ↓ Descargar todos los slides
+  </button>
+</div>
+
+<script>
+async function downloadSlide(id, filename) {
+  const el = document.getElementById(id);
+  const btn = el.closest('.slide-card').querySelector('.dl-btn');
+  btn.textContent = 'Generando…';
+  btn.disabled = true;
+  try {
+    const canvas = await html2canvas(el, {
+      scale: 3,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: null,
+      logging: false,
+    });
+    const link = document.createElement('a');
+    link.download = filename + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  } catch(e) {
+    console.error(e);
+    alert('Error al generar la imagen. Intentá de nuevo.');
+  }
+  btn.textContent = '↓ Descargar PNG';
+  btn.disabled = false;
+}
+
+async function downloadAll() {
+  const ids = ['slide-1','slide-2','slide-3','slide-4','slide-5','slide-6'];
+  const names = ['01-celestia-bienvenida','02-celestia-propuesta','03-celestia-proceso-1','04-celestia-proceso-2','05-celestia-reserva','06-celestia-contacto'];
+  for (let i = 0; i < ids.length; i++) {
+    await downloadSlide(ids[i], names[i]);
+    await new Promise(r => setTimeout(r, 400));
+  }
+}
+</script>
+</body>
+</html>

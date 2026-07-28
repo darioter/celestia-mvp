@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Celestia — Armá tu Plato</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background:#0F1A2E; font-family:'DM Sans',sans-serif; color:#F5EDD8;
+  height:100dvh; display:flex; align-items:center; justify-content:center;
+  overflow:hidden; user-select:none; -webkit-user-select:none;
+}
+.screen {
+  display:flex; flex-direction:column; align-items:center;
+  gap:18px; text-align:center; padding:28px 24px; max-width:380px;
+}
+.title { font-family:'DM Serif Display',serif; font-size:32px; color:#E2C97E; line-height:1.2; }
+.sub   { font-size:14px; color:#E8DCC4; opacity:.8; max-width:300px; line-height:1.6; }
+.legend {
+  display:flex; gap:16px; flex-wrap:wrap; justify-content:center;
+  background:rgba(255,255,255,.05); border:1px solid rgba(201,168,76,.2);
+  border-radius:14px; padding:12px 18px; font-size:13px;
+}
+.legend span { display:flex; align-items:center; gap:6px; }
+.dot { width:12px; height:12px; border-radius:50%; display:inline-block; }
+.btn-gold {
+  background:#C9A84C; color:#0F1A2E; border:none; border-radius:50px;
+  padding:14px 44px; font-family:'DM Sans',sans-serif; font-size:16px;
+  font-weight:500; cursor:pointer; letter-spacing:.04em;
+  box-shadow:0 4px 24px rgba(201,168,76,.4); transition:transform .15s;
+  text-decoration:none; display:inline-block;
+}
+.btn-gold:hover { transform:translateY(-2px); }
+.btn-ghost {
+  background:transparent; color:#E8DCC4; border:1px solid rgba(245,237,216,.25);
+  border-radius:50px; padding:11px 30px; font-family:'DM Sans',sans-serif;
+  font-size:14px; cursor:pointer; transition:border-color .15s;
+}
+.btn-ghost:hover { border-color:#C9A84C; color:#E2C97E; }
+.gift-box {
+  background:rgba(201,168,76,.1); border:1px solid rgba(201,168,76,.35);
+  border-radius:16px; padding:18px 24px; width:100%;
+}
+.gift-label { font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:#C9A84C; margin-bottom:8px; }
+.gift-text  { font-family:'DM Serif Display',serif; font-size:17px; color:#F5EDD8; line-height:1.4; }
+.gift-code  {
+  margin-top:10px; display:inline-block; background:#C9A84C; color:#0F1A2E;
+  font-weight:700; letter-spacing:.14em; font-size:15px; padding:6px 18px; border-radius:6px;
+}
+#hud {
+  display:none; position:fixed; top:0; left:0; right:0;
+  padding:12px 20px; background:rgba(15,26,46,.95);
+  border-bottom:1px solid rgba(201,168,76,.15);
+  z-index:10; justify-content:space-between; align-items:center;
+}
+.hud-brand { font-family:'DM Serif Display',serif; font-size:17px; color:#C9A84C; letter-spacing:.06em; }
+.hud-right { display:flex; align-items:center; gap:14px; }
+.lives     { font-size:20px; letter-spacing:2px; }
+.score-val { font-family:'DM Serif Display',serif; font-size:22px; color:#E2C97E; }
+#game-wrap { display:none; position:fixed; top:0;left:0;right:0;bottom:0; }
+canvas     { width:100%; height:100%; display:block; }
+#prog-wrap {
+  display:none; position:fixed; bottom:16px; left:50%; transform:translateX(-50%);
+  width:min(340px,90vw); flex-direction:column; gap:5px; z-index:10;
+}
+.prog-labels { display:flex; justify-content:space-between; font-size:11px; color:rgba(245,237,216,.5); letter-spacing:.08em; }
+.prog-track  { height:5px; background:rgba(255,255,255,.08); border-radius:99px; overflow:hidden; }
+.prog-fill   { height:100%; background:linear-gradient(90deg,#C9A84C,#E2C97E); border-radius:99px; transition:width .3s; width:0%; }
+.particle {
+  position:fixed; pointer-events:none; font-size:22px; z-index:20;
+  animation:floatUp 1s ease-out forwards;
+}
+@keyframes floatUp { to { opacity:0; transform:translateY(-70px) scale(.4); } }
+@keyframes fadeIn  { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
+@keyframes flashAnim { 0%{opacity:1} 100%{opacity:0} }
+.hint { font-size:12px; color:rgba(245,237,216,.35); letter-spacing:.08em; }
+</style>
+</head>
+<body>
+
+<!-- INICIO -->
+<div id="screen-start" class="screen" style="animation:fadeIn .6s ease">
+
+  <!-- Logo -->
+  <div style="font-size:54px;filter:drop-shadow(0 0 22px rgba(201,168,76,.75));animation:pulse 2.5s ease-in-out infinite">✦</div>
+  <div class="title">Armá tu Plato<br><em>Estrella</em></div>
+  <p class="sub">Saltá para atrapar ingredientes premium y esquivá la comida rápida. ¡Completá el plato y ganá tu regalo!</p>
+
+  <!-- Ingredientes buenos -->
+  <div style="width:100%;max-width:320px">
+    <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#C9A84C;margin-bottom:10px;text-align:left">✦ &nbsp;Atrapar</div>
+    <div style="display:flex;gap:8px;justify-content:center;align-items:center;background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.2);border-radius:14px;padding:12px 8px;flex-wrap:nowrap;overflow:hidden">
+      <span style="font-size:26px;filter:drop-shadow(0 0 6px rgba(201,168,76,.5))">🦞</span>
+      <span style="font-size:26px;filter:drop-shadow(0 0 6px rgba(201,168,76,.5))">🍄</span>
+      <span style="font-size:26px;filter:drop-shadow(0 0 6px rgba(201,168,76,.5))">🌿</span>
+      <span style="font-size:26px;filter:drop-shadow(0 0 6px rgba(201,168,76,.5))">🍋</span>
+      <span style="font-size:26px;filter:drop-shadow(0 0 6px rgba(201,168,76,.5))">🧄</span>
+      <span style="font-size:26px;filter:drop-shadow(0 0 6px rgba(201,168,76,.5))">🥩</span>
+      <span style="font-size:26px;filter:drop-shadow(0 0 6px rgba(201,168,76,.5))">🍷</span>
+    </div>
+  </div>
+
+  <!-- Alimentos malos -->
+  <div style="width:100%;max-width:320px">
+    <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#FF5533;margin-bottom:10px;text-align:left">⚠ &nbsp;Esquivar</div>
+    <div style="display:flex;gap:14px;justify-content:center;background:rgba(255,50,0,.07);border:1px solid rgba(255,60,0,.25);border-radius:14px;padding:14px 10px">
+      <span style="font-size:34px;filter:drop-shadow(0 0 10px rgba(255,60,0,.7))">🍔</span>
+      <span style="font-size:34px;filter:drop-shadow(0 0 10px rgba(255,60,0,.7))">🌭</span>
+      <span style="font-size:34px;filter:drop-shadow(0 0 10px rgba(255,60,0,.7))">🍟</span>
+      <span style="font-size:34px;filter:drop-shadow(0 0 10px rgba(255,60,0,.7))">🥤</span>
+    </div>
+  </div>
+
+  <button class="btn-gold" id="btnStart" style="margin-top:4px;font-size:17px;padding:16px 52px">▶ &nbsp;Jugar</button>
+  <p class="hint">Tap para saltar &nbsp;·&nbsp; Espacio / ↑ en desktop</p>
+</div>
+
+<!-- HUD -->
+<div id="hud">
+  <div class="hud-brand">✦ Celestia</div>
+  <div class="hud-right">
+    <div class="lives" id="livesEl">❤❤❤</div>
+    <div class="score-val" id="scoreEl">0</div>
+  </div>
+</div>
+
+<!-- CANVAS -->
+<div id="game-wrap"><canvas id="c"></canvas></div>
+
+<!-- PROGRESS -->
+<div id="prog-wrap">
+  <div class="prog-labels"><span>Plato completo</span><span id="pctEl">0%</span></div>
+  <div class="prog-track"><div class="prog-fill" id="fillEl"></div></div>
+</div>
+
+<!-- GAME OVER -->
+<div id="screen-gameover" class="screen" style="display:none;animation:fadeIn .4s ease">
+  <div style="font-size:52px">😔</div>
+  <div class="title" style="font-size:26px">¡La cocina es difícil!</div>
+  <div style="font-size:14px;color:#C9A84C">Tu puntaje: <strong id="goScore" style="font-size:26px;font-family:'DM Serif Display',serif;color:#E2C97E;display:block">0</strong></div>
+  <button class="btn-gold" id="btnRetry">↺ &nbsp;Intentar de nuevo</button>
+  <button class="btn-ghost" id="btnGoSite">Ver Celestia igual →</button>
+</div>
+
+<!-- WIN -->
+<div id="screen-end" class="screen" style="display:none;animation:fadeIn .4s ease">
+  <div style="font-size:60px;filter:drop-shadow(0 0 20px rgba(201,168,76,.7))">🍽️</div>
+  <div class="title">¡Plato Estrella<br>completado!</div>
+  <p class="sub">Demostraste que tenés paladar de chef.</p>
+  <div class="gift-box">
+    <div class="gift-label">🎁 Tu regalo exclusivo</div>
+    <div class="gift-text">10% off en tu primera<br>experiencia Celestia</div>
+    <div class="gift-code">CELESTIA10</div>
+  </div>
+  <a class="btn-gold" href="https://www.chefprivado.ar" target="_blank">Reservar mi experiencia →</a>
+  <button class="btn-ghost" id="btnPlayAgain">Jugar otra vez</button>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+//  CELESTIA GAME — v5 limpio
+// ═══════════════════════════════════════════
+const canvas = document.getElementById('c');
+const ctx    = canvas.getContext('2d');
+
+// ── CONFIG ──────────────────────────────────
+const GOAL       = 15;       // ingredientes para ganar
+const MAX_LIVES  = 3;
+const GRAVITY    = 0.6;
+const JUMP_V     = -15;
+const CHEF_R     = 20;       // radio colisión del chef
+const ITEM_R     = 20;       // radio colisión de cada ítem
+const GROUND_PCT = 0.80;     // suelo al 80% del alto
+
+// ── EMOJIS ──────────────────────────────────
+// Buenos: ingredientes premium
+const GOOD = ['🦞','🍄','🌿','🍋','🧄','🫐','🥩','🐟','🍷','🧀','🥚','🌶️'];
+// Malos: fast food
+const BAD  = ['🍔','🌭','🍟','🥤'];
+
+// ── ESTADO ──────────────────────────────────
+let W, H, groundY;
+let state, score, lives, frame, speed, spawnTimer, spawnInterval, items, spawnToggle;
+const chef = { x:0, y:0, vy:0, onGround:true };
+
+// ── RESIZE ──────────────────────────────────
+function resize() {
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+  groundY = H * GROUND_PCT;
+  chef.x  = W * 0.18;
+  if (chef.onGround) chef.y = groundY - CHEF_R * 2;
+}
+window.addEventListener('resize', resize);
+resize();
+
+// ── INPUT ────────────────────────────────────
+function jump() {
+  if (state !== 'play') return;
+  if (chef.onGround) { chef.vy = JUMP_V; chef.onGround = false; soundJump(); }
+}
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space' || e.code === 'ArrowUp') { e.preventDefault(); jump(); }
+});
+document.addEventListener('touchstart', e => {
+  if (state === 'play') { e.preventDefault(); jump(); }
+}, { passive:false });
+canvas.addEventListener('click', jump);
+
+// ── UI HELPERS ──────────────────────────────
+function show(id) { document.getElementById(id).style.display = 'flex'; }
+function hide(id) { document.getElementById(id).style.display = 'none'; }
+function hideAll() {
+  ['screen-start','screen-end','screen-gameover','hud','game-wrap','prog-wrap'].forEach(hide);
+}
+function updateHUD() {
+  document.getElementById('scoreEl').textContent = score;
+  document.getElementById('livesEl').textContent = '❤'.repeat(lives) + '♡'.repeat(MAX_LIVES - lives);
+  const pct = Math.round(score / GOAL * 100);
+  document.getElementById('fillEl').style.width = pct + '%';
+  document.getElementById('pctEl').textContent  = pct + '%';
+}
+
+// ── AUDIO ────────────────────────────────────
+let AC = null;
+function ac() {
+  if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)();
+  return AC;
+}
+function soundHit() {
+  try {
+    const a = ac(), t = a.currentTime;
+    // Bajón fuerte tipo "bzzzt"
+    const o = a.createOscillator(), g = a.createGain();
+    o.connect(g); g.connect(a.destination);
+    o.type = 'sawtooth';
+    o.frequency.setValueAtTime(380, t);
+    o.frequency.exponentialRampToValueAtTime(40, t + 0.30);
+    g.gain.setValueAtTime(0.7, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.32);
+    o.start(t); o.stop(t + 0.34);
+    // Explosión de ruido
+    const sz = Math.floor(a.sampleRate * 0.18);
+    const buf = a.createBuffer(1, sz, a.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < sz; i++) d[i] = (Math.random()*2-1)*(1-i/sz);
+    const ns = a.createBufferSource(), ng = a.createGain();
+    ns.buffer = buf; ns.connect(ng); ng.connect(a.destination);
+    ng.gain.setValueAtTime(0.55, t);
+    ng.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+    ns.start(t); ns.stop(t + 0.19);
+    // Tono grave de impacto
+    const o2 = a.createOscillator(), g2 = a.createGain();
+    o2.connect(g2); g2.connect(a.destination);
+    o2.type = 'square';
+    o2.frequency.setValueAtTime(90, t);
+    o2.frequency.exponentialRampToValueAtTime(30, t + 0.15);
+    g2.gain.setValueAtTime(0.4, t);
+    g2.gain.exponentialRampToValueAtTime(0.001, t + 0.16);
+    o2.start(t); o2.stop(t + 0.17);
+  } catch(e){}
+}
+function soundPickup() {
+  try {
+    const a = ac(), t = a.currentTime;
+    const o = a.createOscillator(), g = a.createGain();
+    o.connect(g); g.connect(a.destination);
+    o.type = 'sine';
+    o.frequency.setValueAtTime(520, t);
+    o.frequency.exponentialRampToValueAtTime(900, t + 0.1);
+    g.gain.setValueAtTime(0.2, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.13);
+    o.start(t); o.stop(t + 0.14);
+  } catch(e){}
+}
+function soundJump() {
+  try {
+    const a = ac(), t = a.currentTime;
+    // Tono ascendente
+    const o = a.createOscillator(), g = a.createGain();
+    o.connect(g); g.connect(a.destination);
+    o.type = 'sine';
+    o.frequency.setValueAtTime(200, t);
+    o.frequency.exponentialRampToValueAtTime(480, t + 0.14);
+    g.gain.setValueAtTime(0.28, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+    o.start(t); o.stop(t + 0.19);
+    // Woosh — ruido corto filtrado
+    const sz = Math.floor(a.sampleRate * 0.12);
+    const buf = a.createBuffer(1, sz, a.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < sz; i++) d[i] = (Math.random()*2-1)*(1-i/sz)*.4;
+    const ns = a.createBufferSource();
+    const filt = a.createBiquadFilter();
+    filt.type = 'highpass'; filt.frequency.value = 1200;
+    const ng = a.createGain();
+    ns.buffer = buf;
+    ns.connect(filt); filt.connect(ng); ng.connect(a.destination);
+    ng.gain.setValueAtTime(0.18, t);
+    ng.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+    ns.start(t); ns.stop(t + 0.12);
+  } catch(e){}
+}
+
+
+// ── SPAWN ────────────────────────────────────
+// Dos carriles fijos:
+//   Carril PISO  → cy = groundY - ITEM_R - 1
+//   Carril AIRE  → cy = groundY - 110  (cómodo con JUMP_V=-20)
+// Cada spawn tira UN ítem en CADA carril simultáneamente
+const LANE_GROUND = () => groundY - ITEM_R - 1;
+const LANE_AIR    = () => groundY - 105;
+
+function spawnItem() {
+  const pickEmoji = (good) => {
+    const pool = good ? GOOD : BAD;
+    return pool[Math.floor(Math.random() * pool.length)];
+  };
+
+  // Alternar carril: un spawn = piso, siguiente = aire, etc.
+  spawnToggle = !spawnToggle;
+  const cy   = spawnToggle ? LANE_GROUND() : LANE_AIR();
+  const good = Math.random() < 0.62;
+
+  items.push({
+    x: W + ITEM_R + 5,
+    cy,
+    good,
+    emoji: pickEmoji(good),
+    hit: false
+  });
+}
+
+// ── EFECTOS ──────────────────────────────────
+function spawnParticle(x, y, txt) {
+  const el = document.createElement('div');
+  el.className = 'particle';
+  el.textContent = txt;
+  el.style.left = x + 'px';
+  el.style.top  = y + 'px';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1100);
+}
+function flashScreen(rgba) {
+  const el = document.createElement('div');
+  el.style.cssText = `position:fixed;inset:0;background:${rgba};pointer-events:none;z-index:99;animation:flashAnim .4s ease forwards;`;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 420);
+}
+
+// ── DRAW BG ───────────────────────────────────
+function drawBG() {
+  const g = ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,'#09111F'); g.addColorStop(1,'#162035');
+  ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+
+  // estrellas
+  ctx.fillStyle = 'rgba(245,237,216,.4)';
+  for (let i = 0; i < 35; i++) {
+    ctx.beginPath();
+    ctx.arc((i*271+50)%W, (i*113+30)%(H*.70), i%4===0?1.8:.9, 0, Math.PI*2);
+    ctx.fill();
+  }
+  // suelo
+  ctx.strokeStyle='rgba(201,168,76,.3)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(0,groundY); ctx.lineTo(W,groundY); ctx.stroke();
+
+  const sg = ctx.createLinearGradient(0,groundY,0,H);
+  sg.addColorStop(0,'rgba(201,168,76,.07)'); sg.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=sg; ctx.fillRect(0,groundY,W,H-groundY);
+
+  // carril suelo animado
+  ctx.strokeStyle='rgba(201,168,76,.09)'; ctx.lineWidth=1.5;
+  ctx.setLineDash([28,18]); ctx.lineDashOffset = -(frame*speed*.4);
+  ctx.beginPath(); ctx.moveTo(0,groundY+8); ctx.lineTo(W,groundY+8); ctx.stroke();
+
+  ctx.setLineDash([]);
+}
+
+// ── DRAW CHEF ─────────────────────────────────
+function drawChef() {
+  const bob = chef.onGround ? Math.sin(frame*.22)*2 : 0;
+  const cx  = chef.x;
+  const cy  = chef.y + CHEF_R + bob;
+  // sombra piso
+  if (chef.onGround) {
+    ctx.save(); ctx.fillStyle='rgba(0,0,0,.25)';
+    ctx.beginPath(); ctx.ellipse(cx, groundY+4, CHEF_R, 5, 0, 0, Math.PI*2);
+    ctx.fill(); ctx.restore();
+  }
+  // emoji chef 40px
+  ctx.save();
+  ctx.font = '40px serif';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText('🧑‍🍳', cx, cy);
+  ctx.restore();
+}
+
+// ── DRAW ITEMS ────────────────────────────────
+function drawItems() {
+  const pulse = 0.72 + 0.28 * Math.sin(frame * 0.15);
+
+  items.forEach(it => {
+    ctx.save();
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'middle';
+
+    if (!it.good) {
+      // ── MALO: anillo rojo neón (sin shadowBlur que tape el emoji) ──
+      ctx.strokeStyle = `rgba(255,60,0,${0.9*pulse})`;
+      ctx.lineWidth   = 4;
+      ctx.beginPath(); ctx.arc(it.x, it.cy, ITEM_R + 6, 0, Math.PI*2); ctx.stroke();
+
+      ctx.strokeStyle = `rgba(255,220,0,${0.8*pulse})`;
+      ctx.lineWidth   = 2;
+      ctx.beginPath(); ctx.arc(it.x, it.cy, ITEM_R + 10, 0, Math.PI*2); ctx.stroke();
+
+      // Emoji — sin sombra para que se vea limpio
+      ctx.shadowBlur = 0;
+      ctx.font = '36px serif';
+      ctx.fillText(it.emoji, it.x, it.cy);
+
+      // ⚠ arriba
+      ctx.font = 'bold 16px sans-serif';
+      ctx.fillStyle = `rgba(255,230,0,${pulse})`;
+      ctx.textBaseline = 'bottom';
+      ctx.fillText('⚠', it.x, it.cy - ITEM_R - 6);
+
+    } else {
+      // ── BUENO: anillo dorado suave ──
+      ctx.strokeStyle = `rgba(201,168,76,0.6)`;
+      ctx.lineWidth   = 2;
+      ctx.beginPath(); ctx.arc(it.x, it.cy, ITEM_R + 5, 0, Math.PI*2); ctx.stroke();
+
+      // Emoji — limpio
+      ctx.shadowBlur = 0;
+      ctx.font = '36px serif';
+      ctx.fillText(it.emoji, it.x, it.cy);
+
+      // ✦ arriba
+      ctx.font = '12px serif';
+      ctx.fillStyle = 'rgba(201,168,76,0.8)';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText('✦', it.x, it.cy - ITEM_R - 4);
+    }
+    ctx.restore();
+  });
+}
+
+// ── COLISIÓN círculo–círculo ──────────────────
+// chef centro = (chef.x, chef.y + CHEF_R)
+// ítem centro = (it.x, it.cy)
+// colisión si distancia < CHEF_R + ITEM_R = 40
+function checkCollisions() {
+  const bob = chef.onGround ? Math.sin(frame*.22)*2 : 0;
+  const cx  = chef.x;
+  const cy  = chef.y + CHEF_R + bob;
+
+  items.forEach(it => {
+    if (it.hit) return;
+    const dx = it.x - cx, dy = it.cy - cy;
+    if (dx*dx + dy*dy < (CHEF_R + ITEM_R) * (CHEF_R + ITEM_R)) {
+      it.hit = true;
+      if (it.good) {
+        score++;
+        soundPickup();
+        spawnParticle(it.x, it.cy - ITEM_R - 5, '✨');
+        updateHUD();
+        if (score >= GOAL) triggerWin();
+      } else {
+        lives--;
+        soundHit();
+        spawnParticle(it.x, it.cy - ITEM_R - 5, '💔');
+        flashScreen('rgba(192,57,43,.30)');
+        updateHUD();
+        if (lives <= 0) triggerGameOver();
+      }
+    }
+  });
+}
+
+// ── WIN / LOSE ────────────────────────────────
+function triggerWin() {
+  state = 'win'; hideAll(); show('screen-end');
+}
+function triggerGameOver() {
+  state = 'over';
+  document.getElementById('goScore').textContent = score;
+  hideAll(); show('screen-gameover');
+}
+
+// ── LOOP ─────────────────────────────────────
+function loop() {
+  if (state !== 'play') return;
+  frame++;
+
+  // dificultad progresiva
+  if (frame % 300 === 0) {
+    speed = Math.min(speed + 0.35, 13);
+    spawnInterval = Math.max(spawnInterval - 4, 44);
+  }
+
+  // física chef
+  chef.vy += GRAVITY;
+  chef.y  += chef.vy;
+  const floorY = groundY - CHEF_R * 2;
+  if (chef.y >= floorY) { chef.y = floorY; chef.vy = 0; chef.onGround = true; }
+
+  // spawn
+  if (++spawnTimer >= spawnInterval) { spawnItem(); spawnTimer = 0; }
+
+  // mover ítems
+  items.forEach(it => { it.x -= speed; });
+
+  // colisiones
+  checkCollisions();
+
+  // limpiar
+  items = items.filter(it => !it.hit && it.x > -60);
+
+  // dibujar
+  drawBG();
+  drawItems();
+  drawChef();
+
+  requestAnimationFrame(loop);
+}
+
+// ── START ────────────────────────────────────
+function startGame() {
+  state='play'; score=0; lives=MAX_LIVES; frame=0;
+  speed=5; spawnTimer=0; spawnInterval=80; items=[]; spawnToggle=false;
+  chef.vy=0; chef.onGround=true;
+  resize();
+  updateHUD();
+  hideAll();
+  show('hud'); show('game-wrap'); show('prog-wrap');
+  loop();
+}
+
+// ── BOTONES ──────────────────────────────────
+document.getElementById('btnStart').addEventListener('click', startGame);
+document.getElementById('btnRetry').addEventListener('click', startGame);
+document.getElementById('btnPlayAgain').addEventListener('click', startGame);
+document.getElementById('btnGoSite').addEventListener('click', () => window.open('https://www.chefprivado.ar','_blank'));
+
+// ── INIT ─────────────────────────────────────
+show('screen-start');
+</script>
+</body>
+</html>

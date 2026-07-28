@@ -1,0 +1,593 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy: #0D1B2A;
+  --navy-mid: #1a2e42;
+  --navy-light: #243447;
+  --gold: #C9A84C;
+  --gold-light: #E8C96B;
+  --gold-pale: rgba(201,168,76,0.12);
+  --cream: #FAF6EF;
+  --cream-dk: #F0EBE1;
+  --white: #fff;
+  --text-mid: #6B5F4F;
+  --serif: 'DM Serif Display', serif;
+  --sans: 'DM Sans', sans-serif;
+}
+
+body { background: transparent; font-family: var(--sans); }
+
+.mock {
+  width: 680px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 0.5px solid rgba(0,0,0,0.12);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+}
+
+/* ── HEADER ── */
+.hdr {
+  background: var(--navy);
+  padding: 14px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+.hdr::before {
+  content: '';
+  position: absolute;
+  top: -30px; right: -30px;
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
+}
+.logo-wrap { display: flex; align-items: center; gap: 10px; }
+.logo-star {
+  width: 28px; height: 28px;
+  border: 1.5px solid var(--gold);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; color: var(--gold-light);
+  animation: spin 12s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.logo-text { font-family: var(--serif); font-size: 17px; color: var(--cream); letter-spacing: 0.04em; }
+.logo-sub { font-size: 9px; color: rgba(250,246,239,0.38); letter-spacing: 0.14em; font-weight: 300; }
+.nav-links { display: flex; gap: 20px; align-items: center; }
+.nav-link { font-size: 11px; color: rgba(250,246,239,0.55); letter-spacing: 0.08em; cursor: pointer; transition: color 0.2s; }
+.nav-link:hover { color: var(--gold-light); }
+.nav-btn {
+  font-size: 11px; font-weight: 500; letter-spacing: 0.06em;
+  color: var(--navy); background: var(--gold);
+  border: none; border-radius: 20px; padding: 6px 16px; cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+.nav-btn:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+/* ── HERO ── */
+.hero {
+  background: var(--navy);
+  padding: 52px 48px 60px;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+.hero-bg-1 {
+  position: absolute; border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%);
+  pointer-events: none;
+  animation: pulse 5s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.7; }
+  50% { transform: scale(1.12); opacity: 1; }
+}
+.orb1 { width: 320px; height: 320px; top: -80px; left: -60px; }
+.orb2 { width: 200px; height: 200px; bottom: -40px; right: 30px; animation-delay: 2.5s; }
+.hero-label {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 10px; letter-spacing: 0.14em; color: var(--gold);
+  border: 1px solid rgba(201,168,76,0.3); border-radius: 20px;
+  padding: 5px 14px; margin-bottom: 26px;
+  position: relative; z-index: 1;
+  animation: fadeUp 0.6s ease both;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.hero h1 {
+  font-family: var(--serif);
+  font-size: 38px;
+  color: var(--cream);
+  line-height: 1.18;
+  margin-bottom: 18px;
+  position: relative; z-index: 1;
+  animation: fadeUp 0.6s 0.1s ease both;
+}
+.hero h1 em { color: var(--gold-light); font-style: italic; }
+.hero p {
+  font-size: 14px; color: rgba(250,246,239,0.6);
+  line-height: 1.75; font-weight: 300; max-width: 460px; margin: 0 auto 32px;
+  position: relative; z-index: 1;
+  animation: fadeUp 0.6s 0.2s ease both;
+}
+.hero-btns {
+  display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+  position: relative; z-index: 1;
+  animation: fadeUp 0.6s 0.3s ease both;
+}
+.btn-primary {
+  font-family: var(--sans); font-size: 13px; font-weight: 500;
+  background: var(--gold); color: var(--navy);
+  border: none; border-radius: 24px; padding: 12px 28px; cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+.btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
+.btn-outline {
+  font-family: var(--sans); font-size: 13px; font-weight: 400;
+  background: transparent; color: var(--gold-light);
+  border: 1.5px solid var(--gold); border-radius: 24px; padding: 11px 24px; cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+.btn-outline:hover { background: rgba(201,168,76,0.1); transform: translateY(-2px); }
+.btn-ghost {
+  font-family: var(--sans); font-size: 13px; font-weight: 400;
+  background: transparent; color: rgba(250,246,239,0.5);
+  border: 1.5px solid rgba(250,246,239,0.2); border-radius: 24px; padding: 11px 24px; cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-ghost:hover { border-color: rgba(250,246,239,0.45); color: rgba(250,246,239,0.75); }
+
+/* ── STATS STRIP ── */
+.stats {
+  background: var(--navy-mid);
+  border-top: 1px solid rgba(201,168,76,0.15);
+  display: flex; justify-content: center; gap: 0;
+}
+.stat {
+  flex: 1; text-align: center; padding: 18px 12px;
+  border-right: 1px solid rgba(201,168,76,0.1);
+}
+.stat:last-child { border-right: none; }
+.stat-n { font-family: var(--serif); font-size: 22px; color: var(--gold-light); }
+.stat-l { font-size: 10px; color: rgba(250,246,239,0.38); letter-spacing: 0.1em; margin-top: 3px; }
+
+/* ── SECTION LIGHT ── */
+.section { background: var(--cream); padding: 56px 40px; }
+.section.dark { background: var(--navy); }
+.section.white { background: var(--white); }
+.sect-tag { font-size: 10px; letter-spacing: 0.16em; color: var(--gold); margin-bottom: 10px; }
+.sect-h {
+  font-family: var(--serif); font-size: 26px;
+  color: var(--navy); line-height: 1.2; margin-bottom: 10px;
+}
+.section.dark .sect-h { color: var(--cream); }
+.sect-p { font-size: 13px; color: var(--text-mid); font-weight: 300; line-height: 1.75; }
+.section.dark .sect-p { color: rgba(250,246,239,0.55); }
+
+/* ── EXPERIENCE CARDS ── */
+.exp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 32px; }
+.exp-card {
+  background: var(--white);
+  border-radius: 14px;
+  border: 0.5px solid var(--cream-dk);
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+.exp-card:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(13,27,42,0.1); }
+.exp-card-img {
+  height: 120px;
+  background: linear-gradient(135deg, var(--navy-light) 0%, var(--navy-mid) 100%);
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.exp-card-img::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 40px;
+  background: linear-gradient(transparent, var(--white));
+}
+.exp-icon { font-size: 36px; }
+.exp-card-body { padding: 18px 20px 20px; }
+.exp-card-tag { font-size: 9px; letter-spacing: 0.14em; color: var(--gold); margin-bottom: 6px; }
+.exp-card-h { font-family: var(--serif); font-size: 17px; color: var(--navy); margin-bottom: 6px; }
+.exp-card-p { font-size: 12px; color: var(--text-mid); font-weight: 300; line-height: 1.6; margin-bottom: 14px; }
+.exp-card-footer { display: flex; align-items: center; justify-content: space-between; }
+.exp-price { font-size: 14px; font-weight: 500; color: var(--navy); }
+.exp-price span { font-size: 11px; color: var(--text-mid); font-weight: 300; }
+.exp-arrow {
+  width: 30px; height: 30px; border-radius: 50%; background: var(--gold-pale);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; color: var(--gold); transition: background 0.2s;
+}
+.exp-card:hover .exp-arrow { background: var(--gold); color: var(--navy); }
+
+/* ── STEPS ── */
+.steps { display: flex; gap: 0; margin-top: 36px; position: relative; }
+.steps::before {
+  content: '';
+  position: absolute; top: 18px; left: 36px; right: 36px; height: 1px;
+  background: linear-gradient(90deg, var(--gold) 0%, rgba(201,168,76,0.2) 100%);
+}
+.step { flex: 1; text-align: center; position: relative; padding: 0 10px; }
+.step-num {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--navy); border: 1.5px solid var(--gold);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 500; color: var(--gold-light);
+  margin: 0 auto 12px; position: relative; z-index: 1;
+  transition: background 0.2s;
+}
+.step:first-child .step-num { background: var(--gold); color: var(--navy); border-color: var(--gold); }
+.step-t { font-size: 12px; font-weight: 500; color: var(--cream); margin-bottom: 4px; }
+.step-d { font-size: 11px; color: rgba(250,246,239,0.45); font-weight: 300; line-height: 1.5; }
+
+/* ── MENU PREVIEW ── */
+.menu-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--cream-dk); margin-bottom: 28px; }
+.tab {
+  padding: 10px 20px; font-size: 12px; font-weight: 500; letter-spacing: 0.06em;
+  color: var(--text-mid); cursor: pointer; border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+.tab.active { color: var(--navy); border-bottom-color: var(--navy); }
+
+.menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.menu-item {
+  background: var(--cream);
+  border: 0.5px solid var(--cream-dk);
+  border-radius: 12px; padding: 16px;
+  transition: border-color 0.2s, transform 0.2s;
+  cursor: pointer;
+}
+.menu-item:hover { border-color: var(--gold); transform: translateY(-2px); }
+.menu-item-step { font-size: 9px; letter-spacing: 0.12em; color: var(--gold); margin-bottom: 5px; }
+.menu-item-name { font-family: var(--serif); font-size: 14px; color: var(--navy); margin-bottom: 4px; }
+.menu-item-desc { font-size: 11px; color: var(--text-mid); font-weight: 300; line-height: 1.5; }
+
+/* ── CALENDAR MINI ── */
+.cal-wrap { background: var(--white); border: 0.5px solid var(--cream-dk); border-radius: 14px; padding: 24px; }
+.cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.cal-month { font-family: var(--serif); font-size: 16px; color: var(--navy); }
+.cal-nav-btn {
+  width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--cream-dk);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; cursor: pointer; background: none;
+  transition: background 0.2s, border-color 0.2s;
+}
+.cal-nav-btn:hover { background: var(--cream); border-color: var(--gold); }
+.cal-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.cal-dow { font-size: 9px; letter-spacing: 0.1em; color: var(--text-mid); text-align: center; padding: 4px 0; }
+.cal-day {
+  aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+  font-size: 11px; border-radius: 50%; cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  color: var(--navy);
+}
+.cal-day:hover { background: var(--gold-pale); }
+.cal-day.selected { background: var(--navy); color: var(--gold-light); font-weight: 500; }
+.cal-day.available { color: var(--navy); }
+.cal-day.unavail { color: rgba(107,95,79,0.3); cursor: not-allowed; }
+.cal-day.empty { cursor: default; }
+
+/* ── CTA SECTION ── */
+.cta-section {
+  background: var(--navy);
+  padding: 52px 48px;
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+.cta-section::before {
+  content: '';
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  width: 400px; height: 200px;
+  background: radial-gradient(ellipse, rgba(201,168,76,0.08) 0%, transparent 70%);
+  pointer-events: none;
+  animation: breathe 4s ease-in-out infinite;
+}
+@keyframes breathe {
+  0%, 100% { opacity: 0.6; transform: translate(-50%,-50%) scale(1); }
+  50% { opacity: 1; transform: translate(-50%,-50%) scale(1.1); }
+}
+.cta-section h2 { font-family: var(--serif); font-size: 28px; color: var(--cream); margin-bottom: 12px; position: relative; z-index: 1; }
+.cta-section p { font-size: 13px; color: rgba(250,246,239,0.5); margin-bottom: 28px; font-weight: 300; position: relative; z-index: 1; }
+
+/* ── FOOTER ── */
+.footer { background: #081422; padding: 32px 40px; display: flex; align-items: center; justify-content: space-between; }
+.footer-brand { font-family: var(--serif); font-size: 16px; color: rgba(250,246,239,0.6); }
+.footer-links { display: flex; gap: 20px; }
+.footer-link { font-size: 11px; color: rgba(250,246,239,0.3); letter-spacing: 0.06em; cursor: pointer; }
+.footer-copy { font-size: 10px; color: rgba(250,246,239,0.2); }
+
+/* ── FLOATING BOOKING BAR ── */
+.booking-bar {
+  background: var(--white);
+  border: 0.5px solid var(--cream-dk);
+  border-radius: 50px;
+  padding: 8px 8px 8px 22px;
+  display: flex; align-items: center; gap: 16px;
+  margin: -30px 40px 0; position: relative; z-index: 10;
+  box-shadow: 0 8px 32px rgba(13,27,42,0.12);
+}
+.bb-field { flex: 1; }
+.bb-label { font-size: 9px; letter-spacing: 0.1em; color: var(--text-mid); margin-bottom: 1px; }
+.bb-value { font-size: 12px; color: var(--navy); font-weight: 500; }
+.bb-sep { width: 1px; height: 28px; background: var(--cream-dk); }
+.bb-btn {
+  background: var(--navy); color: var(--cream);
+  border: none; border-radius: 40px; padding: 10px 22px;
+  font-size: 12px; font-weight: 500; cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.bb-btn:hover { background: var(--navy-light); }
+</style>
+
+<h2 class="sr-only">Mockup de rediseño — Celestia Chef Privado</h2>
+
+<div class="mock">
+
+  <div class="hdr">
+    <div class="logo-wrap">
+      <div class="logo-star">✦</div>
+      <div>
+        <div class="logo-text">Celestia</div>
+        <div class="logo-sub">CHEF PRIVADO · ARGENTINA</div>
+      </div>
+    </div>
+    <div class="nav-links">
+      <span class="nav-link">Experiencias</span>
+      <span class="nav-link">Chef Semanal</span>
+      <span class="nav-link">Corporativos</span>
+      <span class="nav-link">Acceder</span>
+      <button class="nav-btn">Reservar →</button>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-bg-1 orb1"></div>
+    <div class="hero-bg-1 orb2"></div>
+    <div class="hero-label">✦ Experiencia gastronómica privada</div>
+    <h1>El lujo de un chef privado,<br><em>ahora al alcance de tu mano.</em></h1>
+    <p>Celestia transforma la forma de vivir la alta cocina en casa. Cocina, presentación y servicio de nivel restaurante, diseñada especialmente para vos.</p>
+    <div class="hero-btns">
+      <button class="btn-primary">Reservar una experiencia →</button>
+      <button class="btn-outline">Chef semanal →</button>
+      <button class="btn-ghost">✦ Explorar menú con IA</button>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-n">+120</div><div class="stat-l">EXPERIENCIAS</div></div>
+    <div class="stat"><div class="stat-n">3 & 7</div><div class="stat-l">PASOS</div></div>
+    <div class="stat"><div class="stat-n">48hs</div><div class="stat-l">ANTICIPACIÓN</div></div>
+    <div class="stat"><div class="stat-n">AMBA</div><div class="stat-l">COBERTURA</div></div>
+  </div>
+
+  <div class="section" style="background:var(--cream); padding-top:48px;">
+    <div style="max-width:600px; margin:0 auto 40px; text-align:center;">
+      <div class="sect-tag">✦ NUESTROS SERVICIOS</div>
+      <div class="sect-h" style="color:var(--navy);">Una experiencia a medida, en tu hogar</div>
+      <div class="sect-p">Desde degustaciones íntimas hasta semanas enteras resueltas — el servicio que necesitás, cuando lo necesitás.</div>
+    </div>
+    <div class="exp-grid">
+      <div class="exp-card">
+        <div class="exp-card-img">
+          <span class="exp-icon">🍽</span>
+        </div>
+        <div class="exp-card-body">
+          <div class="exp-card-tag">✦ MENÚ CLÁSICO</div>
+          <div class="exp-card-h">Experiencia de 3 pasos</div>
+          <div class="exp-card-p">Entrada, plato principal y postre. Cocina en vivo, presentación de nivel restaurante y maridaje sugerido.</div>
+          <div class="exp-card-footer">
+            <div class="exp-price">desde $XX.XXX <span>/ 2 personas</span></div>
+            <div class="exp-arrow">→</div>
+          </div>
+        </div>
+      </div>
+      <div class="exp-card">
+        <div class="exp-card-img" style="background: linear-gradient(135deg, #1a2e42 0%, #0D1B2A 100%);">
+          <span class="exp-icon">✨</span>
+        </div>
+        <div class="exp-card-body">
+          <div class="exp-card-tag">✦ MENÚ DEGUSTACIÓN</div>
+          <div class="exp-card-h">Experiencia de 7 pasos</div>
+          <div class="exp-card-p">Una narrativa gastronómica completa. Siete momentos diseñados para sorprender, con historia y técnica en cada plato.</div>
+          <div class="exp-card-footer">
+            <div class="exp-price">desde $XX.XXX <span>/ 2 personas</span></div>
+            <div class="exp-arrow">→</div>
+          </div>
+        </div>
+      </div>
+      <div class="exp-card">
+        <div class="exp-card-img" style="background: linear-gradient(135deg, #243447 0%, #1a2e42 100%);">
+          <span class="exp-icon">🏢</span>
+        </div>
+        <div class="exp-card-body">
+          <div class="exp-card-tag">✦ EMPRESAS</div>
+          <div class="exp-card-h">Corporativos y eventos</div>
+          <div class="exp-card-p">Team buildings, cierres de año, presentaciones de producto. Servicio completo para grupos desde 10 personas.</div>
+          <div class="exp-card-footer">
+            <div class="exp-price">A consultar</div>
+            <div class="exp-arrow">→</div>
+          </div>
+        </div>
+      </div>
+      <div class="exp-card">
+        <div class="exp-card-img" style="background: linear-gradient(135deg, #1a2e42 0%, #243447 100%);">
+          <span class="exp-icon">📅</span>
+        </div>
+        <div class="exp-card-body">
+          <div class="exp-card-tag">✦ SEMANAL</div>
+          <div class="exp-card-h">Chef semanal</div>
+          <div class="exp-card-p">Toda la semana resuelta. Daro cocina, fracciona y etiqueta. Desayunos, almuerzos y cenas listas para regenerar.</div>
+          <div class="exp-card-footer">
+            <div class="exp-price">desde $XX.XXX <span>/ semana</span></div>
+            <div class="exp-arrow">→</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section dark" style="padding: 56px 40px;">
+    <div style="max-width:600px; margin:0 auto; text-align:center;">
+      <div class="sect-tag">✦ CÓMO FUNCIONA</div>
+      <div class="sect-h">Cuatro pasos, una experiencia memorable</div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-t">Reservás</div>
+        <div class="step-d">Elegís menú, fecha y turno. Confirmamos por WhatsApp.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-t">Visita previa</div>
+        <div class="step-d">Daro conoce tu cocina y compra ingredientes.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-t">El servicio</div>
+        <div class="step-d">Llega, cocina en vivo y presenta cada paso.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-t">Cierre</div>
+        <div class="step-d">Deja la cocina impecable. Saldo al final.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section white" style="padding: 52px 40px;">
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start;">
+      <div>
+        <div class="sect-tag">✦ MENÚ DEGUSTACIÓN</div>
+        <div class="sect-h">7 momentos, una narrativa</div>
+        <div class="sect-p" style="margin-bottom:24px;">Cada paso tiene su historia. Técnica francesa, producto porteño y la creatividad de Daro en tu mesa.</div>
+        <div class="menu-tabs">
+          <span class="tab active">Invierno</span>
+          <span class="tab">Verano</span>
+          <span class="tab">Primavera</span>
+        </div>
+        <div class="menu-grid">
+          <div class="menu-item">
+            <div class="menu-item-step">APERTURA</div>
+            <div class="menu-item-name">Mise en bouche</div>
+            <div class="menu-item-desc">Bienvenida del chef en un bocado</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-step">PASO 1</div>
+            <div class="menu-item-name">Ceviche de río</div>
+            <div class="menu-item-desc">Trucha, leche de tigre y maíz morado</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-step">PASO 2</div>
+            <div class="menu-item-name">Velouté</div>
+            <div class="menu-item-desc">Hongos de temporada, aceite de trufa</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-step">PRINCIPAL</div>
+            <div class="menu-item-name">Lomo braseado</div>
+            <div class="menu-item-desc">24hs slow cook, chimichurri añejo</div>
+          </div>
+          <div class="menu-item">
+            <div class="menu-item-step">PRE-POSTRE</div>
+            <div class="menu-item-name">Granita</div>
+            <div class="menu-item-desc">Limón Meyer y albahaca</div>
+          </div>
+          <div class="menu-item" style="border-color: var(--gold);">
+            <div class="menu-item-step">CIERRE</div>
+            <div class="menu-item-name">Fondant</div>
+            <div class="menu-item-desc">Chocolate 72%, helado de vainilla</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="sect-tag" style="margin-bottom:12px;">✦ ELEGÍ TU FECHA</div>
+        <div class="cal-wrap">
+          <div class="cal-header">
+            <span class="cal-month">Julio 2026</span>
+            <div style="display:flex;gap:6px;">
+              <button class="cal-nav-btn">‹</button>
+              <button class="cal-nav-btn">›</button>
+            </div>
+          </div>
+          <div class="cal-days">
+            <div class="cal-dow">L</div><div class="cal-dow">M</div><div class="cal-dow">X</div><div class="cal-dow">J</div><div class="cal-dow">V</div><div class="cal-dow">S</div><div class="cal-dow">D</div>
+            <div class="cal-day empty"></div><div class="cal-day empty"></div><div class="cal-day available">1</div><div class="cal-day available">2</div><div class="cal-day available">3</div><div class="cal-day unavail">4</div><div class="cal-day unavail">5</div>
+            <div class="cal-day available">7</div><div class="cal-day available">8</div><div class="cal-day selected">9</div><div class="cal-day available">10</div><div class="cal-day available">11</div><div class="cal-day unavail">12</div><div class="cal-day unavail">13</div>
+            <div class="cal-day available">14</div><div class="cal-day available">15</div><div class="cal-day available">16</div><div class="cal-day available">17</div><div class="cal-day available">18</div><div class="cal-day unavail">19</div><div class="cal-day unavail">20</div>
+            <div class="cal-day available">21</div><div class="cal-day unavail">22</div><div class="cal-day available">23</div><div class="cal-day available">24</div><div class="cal-day available">25</div><div class="cal-day unavail">26</div><div class="cal-day unavail">27</div>
+            <div class="cal-day available">28</div><div class="cal-day available">29</div><div class="cal-day available">30</div><div class="cal-day available">31</div>
+          </div>
+          <div style="display:flex;gap:12px;margin-top:16px;padding-top:14px;border-top:0.5px solid var(--cream-dk);">
+            <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text-mid);">
+              <div style="width:10px;height:10px;border-radius:50%;background:var(--navy);"></div>Seleccionado
+            </div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text-mid);">
+              <div style="width:10px;height:10px;border-radius:50%;background:rgba(107,95,79,0.15);"></div>No disponible
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:14px;display:flex;gap:10px;">
+          <div style="flex:1;background:var(--cream);border-radius:10px;padding:12px;border:0.5px solid var(--cream-dk);">
+            <div style="font-size:9px;letter-spacing:0.1em;color:var(--text-mid);margin-bottom:3px;">TURNO</div>
+            <div style="font-size:13px;font-weight:500;color:var(--navy);">Noche (20:00)</div>
+          </div>
+          <div style="flex:1;background:var(--cream);border-radius:10px;padding:12px;border:0.5px solid var(--cream-dk);">
+            <div style="font-size:9px;letter-spacing:0.1em;color:var(--text-mid);margin-bottom:3px;">COMENSALES</div>
+            <div style="font-size:13px;font-weight:500;color:var(--navy);">4 personas</div>
+          </div>
+        </div>
+        <button class="btn-primary" style="width:100%;margin-top:14px;border-radius:10px;">Confirmar fecha →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-section">
+    <h2>¿Tenés un evento en mente?</h2>
+    <p>Escribinos y diseñamos juntos la experiencia perfecta para tu ocasión especial.</p>
+    <div style="display:flex;gap:12px;justify-content:center;position:relative;z-index:1;">
+      <button class="btn-primary" style="padding:13px 32px;">Hablá con Daro →</button>
+      <button class="btn-outline">Ver todos los servicios</button>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-brand">Celestia</div>
+    <div class="footer-links">
+      <span class="footer-link">Experiencias</span>
+      <span class="footer-link">Chefs</span>
+      <span class="footer-link">Corporativos</span>
+      <span class="footer-link">Acceder</span>
+    </div>
+    <div class="footer-copy">© 2026 Celestia</div>
+  </div>
+
+</div>
+
+<script>
+const card = document.querySelector('.exp-card');
+const days = document.querySelectorAll('.cal-day.available');
+days.forEach(d => {
+  d.addEventListener('click', () => {
+    document.querySelectorAll('.cal-day.selected').forEach(s => s.classList.remove('selected'));
+    d.classList.add('selected');
+  });
+});
+
+const tabs = document.querySelectorAll('.tab');
+tabs.forEach(t => {
+  t.addEventListener('click', () => {
+    tabs.forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+  });
+});
+</script>

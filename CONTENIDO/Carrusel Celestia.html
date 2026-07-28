@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Celestia Chef Privado — Carrusel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0a0e1a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: 'Montserrat', sans-serif;
+    overflow: hidden;
+  }
+
+  /* ── Stars background ── */
+  .stars-layer {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background: radial-gradient(ellipse at 20% 50%, #1a2a4a22 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, #1a3a2a18 0%, transparent 50%);
+  }
+  .star {
+    position: absolute;
+    border-radius: 50%;
+    background: #e8c878;
+    animation: twinkle var(--d, 3s) ease-in-out infinite var(--delay, 0s);
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: var(--min-op, 0.1); transform: scale(1); }
+    50% { opacity: var(--max-op, 0.7); transform: scale(1.5); }
+  }
+
+  /* ── Phone shell ── */
+  .phone-shell {
+    position: relative;
+    width: 360px;
+    height: 640px;
+    border-radius: 36px;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1.5px #e8c87840,
+      0 0 60px #e8c87820,
+      0 40px 80px #00000080;
+    z-index: 10;
+  }
+
+  /* ── Slide container ── */
+  .slide-viewport {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ── Individual Slides ── */
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 32px;
+    transition: none;
+  }
+  .slide.entering { animation: slideEnter 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+  .slide.exiting  { animation: slideExit  0.5s cubic-bezier(0.55, 0, 1, 0.45) forwards; }
+  .slide.hidden   { opacity: 0; pointer-events: none; }
+
+  @keyframes slideEnter {
+    from { opacity: 0; transform: translateY(30px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes slideExit {
+    from { opacity: 1; transform: translateY(0) scale(1); }
+    to   { opacity: 0; transform: translateY(-20px) scale(1.02); }
+  }
+
+  /* Staggered text children */
+  .slide.entering .anim-0 { animation: textUp 0.6s cubic-bezier(0.22,1,0.36,1) 0.1s both; }
+  .slide.entering .anim-1 { animation: textUp 0.6s cubic-bezier(0.22,1,0.36,1) 0.22s both; }
+  .slide.entering .anim-2 { animation: textUp 0.6s cubic-bezier(0.22,1,0.36,1) 0.34s both; }
+  .slide.entering .anim-3 { animation: textUp 0.6s cubic-bezier(0.22,1,0.36,1) 0.46s both; }
+  .slide.entering .anim-4 { animation: textUp 0.6s cubic-bezier(0.22,1,0.36,1) 0.58s both; }
+  .slide.entering .anim-5 { animation: textUp 0.6s cubic-bezier(0.22,1,0.36,1) 0.70s both; }
+  @keyframes textUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Navigation ── */
+  .nav-row {
+    position: absolute;
+    bottom: 20px;
+    left: 0; right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    z-index: 20;
+  }
+  .nav-dot {
+    width: 6px; height: 6px;
+    border-radius: 3px;
+    background: #e8c87840;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+  }
+  .nav-dot.active {
+    width: 20px;
+    background: #e8c878;
+    box-shadow: 0 0 8px #e8c87880;
+  }
+  .nav-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #e8c87815;
+    border: 1px solid #e8c87830;
+    color: #e8c878;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    z-index: 20;
+    backdrop-filter: blur(4px);
+  }
+  .nav-arrow:hover { background: #e8c87830; box-shadow: 0 0 12px #e8c87840; }
+  .nav-arrow.prev { left: 12px; }
+  .nav-arrow.next { right: 12px; }
+
+  /* ── Progress bar ── */
+  .progress-bar {
+    position: absolute;
+    top: 0; left: 0;
+    height: 2.5px;
+    background: linear-gradient(90deg, #e8c878, #f5e19e);
+    box-shadow: 0 0 8px #e8c87880;
+    transition: width 0.4s ease;
+    z-index: 30;
+  }
+
+  /* ── Language toggle ── */
+  .lang-toggle {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    display: flex;
+    gap: 2px;
+    z-index: 25;
+  }
+  .lang-btn {
+    background: transparent;
+    border: 1px solid #e8c87840;
+    color: #e8c87880;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    padding: 3px 7px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .lang-btn.active {
+    background: #e8c87820;
+    color: #e8c878;
+    border-color: #e8c87870;
+  }
+
+  /* ── Divider ── */
+  .gold-line {
+    width: 48px; height: 1px;
+    background: linear-gradient(90deg, transparent, #e8c878, transparent);
+    margin: 16px auto;
+  }
+  .gold-line-wide {
+    width: 80px; height: 1px;
+    background: linear-gradient(90deg, transparent, #e8c878, transparent);
+    margin: 12px auto;
+  }
+
+  /* ── Decorative circle ── */
+  .deco-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid #e8c87820;
+    animation: ringPulse 4s ease-in-out infinite;
+  }
+  @keyframes ringPulse {
+    0%, 100% { transform: scale(1); opacity: 0.4; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+  }
+
+  /* ── Step cards ── */
+  .step-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+  .step-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    color: #e8c878;
+    line-height: 1;
+    min-width: 28px;
+  }
+  .step-text { display: flex; flex-direction: column; gap: 3px; }
+
+  /* ── Tweaks panel ── */
+  .tweaks-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #0f1628ee;
+    border: 1px solid #e8c87830;
+    border-radius: 14px;
+    padding: 18px;
+    width: 210px;
+    z-index: 1000;
+    backdrop-filter: blur(16px);
+    display: none;
+    box-shadow: 0 8px 40px #00000060;
+  }
+  .tweaks-panel.open { display: block; }
+  .tweaks-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: #e8c878;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .tweak-label {
+    font-size: 10px;
+    color: #e8c87899;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    margin-bottom: 7px;
+    display: block;
+  }
+  .tweak-options { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+  .tweak-opt {
+    padding: 8px 12px;
+    border-radius: 7px;
+    border: 1px solid #e8c87830;
+    background: transparent;
+    color: #e8c87880;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+  }
+  .tweak-opt:hover { border-color: #e8c87860; color: #e8c878bb; }
+  .tweak-opt.sel { background: #e8c87815; border-color: #e8c87870; color: #e8c878; }
+  .tweak-sep { height: 1px; background: #e8c87820; margin: 10px 0; }
+  .autoplay-row {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 10px; color: #e8c87899; font-weight: 500; letter-spacing: 0.05em;
+  }
+  .toggle-btn {
+    width: 34px; height: 18px;
+    border-radius: 9px;
+    background: #e8c87820;
+    border: 1px solid #e8c87840;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.2s;
+  }
+  .toggle-btn.on { background: #e8c87850; }
+  .toggle-knob {
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: #e8c87870;
+    transition: transform 0.2s, background 0.2s;
+  }
+  .toggle-btn.on .toggle-knob { transform: translateX(16px); background: #e8c878; }
+</style>
+</head>
+<body>
+<div class="stars-layer" id="starsLayer"></div>
+
+<script type="text/babel">
+
+const { useState, useEffect, useRef, useCallback } = React;
+
+// ── Brand palette
+const NAVY = '#12192e';
+const GOLD = '#e8c878';
+const GOLD_DIM = '#e8c87840';
+const GOLD_LITE = '#f5e19e';
+
+// ── Variation themes
+const THEMES = {
+  nocturno: {
+    name: 'Nocturno',
+    sub: 'Oscuro & estelar',
+    bg: (idx) => [
+    'radial-gradient(ellipse at 50% 0%, #1e2d4e 0%, #12192e 70%)',
+    'linear-gradient(160deg, #12192e 0%, #0d1525 100%)',
+    'radial-gradient(ellipse at 30% 70%, #1a2a40 0%, #0d1422 100%)',
+    'linear-gradient(180deg, #0d1422 0%, #12192e 100%)',
+    'radial-gradient(ellipse at 70% 30%, #1a2a3e 0%, #0a1020 100%)',
+    'linear-gradient(135deg, #12192e 0%, #1a2540 100%)'][
+    idx % 6],
+    cardBg: '#ffffff08',
+    cardBorder: '#e8c87820'
+  },
+  celestial: {
+    name: 'Celestial',
+    sub: 'Glow dorado',
+    bg: (idx) => [
+    'radial-gradient(ellipse at 50% 40%, #2a1f0e 0%, #0e0b16 80%)',
+    'radial-gradient(ellipse at 30% 60%, #1e1608 0%, #0c0a14 80%)',
+    'radial-gradient(ellipse at 60% 30%, #251c0a 0%, #0e0c18 80%)',
+    'radial-gradient(ellipse at 50% 50%, #1e1608 0%, #0a0912 80%)',
+    'radial-gradient(ellipse at 40% 40%, #2a1e0c 0%, #0c0a14 80%)',
+    'radial-gradient(ellipse at 50% 60%, #1a140a 0%, #0e0b14 80%)'][
+    idx % 6],
+    cardBg: '#e8c87808',
+    cardBorder: '#e8c87830'
+  },
+  moderno: {
+    name: 'Moderno',
+    sub: 'Limpio & bold',
+    bg: (idx) => [
+    '#0a0a0a',
+    '#0d0d0d',
+    '#080808',
+    '#0a0a0a',
+    '#0d0d0d',
+    '#080808'][
+    idx % 6],
+    cardBg: '#1a1a1a',
+    cardBorder: '#e8c87825'
+  }
+};
+
+// ── Slide content
+const SLIDES = [
+{
+  id: 'bienvenida',
+  type: 'hero'
+},
+{
+  id: 'propuesta',
+  type: 'features'
+},
+{
+  id: 'proceso1',
+  type: 'steps-a'
+},
+{
+  id: 'proceso2',
+  type: 'steps-b'
+},
+{
+  id: 'cta1',
+  type: 'cta'
+},
+{
+  id: 'contacto',
+  type: 'contact'
+}];
+
+
+// ── Decorative stars
+function StarsLayer() {
+  const stars = useRef([]);
+  if (!stars.current.length) {
+    for (let i = 0; i < 60; i++) {
+      stars.current.push({
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        s: Math.random() * 1.8 + 0.4,
+        d: 2 + Math.random() * 4,
+        delay: Math.random() * 4,
+        minOp: 0.05 + Math.random() * 0.1,
+        maxOp: 0.3 + Math.random() * 0.5
+      });
+    }
+  }
+  return (
+    <>
+      {stars.current.map((s, i) =>
+      <div key={i} className="star" style={{
+        left: s.x + '%', top: s.y + '%',
+        width: s.s + 'px', height: s.s + 'px',
+        '--d': s.d + 's', '--delay': s.delay + 's',
+        '--min-op': s.minOp, '--max-op': s.maxOp
+      }} />
+      )}
+    </>);
+
+}
+
+// ── Slide components
+function SlideHero({ lang, theme }) {
+  return (
+    <div style={{ textAlign: 'center', position: 'relative', width: '100%' }}>
+      {/* Deco rings */}
+      <div className="deco-ring" style={{ width: 220, height: 220, top: '50%', left: '50%', transform: 'translate(-50%,-50%) translateY(-20px)', position: 'absolute', animationDelay: '0s' }} />
+      <div className="deco-ring" style={{ width: 280, height: 280, top: '50%', left: '50%', transform: 'translate(-50%,-50%) translateY(-20px)', position: 'absolute', animationDelay: '1s', opacity: 0.3 }} />
+
+      {/* Logo */}
+      <div className="anim-0" style={{ marginBottom: 28, position: 'relative', borderRadius: "0px" }}>
+        <img src="assets/logo-cp-transparent.png" alt="Celestia Chef Privado"
+        style={{ width: 220, filter: 'drop-shadow(0 0 20px #e8c87840)' }} />
+      </div>
+
+      <div className="gold-line anim-1" />
+
+      <p className="anim-2" style={{
+        fontFamily: "'Cormorant Garamond', serif",
+        fontSize: 11,
+        letterSpacing: '0.25em',
+        color: GOLD,
+        textTransform: 'uppercase',
+        fontWeight: 400,
+        marginTop: 18
+      }}>
+        {lang === 'es' ? 'Gastronomía de autor' : 'Signature gastronomy'}
+      </p>
+
+      <h1 className="anim-3" style={{
+        fontFamily: "'Cormorant Garamond', serif",
+        fontSize: 38,
+        fontWeight: 300,
+        color: '#f0e4c8',
+        lineHeight: 1.15,
+        marginTop: 12,
+        letterSpacing: '0.02em',
+        textWrap: 'balance'
+      }}>
+        {lang === 'es' ? <>El lujo de un chef privado,<br /><em style={{ fontStyle: 'italic', color: GOLD }}>al alcance de tu mano.</em></> : <>The luxury of a private chef,<br /><em style={{ fontStyle: 'italic', color: GOLD }}>now within your reach.</em></>}
+      </h1>
+
+      <div className="gold-line anim-4" style={{ marginTop: 20 }} />
+
+      <p className="anim-5" style={{
+        fontFamily: "'Montserrat', sans-serif",
+        fontSize: 10,
+        letterSpacing: '0.18em',
+        color: '#e8c87870',
+        textTransform: 'uppercase',
+        marginTop: 16,
+        fontWeight: 300
+      }}>
+        {lang === 'es' ? 'En la intimidad de tu hogar' : 'In the intimacy of your home'}
+      </p>
+    </div>);
+
+}
+
+function SlideFeatures({ lang, theme }) {
+  const items = lang === 'es' ?
+  [['Asignación inteligente', 'Tu chef, confirmado al instante'], ['Seguimiento en tiempo real', 'Sabés dónde está y qué hace'], ['Pago seguro al finalizar', 'Tu dinero protegido siempre']] :
+  [['Smart assignment', 'Your chef confirmed instantly'], ['Real-time tracking', 'Know where they are & what they do'], ['Secure payment on finish', 'Your money protected always']];
+  return (
+    <div style={{ width: '100%', textAlign: 'center' }}>
+      <p className="anim-0" style={{
+        fontFamily: "'Cormorant Garamond', serif",
+        fontSize: 11, letterSpacing: '0.22em',
+        color: GOLD, textTransform: 'uppercase', fontWeight: 400
+      }}>
+        {lang === 'es' ? 'La plataforma' : 'The platform'}
+      </p>
+      <div className="gold-line anim-1" />
+      <h2 className="anim-2" style={{
+        fontFamily: "'Cormorant Garamond', serif",
+        fontSize: 28, fontWeight: 300, color: '#f0e4c8',
+        lineHeight: 1.2, margin: '14px 0 20px', textWrap: 'balance'
+      }}>
+        {lang === 'es' ? <>¿Todo bajo control,<br /><em style={{fontStyle:'italic',color:GOLD}}>desde tu celular</em></> : <>Everything under control,<br /><em style={{fontStyle:'italic',color:GOLD}}>from your phone</em></>}
+      </h2>
+      {items.map(([title, sub], i) =>
+      <div key={i} className={`anim-${i + 3}`} style={{
+        display: 'flex', alignItems: 'center', gap: 14,
+        padding: '13px 16px', borderRadius: 10, marginBottom: 10,
+        background: theme.cardBg,
+        border: `1px solid ${theme.cardBorder}`,
+        textAlign: 'left'
+      }}>
+          <div style={{
+          width: 30, height: 30, borderRadius: '50%',
+          border: `1px solid ${GOLD}50`,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          flexShrink: 0
+        }}>
+            <div style={{ width: 6, height: 6, borderRadius: '50%', background: GOLD }} />
+          </div>
+          <div>
+            <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 17, color: '#f0e4c8', fontWeight: 400 }}>{title}</div>
+            <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 10, color: '#e8c87870', marginTop: 2, fontWeight: 300, letterSpacing: '0.06em' }}>{sub}</div>
+          </div>
+        </div>
+      )}
+    </div>);
+
+}
+
+function SlideStepsA({ lang, theme }) {
+  const steps = lang === 'es' ?
+  [['01', 'Creá el servicio', 'Fecha, hora, tipo de experiencia'], ['02', 'Elegí el modo de compra', 'Vos, tu chef, o market automático'], ['03', 'Chef asignado', 'Confirmación y tiempo estimado de llegada']] :
+  [['01', 'Create the service', 'Date, time, type of experience'], ['02', 'Choose purchase mode', 'You, your chef, or auto market'], ['03', 'Chef assigned', 'Confirmation & estimated arrival time']];
+  return (
+    <div style={{ width: '100%', textAlign: 'center' }}>
+      <p className="anim-0" style={{
+        fontFamily: "'Cormorant Garamond', serif",
+        fontSize: 11, letterSpacing: '0.22em',
+        color: GOLD, textTransform: 'uppercase', fontWeight: 400
+      }}>
+        {lang === 'es' ? 'Cómo funciona' : 'How it works'}
+      </p>
+      <div className="gold-line anim-1" />
+      <h2 className="anim-2" style={{
+        fontFamily: "'Cormorant Garamond', serif",
+        fontSize: 28, fontWeight: 300, color: '#f0e4c8',
+        lineHeight: 1.25, margin: '14px 0 28px', textWrap: 'balance'
+      }}>
+        {lang === 'es' ? <>Reservás en minutos.<br /><em style={{color:GOLD,fontStyle:'italic'}}>En serio.</em></> : <>Book in minutes.<br /><em style={{color:GOLD,fontStyle:'italic'}}>Really.</em></>}
+      </h2>
+      {steps.map(([num, title, sub], i) =>
+      <div key={i} className={`anim-${i + 3}`} style={{
+        display: 'flex', alignItems: 'flex-start', gap: 16,
+        padding: '16px 18px', borderRadius: 12, marginBottom: 12,
+        background: theme.cardBg,
+        border: `1px solid ${theme.cardBorder}`,
+        textAlign: 'left'
+      }}>
+          <span style={{
+          fontFamily: "'Cormorant Garamond', serif",
+          fontSize: 36, fontWeight: 300, color: GOLD,
+          lineHeight: 1, minWidth: 36
+        }}>{num}</span>
+          <div style={{ paddingTop: 4 }}>
+            <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 19, color: '#f0e4c8', fontWeight: 400 }}>{title}</div>
+            <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 10, color: '#e8c87870', marginTop: 4, fontWeight: 300, letterSpacing: '0.06em' }}>{sub}</div>
+          </div>
+        </div>
+      )}
+      <p className="anim-5" style={{
+        fontFamily: "'Montserrat', sans-serif", fontSize: 9,
+        color: '#e8c87850', letterSpacing: '0.15em',
+        textTransform: 'uppercase', marginTop: 10
+      }}>
+        {lang === 'es' ? '1 de 2' : '1 of 2'}
+      </p>
+    </div>);
+
+}
+
+function SlideStepsB({ lang, theme }) {
+  const steps = lang === 'es' ?
+  [['04', 'Seguimiento en tiempo real', 'Ruta del chef, estado del servicio y ETA'], ['05', 'Tu chef ejecuta', 'Checklist paso a paso: compras, llegada, cocción'], ['06', 'Pagás al finalizar', 'Calificás la experiencia y cerrás el servicio']] :
+  [['04', 'Real-time tracking', 'Chef route, service status & ETA'], ['05', 'Your chef executes', 'Step-by-step checklist: shopping, arrival, cooking'], ['06', 'You pay on finish', 'Rate the experience and close the service']];
+  return (
+    <div style={{ width: '100%', textAlign: 'center' }}>
+      <p className="anim-0" style={{
+        fontFamily: "'Cormorant Garamond', serif",
+        fontSize: 11, letterSpacing: '0.22em',
+        color: GOLD, textTransform: 'uppercase', fontWeight: 400
+      }}>
+        {lang === 'es' ? 'Cómo funciona' : 'How it works'}
+      </p>
+      <div className="gold-line anim-1" />
+      <h2 className="anim-2" style={{
+        fontFamily: "'Cormorant Garamond', serif",
+        fontSize: 28, fontWeight: 300, color: '#f0e4c8',
+        lineHeight: 1.25, margin: '14px 0 28px', textWrap: 'balance'
+      }}>
+        {lang === 'es' ? <>Vos disfrutás.<br /><em style={{ color: GOLD, fontStyle: 'italic' }}>Nosotros hacemos el resto.</em></> : <>You enjoy.<br /><em style={{ color: GOLD, fontStyle: 'italic' }}>We handle the rest.</em></>}
+      </h2>
+      {steps.map(([num, title, sub], i) =>
+      <div key={i} className={`anim-${i + 3}`} style={{
+        display: 'flex', alignItems: 'flex-start', gap: 16,
+        padding: '16px 18px', borderRadius: 12, marginBottom: 12,
+        background: theme.cardBg,
+        border: `1px solid ${theme.cardBorder}`,
+        textAlign: 'left'
+      }}>
+          <span style={{
+          fontFamily: "'Cormorant Garamond', serif",
+          fontSize: 36, fontWeight: 300, color: GOLD,
+          lineHeight: 1, minWidth: 36
+        }}>{num}</span>
+          <div style={{ paddingTop: 4 }}>
+            <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 19, color: '#f0e4c8', fontWeight: 400 }}>{title}</div>
+            <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 10, color: '#e8c87870', marginTop: 4, fontWeight: 300, letterSpacing: '0.06em' }}>{sub}</div>
+          </div>
+        </div>
+      )}
+      <p className="anim-5" style={{
+        fontFamily: "'Montserrat', sans-serif", fontSize: 9,
+        color: '#e8c87850', letterSpacing: '0.15em',
+        textTransform: 'uppercase', marginTop: 10
+      }}>
+        {lang === 'es' ? '2 de 2' : '2 of 2'}
+      </p>
+    </div>);
+
+}
+
+function SlideCTA({ lang, theme }) {
+  return (
+    <div style={{ width: '100%', textAlign: 'center', position: 'relative' }}>
+      <div className="deco-ring" style={{ width: 180, height: 180, top: '50%', left: '50%', transform: 'translate(-50%,-50%)', position: 'absolute', animationDelay: '0.5s' }} />
+      <div className="deco-ring" style={{ width: 240, height: 240, top: '50%', left: '50%', transform: 'translate(-50%,-50%)', position: 'absolute', animationDelay: '1.5s', opacity: 0.2 }} />
+
+      <p className="anim-0" style={{
+        fontFamily: "'Cormorant Garamond', serif",
+        fontSize: 11, letterSpacing: '0.22em',
+        color: GOLD, textTransform: 'uppercase', fontWeight: 400, position: 'relative'
+      }}>
+        {lang === 'es' ? 'También disponible Express' : 'Also available Express'}
+      </p>
+      <div className="gold-line anim-1" style={{ position: 'relative' }} />
+
+      <h2 className="anim-2" style={{
+        fontFamily: "'Cormorant Garamond', serif",
+        fontSize: 36, fontWeight: 300, color: '#f0e4c8',
+        lineHeight: 1.15, margin: '18px 0 10px',
+        textWrap: 'balance', position: 'relative'
+      }}>
+        {lang === 'es' ?
+        <>¿Urgente?<br /><em style={{ color: GOLD, fontStyle: 'italic' }}>Modo Express.</em></> :
+        <>Need it fast?<br /><em style={{ color: GOLD, fontStyle: 'italic' }}>Express mode.</em></>}
+      </h2>
+
+      <p className="anim-3" style={{
+        fontFamily: "'Montserrat', sans-serif",
+        fontSize: 11, color: '#e8c87875',
+        lineHeight: 1.6, margin: '0 10px 28px',
+        position: 'relative', fontWeight: 300
+      }}>
+        {lang === 'es' ?
+        'Chef disponible en poco tiempo. Si uno cancela, la app reasigna automáticamente.' :
+        'Chef available fast. If one cancels, the app auto-reassigns.'}
+      </p>
+
+      <div className="anim-4" style={{
+        display: 'inline-block',
+        padding: '14px 32px',
+        border: `1px solid ${GOLD}`,
+        borderRadius: 3,
+        fontFamily: "'Montserrat', sans-serif",
+        fontSize: 11, fontWeight: 600,
+        letterSpacing: '0.18em', color: GOLD,
+        textTransform: 'uppercase',
+        background: 'linear-gradient(135deg, #e8c87815, #e8c87808)',
+        boxShadow: `0 0 30px #e8c87825`,
+        position: 'relative',
+        cursor: 'pointer'
+      }}>
+        {lang === 'es' ? 'Reservar ahora →' : 'Book now →'}
+      </div>
+
+      <div className="gold-line-wide anim-5" style={{ marginTop: 24, position: 'relative' }} />
+    </div>);
+
+}
+
+function SlideContact({ lang, theme }) {
+  return (
+    <div style={{ width: '100%', textAlign: 'center' }}>
+      <div className="anim-0" style={{ marginBottom: 20 }}>
+        <img src="assets/logo-cp-transparent.png" alt="Celestia"
+        style={{ width: 160, filter: 'drop-shadow(0 0 12px #e8c87830)' }} />
+      </div>
+      <div className="gold-line anim-1" />
+
+      <p className="anim-2" style={{
+        fontFamily: "'Cormorant Garamond', serif",
+        fontSize: 11, letterSpacing: '0.22em',
+        color: GOLD, textTransform: 'uppercase',
+        fontWeight: 400, marginTop: 16
+      }}>
+        {lang === 'es' ? 'Descargá la app' : 'Download the app'}
+      </p>
+
+      <h2 className="anim-3" style={{
+        fontFamily: "'Cormorant Garamond', serif",
+        fontSize: 28, fontWeight: 300, color: '#f0e4c8',
+        lineHeight: 1.2, margin: '12px 0 24px', textWrap: 'balance'
+      }}>
+        {lang === 'es' ? <>Tu primera experiencia Celestia<br/>empieza hoy</> : <>Your first Celestia experience<br/>starts today</>}
+      </h2>
+
+      {[
+      { icon: '✦', label: lang === 'es' ? 'WhatsApp' : 'WhatsApp', val: '+54 9 11 6041-0607' },
+      { icon: '✦', label: 'Instagram', val: '@celestiachefprivado' }].
+      map(({ icon, label, val }, i) =>
+      <div key={i} className={`anim-${i + 4}`} style={{
+        display: 'flex', alignItems: 'center', gap: 14,
+        padding: '13px 16px', borderRadius: 10, marginBottom: 10,
+        background: theme.cardBg,
+        border: `1px solid ${theme.cardBorder}`,
+        textAlign: 'left'
+      }}>
+          <span style={{ color: GOLD, fontSize: 10 }}>{icon}</span>
+          <div>
+            <div style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 9, color: GOLD + '80', fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase' }}>{label}</div>
+            <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 16, color: '#f0e4c8', marginTop: 1 }}>{val}</div>
+          </div>
+        </div>
+      )}
+    </div>);
+
+}
+
+// ── Main app
+function App() {
+  const [curSlide, setCurSlide] = useState(() => {
+    try {return parseInt(localStorage.getItem('cc-slide') || '0');} catch {return 0;}
+  });
+  const [prevSlide, setPrevSlide] = useState(null);
+  const [animState, setAnimState] = useState('idle'); // idle | transitioning
+  const [lang, setLang] = useState('es');
+  const [themeKey, setThemeKey] = useState('nocturno');
+  const [autoplay, setAutoplay] = useState(false);
+  const [tweaksOpen, setTweaksOpen] = useState(false);
+  const timerRef = useRef(null);
+
+  const theme = THEMES[themeKey];
+  const N = SLIDES.length;
+
+  // Persist slide
+  useEffect(() => {
+    try {localStorage.setItem('cc-slide', curSlide);} catch {}
+  }, [curSlide]);
+
+  // Autoplay
+  useEffect(() => {
+    if (autoplay) {
+      timerRef.current = setInterval(() => goTo((c) => (c + 1) % N), 5000);
+    }
+    return () => clearInterval(timerRef.current);
+  }, [autoplay, N]);
+
+  const goTo = useCallback((target) => {
+    const next = typeof target === 'function' ? target(curSlide) : target;
+    if (next === curSlide || animState === 'transitioning') return;
+    setAnimState('transitioning');
+    setPrevSlide(curSlide);
+    setCurSlide(next);
+    setTimeout(() => {setPrevSlide(null);setAnimState('idle');}, 700);
+  }, [curSlide, animState]);
+
+  const prev = () => goTo((curSlide - 1 + N) % N);
+  const next = () => goTo((curSlide + 1) % N);
+
+  // Tweaks protocol
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.data?.type === '__activate_edit_mode') setTweaksOpen(true);
+      if (e.data?.type === '__deactivate_edit_mode') setTweaksOpen(false);
+    };
+    window.addEventListener('message', handler);
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    return () => window.removeEventListener('message', handler);
+  }, []);
+
+  const renderSlide = (idx) => {
+    const props = { lang, theme };
+    const t = SLIDES[idx].type;
+    if (t === 'hero') return <SlideHero {...props} />;
+    if (t === 'features') return <SlideFeatures {...props} />;
+    if (t === 'steps-a') return <SlideStepsA {...props} />;
+    if (t === 'steps-b') return <SlideStepsB {...props} />;
+    if (t === 'cta') return <SlideCTA {...props} />;
+    if (t === 'contact') return <SlideContact {...props} />;
+  };
+
+  return (
+    <>
+      {/* Phone */}
+      <div className="phone-shell">
+        {/* Progress bar */}
+        <div className="progress-bar" style={{ width: `${(curSlide + 1) / N * 100}%` }} />
+
+        <div className="slide-viewport" style={{ background: theme.bg(curSlide) }}>
+          {/* Stars */}
+          <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden' }}>
+            <StarsLayer />
+          </div>
+
+          {/* Lang toggle */}
+          <div className="lang-toggle">
+            {['es', 'en'].map((l) =>
+            <button key={l} className={`lang-btn ${lang === l ? 'active' : ''}`}
+            onClick={() => setLang(l)}>{l.toUpperCase()}</button>
+            )}
+          </div>
+
+          {/* Exiting slide */}
+          {prevSlide !== null &&
+          <div className="slide exiting" style={{ background: theme.bg(prevSlide) }}>
+              {renderSlide(prevSlide)}
+            </div>
+          }
+
+          {/* Entering slide */}
+          <div className="slide entering" key={`${curSlide}-${themeKey}-${lang}`}>
+            {renderSlide(curSlide)}
+          </div>
+
+          {/* Arrows */}
+          <button className="nav-arrow prev" onClick={prev}>‹</button>
+          <button className="nav-arrow next" onClick={next}>›</button>
+
+          {/* Dots */}
+          <div className="nav-row">
+            {SLIDES.map((_, i) =>
+            <button key={i} className={`nav-dot ${i === curSlide ? 'active' : ''}`}
+            onClick={() => goTo(i)} />
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Slide counter outside */}
+      <div style={{
+        position: 'fixed', bottom: 28, left: '50%', transform: 'translateX(-50%)',
+        fontFamily: "'Montserrat', sans-serif", fontSize: 10,
+        color: '#e8c87850', letterSpacing: '0.15em',
+        zIndex: 5
+      }}>
+        {curSlide + 1} / {N}
+      </div>
+
+      {/* Tweaks panel */}
+      <div className={`tweaks-panel ${tweaksOpen ? 'open' : ''}`}>
+        <div className="tweaks-title">Tweaks</div>
+
+        <span className="tweak-label">Estilo visual</span>
+        <div className="tweak-options">
+          {Object.entries(THEMES).map(([k, t]) =>
+          <button key={k} className={`tweak-opt ${themeKey === k ? 'sel' : ''}`}
+          onClick={() => setThemeKey(k)}>
+              <strong>{t.name}</strong> — {t.sub}
+            </button>
+          )}
+        </div>
+
+        <div className="tweak-sep" />
+
+        <span className="tweak-label">Idioma</span>
+        <div className="tweak-options" style={{ flexDirection: 'row' }}>
+          {['es', 'en'].map((l) =>
+          <button key={l} className={`tweak-opt ${lang === l ? 'sel' : ''}`}
+          style={{ flex: 1, textAlign: 'center' }}
+          onClick={() => setLang(l)}>{l === 'es' ? '🇦🇷 ES' : '🇺🇸 EN'}</button>
+          )}
+        </div>
+
+        <div className="tweak-sep" />
+
+        <div className="autoplay-row">
+          <span>Autoplay (5s)</span>
+          <button className={`toggle-btn ${autoplay ? 'on' : ''}`} onClick={() => setAutoplay((a) => !a)}>
+            <div className="toggle-knob" />
+          </button>
+        </div>
+      </div>
+    </>);
+
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+
+<div id="root"></div>
+</body>
+</html>
