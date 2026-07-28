@@ -4170,6 +4170,12 @@ function avanzarConMenuPreseleccionado(menuId) {
     }
   }
   const yaLogueado = !!(_session || clientePerfil);
+  // Asegura que la landing (beta-landing) no quede tapando la pantalla de
+  // reserva: exitBetaLanding() ya la oculta cuando se entra desde las
+  // tarjetas de la landing, pero el flujo de "Reservar" desde Mis platos /
+  // Mis menús (vía ?menu=) llega directo acá sin pasar por ahí.
+  document.getElementById('beta-landing')?.classList.add('hidden');
+  document.body.classList.remove('beta-mode');
   startFlow();
   setTimeout(() => {
     goTo(2);
