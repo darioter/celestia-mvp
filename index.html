@@ -6125,16 +6125,35 @@ document.addEventListener('DOMContentLoaded', function() {
     grid.innerHTML = '<div class="bl-ex-loading">Buscando platos...</div>';
     var searchEl = document.getElementById('bl-ex-search');
     var q = searchEl ? searchEl.value.trim() : '';
-    var params = new URLSearchParams();
-    if (q) params.set('q', q);
-    params.set('cocina', blExCocina);
-    params.set('dieta', blExDieta);
-    params.set('number', '12');
     try {
-      var resp = await fetch('/api/platos?' + params.toString());
-      var data = await resp.json();
-      if (data.error) throw new Error(data.error);
-      blExResultados = data.platos || [];
+      var query = supa.from('platos_catalogo').select('*').eq('activo', true);
+      if (blExCocina === 'saludable') {
+        query = query.eq('saludable', true);
+      } else if (blExCocina && blExCocina !== 'todas') {
+        query = query.eq('cocina', blExCocina);
+      }
+      if (blExDieta === 'vegetariano') query = query.eq('vegetariano', true);
+      else if (blExDieta === 'vegano') query = query.eq('vegano', true);
+      else if (blExDieta === 'sin gluten') query = query.eq('sin_gluten', true);
+      else if (blExDieta === 'saludable') query = query.eq('saludable', true);
+      if (q) query = query.ilike('titulo', '%' + q + '%');
+      query = query.order('puntaje', { ascending: false }).limit(12);
+      var resultado = await query;
+      if (resultado.error) throw new Error(resultado.error.message);
+      blExResultados = (resultado.data || []).map(function(p) {
+        return {
+          id: p.id,
+          titulo: p.titulo,
+          imagen: p.imagen_url,
+          tiempo: p.tiempo_minutos,
+          porciones: p.porciones,
+          puntaje: p.puntaje,
+          fuente: null,
+          vegetariano: p.vegetariano,
+          vegano: p.vegano,
+          sinGluten: p.sin_gluten
+        };
+      });
       if (blExResultados.length === 0) {
         grid.innerHTML = '<div class="bl-ex-empty">No encontramos platos con estos filtros. Probá con otra combinación.</div>';
       } else {
