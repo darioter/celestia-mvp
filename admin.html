@@ -813,6 +813,51 @@
     .res-senia { text-align: left; }
     .admin-stats { display: none; }
   }
+
+  /* CASOS DE ÉXITO */
+  .caso-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 20px 24px;
+  }
+  .caso-nuevo { border: 1px dashed rgba(201,168,76,0.35); }
+  .caso-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .caso-textarea {
+    grid-column: 1 / -1;
+    min-height: 60px;
+    resize: vertical;
+    font-family: 'DM Sans', sans-serif;
+    text-align: left;
+  }
+  .caso-media-preview {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .caso-preview-img {
+    max-width: 140px;
+    max-height: 90px;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+  .caso-file-label {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 11px;
+    color: rgba(250,246,239,0.5);
+    margin-right: 16px;
+  }
+  @media (max-width: 900px) {
+    .caso-form-grid { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
@@ -862,6 +907,7 @@
       <button class="filter-btn" onclick="verSeccion('pagos',this)">Pagos</button>
       <button class="filter-btn" onclick="verSeccion('bloqueos',this)">Bloquear días</button>
       <button class="filter-btn" onclick="verSeccion('chefs',this)">Chefs</button>
+      <button class="filter-btn" onclick="verSeccion('casos',this)">Casos de éxito</button>
     </div>
 
     <!-- SECCIÓN PAGOS -->
@@ -990,6 +1036,33 @@
       <div class="loading">Cargando...</div>
     </div>
   </div>
+
+    <!-- SECCIÓN CASOS DE ÉXITO -->
+    <div id="seccion-casos" style="display:none;">
+      <div class="section-title">✦ Casos de éxito — ejemplos para la landing</div>
+      <div style="font-size:12px;color:rgba(250,246,239,0.45);margin-bottom:20px;max-width:640px;">
+        Son ejemplos ilustrativos de cómo puede ser una experiencia Celestia (no testimonios de clientes reales, no van con nombre de persona). Se muestran en un carrusel en la landing.
+      </div>
+
+      <div class="caso-card caso-nuevo" id="caso-form-nuevo">
+        <div class="caso-form-grid">
+          <input type="text" class="bloqueo-input" id="caso-titulo" placeholder="Título (ej: Cena de aniversario para 8)">
+          <input type="text" class="bloqueo-input" id="caso-ocasion" placeholder="Ocasión (ej: Aniversario, Corporativo)">
+          <input type="number" class="bloqueo-input" id="caso-orden" placeholder="Orden (0, 1, 2...)" style="width:160px;">
+          <textarea class="bloqueo-input caso-textarea" id="caso-resumen" placeholder="Resumen corto (se ve en la tarjeta)"></textarea>
+          <textarea class="bloqueo-input caso-textarea" id="caso-detalle" placeholder="Detalle del servicio (menú, personas, zona, chef, etc.)"></textarea>
+          <div class="caso-media-preview">
+            <label class="caso-file-label">Foto <input type="file" accept="image/*" id="caso-imagen-file"></label>
+            <label class="caso-file-label">Video <input type="file" accept="video/*" id="caso-video-file"></label>
+          </div>
+        </div>
+        <button class="bloqueo-agregar" onclick="crearCaso()" style="margin-top:12px;">+ Agregar caso de éxito</button>
+      </div>
+
+      <div id="casos-grid" style="display:flex;flex-direction:column;gap:16px;margin-top:24px;">
+        <div class="loading">Cargando casos...</div>
+      </div>
+    </div>
 
 </div>
 </div>
@@ -1704,7 +1777,7 @@ function detenerRealtimeAdmin() {
 }
 
 function verSeccion(seccion, btn) {
-  ['reservas','semanal','agenda','pagos','bloqueos','chefs'].forEach(s => {
+  ['reservas','semanal','agenda','pagos','bloqueos','chefs','casos'].forEach(s => {
     const el = document.getElementById('seccion-'+s);
     if (el) el.style.display = seccion === s ? 'block' : 'none';
   });
@@ -1719,6 +1792,114 @@ function verSeccion(seccion, btn) {
   if (seccion === 'pagos') cargarPagos();
   if (seccion === 'chefs') cargarChefs();
   if (seccion === 'semanal') cargarSemanal();
+  if (seccion === 'casos') cargarCasos();
+}
+
+// ─── CASOS DE ÉXITO ─────────────────────────────────────
+let todosCasos = [];
+
+function escapeHtmlCaso(s) { return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escapeAttrCaso(s) { return escapeHtmlCaso(s).replace(/"/g,'&quot;'); }
+
+async function cargarCasos() {
+  document.getElementById('casos-grid').innerHTML = '<div class="loading">Cargando...</div>';
+  const { data, error } = await supa.from('casos_exito').select('*').order('orden', { ascending: true });
+  if (error) { document.getElementById('casos-grid').innerHTML = '<div class="loading">Error al cargar casos</div>'; return; }
+  todosCasos = data || [];
+  renderCasos();
+}
+
+function renderCasos() {
+  if (todosCasos.length === 0) {
+    document.getElementById('casos-grid').innerHTML = '<div class="empty-state"><div class="empty-state-icon">✦</div>No hay casos de éxito cargados todavía</div>';
+    return;
+  }
+  document.getElementById('casos-grid').innerHTML = todosCasos.map(c => `
+    <div class="caso-card" data-id="${c.id}">
+      <div class="caso-form-grid">
+        <input type="text" class="bloqueo-input" id="caso-titulo-${c.id}" value="${escapeAttrCaso(c.titulo)}" placeholder="Título">
+        <input type="text" class="bloqueo-input" id="caso-ocasion-${c.id}" value="${escapeAttrCaso(c.ocasion)}" placeholder="Ocasión">
+        <input type="number" class="bloqueo-input" id="caso-orden-${c.id}" value="${c.orden ?? 0}" style="width:160px;">
+        <textarea class="bloqueo-input caso-textarea" id="caso-resumen-${c.id}" placeholder="Resumen corto">${escapeHtmlCaso(c.resumen)}</textarea>
+        <textarea class="bloqueo-input caso-textarea" id="caso-detalle-${c.id}" placeholder="Detalle del servicio">${escapeHtmlCaso(c.detalle)}</textarea>
+        <div class="caso-media-preview">
+          ${c.imagen_url ? `<img src="${c.imagen_url}" class="caso-preview-img">` : ''}
+          ${c.video_url ? `<video src="${c.video_url}" class="caso-preview-img" controls></video>` : ''}
+          <div>
+            <label class="caso-file-label">Reemplazar foto <input type="file" accept="image/*" id="caso-imagen-file-${c.id}"></label>
+            <label class="caso-file-label">Reemplazar video <input type="file" accept="video/*" id="caso-video-file-${c.id}"></label>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap;">
+        <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(250,246,239,0.6);">
+          <input type="checkbox" id="caso-activo-${c.id}" ${c.activo ? 'checked' : ''}> Visible en landing
+        </label>
+        <button class="bloqueo-agregar" onclick="guardarCaso('${c.id}')">Guardar cambios</button>
+        <button class="bloqueo-eliminar" onclick="eliminarCaso('${c.id}')">✕ Eliminar</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function subirMediaCaso(file, tipo) {
+  const ext = (file.name.split('.').pop() || 'bin').toLowerCase();
+  const path = `${tipo}-${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
+  const { error } = await supa.storage.from('casos-exito').upload(path, file);
+  if (error) { alert('Error subiendo archivo: ' + error.message); return null; }
+  const { data } = supa.storage.from('casos-exito').getPublicUrl(path);
+  return data.publicUrl;
+}
+
+async function crearCaso() {
+  const titulo = document.getElementById('caso-titulo').value.trim();
+  const resumen = document.getElementById('caso-resumen').value.trim();
+  if (!titulo || !resumen) { alert('Completá al menos título y resumen'); return; }
+  const ocasion = document.getElementById('caso-ocasion').value.trim();
+  const orden = Number(document.getElementById('caso-orden').value) || 0;
+  const detalle = document.getElementById('caso-detalle').value.trim();
+  const imgFile = document.getElementById('caso-imagen-file').files[0];
+  const vidFile = document.getElementById('caso-video-file').files[0];
+
+  let imagen_url = null, video_url = null;
+  if (imgFile) imagen_url = await subirMediaCaso(imgFile, 'img');
+  if (vidFile) video_url = await subirMediaCaso(vidFile, 'vid');
+
+  const { error } = await supa.from('casos_exito').insert([{ titulo, ocasion, resumen, detalle, orden, imagen_url, video_url, activo: true }]);
+  if (error) { alert('Error: ' + error.message); return; }
+  ['caso-titulo','caso-ocasion','caso-orden','caso-resumen','caso-detalle','caso-imagen-file','caso-video-file'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  showToast('Caso de éxito agregado');
+  cargarCasos();
+}
+
+async function guardarCaso(id) {
+  const titulo = document.getElementById(`caso-titulo-${id}`).value.trim();
+  const ocasion = document.getElementById(`caso-ocasion-${id}`).value.trim();
+  const orden = Number(document.getElementById(`caso-orden-${id}`).value) || 0;
+  const resumen = document.getElementById(`caso-resumen-${id}`).value.trim();
+  const detalle = document.getElementById(`caso-detalle-${id}`).value.trim();
+  const activo = document.getElementById(`caso-activo-${id}`).checked;
+  const imgFile = document.getElementById(`caso-imagen-file-${id}`).files[0];
+  const vidFile = document.getElementById(`caso-video-file-${id}`).files[0];
+
+  const update = { titulo, ocasion, orden, resumen, detalle, activo, updated_at: new Date().toISOString() };
+  if (imgFile) update.imagen_url = await subirMediaCaso(imgFile, 'img');
+  if (vidFile) update.video_url = await subirMediaCaso(vidFile, 'vid');
+
+  const { error } = await supa.from('casos_exito').update(update).eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  showToast('Cambios guardados');
+  cargarCasos();
+}
+
+async function eliminarCaso(id) {
+  if (!confirm('¿Eliminar este caso de éxito?')) return;
+  const { error } = await supa.from('casos_exito').delete().eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  cargarCasos();
 }
 
 async function cargarBloqueos() {
