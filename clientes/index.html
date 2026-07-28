@@ -775,33 +775,91 @@ async function eliminarMenu(id) {
 
 function escHtmlPlato(s) { return (s || '').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
+window._menusSugeridos = null;
+window._platosData = null;
+
+async function cargarMenusSugeridos() {
+  if (window._menusSugeridos) return window._menusSugeridos;
+  const { data } = await supa.from('menus_sugeridos_cocina').select('*');
+  const porCocina = {};
+  (data || []).forEach(m => { porCocina[m.cocina] = m; });
+  window._menusSugeridos = porCocina;
+  return porCocina;
+}
+
+const COCINA_LABEL_CLIENTE = { italiana:'Italiana', japonesa:'Japonesa', argentina:'Argentina', mexicana:'Mexicana', asiatica:'Asiática', peruana:'Peruana', internacional:'Internacional' };
+
+function armarPropuestaMenu(plato, pasos, cantidadPasos) {
+  const lineas = [`MENÚ CELESTIA — Inspirado en ${plato.titulo}`, `Formato: Menú de ${cantidadPasos} pasos`, ''];
+  pasos.forEach(p => lineas.push(`${p.paso.toUpperCase()}: ${p.plato}`));
+  return lineas.join('\n');
+}
+
+function reservarMenuSugerido(platoId, cantidadPasos) {
+  const platos = window._platosData || [];
+  const plato = platos.find(p => p.id === platoId);
+  if (!plato || !plato.cocina) return;
+  const menus = window._menusSugeridos || {};
+  const menu = menus[plato.cocina];
+  if (!menu) return;
+  const pasos = cantidadPasos === 7 ? menu.pasos_7 : menu.pasos_3;
+  const propuesta = armarPropuestaMenu(plato, pasos, cantidadPasos);
+  sessionStorage.setItem('celestia_menu_guardado', propuesta);
+  window.location.href = cantidadPasos === 7 ? '/?menu=2' : '/?menu=1';
+}
+
+function toggleMenuSugerido(platoId) {
+  const el = document.getElementById('menu-sugerido-' + platoId);
+  if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+function renderPasosSugeridos(pasos) {
+  return pasos.map(p => `<div style="font-size:12px;color:var(--text-mid);padding:4px 0;"><span style="color:var(--gold);font-weight:600;">${escHtmlPlato(p.paso)}:</span> ${escHtmlPlato(p.plato)}</div>`).join('');
+}
+
 async function cargarPlatosGuardados() {
   const el = document.getElementById('platos-lista');
   el.innerHTML = '<div class="empty-state"><div class="empty-icon">✦</div>Cargando...</div>';
-  const { data, error } = await supa
-    .from('platos_guardados')
-    .select('*')
-    .eq('cliente_id', currentUser.id)
-    .order('created_at', { ascending: false });
+  const [{ data, error }, menus] = await Promise.all([
+    supa.from('platos_guardados').select('*').eq('cliente_id', currentUser.id).order('created_at', { ascending: false }),
+    cargarMenusSugeridos()
+  ]);
 
   if (error || !data || data.length === 0) {
     el.innerHTML = `<div class="empty-state"><div class="empty-icon">✦</div>Todavía no guardaste ningún plato.<br><a href="/" style="color:var(--gold);text-decoration:none;font-size:13px;">Explorá platos →</a></div>`;
     return;
   }
 
+  window._platosData = data;
+
   el.innerHTML = data.map(p => {
     const meta = [p.resumen, p.tiempo_minutos ? p.tiempo_minutos + ' min' : null, p.porciones ? p.porciones + ' porciones' : null].filter(Boolean).join(' · ');
+    const menu = p.cocina ? menus[p.cocina] : null;
     return `
-    <div style="background:var(--white);border:1px solid var(--cream-dark);border-radius:14px;padding:20px 22px;margin-bottom:14px;display:flex;gap:16px;align-items:center;">
-      ${p.imagen_url ? `<img src="${p.imagen_url}" style="width:72px;height:72px;object-fit:cover;border-radius:10px;flex-shrink:0;">` : ''}
-      <div style="flex:1;">
-        <div style="font-size:14px;font-weight:500;color:var(--navy);margin-bottom:4px;">${escHtmlPlato(p.titulo)}</div>
-        <div style="font-size:12px;color:var(--text-light);margin-bottom:8px;">${escHtmlPlato(meta)}</div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;">
-          ${p.fuente_url ? `<a href="${p.fuente_url}" target="_blank" rel="noopener" style="font-size:12px;color:var(--gold);text-decoration:none;">Ver receta →</a>` : ''}
-          <button onclick="eliminarPlato('${p.id}')" style="font-size:12px;color:var(--text-light);background:transparent;border:1px solid var(--cream-dark);padding:6px 14px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;">Eliminar</button>
+    <div style="background:var(--white);border:1px solid var(--cream-dark);border-radius:14px;padding:20px 22px;margin-bottom:14px;">
+      <div style="display:flex;gap:16px;align-items:center;">
+        ${p.imagen_url ? `<img src="${p.imagen_url}" style="width:72px;height:72px;object-fit:cover;border-radius:10px;flex-shrink:0;">` : ''}
+        <div style="flex:1;">
+          <div style="font-size:14px;font-weight:500;color:var(--navy);margin-bottom:4px;">${escHtmlPlato(p.titulo)}</div>
+          <div style="font-size:12px;color:var(--text-light);margin-bottom:8px;">${escHtmlPlato(meta)}${menu ? ' · Cocina ' + (COCINA_LABEL_CLIENTE[p.cocina] || p.cocina) : ''}</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            ${p.fuente_url ? `<a href="${p.fuente_url}" target="_blank" rel="noopener" style="font-size:12px;color:var(--gold);text-decoration:none;">Ver receta →</a>` : ''}
+            ${menu ? `<button onclick="toggleMenuSugerido('${p.id}')" style="font-size:12px;color:var(--gold);background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);padding:6px 14px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;">Ver menú sugerido</button>` : ''}
+            <button onclick="eliminarPlato('${p.id}')" style="font-size:12px;color:var(--text-light);background:transparent;border:1px solid var(--cream-dark);padding:6px 14px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;">Eliminar</button>
+          </div>
         </div>
       </div>
+      ${menu ? `
+      <div id="menu-sugerido-${p.id}" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid var(--cream-dark);">
+        <div style="font-size:12px;font-weight:600;color:var(--navy);margin-bottom:6px;">Menú de 3 pasos sugerido</div>
+        ${renderPasosSugeridos(menu.pasos_3)}
+        <div style="font-size:12px;font-weight:600;color:var(--navy);margin:14px 0 6px;">Menú de 7 pasos sugerido</div>
+        ${renderPasosSugeridos(menu.pasos_7)}
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;">
+          <button onclick="reservarMenuSugerido('${p.id}',3)" style="font-size:12px;color:var(--white);background:var(--navy);border:1px solid var(--navy);padding:6px 14px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;">Reservar 3 pasos</button>
+          <button onclick="reservarMenuSugerido('${p.id}',7)" style="font-size:12px;color:var(--white);background:var(--navy);border:1px solid var(--navy);padding:6px 14px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;">Reservar 7 pasos</button>
+        </div>
+      </div>` : ''}
     </div>`;
   }).join('');
 }
