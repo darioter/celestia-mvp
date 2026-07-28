@@ -6149,6 +6149,7 @@ document.addEventListener('DOMContentLoaded', function() {
           porciones: p.porciones,
           puntaje: p.puntaje,
           fuente: null,
+          cocina: p.cocina,
           vegetariano: p.vegetariano,
           vegano: p.vegano,
           sinGluten: p.sin_gluten
@@ -6210,7 +6211,8 @@ document.addEventListener('DOMContentLoaded', function() {
       resumen: resumen,
       tiempo_minutos: plato.tiempo,
       porciones: plato.porciones,
-      fuente_url: plato.fuente
+      fuente_url: plato.fuente,
+      cocina: plato.cocina
     }]);
     if (btn) {
       if (!resultado.error) { btn.textContent = '✓ Agregado a tu pedido'; }
