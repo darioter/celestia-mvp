@@ -909,6 +909,7 @@
       <button class="filter-btn" onclick="verSeccion('chefs',this)">Chefs</button>
       <button class="filter-btn" onclick="verSeccion('casos',this)">Casos de éxito</button>
       <button class="filter-btn" onclick="verSeccion('platos',this)">Platos</button>
+      <button class="filter-btn" onclick="verSeccion('cupones',this)">Cupones</button>
     </div>
 
     <!-- SECCIÓN PAGOS -->
@@ -1116,6 +1117,36 @@
 
       <div id="platos-grid" style="display:flex;flex-direction:column;gap:10px;">
         <div class="loading">Cargando platos...</div>
+      </div>
+    </div>
+
+    <div id="seccion-cupones" style="display:none;">
+      <div class="section-title">✦ Cupones de descuento</div>
+      <div style="font-size:12px;color:rgba(250,246,239,0.45);margin-bottom:20px;max-width:640px;">
+        Cupones aplicables en la reserva. El de "primera compra automática" se aplica solo, sin código, a clientes que todavía no tienen ninguna reserva.
+      </div>
+
+      <div class="caso-card caso-nuevo" id="cupon-form-nuevo">
+        <div class="caso-form-grid">
+          <input type="text" class="bloqueo-input" id="cupon-descripcion" placeholder="Descripción (uso interno)">
+          <select class="bloqueo-input" id="cupon-tipo">
+            <option value="fijo">Monto fijo ($)</option>
+            <option value="porcentaje">Porcentaje (%)</option>
+          </select>
+          <input type="number" class="bloqueo-input" id="cupon-valor" placeholder="Valor" style="width:140px;">
+          <input type="text" class="bloqueo-input" id="cupon-codigo" placeholder="Código (opcional, ej: BIENVENIDO10)">
+          <input type="date" class="bloqueo-input" id="cupon-fecha-inicio" style="width:160px;" title="Vigencia desde">
+          <input type="date" class="bloqueo-input" id="cupon-fecha-fin" style="width:160px;" title="Vigencia hasta">
+          <input type="number" class="bloqueo-input" id="cupon-usos-maximos" placeholder="Usos máximos (opcional)" style="width:180px;">
+          <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:rgba(250,246,239,0.6);">
+            <label><input type="checkbox" id="cupon-auto-primera"> Aplicar automático en la primera compra (sin código)</label>
+          </div>
+        </div>
+        <button class="bloqueo-agregar" onclick="crearCupon()" style="margin-top:12px;">+ Agregar cupón</button>
+      </div>
+
+      <div id="cupones-grid" style="display:flex;flex-direction:column;gap:10px;margin-top:20px;">
+        <div class="loading">Cargando cupones...</div>
       </div>
     </div>
 
@@ -1832,7 +1863,7 @@ function detenerRealtimeAdmin() {
 }
 
 function verSeccion(seccion, btn) {
-  ['reservas','semanal','agenda','pagos','bloqueos','chefs','casos','platos'].forEach(s => {
+  ['reservas','semanal','agenda','pagos','bloqueos','chefs','casos','platos','cupones'].forEach(s => {
     const el = document.getElementById('seccion-'+s);
     if (el) el.style.display = seccion === s ? 'block' : 'none';
   });
@@ -1849,6 +1880,7 @@ function verSeccion(seccion, btn) {
   if (seccion === 'semanal') cargarSemanal();
   if (seccion === 'casos') cargarCasos();
   if (seccion === 'platos') cargarPlatosCatalogo();
+  if (seccion === 'cupones') cargarCupones();
 }
 
 // ─── CASOS DE ÉXITO ─────────────────────────────────────
@@ -2091,6 +2123,123 @@ async function eliminarPlatoCatalogo(id) {
   if (error) { alert('Error: ' + error.message); return; }
   showToast('Plato eliminado');
   cargarPlatosCatalogo();
+}
+
+// ─── CUPONES DE DESCUENTO ───────────────────────────────
+let todosCupones = [];
+let cuponAbierto = null;
+
+function escapeHtmlCuponAdm(s) { return (s || '').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escapeAttrCuponAdm(s) { return escapeHtmlCuponAdm(s).replace(/"/g,'&quot;'); }
+const fmtCupon = (c) => c.tipo === 'porcentaje' ? `${c.valor}%` : ('$' + Math.round(c.valor).toLocaleString('es-AR'));
+
+async function cargarCupones() {
+  document.getElementById('cupones-grid').innerHTML = '<div class="loading">Cargando...</div>';
+  const { data, error } = await supa.from('cupones_descuento').select('*').order('created_at', { ascending: false });
+  if (error) { document.getElementById('cupones-grid').innerHTML = '<div class="loading">Error al cargar cupones</div>'; return; }
+  todosCupones = data || [];
+  renderCupones();
+}
+
+function toggleCupon(id) {
+  cuponAbierto = cuponAbierto === id ? null : id;
+  renderCupones();
+}
+
+function renderCupones() {
+  if (todosCupones.length === 0) {
+    document.getElementById('cupones-grid').innerHTML = '<div class="empty-state"><div class="empty-state-icon">✦</div>Todavía no hay cupones cargados</div>';
+    return;
+  }
+  document.getElementById('cupones-grid').innerHTML = todosCupones.map(c => {
+    const abierto = cuponAbierto === c.id;
+    const usosTxt = c.usos_maximos ? `${c.usos_actuales}/${c.usos_maximos} usos` : `${c.usos_actuales} usos`;
+    return `
+    <div class="caso-card" data-id="${c.id}">
+      <div style="display:flex;gap:12px;align-items:center;cursor:pointer;" onclick="toggleCupon('${c.id}')">
+        <div style="flex:1;">
+          <div style="font-weight:600;">${escapeHtmlCuponAdm(c.descripcion)} · ${fmtCupon(c)}</div>
+          <div style="font-size:12px;color:rgba(250,246,239,0.5);">
+            ${c.auto_primera_compra ? 'Automático (primera compra)' : (c.codigo ? 'Código: ' + escapeHtmlCuponAdm(c.codigo) : 'Sin código')}
+            · ${c.activo ? 'Activo' : 'Inactivo'} · ${usosTxt}
+          </div>
+        </div>
+        <div style="font-size:18px;">${abierto ? '−' : '+'}</div>
+      </div>
+      ${abierto ? `
+      <div class="caso-form-grid" style="margin-top:14px;">
+        <input type="text" class="bloqueo-input" id="cupon-descripcion-${c.id}" value="${escapeAttrCuponAdm(c.descripcion)}">
+        <select class="bloqueo-input" id="cupon-tipo-${c.id}">
+          <option value="fijo" ${c.tipo==='fijo'?'selected':''}>Monto fijo ($)</option>
+          <option value="porcentaje" ${c.tipo==='porcentaje'?'selected':''}>Porcentaje (%)</option>
+        </select>
+        <input type="number" class="bloqueo-input" id="cupon-valor-${c.id}" value="${c.valor}" style="width:140px;">
+        <input type="text" class="bloqueo-input" id="cupon-codigo-${c.id}" value="${escapeAttrCuponAdm(c.codigo)}" placeholder="Código (opcional)">
+        <input type="date" class="bloqueo-input" id="cupon-fecha-inicio-${c.id}" value="${c.fecha_inicio || ''}" style="width:160px;">
+        <input type="date" class="bloqueo-input" id="cupon-fecha-fin-${c.id}" value="${c.fecha_fin || ''}" style="width:160px;">
+        <input type="number" class="bloqueo-input" id="cupon-usos-maximos-${c.id}" value="${c.usos_maximos ?? ''}" placeholder="Usos máximos" style="width:180px;">
+        <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:rgba(250,246,239,0.6);">
+          <label><input type="checkbox" id="cupon-auto-primera-${c.id}" ${c.auto_primera_compra?'checked':''}> Automático primera compra</label>
+          <label><input type="checkbox" id="cupon-activo-${c.id}" ${c.activo?'checked':''}> Activo</label>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap;">
+        <button class="bloqueo-agregar" onclick="guardarCupon('${c.id}')">Guardar cambios</button>
+        <button class="bloqueo-eliminar" onclick="eliminarCupon('${c.id}')">✕ Eliminar</button>
+      </div>
+      ` : ''}
+    </div>
+  `;
+  }).join('');
+}
+
+async function crearCupon() {
+  const descripcion = document.getElementById('cupon-descripcion').value.trim();
+  if (!descripcion) { alert('Completá al menos la descripción'); return; }
+  const tipo = document.getElementById('cupon-tipo').value;
+  const valor = Number(document.getElementById('cupon-valor').value);
+  if (!valor || valor <= 0) { alert('Ingresá un valor válido'); return; }
+  const codigo = document.getElementById('cupon-codigo').value.trim() || null;
+  const fecha_inicio = document.getElementById('cupon-fecha-inicio').value || null;
+  const fecha_fin = document.getElementById('cupon-fecha-fin').value || null;
+  const usos_maximos = Number(document.getElementById('cupon-usos-maximos').value) || null;
+  const auto_primera_compra = document.getElementById('cupon-auto-primera').checked;
+
+  const { error } = await supa.from('cupones_descuento').insert([{ descripcion, tipo, valor, codigo, fecha_inicio, fecha_fin, usos_maximos, auto_primera_compra, activo: true }]);
+  if (error) { alert('Error: ' + error.message); return; }
+  ['cupon-descripcion','cupon-valor','cupon-codigo','cupon-fecha-inicio','cupon-fecha-fin','cupon-usos-maximos'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('cupon-auto-primera').checked = false;
+  showToast('Cupón agregado');
+  cargarCupones();
+}
+
+async function guardarCupon(id) {
+  const descripcion = document.getElementById(`cupon-descripcion-${id}`).value.trim();
+  const tipo = document.getElementById(`cupon-tipo-${id}`).value;
+  const valor = Number(document.getElementById(`cupon-valor-${id}`).value);
+  const codigo = document.getElementById(`cupon-codigo-${id}`).value.trim() || null;
+  const fecha_inicio = document.getElementById(`cupon-fecha-inicio-${id}`).value || null;
+  const fecha_fin = document.getElementById(`cupon-fecha-fin-${id}`).value || null;
+  const usos_maximos = Number(document.getElementById(`cupon-usos-maximos-${id}`).value) || null;
+  const auto_primera_compra = document.getElementById(`cupon-auto-primera-${id}`).checked;
+  const activo = document.getElementById(`cupon-activo-${id}`).checked;
+
+  const update = { descripcion, tipo, valor, codigo, fecha_inicio, fecha_fin, usos_maximos, auto_primera_compra, activo, updated_at: new Date().toISOString() };
+  const { error } = await supa.from('cupones_descuento').update(update).eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  showToast('Cambios guardados');
+  cargarCupones();
+}
+
+async function eliminarCupon(id) {
+  if (!confirm('¿Eliminar este cupón?')) return;
+  const { error } = await supa.from('cupones_descuento').delete().eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  showToast('Cupón eliminado');
+  cargarCupones();
 }
 
 async function cargarBloqueos() {
