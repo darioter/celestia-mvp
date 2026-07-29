@@ -4916,9 +4916,10 @@ async function guardarBorradorReserva() {
     });
   } catch (e) { console.warn('No se pudo guardar borrador de reserva:', e); }
 }
-function marcarBorradorConvertido(email) {
+async function marcarBorradorConvertido(email) {
   if (!email) return;
-  supa.rpc('marcar_borrador_convertido', { p_email: email }).catch(e => console.warn('No se pudo marcar borrador convertido:', e));
+  try { await supa.rpc('marcar_borrador_convertido', { p_email: email }); }
+  catch (e) { console.warn('No se pudo marcar borrador convertido:', e); }
 }
 
 function collectForm4() {
