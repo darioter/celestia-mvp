@@ -6400,6 +6400,94 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 })();
 </script>
+
+<!-- ─── ANIMACIONES: landing más dinámica (scroll reveal, micro-interacciones, hero, contadores) ─── -->
+<style>
+#beta-landing .cel-anim{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.16,.84,.44,1),transform .7s cubic-bezier(.16,.84,.44,1);}
+#beta-landing .cel-anim.cel-in{opacity:1;transform:translateY(0);}
+#beta-landing .bl-badge{animation:cel-float 3.2s ease-in-out infinite;}
+@keyframes cel-float{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+#beta-landing .bl-h1,#beta-landing .bl-sub,#beta-landing .bl-btns{opacity:0;transform:translateY(18px);animation:cel-rise .8s cubic-bezier(.16,.84,.44,1) forwards;}
+#beta-landing .bl-h1{animation-delay:.1s;}
+#beta-landing .bl-sub{animation-delay:.28s;}
+#beta-landing .bl-btns{animation-delay:.44s;}
+@keyframes cel-rise{to{opacity:1;transform:translateY(0);}}
+#beta-landing .bl-svc-img{transition:transform .5s ease;}
+#beta-landing .bl-svc-c:hover .bl-svc-img{transform:scale(1.06);}
+#beta-landing .bl-bp,#beta-landing .bl-bo,#beta-landing .bl-bg{transition:transform .2s ease,box-shadow .2s ease;}
+#beta-landing .bl-bp:hover,#beta-landing .bl-bo:hover,#beta-landing .bl-bg:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 8px 24px rgba(201,168,76,.25);}
+#beta-landing .bl-ps{transition:transform .25s ease;}
+#beta-landing .bl-ps:hover{transform:translateX(4px);}
+#beta-landing .bl-psn{transition:transform .25s ease;}
+#beta-landing .bl-ps:hover .bl-psn{transform:scale(1.12);}
+@media (prefers-reduced-motion: reduce){
+  #beta-landing .cel-anim,#beta-landing .bl-badge,#beta-landing .bl-h1,#beta-landing .bl-sub,#beta-landing .bl-btns{animation:none!important;transition:none!important;opacity:1!important;transform:none!important;}
+}
+</style>
+<script>
+(function(){
+  function initCelestiaAnim(){
+    var beta = document.getElementById('beta-landing');
+    if (!beta) return;
+    // Scroll reveal: pasos de "cómo funciona" y cards de servicio (no tocamos #bl-casos)
+    var targets = beta.querySelectorAll('.bl-ps, .bl-svc-c');
+    targets.forEach(function(el){ el.classList.add('cel-anim'); });
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if (entry.isIntersecting) {
+            entry.target.classList.add('cel-in');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15 });
+      targets.forEach(function(el){ io.observe(el); });
+    } else {
+      targets.forEach(function(el){ el.classList.add('cel-in'); });
+    }
+
+    // Contadores animados en la barra de stats
+    var statsBar = beta.querySelector('.bl-stats');
+    if (statsBar && 'IntersectionObserver' in window) {
+      var contado = false;
+      function animarContador(el, prefix, target, suffix, decimals) {
+        var duration = 1200, startTime = null;
+        function step(ts) {
+          if (!startTime) startTime = ts;
+          var progress = Math.min((ts - startTime) / duration, 1);
+          var eased = 1 - Math.pow(1 - progress, 3);
+          var val = target * eased;
+          el.textContent = prefix + (decimals ? val.toFixed(decimals) : Math.round(val)) + suffix;
+          if (progress < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      }
+      var statsIO = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if (entry.isIntersecting && !contado) {
+            contado = true;
+            beta.querySelectorAll('.bl-sn').forEach(function(el){
+              var txt = el.textContent.trim();
+              var m = txt.match(/^(\+?)(\d+(\.\d+)?)(.*)$/);
+              if (m) {
+                var decimals = m[3] ? m[3].length - 1 : 0;
+                animarContador(el, m[1] || '', parseFloat(m[2]), m[4] || '', decimals);
+              }
+            });
+            statsIO.disconnect();
+          }
+        });
+      }, { threshold: 0.3 });
+      statsIO.observe(statsBar);
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCelestiaAnim);
+  } else {
+    initCelestiaAnim();
+  }
+})();
+</script>
 </body>
 </html>
 
