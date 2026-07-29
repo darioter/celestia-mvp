@@ -3311,6 +3311,7 @@ async function guardarReservaSupabase(reserva) {
     });
     if (!res.ok) { const err = await res.json().catch(() => ({})); console.error('Error guardando reserva:', err); showToast('Error al guardar: ' + (err.message || res.status)); return; }
     console.log('Reserva guardada OK');
+    marcarBorradorConvertido(payload.email);
     await cargarFechasBloqueadas();
   } catch(e) { console.error('Error de red:', e); showToast('Error de conexión. Reserva guardada localmente.'); }
 }
@@ -4633,6 +4634,7 @@ async function mpConfirmarReserva() {
       return;
     }
     console.log('Chef semanal guardado OK, ref:', ref);
+    marcarBorradorConvertido(mpState.email);
     localStorage.removeItem('celestia_mp_estado');
 
     // Poblar ticket
@@ -4885,6 +4887,38 @@ function checkForm4() {
     return document.getElementById(id).value.trim() !== '';
   });
   document.getElementById('btn-next-4').disabled = !ok;
+  if (ok) programarGuardadoBorrador();
+}
+
+// ─── RECUPERACIÓN DE RESERVA ABANDONADA ─────────────────
+// Guarda (debounced) un borrador apenas el paso 4 está completo, para poder
+// recordarle al anfitrión que termine su reserva si no llega a confirmarla.
+let _borradorTimer = null;
+function programarGuardadoBorrador() {
+  clearTimeout(_borradorTimer);
+  _borradorTimer = setTimeout(guardarBorradorReserva, 1200);
+}
+async function guardarBorradorReserva() {
+  try {
+    const email = document.getElementById('f-email').value.trim();
+    if (!email) return;
+    const nombre = document.getElementById('f-nombre').value.trim();
+    const tel = document.getElementById('f-tel').value.trim();
+    const personasVal = parseInt(document.getElementById('f-personas').value) || null;
+    await supa.rpc('guardar_borrador_reserva', {
+      p_email: email,
+      p_nombre: nombre || null,
+      p_tel: tel || null,
+      p_menu: state.menu?.nombre || null,
+      p_personas: personasVal,
+      p_fecha: state.fecha ? state.fecha.slice(0, 10) : null,
+      p_turno: state.turno || null
+    });
+  } catch (e) { console.warn('No se pudo guardar borrador de reserva:', e); }
+}
+function marcarBorradorConvertido(email) {
+  if (!email) return;
+  supa.rpc('marcar_borrador_convertido', { p_email: email }).catch(e => console.warn('No se pudo marcar borrador convertido:', e));
 }
 
 function collectForm4() {

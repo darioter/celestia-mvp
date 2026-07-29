@@ -2371,6 +2371,11 @@ function renderReservas() {
     if (!f) return '—';
     return new Date(f + 'T12:00:00').toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
   };
+  // Reservas ofrecidas a los chefs hace más de 3hs sin que ninguno acepte
+  const horasSinRespuesta = (r) => {
+    if (r.estado !== 'ofrecida' || !r.ofrecida_at) return 0;
+    return (Date.now() - new Date(r.ofrecida_at).getTime()) / 3600000;
+  };
 
   const MENSAJES = ['M2','M3','M4','M5','M6'];
 
@@ -2431,12 +2436,14 @@ function renderReservas() {
     const m5Activo = enviados.includes('M3');
     const m6Activo = r.saldo_cobrado;
 
+    const hsSinResp = horasSinRespuesta(r);
     return `
-    <div class="reserva-card estado-${r.estado}" id="card-${r.id}">
+    <div class="reserva-card estado-${r.estado}" id="card-${r.id}" ${hsSinResp >= 3 ? 'style="border-left:3px solid #E2A33E;"' : ''}>
       <div>
         <div class="res-fecha">${fmtFecha(r.fecha)}</div>
         <div class="res-turno">${r.turno === 'almuerzo' ? '☀ Almuerzo' : '🌙 Cena'}</div>
         <div class="res-ref">${r.ref}</div>
+        ${hsSinResp >= 3 ? `<div style="margin-top:6px;font-size:11px;color:#E2A33E;font-weight:600;">⚠ ${Math.floor(hsSinResp)}hs sin que ningún chef acepte</div>` : ''}
         <div class="m-indicators" style="margin-top:10px;">${mDots}</div>
       </div>
       <div class="res-cliente">
