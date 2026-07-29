@@ -910,6 +910,7 @@
       <button class="filter-btn" onclick="verSeccion('casos',this)">Casos de éxito</button>
       <button class="filter-btn" onclick="verSeccion('platos',this)">Platos</button>
       <button class="filter-btn" onclick="verSeccion('cupones',this)">Cupones</button>
+      <button class="filter-btn" onclick="verSeccion('banners',this)">Banners</button>
     </div>
 
     <!-- SECCIÓN PAGOS -->
@@ -1147,6 +1148,33 @@
 
       <div id="cupones-grid" style="display:flex;flex-direction:column;gap:10px;margin-top:20px;">
         <div class="loading">Cargando cupones...</div>
+      </div>
+    </div>
+
+    <div id="seccion-banners" style="display:none;">
+      <div class="section-title">✦ Banners de temporada</div>
+      <div style="font-size:12px;color:rgba(250,246,239,0.45);margin-bottom:20px;max-width:640px;">
+        El banner de arriba de la landing muestra el de mayor prioridad cuya ventana de fechas (MM-DD, se repite todos los años) incluya el día de hoy. El de "Bienvenida" no tiene fechas — es el que se muestra cuando ninguna fecha especial está activa.
+      </div>
+
+      <div class="caso-card caso-nuevo" id="banner-form-nuevo">
+        <div class="caso-form-grid">
+          <input type="text" class="bloqueo-input" id="banner-titulo" placeholder="Título (uso interno, ej: Día de la Madre)">
+          <input type="text" class="bloqueo-input" id="banner-icono" placeholder="Ícono/emoji" style="width:90px;" value="✦">
+          <input type="text" class="bloqueo-input" id="banner-mensaje" placeholder="Mensaje del banner" style="min-width:320px;flex:1;">
+          <select class="bloqueo-input" id="banner-cta">
+            <option value="reservar">Reservar experiencia</option>
+            <option value="semanal">Chef semanal</option>
+          </select>
+          <input type="text" class="bloqueo-input" id="banner-fecha-inicio" placeholder="Desde MM-DD (opcional)" style="width:170px;">
+          <input type="text" class="bloqueo-input" id="banner-fecha-fin" placeholder="Hasta MM-DD (opcional)" style="width:170px;">
+          <input type="number" class="bloqueo-input" id="banner-prioridad" placeholder="Prioridad (0 = default)" style="width:180px;" value="0">
+        </div>
+        <button class="bloqueo-agregar" onclick="crearBanner()" style="margin-top:12px;">+ Agregar banner</button>
+      </div>
+
+      <div id="banners-grid" style="display:flex;flex-direction:column;gap:10px;margin-top:20px;">
+        <div class="loading">Cargando banners...</div>
       </div>
     </div>
 
@@ -1863,7 +1891,7 @@ function detenerRealtimeAdmin() {
 }
 
 function verSeccion(seccion, btn) {
-  ['reservas','semanal','agenda','pagos','bloqueos','chefs','casos','platos','cupones'].forEach(s => {
+  ['reservas','semanal','agenda','pagos','bloqueos','chefs','casos','platos','cupones','banners'].forEach(s => {
     const el = document.getElementById('seccion-'+s);
     if (el) el.style.display = seccion === s ? 'block' : 'none';
   });
@@ -1881,6 +1909,7 @@ function verSeccion(seccion, btn) {
   if (seccion === 'casos') cargarCasos();
   if (seccion === 'platos') cargarPlatosCatalogo();
   if (seccion === 'cupones') cargarCupones();
+  if (seccion === 'banners') cargarBanners();
 }
 
 // ─── CASOS DE ÉXITO ─────────────────────────────────────
@@ -2240,6 +2269,118 @@ async function eliminarCupon(id) {
   if (error) { alert('Error: ' + error.message); return; }
   showToast('Cupón eliminado');
   cargarCupones();
+}
+
+// ─── BANNERS DE TEMPORADA ───────────────────────────────
+let todosBanners = [];
+let bannerAbierto = null;
+
+function escapeHtmlBannerAdm(s) { return (s || '').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escapeAttrBannerAdm(s) { return escapeHtmlBannerAdm(s).replace(/"/g,'&quot;'); }
+
+async function cargarBanners() {
+  document.getElementById('banners-grid').innerHTML = '<div class="loading">Cargando...</div>';
+  const { data, error } = await supa.from('banners_temporada').select('*').order('prioridad', { ascending: false });
+  if (error) { document.getElementById('banners-grid').innerHTML = '<div class="loading">Error al cargar banners</div>'; return; }
+  todosBanners = data || [];
+  renderBanners();
+}
+
+function toggleBanner(id) {
+  bannerAbierto = bannerAbierto === id ? null : id;
+  renderBanners();
+}
+
+function renderBanners() {
+  if (todosBanners.length === 0) {
+    document.getElementById('banners-grid').innerHTML = '<div class="empty-state"><div class="empty-state-icon">✦</div>Todavía no hay banners cargados</div>';
+    return;
+  }
+  document.getElementById('banners-grid').innerHTML = todosBanners.map(b => {
+    const abierto = bannerAbierto === b.id;
+    const fechasTxt = (b.fecha_inicio || b.fecha_fin) ? `${b.fecha_inicio || '—'} al ${b.fecha_fin || '—'}` : 'Sin fechas (default)';
+    return `
+    <div class="caso-card" data-id="${b.id}">
+      <div style="display:flex;gap:12px;align-items:center;cursor:pointer;" onclick="toggleBanner('${b.id}')">
+        <div style="flex:1;">
+          <div style="font-weight:600;">${b.icono || '✦'} ${escapeHtmlBannerAdm(b.titulo)}</div>
+          <div style="font-size:12px;color:rgba(250,246,239,0.5);">
+            ${fechasTxt} · Prioridad ${b.prioridad} · ${b.activo ? 'Activo' : 'Inactivo'}
+          </div>
+        </div>
+        <div style="font-size:18px;">${abierto ? '−' : '+'}</div>
+      </div>
+      ${abierto ? `
+      <div class="caso-form-grid" style="margin-top:14px;">
+        <input type="text" class="bloqueo-input" id="banner-titulo-${b.id}" value="${escapeAttrBannerAdm(b.titulo)}">
+        <input type="text" class="bloqueo-input" id="banner-icono-${b.id}" value="${escapeAttrBannerAdm(b.icono)}" style="width:90px;">
+        <input type="text" class="bloqueo-input" id="banner-mensaje-${b.id}" value="${escapeAttrBannerAdm(b.mensaje)}" style="min-width:320px;flex:1;">
+        <select class="bloqueo-input" id="banner-cta-${b.id}">
+          <option value="reservar" ${b.cta_accion==='reservar'?'selected':''}>Reservar experiencia</option>
+          <option value="semanal" ${b.cta_accion==='semanal'?'selected':''}>Chef semanal</option>
+        </select>
+        <input type="text" class="bloqueo-input" id="banner-fecha-inicio-${b.id}" value="${b.fecha_inicio || ''}" placeholder="MM-DD" style="width:170px;">
+        <input type="text" class="bloqueo-input" id="banner-fecha-fin-${b.id}" value="${b.fecha_fin || ''}" placeholder="MM-DD" style="width:170px;">
+        <input type="number" class="bloqueo-input" id="banner-prioridad-${b.id}" value="${b.prioridad}" style="width:180px;">
+        <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:rgba(250,246,239,0.6);">
+          <label><input type="checkbox" id="banner-activo-${b.id}" ${b.activo?'checked':''}> Activo</label>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap;">
+        <button class="bloqueo-agregar" onclick="guardarBanner('${b.id}')">Guardar cambios</button>
+        <button class="bloqueo-eliminar" onclick="eliminarBanner('${b.id}')">✕ Eliminar</button>
+      </div>
+      ` : ''}
+    </div>
+  `;
+  }).join('');
+}
+
+async function crearBanner() {
+  const titulo = document.getElementById('banner-titulo').value.trim();
+  const mensaje = document.getElementById('banner-mensaje').value.trim();
+  if (!titulo || !mensaje) { alert('Completá al menos título y mensaje'); return; }
+  const icono = document.getElementById('banner-icono').value.trim() || '✦';
+  const cta_accion = document.getElementById('banner-cta').value;
+  const fecha_inicio = document.getElementById('banner-fecha-inicio').value.trim() || null;
+  const fecha_fin = document.getElementById('banner-fecha-fin').value.trim() || null;
+  const prioridad = Number(document.getElementById('banner-prioridad').value) || 0;
+
+  const { error } = await supa.from('banners_temporada').insert([{ titulo, mensaje, icono, cta_accion, fecha_inicio, fecha_fin, prioridad, activo: true }]);
+  if (error) { alert('Error: ' + error.message); return; }
+  ['banner-titulo','banner-mensaje','banner-fecha-inicio','banner-fecha-fin'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('banner-icono').value = '✦';
+  document.getElementById('banner-prioridad').value = '0';
+  showToast('Banner agregado');
+  cargarBanners();
+}
+
+async function guardarBanner(id) {
+  const titulo = document.getElementById(`banner-titulo-${id}`).value.trim();
+  const mensaje = document.getElementById(`banner-mensaje-${id}`).value.trim();
+  const icono = document.getElementById(`banner-icono-${id}`).value.trim() || '✦';
+  const cta_accion = document.getElementById(`banner-cta-${id}`).value;
+  const fecha_inicio = document.getElementById(`banner-fecha-inicio-${id}`).value.trim() || null;
+  const fecha_fin = document.getElementById(`banner-fecha-fin-${id}`).value.trim() || null;
+  const prioridad = Number(document.getElementById(`banner-prioridad-${id}`).value) || 0;
+  const activo = document.getElementById(`banner-activo-${id}`).checked;
+
+  const update = { titulo, mensaje, icono, cta_accion, fecha_inicio, fecha_fin, prioridad, activo, updated_at: new Date().toISOString() };
+  const { error } = await supa.from('banners_temporada').update(update).eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  showToast('Cambios guardados');
+  cargarBanners();
+}
+
+async function eliminarBanner(id) {
+  if (!confirm('¿Eliminar este banner?')) return;
+  const { error } = await supa.from('banners_temporada').delete().eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  showToast('Banner eliminado');
+  cargarBanners();
 }
 
 async function cargarBloqueos() {
