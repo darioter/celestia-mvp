@@ -1162,6 +1162,7 @@
           <input type="text" class="bloqueo-input" id="banner-titulo" placeholder="Título (uso interno, ej: Día de la Madre)">
           <input type="text" class="bloqueo-input" id="banner-icono" placeholder="Ícono/emoji" style="width:90px;" value="✦">
           <input type="text" class="bloqueo-input" id="banner-mensaje" placeholder="Mensaje del banner" style="min-width:320px;flex:1;">
+          <input type="text" class="bloqueo-input" id="banner-cta-texto" placeholder="Texto del botón" style="width:200px;" value="Reservá tu fecha →">
           <select class="bloqueo-input" id="banner-cta">
             <option value="reservar">Reservar experiencia</option>
             <option value="semanal">Chef semanal</option>
@@ -2315,6 +2316,7 @@ function renderBanners() {
         <input type="text" class="bloqueo-input" id="banner-titulo-${b.id}" value="${escapeAttrBannerAdm(b.titulo)}">
         <input type="text" class="bloqueo-input" id="banner-icono-${b.id}" value="${escapeAttrBannerAdm(b.icono)}" style="width:90px;">
         <input type="text" class="bloqueo-input" id="banner-mensaje-${b.id}" value="${escapeAttrBannerAdm(b.mensaje)}" style="min-width:320px;flex:1;">
+        <input type="text" class="bloqueo-input" id="banner-cta-texto-${b.id}" value="${escapeAttrBannerAdm(b.cta_texto)}" style="width:200px;">
         <select class="bloqueo-input" id="banner-cta-${b.id}">
           <option value="reservar" ${b.cta_accion==='reservar'?'selected':''}>Reservar experiencia</option>
           <option value="semanal" ${b.cta_accion==='semanal'?'selected':''}>Chef semanal</option>
@@ -2341,18 +2343,20 @@ async function crearBanner() {
   const mensaje = document.getElementById('banner-mensaje').value.trim();
   if (!titulo || !mensaje) { alert('Completá al menos título y mensaje'); return; }
   const icono = document.getElementById('banner-icono').value.trim() || '✦';
+  const cta_texto = document.getElementById('banner-cta-texto').value.trim() || 'Reservá tu fecha →';
   const cta_accion = document.getElementById('banner-cta').value;
   const fecha_inicio = document.getElementById('banner-fecha-inicio').value.trim() || null;
   const fecha_fin = document.getElementById('banner-fecha-fin').value.trim() || null;
   const prioridad = Number(document.getElementById('banner-prioridad').value) || 0;
 
-  const { error } = await supa.from('banners_temporada').insert([{ titulo, mensaje, icono, cta_accion, fecha_inicio, fecha_fin, prioridad, activo: true }]);
+  const { error } = await supa.from('banners_temporada').insert([{ titulo, mensaje, icono, cta_texto, cta_accion, fecha_inicio, fecha_fin, prioridad, activo: true }]);
   if (error) { alert('Error: ' + error.message); return; }
   ['banner-titulo','banner-mensaje','banner-fecha-inicio','banner-fecha-fin'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
   document.getElementById('banner-icono').value = '✦';
+  document.getElementById('banner-cta-texto').value = 'Reservá tu fecha →';
   document.getElementById('banner-prioridad').value = '0';
   showToast('Banner agregado');
   cargarBanners();
@@ -2362,13 +2366,14 @@ async function guardarBanner(id) {
   const titulo = document.getElementById(`banner-titulo-${id}`).value.trim();
   const mensaje = document.getElementById(`banner-mensaje-${id}`).value.trim();
   const icono = document.getElementById(`banner-icono-${id}`).value.trim() || '✦';
+  const cta_texto = document.getElementById(`banner-cta-texto-${id}`).value.trim() || 'Reservá tu fecha →';
   const cta_accion = document.getElementById(`banner-cta-${id}`).value;
   const fecha_inicio = document.getElementById(`banner-fecha-inicio-${id}`).value.trim() || null;
   const fecha_fin = document.getElementById(`banner-fecha-fin-${id}`).value.trim() || null;
   const prioridad = Number(document.getElementById(`banner-prioridad-${id}`).value) || 0;
   const activo = document.getElementById(`banner-activo-${id}`).checked;
 
-  const update = { titulo, mensaje, icono, cta_accion, fecha_inicio, fecha_fin, prioridad, activo, updated_at: new Date().toISOString() };
+  const update = { titulo, mensaje, icono, cta_texto, cta_accion, fecha_inicio, fecha_fin, prioridad, activo, updated_at: new Date().toISOString() };
   const { error } = await supa.from('banners_temporada').update(update).eq('id', id);
   if (error) { alert('Error: ' + error.message); return; }
   showToast('Cambios guardados');
