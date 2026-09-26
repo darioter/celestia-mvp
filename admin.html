@@ -1015,7 +1015,7 @@
     <div id="seccion-reservas">
     <div class="filters">
       <button class="filter-btn active" onclick="setFiltro('todas', this)">Todas</button>
-      <button class="filter-btn" onclick="setFiltro('reservada', this)">Reservadas</button>
+      <button class="filter-btn" onclick="setFiltro('reservada', this)">Pendientes</button>
       <button class="filter-btn" onclick="setFiltro('ofrecida', this)">Ofrecidas</button>
       <button class="filter-btn" onclick="setFiltro('confirmada', this)">Confirmadas</button>
       <button class="filter-btn" onclick="setFiltro('cancelada', this)">Canceladas</button>
@@ -2500,6 +2500,34 @@ function actualizarStats() {
   if (elOfrec) elOfrec.textContent = ofrecidas;
 }
 
+// ─── TRASLADO (reservas fuera de CABA/GBA) ─────────────────
+// Se guarda dentro de "notas" para no depender de cambios en la base:
+//   [TRASLADO A COTIZAR · Córdoba] ...   → pendiente de cotizar
+//   [TRASLADO $85.000 · Córdoba] ...     → ya cotizado
+const TRASLADO_RE = /^\[TRASLADO (A COTIZAR|\$([\d.]+)) · ([^\]]*)\]\s*/;
+function infoTraslado(r) {
+  const m = (r.notas || '').match(TRASLADO_RE);
+  if (!m) return null;
+  return {
+    cotizado: m[1] !== 'A COTIZAR',
+    monto: m[2] ? parseInt(m[2].replace(/\./g, '')) : 0,
+    zona: m[3],
+    resto: (r.notas || '').replace(TRASLADO_RE, '')
+  };
+}
+async function guardarTraslado(id) {
+  const r = todasReservas.find(x => x.id === id);
+  const tr = r && infoTraslado(r);
+  if (!tr) return;
+  const monto = parseInt(document.getElementById('traslado-' + id).value);
+  if (!monto || monto < 0) { alert('Ingresá el monto del traslado'); return; }
+  const notas = `[TRASLADO $${monto.toLocaleString('es-AR')} · ${tr.zona}]${tr.resto ? ' ' + tr.resto : ''}`;
+  const { error } = await supa.from('reservas').update({ notas }).eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  r.notas = notas;
+  renderReservas();
+}
+
 function renderReservas() {
   const reservas = filtroActual === 'todas'
     ? todasReservas
@@ -2568,7 +2596,9 @@ function renderReservas() {
 
     const msgM2 = `Hola ${primerNombre} 👋\\n\\nRecibimos tu solicitud para una *${r.menu}* el *${fechaStr}* en turno *${turnoStr}* para *${r.personas} personas*.\\n\\nPara confirmar te enviamos en breve los datos de pago de la seña — esto reserva el turno exclusivamente para vos.\\n\\nCualquier consulta respondemos por acá.\\n\\n— Daro · Celestia Chef Privado\\n\\n_Política de cancelación: más de 15 días devolución total · entre 7 y 15 días 50% · menos de 7 días sin devolución._`;
 
-    const msgM3 = `Hola ${primerNombre}, confirmamos tu experiencia Celestia 🍽\\n\\n*${r.menu}* · ${fechaStr} · ${turnoStr} · ${r.personas} personas\\n\\nEl honorario acordado es de *${fmt(honorario)}*. La seña para confirmar la fecha es *${fmt(p.senia_cliente)}* (50%).\\n\\nPodés transferir al alias: *daro.chef*\\n\\nUna vez acreditada, la fecha queda reservada exclusivamente para vos.\\n\\n— Daro · Celestia Chef Privado`;
+    const tr = infoTraslado(r);
+    const trasladoTxt = tr && tr.cotizado ? `El traslado a ${tr.zona} es de *${fmt(tr.monto)}* y se abona junto con la seña (total a transferir: *${fmt(p.senia_cliente + tr.monto)}*).\\n\\n` : '';
+    const msgM3 = `Hola ${primerNombre}, confirmamos tu experiencia Celestia 🍽\\n\\n*${r.menu}* · ${fechaStr} · ${turnoStr} · ${r.personas} personas\\n\\nEl honorario acordado es de *${fmt(honorario)}*. La seña para confirmar la fecha es *${fmt(p.senia_cliente)}* (50%).\\n\\n${trasladoTxt}Podés transferir al alias: *daro.chef*\\n\\nUna vez acreditada, la fecha queda reservada exclusivamente para vos.\\n\\n— Daro · Celestia Chef Privado`;
 
     const msgM4 = `Hola ${primerNombre} 👋 Tu experiencia Celestia es el *${fechaStr}*.\\n\\nTe confirmo los horarios aproximados: llegaré alrededor de las *${misePlaceHora}* para el mise en place. El servicio comienza a las *${r.turno === 'almuerzo' ? '12:00hs' : '20:00hs'}*.\\n\\nEn los días previos coordinamos los últimos detalles del menú por acá.\\n\\n¡Nos vemos pronto! — Daro · Celestia Chef Privado`;
 
@@ -2577,7 +2607,7 @@ function renderReservas() {
     const msgM6 = `Hola ${primerNombre}, fue un placer compartir la experiencia con vos y tus invitados 🙌\\n\\nEsperamos que haya sido una noche especial. Si tenés un momento, nos ayuda mucho una reseña en Google — es lo que permite que más personas conozcan Celestia.\\n\\nhttps://g.page/r/CWYAy7Wn5FfhEAI/review\\n\\n¡Hasta la próxima! — Daro · Celestia Chef Privado`;
 
     const m2Activo = true;
-    const m3Activo = true;
+    const m3Activo = !(tr && !tr.cotizado);
     const m4Activo = enviados.includes('M3');
     const m5Activo = enviados.includes('M3');
     const m6Activo = r.saldo_cobrado;
@@ -2596,8 +2626,14 @@ function renderReservas() {
         <div class="res-nombre">${r.nombre || '—'}</div>
         <div class="res-contacto">${r.tel || ''}<br>${r.email || ''}</div>
         ${r.dir ? `<div class="res-contacto" style="margin-top:4px;">📍 ${r.dir}</div>` : ''}
-        ${r.notas ? `<div class="res-contacto" style="margin-top:4px;font-style:italic;">${r.notas}</div>` : ''}
+        ${(tr ? tr.resto : r.notas) ? `<div class="res-contacto" style="margin-top:4px;font-style:italic;">${tr ? tr.resto : r.notas}</div>` : ''}
         ${r.ocasion ? `<div class="res-contacto" style="margin-top:4px;">🎉 ${r.ocasion}</div>` : ''}
+        ${tr ? `<div style="margin-top:10px;padding:10px 12px;border-radius:8px;background:rgba(226,163,62,0.12);border:1px solid rgba(226,163,62,0.45);">
+          <div style="font-size:11px;color:#E2A33E;font-weight:600;letter-spacing:.04em;">✈ FUERA DE AMBA · ${tr.zona}</div>
+          <div style="font-size:11px;color:rgba(250,246,239,0.55);margin:4px 0 8px;">${tr.cotizado ? 'Traslado cotizado: ' + fmt(tr.monto) : 'Traslado a cotizar — no pedir seña todavía'}</div>
+          <div class="precio-wrap"><input class="precio-input" id="traslado-${r.id}" value="${tr.monto || ''}" type="number" placeholder="Traslado $">
+          <button class="precio-ok-btn" onclick="guardarTraslado('${r.id}')">✓ OK</button></div>
+        </div>` : ''}
       </div>
       <div>
         <div class="res-menu">${r.menu || '—'}</div>
@@ -2610,13 +2646,14 @@ function renderReservas() {
         <div style="font-size:11px;color:rgba(250,246,239,0.35);margin-top:4px;line-height:1.6;">
           <div>Seña cliente: ${fmt(p.senia_cliente)} (50%)</div>
           <div>Saldo cliente: ${fmt(p.saldo_cliente)} (50%)</div>
-          <div style="margin-top:3px;color:rgba(93,191,135,0.7);">Chef: ${fmt(p.total_chef)} (70%) = ${fmt(p.adelanto_chef)} + ${fmt(p.saldo_chef)}</div>
-          <div style="color:rgba(201,168,76,0.6);">App: ${fmt(p.comision_app)} (30%)</div>
+          ${tr && tr.cotizado ? `<div style="margin-top:3px;color:#E2A33E;">+ Traslado: ${fmt(tr.monto)}</div>` : ''}
         </div>
-        <div style="margin-top:8px;"><span class="estado-badge ${r.estado}">${r.estado}</span></div>
+        <div style="margin-top:8px;"><span class="estado-badge ${r.estado}">${r.estado === 'reservada' ? 'pendiente de validación' : r.estado}</span></div>
       </div>
       <div class="res-acciones">
-        ${r.estado === 'reservada' ? `<button class="accion-btn btn-confirmar" style="background:rgba(124,158,191,0.15);border-color:rgba(124,158,191,0.4);color:#7C9EBF;" onclick="ofrecerAChefs('${r.id}')">👨‍🍳 Ofrecer a chefs</button>` : ''}
+        ${r.estado === 'reservada' ? (tr && !tr.cotizado
+          ? `<div style="font-size:11px;color:#E2A33E;padding:6px 0;">Cotizá el traslado para habilitar la seña (M3)</div>`
+          : `<button class="accion-btn btn-confirmar" onclick="cambiarEstado('${r.id}','confirmada')">✓ Validar · seña cobrada</button>`) : ''}
         ${r.estado === 'ofrecida' && !r.chef_id ? `<div style="font-size:11px;color:rgba(124,158,191,0.7);padding:6px 0;letter-spacing:0.06em;">⏳ Esperando que un chef acepte...</div>` : ''}
         ${(r.estado === 'ofrecida' || r.estado === 'confirmada') && r.chef_id ? `
           <div style="display:flex;align-items:center;gap:8px;padding:6px 0;margin-bottom:6px;">
@@ -2792,13 +2829,11 @@ function renderSemanal() {
         <div style="font-size:11px;color:rgba(250,246,239,0.35);margin-top:4px;line-height:1.6;">
           <div>Seña cliente: ${fmt(p.senia_cliente)} (50%)</div>
           <div>Saldo cliente: ${fmt(p.saldo_cliente)} (50%)</div>
-          <div style="color:rgba(93,191,135,0.7);">Chef: ${fmt(p.total_chef)} (70%) = ${fmt(p.adelanto_chef)} + ${fmt(p.saldo_chef)}</div>
-          <div style="color:rgba(201,168,76,0.6);">App: ${fmt(p.comision_app)} (30%)</div>
+
         </div>
         <div style="margin-top:8px;"><span class="estado-badge ${r.estado}">${r.estado}</span></div>
       </div>
       <div class="res-acciones">
-        ${r.estado === 'reservada' ? `<button class="accion-btn btn-confirmar" style="background:rgba(124,158,191,0.15);border-color:rgba(124,158,191,0.4);color:#7C9EBF;" onclick="ofrecerAChefsSemanal('${r.id}')">👨‍🍳 Ofrecer a chefs</button>` : ''}
         ${r.estado === 'ofrecida' && !r.chef_id ? `<div style="font-size:11px;color:rgba(124,158,191,0.7);padding:6px 0;letter-spacing:0.06em;">⏳ Esperando que un chef acepte...</div>` : ''}
         ${(r.estado === 'ofrecida' || r.estado === 'confirmada') && r.chef_id ? `<div style="font-size:11px;color:#5DBF87;padding:6px 0;">👨‍🍳 Chef asignado</div>` : ''}
         ${r.estado === 'ofrecida' || r.estado === 'reservada' ? `<button class="accion-btn btn-confirmar" onclick="cambiarEstadoSemanal('${r.id}','confirmada')">✓ Confirmar seña</button>` : ''}
