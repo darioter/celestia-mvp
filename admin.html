@@ -908,6 +908,7 @@
       <button class="filter-btn" onclick="verSeccion('bloqueos',this)">Bloquear días</button>
       <button class="filter-btn" onclick="verSeccion('chefs',this)">Chefs</button>
       <button class="filter-btn" onclick="verSeccion('casos',this)">Casos de éxito</button>
+      <button class="filter-btn" onclick="verSeccion('resenas',this)">Reseñas</button>
       <button class="filter-btn" onclick="verSeccion('platos',this)">Platos</button>
       <button class="filter-btn" onclick="verSeccion('cupones',this)">Cupones</button>
       <button class="filter-btn" onclick="verSeccion('banners',this)">Banners</button>
@@ -1065,6 +1066,25 @@
       <div id="casos-grid" style="display:flex;flex-direction:column;gap:16px;margin-top:24px;">
         <div class="loading">Cargando casos...</div>
       </div>
+    </div>
+
+    <!-- SECCIÓN RESEÑAS -->
+    <div id="seccion-resenas" style="display:none;">
+      <div class="section-title">✦ Reseñas de clientes — se muestran en la landing</div>
+      <div style="font-size:12px;color:rgba(250,246,239,0.45);margin-bottom:20px;max-width:640px;">
+        Solo reseñas reales. Se muestran las visibles, en el orden indicado (máximo 6). Si no hay ninguna visible, la sección no aparece en la web.
+      </div>
+      <div class="caso-card caso-nuevo">
+        <div class="caso-form-grid">
+          <input type="text" class="bloqueo-input" id="res-nombre" placeholder="Nombre (ej: Lucía G.)">
+          <input type="text" class="bloqueo-input" id="res-zona" placeholder="Zona / ocasión (ej: Palermo · Aniversario)">
+          <select class="bloqueo-input" id="res-estrellas" style="width:160px;"><option value="5">★★★★★ 5</option><option value="4">★★★★ 4</option><option value="3">★★★ 3</option></select>
+          <input type="number" class="bloqueo-input" id="res-orden" placeholder="Orden (0, 1, 2...)" style="width:160px;">
+          <textarea class="bloqueo-input caso-textarea" id="res-texto" placeholder="Texto de la reseña"></textarea>
+        </div>
+        <button class="bloqueo-agregar" onclick="crearResena()" style="margin-top:12px;">+ Agregar reseña</button>
+      </div>
+      <div id="resenas-grid" style="display:flex;flex-direction:column;gap:16px;margin-top:24px;"><div class="loading">Cargando reseñas...</div></div>
     </div>
 
     <!-- SECCIÓN PLATOS (Explorar platos) -->
@@ -1892,7 +1912,7 @@ function detenerRealtimeAdmin() {
 }
 
 function verSeccion(seccion, btn) {
-  ['reservas','semanal','agenda','pagos','bloqueos','chefs','casos','platos','cupones','banners'].forEach(s => {
+  ['reservas','semanal','agenda','pagos','bloqueos','chefs','casos','resenas','platos','cupones','banners'].forEach(s => {
     const el = document.getElementById('seccion-'+s);
     if (el) el.style.display = seccion === s ? 'block' : 'none';
   });
@@ -1908,6 +1928,7 @@ function verSeccion(seccion, btn) {
   if (seccion === 'chefs') cargarChefs();
   if (seccion === 'semanal') cargarSemanal();
   if (seccion === 'casos') cargarCasos();
+  if (seccion === 'resenas') cargarResenas();
   if (seccion === 'platos') cargarPlatosCatalogo();
   if (seccion === 'cupones') cargarCupones();
   if (seccion === 'banners') cargarBanners();
@@ -2018,6 +2039,63 @@ async function eliminarCaso(id) {
   const { error } = await supa.from('casos_exito').delete().eq('id', id);
   if (error) { alert('Error: ' + error.message); return; }
   cargarCasos();
+}
+
+// ─── RESEÑAS ────────────────────────────────────────────
+let todasResenas = [];
+async function cargarResenas() {
+  const grid = document.getElementById('resenas-grid');
+  grid.innerHTML = '<div class="loading">Cargando...</div>';
+  const { data, error } = await supa.from('resenas').select('*').order('orden', { ascending: true }).order('created_at', { ascending: false });
+  if (error) { grid.innerHTML = '<div class="loading">Error al cargar reseñas: ' + escapeHtmlCaso(error.message) + '. ¿Corriste el SQL de supabase/resenas.sql?</div>'; return; }
+  todasResenas = data || [];
+  if (!todasResenas.length) { grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">✦</div>Todavía no hay reseñas cargadas</div>'; return; }
+  grid.innerHTML = todasResenas.map(r => `
+    <div class="caso-card">
+      <div class="caso-form-grid">
+        <input type="text" class="bloqueo-input" id="res-nombre-${r.id}" value="${escapeAttrCaso(r.nombre)}" placeholder="Nombre">
+        <input type="text" class="bloqueo-input" id="res-zona-${r.id}" value="${escapeAttrCaso(r.zona)}" placeholder="Zona / ocasión">
+        <select class="bloqueo-input" id="res-estrellas-${r.id}" style="width:160px;">${[5,4,3].map(n => `<option value="${n}" ${Number(r.estrellas)===n?'selected':''}>${'★'.repeat(n)} ${n}</option>`).join('')}</select>
+        <input type="number" class="bloqueo-input" id="res-orden-${r.id}" value="${r.orden ?? 0}" style="width:160px;">
+        <textarea class="bloqueo-input caso-textarea" id="res-texto-${r.id}">${escapeHtmlCaso(r.texto)}</textarea>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap;">
+        <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(250,246,239,0.6);"><input type="checkbox" id="res-activo-${r.id}" ${r.activo ? 'checked' : ''}> Visible en la web</label>
+        <button class="bloqueo-agregar" onclick="guardarResena('${r.id}')">Guardar cambios</button>
+        <button class="bloqueo-eliminar" onclick="eliminarResena('${r.id}')">✕ Eliminar</button>
+      </div>
+    </div>`).join('');
+}
+async function crearResena() {
+  const nombre = document.getElementById('res-nombre').value.trim();
+  const texto = document.getElementById('res-texto').value.trim();
+  if (!nombre || !texto) { alert('Completá nombre y texto'); return; }
+  const row = { nombre, texto, zona: document.getElementById('res-zona').value.trim(), estrellas: Number(document.getElementById('res-estrellas').value) || 5, orden: Number(document.getElementById('res-orden').value) || 0, activo: true };
+  const { error } = await supa.from('resenas').insert([row]);
+  if (error) { alert('Error: ' + error.message); return; }
+  ['res-nombre','res-zona','res-orden','res-texto'].forEach(id => { document.getElementById(id).value = ''; });
+  showToast('Reseña agregada');
+  cargarResenas();
+}
+async function guardarResena(id) {
+  const upd = {
+    nombre: document.getElementById(`res-nombre-${id}`).value.trim(),
+    zona: document.getElementById(`res-zona-${id}`).value.trim(),
+    estrellas: Number(document.getElementById(`res-estrellas-${id}`).value) || 5,
+    orden: Number(document.getElementById(`res-orden-${id}`).value) || 0,
+    texto: document.getElementById(`res-texto-${id}`).value.trim(),
+    activo: document.getElementById(`res-activo-${id}`).checked
+  };
+  const { error } = await supa.from('resenas').update(upd).eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  showToast('Cambios guardados');
+  cargarResenas();
+}
+async function eliminarResena(id) {
+  if (!confirm('¿Eliminar esta reseña?')) return;
+  const { error } = await supa.from('resenas').delete().eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  cargarResenas();
 }
 
 // ─── PLATOS (Explorar platos) ───────────────────────────
