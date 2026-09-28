@@ -2731,7 +2731,8 @@ function renderReservas() {
       <div class="res-acciones">
         ${r.estado === 'reservada' ? (tr && !tr.cotizado
           ? `<div style="font-size:11px;color:#E2A33E;padding:6px 0;">Cotizá el traslado para habilitar la seña (M3)</div>`
-          : `<button class="accion-btn btn-confirmar" onclick="cambiarEstado('${r.id}','confirmada')">✓ Validar · seña cobrada</button>`) : ''}
+          : `<button class="accion-btn btn-confirmar" onclick="validarYAsignar('${r.id}')">✓ Validar · seña cobrada</button>`) : ''}
+        ${r.estado === 'confirmada' && !r.chef_id ? `<button class="accion-btn btn-confirmar" onclick="validarYAsignar('${r.id}')">👨‍🍳 Pasar a mi portal de chef</button>` : ''}
         ${r.estado === 'ofrecida' && !r.chef_id ? `<div style="font-size:11px;color:rgba(124,158,191,0.7);padding:6px 0;letter-spacing:0.06em;">⏳ Esperando que un chef acepte...</div>` : ''}
         ${(r.estado === 'ofrecida' || r.estado === 'confirmada') && r.chef_id ? `
           <div style="display:flex;align-items:center;gap:8px;padding:6px 0;margin-bottom:6px;">
@@ -2810,6 +2811,28 @@ async function cancelarReserva(id, nombre) {
   if (r) { r.estado = 'cancelada'; r.cancelacion_motivo = motivo || 'Sin motivo especificado'; }
   actualizarStats();
   renderReservas();
+}
+
+// Servicio propio: al validar, la reserva queda confirmada y asignada al chef activo (Daro)
+// para que aparezca en su portal (armar y aprobar menú, compras, etc.)
+let _chefPropioId = null;
+async function obtenerChefPropio() {
+  if (_chefPropioId) return _chefPropioId;
+  const { data, error } = await supa.from('chefs').select('user_id, nombre').eq('estado', 'activo');
+  if (error || !data || !data.length) return null;
+  const daro = data.find(c => (c.nombre || '').toLowerCase().includes('daro')) || data[0];
+  _chefPropioId = daro.user_id;
+  return _chefPropioId;
+}
+async function validarYAsignar(id) {
+  const chefId = await obtenerChefPropio();
+  const upd = { estado: 'confirmada' };
+  if (chefId) { upd.chef_id = chefId; upd.estado_servicio = 'aceptado'; }
+  const { error } = await supa.from('reservas').update(upd).eq('id', id);
+  if (error) { alert('Error al validar: ' + error.message); return; }
+  if (!chefId) alert('Reserva validada, pero no encontré tu perfil de chef activo para pasarla a tu portal. Revisá la sección Chefs.');
+  else showToast('Validada y enviada a tu portal de chef ✓');
+  cargarReservas(true);
 }
 
 async function cambiarEstado(id, nuevoEstado) {

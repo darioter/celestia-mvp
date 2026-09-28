@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<script>/* Celestia es servicio propio: acceso de chefs deshabilitado */location.replace('/');</script>
+<script>/* Servicio propio: portal de chef solo con acceso privado (?acceso=daro) */(function(){var k='celestia_chef_acceso';try{if(/[?&]acceso=daro(&|$)/.test(location.search)){localStorage.setItem(k,'1');history.replaceState(null,'',location.pathname+location.hash);return;}if(localStorage.getItem(k)==='1')return;}catch(e){}location.replace('/');})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Celestia · Portal Chef</title>
