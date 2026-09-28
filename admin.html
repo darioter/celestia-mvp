@@ -1724,8 +1724,8 @@ async function generarLinkMP(reservaId, tipo, monto, nombre, ref) {
 function waRecordatorio(tel, nombre, ref, monto, esSenia) {
   const num = tel.replace(/\D/g,'');
   const msg = esSenia
-    ? `Hola ${nombre}! Te recordamos que la seña de $${Math.round(monto).toLocaleString('es-AR')} para confirmar tu reserva Celestia (${ref}) está pendiente. Podés abonarlo por Mercado Pago o transferencia. Cualquier consulta estamos acá.`
-    : `Hola ${nombre}! Te recordamos que el saldo de tu experiencia Celestia (${ref}) se abona el día del evento antes de comenzar el servicio. Cualquier consulta estamos acá.`;
+    ? `Hola ${nombre}! Te recordamos que la seña de $${Math.round(monto).toLocaleString('es-AR')} para confirmar tu reserva Celestia (${ref}) está pendiente. Podés transferir al alias daro.chef y mandarnos el comprobante por acá. Cualquier consulta estamos acá.`
+    : `Hola ${nombre}! Te recordamos que el saldo de tu experiencia Celestia (${ref}) se abona al terminar el servicio, y los ingredientes cuando llego a tu casa. Cualquier consulta estamos acá.`;
   window.open(`https://wa.me/${num.startsWith('54')?num:'54'+num}?text=${encodeURIComponent(msg)}`,'_blank');
 }
 
@@ -2629,7 +2629,7 @@ function renderReservas() {
     return (Date.now() - new Date(r.ofrecida_at).getTime()) / 3600000;
   };
 
-  const MENSAJES = ['M2','M3','M4','M5','M6'];
+  const MENSAJES = ['M2','M3','MN','M4','M5','M6','M7'];
 
   // Modelo de precios:
   // Cliente: 50% seña al reservar + 50% saldo al llegar chef
@@ -2672,23 +2672,36 @@ function renderReservas() {
       return `<button class="${cls}" ${onclick} ${!activo || sent ? 'disabled' : ''}>${sent ? '✓' : '○'} ${label}</button>`;
     };
 
-    const msgM2 = `Hola ${primerNombre} 👋\\n\\nRecibimos tu solicitud para una *${r.menu}* el *${fechaStr}* en turno *${turnoStr}* para *${r.personas} personas*.\\n\\nPara confirmar te enviamos en breve los datos de pago de la seña — esto reserva el turno exclusivamente para vos.\\n\\nCualquier consulta respondemos por acá.\\n\\n— Daro · Celestia Chef Privado\\n\\n_Política de cancelación: más de 15 días devolución total · entre 7 y 15 días 50% · menos de 7 días sin devolución._`;
+    const ingEst = Number(r.ingredientes) || 0;
+    const llegadaVentana = r.turno === 'almuerzo' ? '08:00 y las 11:00' : '16:00 y las 19:00';
+    const inicioStr = r.turno === 'almuerzo' ? '12:00hs' : '20:00hs';
+    const politica = `_Política de cancelación: más de 15 días devolución total · entre 7 y 15 días 50% · menos de 7 días sin devolución._`;
+
+    const msgM2 = `Hola ${primerNombre} 👋\\n\\nRecibimos tu solicitud para una *${r.menu}* el *${fechaStr}* en turno *${turnoStr}* para *${r.personas} personas*.\\n\\nRevisamos la disponibilidad y te confirmamos a la brevedad. En ese mensaje te pasamos los datos para la seña, que reserva la fecha exclusivamente para vos.\\n\\nCualquier consulta respondemos por acá.\\n\\n— Daro · Celestia Chef Privado\\n\\n${politica}`;
 
     const tr = infoTraslado(r);
-    const trasladoTxt = tr && tr.cotizado ? `El traslado a ${tr.zona} es de *${fmt(tr.monto)}* y se abona junto con la seña (total a transferir: *${fmt(p.senia_cliente + tr.monto)}*).\\n\\n` : '';
-    const msgM3 = `Hola ${primerNombre}, confirmamos tu experiencia Celestia 🍽\\n\\n*${r.menu}* · ${fechaStr} · ${turnoStr} · ${r.personas} personas\\n\\nEl honorario acordado es de *${fmt(honorario)}*. La seña para confirmar la fecha es *${fmt(p.senia_cliente)}* (50%).\\n\\n${trasladoTxt}Podés transferir al alias: *daro.chef*\\n\\nUna vez acreditada, la fecha queda reservada exclusivamente para vos.\\n\\n— Daro · Celestia Chef Privado`;
+    const trasladoOk = tr && tr.cotizado;
+    const totalEst = honorario + ingEst + (trasladoOk ? tr.monto : 0);
+    const aTransferir = p.senia_cliente + (trasladoOk ? tr.monto : 0);
+    const msgM3 = `Hola ${primerNombre}, ¡tenemos disponibilidad! Confirmamos tu experiencia Celestia 🍽\\n\\n*${r.menu}* · ${fechaStr} · ${turnoStr} · ${r.personas} personas\\n\\n*Servicio:* ${fmt(honorario)}\\n${ingEst ? `*Ingredientes (estimado):* ${fmt(ingEst)} — se ajusta al menú final y a los precios de compra\\n` : ''}${trasladoOk ? `*Traslado a ${tr.zona}:* ${fmt(tr.monto)}\\n` : ''}*Total estimado:* ${fmt(totalEst)}\\n\\n*Para reservar la fecha* transferí *${fmt(aTransferir)}* (${trasladoOk ? 'seña del 50% del servicio + traslado' : 'seña del 50% del servicio'}) al alias *daro.chef* y mandanos el comprobante por acá 🙌\\n\\n*El resto se abona así:*\\n• Ingredientes: cuando llego a tu casa, por el costo final de la compra\\n• Saldo del servicio (${fmt(p.saldo_cliente)}): al terminar el servicio\\n\\n— Daro · Celestia Chef Privado`;
 
-    const msgM4 = `Hola ${primerNombre} 👋 Tu experiencia Celestia es el *${fechaStr}*.\\n\\nTe confirmo los horarios aproximados: llegaré alrededor de las *${misePlaceHora}* para el mise en place. El servicio comienza a las *${r.turno === 'almuerzo' ? '12:00hs' : '20:00hs'}*.\\n\\nEn los días previos coordinamos los últimos detalles del menú por acá.\\n\\n¡Nos vemos pronto! — Daro · Celestia Chef Privado`;
+    const msgMN = `Hola ${primerNombre} 👋 Te comparto el menú de tu experiencia del *${fechaStr}*:\\n\\n${(r.menu_definitivo || '').replace(/[`"$\\]/g, '').replace(/\n/g, '\\n')}\\n\\nSi querés ajustar algo, avisame por acá.\\n\\n— Daro · Celestia Chef Privado`;
 
-    const msgM5 = `Hola ${primerNombre} 👋 Mañana es tu experiencia Celestia.\\n\\n*${r.menu}* · ${turnoStr} · ${r.personas} personas · ${r.dir || ''}\\n\\nDaro llegará con anticipación para el mise en place. El saldo de *${fmt(p.saldo_cliente)}* se abona al inicio del servicio.\\n\\nCualquier última consulta acá estamos. ¡Hasta mañana! — Daro · Celestia Chef Privado`;
+    const msgM4 = `Hola ${primerNombre} 👋 Tu experiencia Celestia es el *${fechaStr}*.\\n\\nVoy a llegar entre las *${llegadaVentana}* para el mise en place (depende del menú); el día anterior te confirmo el horario exacto. El servicio comienza a las *${inicioStr}*.\\n\\nEn los días previos coordinamos los últimos detalles por acá.\\n\\n¡Nos vemos pronto! — Daro · Celestia Chef Privado`;
 
-    const msgM6 = `Hola ${primerNombre}, fue un placer compartir la experiencia con vos y tus invitados 🙌\\n\\nEsperamos que haya sido una noche especial. Si tenés un momento, nos ayuda mucho una reseña en Google — es lo que permite que más personas conozcan Celestia.\\n\\nhttps://g.page/r/CWYAy7Wn5FfhEBM/review\\n\\n¡Hasta la próxima! — Daro · Celestia Chef Privado`;
+    const msgM5 = `Hola ${primerNombre} 👋 ¡Mañana es tu experiencia Celestia!\\n\\n*${r.menu}* · ${turnoStr} · ${r.personas} personas · ${r.dir || ''}\\n\\nLlego con anticipación para el mise en place; te confirmo por acá el horario exacto.\\n\\nPara que lo tengas a mano:\\n• Ingredientes${ingEst ? ` (estimado ${fmt(ingEst)})` : ''}: se abonan cuando llego, por el costo final de la compra\\n• Saldo del servicio: *${fmt(p.saldo_cliente)}*, al terminar\\n\\nCualquier última consulta, acá estoy. ¡Hasta mañana! — Daro · Celestia Chef Privado`;
+
+    const msgM6 = `Hola ${primerNombre}, fue un placer compartir la experiencia con vos y tus invitados 🙌\\n\\nEspero que haya sido un momento especial. Si tenés un minuto, nos ayuda muchísimo una reseña en Google: podés escanear la tarjeta que te dejé o entrar acá:\\n\\nhttps://g.page/r/CWYAy7Wn5FfhEBM/review\\n\\n¡Hasta la próxima! — Daro · Celestia Chef Privado`;
+
+    const msgM7 = `Hola ${primerNombre} 👋 Gracias otra vez por recibirnos ayer. Si todavía no pudiste, tu reseña en Google nos ayuda muchísimo a que más personas conozcan Celestia (te lleva un minuto):\\n\\nhttps://g.page/r/CWYAy7Wn5FfhEBM/review\\n\\n¡Gracias! — Daro · Celestia Chef Privado`;
 
     const m2Activo = true;
     const m3Activo = !(tr && !tr.cotizado);
     const m4Activo = enviados.includes('M3');
     const m5Activo = enviados.includes('M3');
     const m6Activo = r.saldo_cobrado;
+    const mnActivo = !!(r.menu_definitivo && r.menu_definitivo_ok);
+    const m7Activo = enviados.includes('M6');
 
     const hsSinResp = horasSinRespuesta(r);
     return `
@@ -2745,9 +2758,11 @@ function renderReservas() {
       <div class="wa-btns">
         ${waBtn('M2','M2 Bienvenida', msgM2, m2Activo)}
         ${waBtn('M3','M3 Seña + pago', msgM3, m3Activo)}
+        ${waBtn('MN','Menú', msgMN, mnActivo)}
         ${waBtn('M4','M4 Coordinación previa', msgM4, m4Activo)}
         ${waBtn('M5','M5 Recordatorio', msgM5, m5Activo)}
         ${waBtn('M6','M6 Post evento', msgM6, m6Activo)}
+        ${waBtn('M7','M7 Recordatorio reseña', msgM7, m7Activo)}
       </div>
     </div>`;
   }).join('');
@@ -2904,7 +2919,7 @@ function renderSemanal() {
     const menuInfo = r.menu || '—';
 
     const msgBienvenida = `Hola ${primerNombre} 👋\\n\\nRecibimos tu solicitud de *Chef Semanal* con primera jornada el *${fechaStr}*.\\n\\n${jornadasInfo}\\n\\nPara confirmar coordinamos el menú y los ingredientes juntos.\\n\\n— Daro · Celestia Chef Privado`;
-    const msgSenia = `Hola ${primerNombre}, confirmamos tu servicio de Chef Semanal 🍽\\n\\nPrimera jornada: *${fechaStr}*\\n${jornadasInfo}\\n\\nEl honorario es de *${fmt(honorario)}*. La seña para confirmar es *${fmt(p.senia_cliente)}* (50%).\\n\\nAlias: *daro.chef*\\n\\n— Daro · Celestia Chef Privado`;
+    const msgSenia = `Hola ${primerNombre}, confirmamos tu servicio de Chef Semanal 🍽\\n\\nPrimera jornada: *${fechaStr}*\\n${jornadasInfo}\\n\\nEl honorario es de *${fmt(honorario)}*. La seña para confirmar es *${fmt(p.senia_cliente)}* (50%).\\n\\nAlias: *daro.chef* — cuando transfieras, mandanos el comprobante por acá 🙌\\n\\n— Daro · Celestia Chef Privado`;
     const waBtn = (label, msg) => `<button class="btn-wa-m btn-wa-active" onclick="window.open('https://wa.me/${telWA}?text='+encodeURIComponent(\`${msg.replace(/`/g,'\\`')}\`),'_blank')" ${!r.tel ? 'disabled' : ''}>${label}</button>`;
 
     return `
