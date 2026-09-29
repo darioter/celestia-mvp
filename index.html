@@ -2265,7 +2265,8 @@ body.beta-mode > [id*="section"],
       <div class="form-row">
         <div class="form-group">
           <label>Cantidad de personas *</label>
-          <input type="number" id="f-personas" min="1" max="50" placeholder="Ej: 6" oninput="checkForm4()">
+          <input type="number" id="f-personas" min="2" max="12" inputmode="numeric" placeholder="Ej: 6 (de 2 a 12)" oninput="checkForm4()">
+          <div id="f-personas-evento" style="display:none;margin-top:8px;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.4);border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.55;color:var(--text-mid);">✦ Para <strong>más de 12 personas</strong> armamos una propuesta a medida (menú, equipo de servicio y logística). <a id="f-personas-evento-link" href="https://wa.me/5491160410607" target="_blank" rel="noopener" style="color:#8a6418;font-weight:600;">Coordinemos una reunión por WhatsApp →</a></div>
         </div>
         <div class="form-group">
           <label>Ocasión (opcional)</label>
@@ -3339,7 +3340,7 @@ function cargarPerfilEnFormulario() {
   const email = document.getElementById('f-email').value.trim();
   const dirVal = document.getElementById('f-dir').value.trim();
   const personas = document.getElementById('f-personas').value;
-  if (nombre && tel && email && dirVal && personas && zonaValida() && !forzarEdicion) {
+  if (nombre && tel && email && dirVal && personas && parseInt(personas) >= 2 && parseInt(personas) <= 12 && zonaValida() && !forzarEdicion) {
     // Perfil completo → ir directo al paso 5
     state.nombre = nombre;
     state.tel = tel;
@@ -5110,7 +5111,20 @@ function etiquetaZona() {
 }
 
 function checkForm4() {
-  const ok = ['f-nombre','f-tel','f-email','f-dir','f-personas'].every(id => {
+  const nPers = parseInt(document.getElementById('f-personas').value) || 0;
+  const esEvento = nPers > 12;
+  const avisoEv = document.getElementById('f-personas-evento');
+  if (avisoEv) {
+    avisoEv.style.display = esEvento ? 'block' : 'none';
+    const lk = document.getElementById('f-personas-evento-link');
+    if (lk && esEvento) {
+      const msg = `Hola Daro 👋 Quiero consultar por un evento para ${nPers} personas` +
+        (state.fecha ? ` el ${state.fecha.split('-').reverse().join('/')}` : '') +
+        (state.menu ? ` (${state.menu.nombre})` : '') + '. ¿Coordinamos una reunión?';
+      lk.href = 'https://wa.me/5491160410607?text=' + encodeURIComponent(msg);
+    }
+  }
+  const ok = !esEvento && nPers >= 2 && ['f-nombre','f-tel','f-email','f-dir','f-personas'].every(id => {
     return document.getElementById(id).value.trim() !== '';
   }) && zonaValida();
   document.getElementById('btn-next-4').disabled = !ok;
