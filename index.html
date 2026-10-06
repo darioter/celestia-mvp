@@ -3399,6 +3399,9 @@ function cargarPerfilEnFormulario() {
 
 // Fechas bloqueadas cargadas desde Supabase
 let fechasBloqueadas = {};
+// Mientras Daro sea el único chef: una reserva (almuerzo o cena) bloquea el día completo.
+// Cuando haya más chefs, poner en false para volver a permitir dos turnos por día.
+const UN_SERVICIO_POR_DIA = true;
 let diasBloqueados = []; // bloqueos manuales del admin // { 'YYYY-MM-DD': 'reservada'|'confirmada' }
 
 async function cargarFechasBloqueadas() {
@@ -4474,8 +4477,7 @@ function renderCalendar() {
     if (bloqueada) {
       almuerzoOcupado = !!bloqueada['almuerzo'];
       cenaOcupada = !!bloqueada['cena'];
-      // Bloquear solo si ambos turnos están tomados
-      if (almuerzoOcupado && cenaOcupada) isFechaBloqueada = true;
+      if (UN_SERVICIO_POR_DIA ? (almuerzoOcupado || cenaOcupada) : (almuerzoOcupado && cenaOcupada)) isFechaBloqueada = true;
     }
     // Bloquear si está en la lista de bloqueos manuales
     if (diasBloqueados.includes(dateStr)) isFechaBloqueada = true;
@@ -5672,7 +5674,7 @@ function resetFlow() {
       var bloqueada = (typeof fechasBloqueadas !== 'undefined') ? fechasBloqueadas[dateStr] : null;
       var almOcup = !!(bloqueada && bloqueada['almuerzo']);
       var cenOcup = !!(bloqueada && bloqueada['cena']);
-      var totalmenteOcupado = almOcup && cenOcup;
+      var totalmenteOcupado = (typeof UN_SERVICIO_POR_DIA !== 'undefined' && UN_SERVICIO_POR_DIA) ? (almOcup || cenOcup) : (almOcup && cenOcup);
       var bloqueoManual = (typeof diasBloqueados !== 'undefined' && diasBloqueados) ? diasBloqueados.includes(dateStr) : false;
       var noDisponible = esPasado || totalmenteOcupado || bloqueoManual;
 
