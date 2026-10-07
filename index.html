@@ -1896,7 +1896,7 @@ programar();
   </div>
   <div class="tagline" id="tagline-rotador">ARGENTINA</div>
   <div style="display:flex;align-items:center;gap:12px;">
-    <div style="display:flex;gap:6px;align-items:center;">
+    <div id="lang-switch" style="display:none;gap:6px;align-items:center;"><!-- idiomas ocultos hasta tener ES/EN completo desde la landing -->
       <button id="lang-btn-es" data-lang="es" style="font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.08em;color:rgba(250,246,239,0.8);background:transparent;border:none;cursor:pointer;padding:2px 4px;opacity:1;">ES</button>
       <span style="color:rgba(250,246,239,0.2);font-size:10px;">|</span>
       <button id="lang-btn-en" data-lang="en" style="font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.08em;color:rgba(250,246,239,0.8);background:transparent;border:none;cursor:pointer;padding:2px 4px;opacity:0.4;">EN</button>
@@ -5871,6 +5871,9 @@ function resetFlow() {
 <script>
 // ── i18n Celestia ─────────────────────────────────────────────────────────────
 var LANG = (function() {
+  // Por ahora todo el sitio va en español (el selector de idiomas está oculto).
+  // Para reactivar ES/EN, sacar esta línea y mostrar #lang-switch.
+  return 'es';
   var saved = localStorage.getItem('celestia_lang');
   if (saved) return saved;
   var nav = (navigator.language || navigator.userLanguage || 'es').toLowerCase();
