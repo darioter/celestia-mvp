@@ -7090,9 +7090,14 @@ body.beta-mode > #bl-wa-float{display:flex!important}
 #beta-landing .bl-me-h em{color:var(--gdl)!important;font-style:italic!important}
 #beta-landing .bl-me-s{display:block!important;font-size:13px!important;line-height:1.7!important;color:rgba(250,246,239,.6)!important;font-weight:300!important}
 #beta-landing .bl-me-g{display:grid!important;grid-template-columns:repeat(5,1fr)!important;gap:12px!important;max-width:1100px!important;margin:0 auto!important}
-#beta-landing .bl-me-c{display:flex!important;flex-direction:column!important;gap:6px!important;text-align:left!important;background:rgba(250,246,239,.04)!important;border:0.5px solid rgba(201,168,76,.28)!important;border-radius:14px!important;padding:16px 15px 14px!important;cursor:pointer!important;transition:transform .25s,border-color .25s,background .25s!important;font-family:'DM Sans',sans-serif!important;color:var(--cr)!important}
+#beta-landing .bl-me-c{display:flex!important;flex-direction:column!important;gap:6px!important;text-align:left!important;background:rgba(250,246,239,.04)!important;border:0.5px solid rgba(201,168,76,.28)!important;border-radius:14px!important;padding:0 0 14px!important;overflow:hidden!important;cursor:pointer!important;transition:transform .25s,border-color .25s,background .25s!important;font-family:'DM Sans',sans-serif!important;color:var(--cr)!important}
 #beta-landing .bl-me-c:hover,#beta-landing .bl-me-c:focus-visible{transform:translateY(-3px)!important;border-color:#C9A84C!important;background:rgba(201,168,76,.09)!important;outline:none!important}
-#beta-landing .bl-me-e{font-size:24px!important;line-height:1!important}
+#beta-landing .bl-me-im{display:block!important;position:relative!important;aspect-ratio:16/11!important;background-color:#1a2e42!important;background-position:center!important;background-size:cover!important;background-repeat:no-repeat!important;margin-bottom:6px!important;transition:transform .5s!important}
+#beta-landing .bl-me-c:hover .bl-me-im{transform:scale(1.04)!important}
+#beta-landing .bl-me-im::after{content:''!important;position:absolute!important;inset:0!important;background:linear-gradient(to bottom,rgba(13,27,42,0) 55%,rgba(13,27,42,.55))!important}
+#beta-landing .bl-me-e{position:absolute!important;left:12px!important;bottom:-14px!important;z-index:2!important;width:34px!important;height:34px!important;border-radius:50%!important;background:#0D1B2A!important;border:1px solid rgba(201,168,76,.6)!important;display:flex!important;align-items:center!important;justify-content:center!important;font-size:17px!important;line-height:1!important}
+#beta-landing .bl-me-n,#beta-landing .bl-me-r,#beta-landing .bl-me-k{padding:0 15px!important}
+#beta-landing .bl-me-n{margin-top:12px!important}
 #beta-landing .bl-me-n{font-family:'DM Serif Display',serif!important;font-size:17px!important;line-height:1.2!important;color:var(--cr)!important}
 #beta-landing .bl-me-r{font-size:10.5px!important;line-height:1.5!important;color:var(--gdl)!important}
 #beta-landing .bl-me-k{font-size:10px!important;letter-spacing:.08em!important;text-transform:uppercase!important;color:rgba(250,246,239,.45)!important;margin-top:auto!important;padding-top:6px!important}
@@ -7110,10 +7115,14 @@ body.beta-mode > #bl-wa-float{display:flex!important}
 #bl-me-panel .me-sb{font-size:12.5px;color:rgba(250,246,239,.6);display:block;margin-top:6px;line-height:1.6;font-weight:300}
 #bl-me-panel .me-body{padding:22px 24px 26px}
 #bl-me-panel .me-styles{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
-#bl-me-panel .me-st{display:flex;flex-direction:column;gap:5px;text-align:left;background:#fff;border:0.5px solid #E8E0D5;border-radius:12px;padding:14px;cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s;font-family:inherit}
+#bl-me-panel .me-st{display:flex;flex-direction:column;gap:5px;text-align:left;background:#fff;border:0.5px solid #E8E0D5;border-radius:12px;padding:0 0 12px;overflow:hidden;cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s;font-family:inherit}
 #bl-me-panel .me-st:hover,#bl-me-panel .me-st:focus-visible{transform:translateY(-2px);border-color:#C9A84C;box-shadow:0 8px 22px rgba(13,27,42,.08);outline:none}
 #bl-me-panel .me-st b{font-family:'DM Serif Display',serif;font-weight:400;font-size:16px;color:#0D1B2A}
-#bl-me-panel .me-st i{font-style:normal;font-size:22px}
+#bl-me-panel .me-st i{font-style:normal;display:block;aspect-ratio:16/10;background:#e8e0d5 center/cover no-repeat;margin-bottom:4px}
+#bl-me-panel .me-st b,#bl-me-panel .me-st small{padding:0 12px}
+#bl-me-panel .me-top.me-foto{background:linear-gradient(90deg,rgba(13,27,42,.94) 0%,rgba(13,27,42,.78) 55%,rgba(13,27,42,.45) 100%),var(--me-img) center/cover no-repeat,#0D1B2A;min-height:150px;align-items:flex-end}
+#bl-me-panel .me-cred{display:block;margin-top:8px;font-size:10.5px;color:#a39a8c}
+#bl-me-panel .me-cred a{color:inherit}
 #bl-me-panel .me-st small{font-size:10.5px;color:#8a6d1f;line-height:1.45}
 #bl-me-panel .me-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
 #bl-me-panel .me-tog{display:inline-flex;background:#fff;border:0.5px solid #E8E0D5;border-radius:999px;padding:4px}
@@ -7146,26 +7155,27 @@ body.me-lock{overflow:hidden}
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
   function E(){return window.CELESTIA_ESTILOS||[];}
   function porId(id){return E().filter(function(e){return e.id===id;})[0];}
+  function U(e,w,h){return e.img?'https://images.unsplash.com/'+e.img+'?w='+w+'&h='+h+'&fit=crop&q=70&auto=format':'';}
   function cardsLanding(){
     var g=document.getElementById('bl-me-grid');if(!g||!E().length)return;
-    g.innerHTML=E().map(function(e){return '<button type="button" class="bl-me-c" data-id="'+e.id+'"><span class="bl-me-e" aria-hidden="true">'+e.emoji+'</span><span class="bl-me-n">'+esc(e.nombre)+'</span><span class="bl-me-r">'+e.ref.map(esc).join(' &middot; ')+'</span><span class="bl-me-k">10 men&uacute;s &rarr;</span></button>';}).join('');
+    g.innerHTML=E().map(function(e){return '<button type="button" class="bl-me-c" data-id="'+e.id+'"><span class="bl-me-im" style="background-image:url(\''+U(e,480,330)+'\')"><span class="bl-me-e" aria-hidden="true">'+e.emoji+'</span></span><span class="bl-me-n">'+esc(e.nombre)+'</span><span class="bl-me-r">'+e.ref.map(esc).join(' &middot; ')+'</span><span class="bl-me-k">10 men&uacute;s &rarr;</span></button>';}).join('');
     g.querySelectorAll('.bl-me-c').forEach(function(b){b.addEventListener('click',function(){abrir(b.getAttribute('data-id'));});});
   }
   function vistaEstilos(){
-    estado.estilo=null;back.style.display='none';
+    estado.estilo=null;back.style.display='none';var top=panel.querySelector('.me-top');top.classList.remove('me-foto');top.style.removeProperty('--me-img');
     tg.innerHTML='&#10022; Men&uacute;s de ejemplo';tt.textContent='Elegí un estilo de cocina';sb.textContent='Cada estilo tiene 5 menús de 3 pasos y 5 de 7 pasos. Después lo ajustamos juntos.';
-    body.innerHTML='<div class="me-styles">'+E().map(function(e){return '<button type="button" class="me-st" data-id="'+e.id+'"><i aria-hidden="true">'+e.emoji+'</i><b>'+esc(e.nombre)+'</b><small>'+e.ref.map(esc).join(' · ')+'</small></button>';}).join('')+'</div>';
+    body.innerHTML='<div class="me-styles">'+E().map(function(e){return '<button type="button" class="me-st" data-id="'+e.id+'"><i aria-hidden="true" style="background-image:url(\''+U(e,360,225)+'\')"></i><b>'+e.emoji+' '+esc(e.nombre)+'</b><small>'+e.ref.map(esc).join(' · ')+'</small></button>';}).join('')+'</div>';
     body.querySelectorAll('.me-st').forEach(function(b){b.addEventListener('click',function(){vistaMenus(b.getAttribute('data-id'));});});
   }
   function vistaMenus(id){
     var e=porId(id);if(!e)return vistaEstilos();
-    estado.estilo=id;back.style.display='';
+    estado.estilo=id;back.style.display='';var top=panel.querySelector('.me-top');if(e.img){top.classList.add('me-foto');top.style.setProperty('--me-img',"url('"+U(e,1200,400)+"')");}
     tg.innerHTML=e.emoji+' Cocina '+esc(e.nombre.toLowerCase());tt.textContent=e.nombre;sb.textContent=e.desc;
     var labels=(window.CELESTIA_PASOS||{})[estado.pasos]||[];
     var lista=estado.pasos===3?e.m3:e.m7;
     body.innerHTML='<div class="me-bar"><div class="me-tog" role="group" aria-label="Cantidad de pasos"><button type="button" data-p="3" class="'+(estado.pasos===3?'on':'')+'">3 pasos &middot; desde $280.000</button><button type="button" data-p="7" class="'+(estado.pasos===7?'on':'')+'">7 pasos &middot; desde $400.000</button></div><span class="me-ref">Referentes: <b>'+e.ref.map(esc).join(' · ')+'</b></span></div>'+
       '<div class="me-list">'+lista.map(function(m,k){return '<div class="me-m"><span class="me-mt">Men&uacute; '+(k+1)+' &middot; '+estado.pasos+' pasos</span><span class="me-mn">'+esc(m.n)+'</span><ul class="me-ol">'+m.p.map(function(pl,j){return '<li><span>'+esc(labels[j]||'')+'</span>'+esc(pl)+'</li>';}).join('')+'</ul><button type="button" class="me-go" data-k="'+k+'">Reservar con este men&uacute; &rarr;</button></div>';}).join('')+'</div>'+
-      '<p class="me-note">Son men&uacute;s de referencia: los adaptamos a restricciones (vegetarianos, cel&iacute;acos, alergias) y a lo que haya de estaci&oacute;n.<br>&iquest;Quer&eacute;s combinar estilos? <a href="https://wa.me/5491160410607?text='+encodeURIComponent('Hola Daro, quiero armar un menú combinando estilos')+'" target="_blank" rel="noopener">Escribime por WhatsApp</a>.</p>';
+      '<p class="me-note">Son men&uacute;s de referencia: los adaptamos a restricciones (vegetarianos, cel&iacute;acos, alergias) y a lo que haya de estaci&oacute;n.<br>&iquest;Quer&eacute;s combinar estilos? <a href="https://wa.me/5491160410607?text='+encodeURIComponent('Hola Daro, quiero armar un menú combinando estilos')+'" target="_blank" rel="noopener">Escribime por WhatsApp</a>.'+(e.foto?'<span class="me-cred">Foto de referencia: '+esc(e.foto)+' en <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a></span>':'')+'</p>';
     body.querySelectorAll('.me-tog button').forEach(function(b){b.addEventListener('click',function(){estado.pasos=parseInt(b.getAttribute('data-p'),10);vistaMenus(id);});});
     body.querySelectorAll('.me-go').forEach(function(b){b.addEventListener('click',function(){elegir(e,lista[parseInt(b.getAttribute('data-k'),10)]);});});
     panel.scrollTop=0;
