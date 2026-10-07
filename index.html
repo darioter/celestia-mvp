@@ -3826,7 +3826,10 @@ function saveToStorage(reserva) {
 // ─── FLOW ───────────────────────────────────────────────
 function startFlow() { if(typeof closeIAPanel==="function")closeIAPanel();
   // Si no está logueado, mostrar auth primero y luego continuar al paso 1
-  if (!_session && !clientePerfil) {
+  // En las vistas previas de Vercel (*.vercel.app) se puede recorrer el flujo sin loguearse;
+  // la cuenta se pide recién al cargar los datos (paso 3), igual que goTo(4).
+  const _esPreview = /\.vercel\.app$/.test(location.hostname);
+  if (!_session && !clientePerfil && !_esPreview) {
     _guardarEstadoReserva && _guardarEstadoReserva();
     document.getElementById('hero-section').style.display = 'none';
     document.getElementById('mp-steps-bar').style.display = 'none';
