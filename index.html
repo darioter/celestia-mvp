@@ -172,7 +172,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<script>try{if(localStorage.getItem("celestia_idioma")==="en"){document.documentElement.classList.add("cel-pre");setTimeout(function(){document.documentElement.classList.remove("cel-pre")},1500);}}catch(e){}</script>
 <style>
+html.cel-pre body{visibility:hidden}
 :root {
   --navy: #0D1B2A;
   --navy-mid: #1a2e42;
@@ -1742,7 +1744,7 @@ body.beta-mode > [id*="section"],
 
 </style>
 <body>
-<div id="beta-landing"><div class="bl-hdr"><div class="bl-logo" onclick="window.scrollTo({top:0,behavior:'smooth'})"><img src="/img/img-d316320d6b.webp" alt="Celestia Chef Privado" style="height:36px;width:auto;display:block"/></div><div class="bl-nav"><button class="bl-nl" onclick="document.getElementById('bl-servicios').scrollIntoView({behavior:'smooth'})">Experiencias</button><button class="bl-nl" onclick="document.getElementById('bl-plat').scrollIntoView({behavior:'smooth'})">C&oacute;mo funciona</button><button class="bl-nl" onclick="abrirConsultaCorporativa()">Corporativos</button><button class="bl-nl" onclick="exitBetaLanding('semanal')">Chef Semanal</button><a href="/clientes" class="bl-hbtn bl-acc">Acceder</a><button class="bl-hbtn bl-host" onclick="exitBetaLanding('host')">Reservar &rarr;</button></div></div><style>
+<div id="beta-landing"><div class="bl-hdr"><div class="bl-logo" onclick="window.scrollTo({top:0,behavior:'smooth'})"><img src="/img/img-d316320d6b.webp" alt="Celestia Chef Privado" style="height:36px;width:auto;display:block"/></div><div class="bl-nav"><button class="bl-nl" onclick="document.getElementById('bl-servicios').scrollIntoView({behavior:'smooth'})">Experiencias</button><button class="bl-nl" onclick="document.getElementById('bl-plat').scrollIntoView({behavior:'smooth'})">C&oacute;mo funciona</button><button class="bl-nl" onclick="abrirConsultaCorporativa()">Corporativos</button><button class="bl-nl" onclick="exitBetaLanding('semanal')">Chef Semanal</button><div class="bl-lang" role="group" aria-label="Idioma"><button type="button" data-cel-lang="es">ES</button><span>|</span><button type="button" data-cel-lang="en">EN</button></div><a href="/clientes" class="bl-hbtn bl-acc">Acceder</a><button class="bl-hbtn bl-host" onclick="exitBetaLanding('host')">Reservar &rarr;</button></div></div><style>
 #bl-banner-bienvenida{display:none;position:fixed;top:76px;left:50%;transform:translateX(-50%);z-index:500;width:calc(100% - 32px);max-width:460px;background:linear-gradient(100deg,#C9A84C 0%,#E7CE86 45%,#C9A84C 100%);background-size:220% 100%;color:#0D1B2A;padding:14px 34px 14px 16px;font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:600;text-align:center;border-radius:16px;border:1px solid rgba(255,255,255,.4);box-shadow:0 16px 36px rgba(9,17,28,.4),0 3px 10px rgba(201,168,76,.3);overflow:hidden;animation:bl-float 4.5s ease-in-out infinite;}
 #bl-banner-bienvenida::before{content:'';position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);animation:bl-shimmer 6s ease-in-out infinite;pointer-events:none;}
 @keyframes bl-shimmer{0%{left:-60%;}45%{left:130%;}100%{left:130%;}}
@@ -1896,13 +1898,7 @@ programar();
   </div>
   <div class="tagline" id="tagline-rotador">ARGENTINA</div>
   <div style="display:flex;align-items:center;gap:12px;">
-    <div id="lang-switch" style="display:none;gap:6px;align-items:center;"><!-- idiomas ocultos hasta tener ES/EN completo desde la landing -->
-      <button id="lang-btn-es" data-lang="es" style="font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.08em;color:rgba(250,246,239,0.8);background:transparent;border:none;cursor:pointer;padding:2px 4px;opacity:1;">ES</button>
-      <span style="color:rgba(250,246,239,0.2);font-size:10px;">|</span>
-      <button id="lang-btn-en" data-lang="en" style="font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.08em;color:rgba(250,246,239,0.8);background:transparent;border:none;cursor:pointer;padding:2px 4px;opacity:0.4;">EN</button>
-      <span style="color:rgba(250,246,239,0.2);font-size:10px;">|</span>
-      <button id="lang-btn-pt" data-lang="pt" style="font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.08em;color:rgba(250,246,239,0.8);background:transparent;border:none;cursor:pointer;padding:2px 4px;opacity:0.4;">PT</button>
-    </div>
+    <div id="lang-switch" class="cel-lang-flow" role="group" aria-label="Idioma"><button type="button" data-cel-lang="es">ES</button><span>|</span><button type="button" data-cel-lang="en">EN</button></div>
     <a id="header-acceder" href="/clientes" style="font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:rgba(250,246,239,0.7);text-decoration:none;border:1px solid rgba(201,168,76,0.3);padding:6px 14px;border-radius:20px;transition:all 0.2s;letter-spacing:0.04em;">Acceder →</a>
   </div>
 </header>
@@ -7542,7 +7538,18 @@ function mp2Resumen(){
   function decorar(){var m={'mp-screen-1':'✦ Paso 1 de 4 · Tu semana','mp-screen-2':'✦ Paso 2 de 4 · Fecha','mp-screen-3':'✦ Paso 3 de 4 · Datos','mp-screen-4':'✦ Paso 4 de 4 · Confirmar'};Object.keys(m).forEach(function(id){var s=document.getElementById(id);var h=s&&s.querySelector('.section-title');if(h)h.setAttribute('data-eyebrow',m[id]);});mp2Resumen();}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',decorar);else decorar();
 })();
-</script></body>
+</script><style id="lang-css">
+#beta-landing .bl-lang{display:inline-flex!important;align-items:center!important;gap:4px!important;margin:0 6px 0 4px!important}
+#beta-landing .bl-lang span{color:rgba(250,246,239,.25)!important;font-size:10px!important}
+#beta-landing .bl-lang button,.cel-lang-flow button{background:none!important;border:0!important;cursor:pointer!important;font-family:'DM Sans',sans-serif!important;font-size:11px!important;font-weight:500!important;letter-spacing:.1em!important;color:rgba(250,246,239,.45)!important;padding:4px 5px!important;border-radius:6px!important;transition:color .2s!important}
+#beta-landing .bl-lang button:hover,.cel-lang-flow button:hover{color:#FAF6EF!important}
+#beta-landing .bl-lang button.on,.cel-lang-flow button.on{color:#E8C96B!important}
+.cel-lang-flow{display:inline-flex;align-items:center;gap:4px}
+.cel-lang-flow span{color:rgba(250,246,239,.25);font-size:10px}
+@media(max-width:700px){#beta-landing .bl-lang{margin:0 2px!important}#beta-landing .bl-lang button{padding:4px 3px!important}}
+</style>
+<script src="/js/i18n.js"></script>
+</body>
 </html>
 
 
