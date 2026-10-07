@@ -2507,74 +2507,39 @@ programar();
 
   <!-- MP PASO 1: CONFIGURAR -->
   <div id="mp-screen-1" class="screen" style="display:none">
-    <h2 class="section-title">Configurá tu semana</h2>
-    <p class="section-sub">Personalizá el servicio según tu familia y necesidades</p>
+    <h2 class="section-title">Armá tu semana</h2>
+    <p class="section-sub">Tres elecciones y listo: cocino en tu casa y te quedan las comidas resueltas para la semana.</p>
 
-    <div style="background:var(--navy);border-radius:var(--radius-lg);padding:28px;margin-bottom:20px;">
-      <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;">✦ Calculá tu servicio</div>
+    <div class="mp2">
+      <div class="mp2-cfg">
+        <div class="mp2-q"><span class="mp2-qn">1</span><div><span class="mp2-qt">¿Para cuántas personas cocinamos?</span><span class="mp2-qs">Contá a todos los que comen en casa durante la semana.</span></div></div>
+        <div class="mp2-opts mp2-3"><button type="button" class="mp2-o" onclick="selectMpFlow('pp','1-2')" id="mpf-pp-1-2"><span class="mp2-ppl"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></span><b>1 a 2</b><small>personas</small></button><button type="button" class="mp2-o" onclick="selectMpFlow('pp','3-4')" id="mpf-pp-3-4"><span class="mp2-ppl"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></span><b>3 a 4</b><small>personas</small></button><button type="button" class="mp2-o" onclick="selectMpFlow('pp','5-6')" id="mpf-pp-5-6"><span class="mp2-ppl"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></span><b>5 a 6</b><small>personas</small></button></div>
 
-      <div style="display:grid;grid-template-columns:1fr;gap:16px;margin-bottom:20px;">
-
-        <div>
-          <label style="display:block;font-size:11px;color:rgba(250,246,239,0.5);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">Personas</label>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
-            <button type="button" onclick="selectMpFlow('pp','1-2')" id="mpf-pp-1-2"
-              style="background:rgba(255,255,255,0.06);border:1.5px solid rgba(201,168,76,0.25);border-radius:10px;padding:12px 4px;cursor:pointer;text-align:center;">
-              <div style="font-size:13px;font-weight:500;color:var(--gold-light);">1–2</div>
-              <div style="font-size:10px;color:rgba(250,246,239,0.45);margin-top:2px;">personas</div>
-            </button>
-            <button type="button" onclick="selectMpFlow('pp','3-4')" id="mpf-pp-3-4"
-              style="background:rgba(201,168,76,0.15);border:1.5px solid var(--gold);border-radius:10px;padding:12px 4px;cursor:pointer;text-align:center;">
-              <div style="font-size:13px;font-weight:500;color:var(--gold-light);">3–4</div>
-              <div style="font-size:10px;color:rgba(250,246,239,0.45);margin-top:2px;">personas</div>
-            </button>
-            <button type="button" onclick="selectMpFlow('pp','5-6')" id="mpf-pp-5-6"
-              style="background:rgba(255,255,255,0.06);border:1.5px solid rgba(201,168,76,0.25);border-radius:10px;padding:12px 4px;cursor:pointer;text-align:center;">
-              <div style="font-size:13px;font-weight:500;color:var(--gold-light);">5–6</div>
-              <div style="font-size:10px;color:rgba(250,246,239,0.45);margin-top:2px;">personas</div>
-            </button>
-          </div>
+        <div class="mp2-q"><span class="mp2-qn">2</span><div><span class="mp2-qt">¿Cuántas veces por semana?</span><span class="mp2-qs">Cada jornada cocino en tu casa y dejo todo listo para los días siguientes.</span></div></div>
+        <div class="mp2-opts mp2-2">
+          <button type="button" class="mp2-o" onclick="selectMpFlow('jornadas','1')" id="mpf-jornadas-1"><b>1 jornada</b><small>~8 hs · mitad de semana</small><div class="mp2-week"><span class="">Lu</span><span class="">Ma</span><span class="on">Mi</span><span class="">Ju</span><span class="">Vi</span><span class="">Sá</span><span class="">Do</span></div></button>
+          <button type="button" class="mp2-o" onclick="selectMpFlow('jornadas','2')" id="mpf-jornadas-2"><span class="mp2-badge">Más elegido</span><b>2 jornadas</b><small>~16 hs · semana completa</small><div class="mp2-week"><span class="on">Lu</span><span class="">Ma</span><span class="">Mi</span><span class="on">Ju</span><span class="">Vi</span><span class="">Sá</span><span class="">Do</span></div></button>
         </div>
 
-        <div>
-          <label style="display:block;font-size:11px;color:rgba(250,246,239,0.5);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">Jornadas semanales</label>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-            <button type="button" onclick="selectMpFlow('jornadas','1')" id="mpf-jornadas-1"
-              style="background:rgba(255,255,255,0.06);border:1.5px solid rgba(201,168,76,0.25);border-radius:10px;padding:12px 8px;cursor:pointer;text-align:center;">
-              <div style="font-size:13px;font-weight:500;color:var(--gold-light);">1 jornada</div>
-              <div style="font-size:10px;color:rgba(250,246,239,0.45);margin-top:3px;">~8hs · mitad de semana</div>
-            </button>
-            <button type="button" onclick="selectMpFlow('jornadas','2')" id="mpf-jornadas-2"
-              style="background:rgba(201,168,76,0.15);border:1.5px solid var(--gold);border-radius:10px;padding:12px 8px;cursor:pointer;text-align:center;">
-              <div style="font-size:13px;font-weight:500;color:var(--gold-light);">2 jornadas</div>
-              <div style="font-size:10px;color:rgba(250,246,239,0.45);margin-top:3px;">~16hs · semana completa</div>
-            </button>
-          </div>
+        <div class="mp2-q"><span class="mp2-qn">3</span><div><span class="mp2-qt">¿Qué comidas incluimos?</span><span class="mp2-qs">Armamos el menú semanal con tus gustos, rutinas y restricciones.</span></div></div>
+        <div class="mp2-opts mp2-2">
+          <button type="button" class="mp2-o" onclick="selectMpFlow('comidas','basico')" id="mpf-comidas-basico"><b>Básico</b><small>Almuerzo y cena</small><div class="mp2-meals"><span title="Almuerzo"><i>🥗</i><small>Almuerzo</small></span><span title="Cena"><i>🍽️</i><small>Cena</small></span></div></button>
+          <button type="button" class="mp2-o" onclick="selectMpFlow('comidas','completo')" id="mpf-comidas-completo"><b>Completo</b><small>Todo el día resuelto</small><div class="mp2-meals"><span title="Desayuno"><i>☕</i><small>Desayuno</small></span><span title="Almuerzo"><i>🥗</i><small>Almuerzo</small></span><span title="Merienda"><i>🍪</i><small>Merienda</small></span><span title="Cena"><i>🍽️</i><small>Cena</small></span><span title="Postre"><i>🍰</i><small>Postre</small></span></div></button>
         </div>
-
-        <div>
-          <label style="display:block;font-size:11px;color:rgba(250,246,239,0.5);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">Comidas incluidas</label>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-            <button type="button" onclick="selectMpFlow('comidas','basico')" id="mpf-comidas-basico"
-              style="background:rgba(255,255,255,0.06);border:1.5px solid rgba(201,168,76,0.25);border-radius:10px;padding:12px 8px;cursor:pointer;text-align:center;">
-              <div style="font-size:13px;font-weight:500;color:var(--gold-light);">Básico</div>
-              <div style="font-size:10px;color:rgba(250,246,239,0.45);margin-top:3px;">Almuerzo + cena</div>
-            </button>
-            <button type="button" onclick="selectMpFlow('comidas','completo')" id="mpf-comidas-completo"
-              style="background:rgba(201,168,76,0.15);border:1.5px solid var(--gold);border-radius:10px;padding:12px 8px;cursor:pointer;text-align:center;">
-              <div style="font-size:13px;font-weight:500;color:var(--gold-light);">Completo</div>
-              <div style="font-size:10px;color:rgba(250,246,239,0.45);margin-top:3px;line-height:1.4;">Desayuno + almuerzo + merienda + cena + postre</div>
-            </button>
-          </div>
-        </div>
-
       </div>
-      <div id="mpf-result" style="border-top:1px solid rgba(201,168,76,0.15);padding-top:16px;"></div>
+
+      <aside class="mp2-sum">
+        <div class="mp2-sum-img"></div>
+        <div class="mp2-sum-b">
+          <span class="mp2-sum-tg">✦ Tu semana con Celestia</span>
+          <div class="mp2-sum-rows" id="mp2-sum-rows"></div>
+          <div id="mpf-result"></div>
+          <ol class="mp2-how"><li><b>Armamos el menú</b> de la semana por WhatsApp.</li><li><b>Cocino en tu casa</b> el día acordado.</li><li><b>Te quedan las comidas listas</b> para los días siguientes.</li></ol>
+        </div>
+      </aside>
     </div>
 
-    <div style="background:var(--gold-pale);border-radius:var(--radius);padding:16px 20px;margin-bottom:24px;font-size:13px;color:var(--text-mid);font-weight:300;line-height:1.7;">
-      Los ingredientes se coordinan y cotizan junto al menú definitivo — antes de la primera jornada coordinamos todo por WhatsApp.
-    </div>
+    <div class="mp2-note">✦ Los ingredientes se cotizan aparte, junto al menú definitivo: antes de la primera jornada coordinamos todo por WhatsApp.</div>
 
     <div class="nav-btns">
       <button class="btn-back" onclick="exitMealPrep()"><span id="i18n-mp-volver-inicio">← Volver al inicio</span></button>
@@ -4739,11 +4704,11 @@ function selectMpFlow(param, valor) {
   grupos[param].forEach(v => {
     const btn = document.getElementById(`mpf-${param}-${v}`);
     if (!btn) return;
-    const activo = v === valor;
-    btn.style.background = activo ? 'rgba(201,168,76,0.15)' : 'rgba(255,255,255,0.06)';
-    btn.style.border = activo ? '1.5px solid var(--gold)' : '1.5px solid rgba(201,168,76,0.25)';
+    btn.classList.toggle('on', v === valor);
+    btn.setAttribute('aria-pressed', v === valor ? 'true' : 'false');
   });
   updateMpResult('mpf-result', mpState.pp, mpState.jornadas, mpState.comidas);
+  if (typeof mp2Resumen === 'function') mp2Resumen();
 }
 
 function startMealPrep() {
@@ -7333,8 +7298,8 @@ a.mc2-btn{display:block;text-align:center;text-decoration:none;box-sizing:border
   #main-content .form-wrap,#mp-content .form-wrap{padding:22px 18px!important}
   #steps-bar .step-item,#mp-steps-bar .step-item{padding:14px 8px!important;font-size:10px!important;letter-spacing:.04em}
   #steps-bar .step-divider,#mp-steps-bar .step-divider{width:12px!important}
-  #main-content .nav-btns{position:sticky;bottom:0;z-index:20;margin-left:-20px;margin-right:-20px;padding:14px 20px;background:linear-gradient(to top,#FAF6EF 75%,rgba(250,246,239,0))}
-  #main-content .nav-btns .btn-next{flex:1}
+  #main-content .nav-btns,#mp-content .nav-btns{position:sticky;bottom:0;z-index:20;margin-left:-20px;margin-right:-20px;padding:14px 20px;background:linear-gradient(to top,#FAF6EF 75%,rgba(250,246,239,0))}
+  #main-content .nav-btns .btn-next,#mp-content .nav-btns .btn-next{flex:1}
   #btn-express-flotante{bottom:auto!important;top:auto!important;left:auto!important;right:14px!important;bottom:96px!important;padding:9px 13px!important;font-size:11px!important}
   body:not(.beta-mode) #tagline-rotador{display:none!important}
   #steps-bar .step-item:not(.active)>span,#mp-steps-bar .step-item:not(.active)>span{display:none}
@@ -7493,6 +7458,81 @@ a.mc2-btn{display:block;text-align:center;text-decoration:none;box-sizing:border
   root.addEventListener('mouseenter',function(){hover=true;root.classList.add('paused');clearTimeout(timer);});
   root.addEventListener('mouseleave',function(){hover=false;root.classList.remove('paused');go(i);});
   if('IntersectionObserver' in window){new IntersectionObserver(function(es){es.forEach(function(e){var v=e.isIntersecting;if(v&&!visible){visible=true;go(0);}else if(!v){visible=false;clearTimeout(timer);}});},{threshold:.35}).observe(root);}else{visible=true;go(0);}
+})();
+</script><style id="viandas-css">
+#mp-content{max-width:1120px!important}
+.mp2{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:36px;align-items:start}
+.mp2-q{display:flex;gap:14px;align-items:flex-start;margin:30px 0 14px}
+.mp2-q:first-child{margin-top:4px}
+.mp2-qn{flex:0 0 34px;height:34px;border-radius:50%;background:#0D1B2A;color:#E8C96B;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:17px;box-shadow:0 0 0 4px rgba(201,168,76,.15)}
+.mp2-qt{display:block;font-family:'DM Serif Display',serif;font-size:22px;color:#0D1B2A;line-height:1.2}
+.mp2-qs{display:block;font-size:13px;color:#6B5F4F;margin-top:3px;font-weight:300}
+.mp2-opts{display:grid;gap:14px}
+.mp2-3{grid-template-columns:repeat(3,1fr)}
+.mp2-2{grid-template-columns:repeat(2,1fr)}
+.mp2-o{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;background:#fff;border:1.5px solid #E8E0D5;border-radius:18px;padding:20px 14px 18px;cursor:pointer;font-family:'DM Sans',sans-serif;color:#0D1B2A;box-shadow:0 4px 16px rgba(13,27,42,.05);transition:transform .2s,border-color .2s,box-shadow .2s,background .2s}
+.mp2-o:hover{transform:translateY(-3px);border-color:#E2C97E;box-shadow:0 12px 28px rgba(13,27,42,.1)}
+.mp2-o.on{border-color:#C9A84C;background:#FFFBF0;box-shadow:0 0 0 5px rgba(201,168,76,.15),0 12px 28px rgba(13,27,42,.08)}
+.mp2-o.on::after{content:'✓';position:absolute;top:10px;right:12px;width:22px;height:22px;border-radius:50%;background:#C9A84C;color:#0D1B2A;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.mp2-o b{font-family:'DM Serif Display',serif;font-weight:400;font-size:21px;line-height:1.1}
+.mp2-o small{font-size:12px;color:#8a7a62}
+.mp2-ppl{display:flex;justify-content:center;height:40px;align-items:flex-end;margin-bottom:4px}
+.mp2-ppl svg{width:26px;height:30px;fill:none;stroke:#C9A84C;stroke-width:1.8;margin:0 -3px;transition:transform .25s}
+.mp2-ppl svg:nth-child(even){width:22px;height:26px;opacity:.85}
+.mp2-o.on .mp2-ppl svg{stroke:#0D1B2A;fill:rgba(201,168,76,.25)}
+.mp2-o:hover .mp2-ppl svg{transform:translateY(-2px)}
+.mp2-badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:#0D1B2A;color:#E8C96B;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;padding:4px 10px;border-radius:999px;white-space:nowrap}
+.mp2-week{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:10px;width:100%;max-width:240px}
+.mp2-week span{font-size:10px;padding:7px 0;border-radius:8px;background:#F5F0E6;color:#a39a8c;font-weight:500}
+.mp2-week span.on{background:#0D1B2A;color:#E8C96B;position:relative}
+.mp2-week span.on::before{content:'👨‍🍳';position:absolute;top:-15px;left:50%;transform:translateX(-50%);font-size:12px}
+.mp2-o.on .mp2-week span.on{background:linear-gradient(135deg,#C9A84C,#E8C96B);color:#0D1B2A}
+.mp2-meals{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-top:10px}
+.mp2-meals span{display:flex;flex-direction:column;align-items:center;gap:3px;width:52px}
+.mp2-meals i{font-style:normal;width:40px;height:40px;border-radius:50%;background:#F5F0E6;display:flex;align-items:center;justify-content:center;font-size:19px;transition:transform .25s}
+.mp2-o.on .mp2-meals i{background:#fff;box-shadow:0 0 0 1.5px #C9A84C}
+.mp2-o:hover .mp2-meals i{transform:scale(1.08)}
+.mp2-meals small{font-size:9.5px!important;color:#8a7a62}
+.mp2-sum{position:sticky;top:84px;background:#0D1B2A;color:#FAF6EF;border-radius:22px;overflow:hidden;border:1px solid rgba(201,168,76,.25);box-shadow:0 20px 48px rgba(13,27,42,.2)}
+.mp2-sum-img{height:150px;background:url('/img/svc-viandas.webp') center/cover no-repeat;position:relative}
+.mp2-sum-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,rgba(13,27,42,0) 30%,#0D1B2A)}
+.mp2-sum-b{padding:2px 24px 24px;margin-top:-20px;position:relative}
+.mp2-sum-tg{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#C9A84C}
+.mp2-sum-rows{margin:12px 0 14px}
+.mp2-sum-rows div{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid rgba(250,246,239,.08);font-size:13px}
+.mp2-sum-rows div span:first-child{color:rgba(250,246,239,.5);font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding-top:2px}
+.mp2-sum-rows div span:last-child{text-align:right}
+#mpf-result{border-top:1px solid rgba(201,168,76,.3);padding-top:14px}
+.mp2-how{list-style:none;counter-reset:h;margin:18px 0 0;padding:14px 0 0;border-top:1px solid rgba(250,246,239,.08)}
+.mp2-how li{counter-increment:h;position:relative;padding:5px 0 5px 30px;font-size:12.5px;line-height:1.5;color:rgba(250,246,239,.65)}
+.mp2-how li b{color:#FAF6EF;font-weight:500}
+.mp2-how li::before{content:counter(h);position:absolute;left:0;top:5px;width:20px;height:20px;border-radius:50%;border:1px solid rgba(201,168,76,.6);color:#E8C96B;font-size:11px;display:flex;align-items:center;justify-content:center}
+.mp2-note{margin-top:26px;background:#fff;border:1px solid #E8E0D5;border-left:3px solid #C9A84C;border-radius:12px;padding:14px 18px;font-size:13px;color:#6B5F4F;line-height:1.6}
+@media(max-width:980px){
+  .mp2{grid-template-columns:1fr;gap:26px}
+  .mp2-sum{position:relative;top:0}
+}
+@media(max-width:600px){
+  .mp2-3{grid-template-columns:repeat(3,1fr);gap:8px}
+  .mp2-3 .mp2-o{padding:16px 6px 14px}
+  .mp2-3 .mp2-o b{font-size:17px}
+  .mp2-ppl svg{width:18px;height:22px}
+  .mp2-ppl svg:nth-child(even){width:16px;height:19px}
+  .mp2-2{grid-template-columns:1fr}
+  .mp2-qt{font-size:19px}
+}
+</style>
+<script>
+function mp2Resumen(){
+  var el=document.getElementById('mp2-sum-rows');if(!el||typeof mpState==='undefined')return;
+  var pp={'1-2':'1 a 2','3-4':'3 a 4','5-6':'5 a 6'}[mpState.pp]||mpState.pp;
+  var jor=mpState.jornadas==='1'?'1 jornada por semana':'2 jornadas por semana';
+  var com=mpState.comidas==='completo'?'Desayuno · almuerzo · merienda · cena · postre':'Almuerzo y cena';
+  el.innerHTML='<div><span>Personas</span><span>'+pp+'</span></div><div><span>Cocino</span><span>'+jor+'</span></div><div><span>Comidas</span><span>'+com+'</span></div>';
+}
+(function(){
+  function decorar(){var m={'mp-screen-1':'✦ Paso 1 de 4 · Tu semana','mp-screen-2':'✦ Paso 2 de 4 · Fecha','mp-screen-3':'✦ Paso 3 de 4 · Datos','mp-screen-4':'✦ Paso 4 de 4 · Confirmar'};Object.keys(m).forEach(function(id){var s=document.getElementById(id);var h=s&&s.querySelector('.section-title');if(h)h.setAttribute('data-eyebrow',m[id]);});mp2Resumen();}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',decorar);else decorar();
 })();
 </script></body>
 </html>
