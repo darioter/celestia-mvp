@@ -1876,6 +1876,8 @@ window.addEventListener('resize',function(){if(innerWidth>768)set(false);});})()
   #beta-landing .bl-hs::after{background:none}
 }
 @media (orientation: portrait) and (max-width: 900px){#beta-landing .bl-hs{bottom:auto;height:60%}}
+/* Escritorio: el video de Daro se ve entero (16:9, sin recorte ni zoom) a la derecha y se funde con el fondo */
+@media(min-width:901px) and (orientation:landscape){#beta-landing .bl-hero video,#beta-landing .bl-hero-img{left:auto!important;right:0!important;width:min(100%,calc(520px * 16 / 9))!important;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 30%);mask-image:linear-gradient(90deg,transparent 0,#000 30%)}}
 @media(prefers-reduced-motion:reduce){#beta-landing .bl-hs.on{animation:none;transform:none}#beta-landing .bl-hn-t.on::after{animation:none;width:100%}}
 </style><div class="bl-hn" role="tablist" aria-label="Servicios"><button type="button" class="bl-hn-t on" role="tab" aria-selected="true">Daro</button><button type="button" class="bl-hn-t" role="tab" aria-selected="false">3 pasos</button><button type="button" class="bl-hn-t" role="tab" aria-selected="false">7 pasos</button><button type="button" class="bl-hn-t" role="tab" aria-selected="false">Eventos</button><button type="button" class="bl-hn-t" role="tab" aria-selected="false">Viandas</button><button type="button" class="bl-hn-t" role="tab" aria-selected="false">Empresas</button></div></div><script>(function(){
 var hero=document.querySelector('#beta-landing .bl-hero');if(!hero)return;
