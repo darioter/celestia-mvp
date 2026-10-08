@@ -98,6 +98,7 @@ BOOK_HTML = ('<div class="ap-book" id="ap-book" hidden><div class="ap-book-hd"><
   '<div class="ap-bk-q" id="ap-cual-q">' + bi('¿Qué clase?', 'Which class?') + '</div><select id="ap-cual" class="ap-in"></select>'
   '<div class="ap-bk-q">' + bi('Tus fechas', 'Your dates') + ' <small id="ap-cnt"></small></div><ol class="ap-sel" id="ap-sel"></ol>'
   '<div class="ap-bk-q">' + bi('Tus datos', 'Your details') + '</div><div class="ap-me" id="ap-me" hidden></div>'
+  '<a class="ap-login" id="ap-login" href="/clientes?volver=%2Faprende%23reservar">' + bi('¿Ya tenés cuenta? <b>Ingresá</b> y tus datos se completan solos', 'Have an account? <b>Log in</b> and your details fill in automatically') + '</a>'
   '<input class="ap-in" id="ap-nom" autocomplete="name"><input class="ap-in" id="ap-tel" type="tel" autocomplete="tel"><input class="ap-in" id="ap-mail" type="email" autocomplete="email">'
   '<input class="ap-in" id="ap-dir" autocomplete="street-address"><textarea class="ap-in" id="ap-not" rows="2"></textarea>'
   '<p class="ap-err" id="ap-err" hidden></p>'
@@ -205,6 +206,7 @@ def build():
 .ap-me .tx{flex:1;min-width:0;font-size:13px;color:#8a7a62;line-height:1.45}.ap-me .tx b{display:block;color:var(--nv);font-size:15px;font-weight:600}
 .ap-me .tx span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ap-me button{flex:none;background:none;border:none;color:#8a7a62;text-decoration:underline;text-underline-offset:3px;font:500 12.5px 'DM Sans',sans-serif;cursor:pointer}
+.ap-login{display:block;font-size:13px;color:#8a7a62;text-decoration:none;margin:-2px 0 10px}.ap-login b{color:var(--nv);text-decoration:underline;text-underline-offset:3px}
 .ap-me-hint{font-size:12.5px;color:#a08a5c;margin:-2px 0 8px}
 .ap-wd{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
 .ap-wd button{border:1px solid #E3D9C8;background:#FCFAF6;border-radius:14px;padding:12px 4px 10px;cursor:pointer;font:600 14px 'DM Sans',sans-serif;color:var(--nv);transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:3px}
@@ -445,7 +447,7 @@ function pintarYo(editar){if(!yo)return;var me=document.getElementById('ap-me');
     '<span>'+v('mail')+(v('tel')?' · '+v('tel'):'')+'</span>'+(v('dir')?'<span>📍 '+v('dir')+'</span>':'')+'</div>'+
     (editar?'':'<button type="button" id="ap-me-ed">'+L('Editar','Edit')+'</button>')+
     (falta.length&&!editar?'':'');
-  me.hidden=false;
+  me.hidden=false;document.getElementById('ap-login').hidden=true;
   var h=document.getElementById('ap-me-hint');if(!h){h=document.createElement('p');h.id='ap-me-hint';h.className='ap-me-hint';me.after(h);}
   h.textContent=falta.length&&!editar?L('Completá solo lo que falta:','Just fill in what is missing:'):'';h.hidden=!h.textContent;
   var b=document.getElementById('ap-me-ed');if(b)b.addEventListener('click',function(){pintarYo(true);});
@@ -496,6 +498,7 @@ document.getElementById('ap-cual').addEventListener('change',lista);
 document.querySelectorAll('.ap-tu').forEach(function(b){b.addEventListener('click',function(){turno=b.getAttribute('data-tu');document.querySelectorAll('.ap-tu').forEach(function(x){x.classList.toggle('on',x===b);});});});
 ['ap-nom','ap-tel','ap-mail','ap-dir'].forEach(function(id){document.getElementById(id).addEventListener('input',valida);});
 document.getElementById('ap-conf').addEventListener('click',confirmar);
+if(location.hash==='#reservar')setTimeout(function(){document.getElementById('ap-elegir').click();},300);
 document.querySelectorAll('[data-cel-lang]').forEach(function(b){b.addEventListener('click',function(){setTimeout(function(){if(mes){placeholders();render();}},40);});});
 })();</script>"""
     # Animaciones de entrada

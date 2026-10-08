@@ -679,6 +679,7 @@ async function doLogout() {
 
 // ─── PORTAL ───────────────────────────────────────────────
 async function mostrarPortal() {
+  if (_volverSiCorresponde()) return;
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('portal-screen').style.display = 'block';
   inicializarChecks();
@@ -1920,6 +1921,11 @@ function notificarMensajeNuevo(count) {
 
 // ─── INIT ─────────────────────────────────────────────────
 let portalCargado = false;
+// Volver a la página de origen después de ingresar (ej: /clientes?volver=/aprende#reservar)
+(function(){try{var v=new URLSearchParams(location.search).get('volver');
+  if(v&&/^\/[^\/\\]/.test(v))localStorage.setItem('cel_volver',JSON.stringify({u:v,t:Date.now()}));}catch(e){}})();
+function _volverSiCorresponde(){try{var r=JSON.parse(localStorage.getItem('cel_volver')||'null');if(!r)return false;localStorage.removeItem('cel_volver');
+  if(Date.now()-r.t<30*60*1000&&/^\/[^\/\\]/.test(r.u)){location.replace(r.u);return true;}}catch(e){}return false;}
 
 supa.auth.onAuthStateChange((event, session) => {
   if (event === 'PASSWORD_RECOVERY') {
