@@ -97,7 +97,7 @@ BOOK_HTML = ('<div class="ap-book" id="ap-book" hidden><div class="ap-book-hd"><
   '<button type="button" class="ap-o ap-tu" data-tu="cena"><b>🌙 ' + bi('Tarde', 'Afternoon') + '</b><small>15:00 – 18:00</small></button></div>'
   '<div class="ap-bk-q" id="ap-cual-q">' + bi('¿Qué clase?', 'Which class?') + '</div><select id="ap-cual" class="ap-in"></select>'
   '<div class="ap-bk-q">' + bi('Tus fechas', 'Your dates') + ' <small id="ap-cnt"></small></div><ol class="ap-sel" id="ap-sel"></ol>'
-  '<div class="ap-bk-q">' + bi('Tus datos', 'Your details') + '</div>'
+  '<div class="ap-bk-q">' + bi('Tus datos', 'Your details') + '</div><div class="ap-me" id="ap-me" hidden></div>'
   '<input class="ap-in" id="ap-nom" autocomplete="name"><input class="ap-in" id="ap-tel" type="tel" autocomplete="tel"><input class="ap-in" id="ap-mail" type="email" autocomplete="email">'
   '<input class="ap-in" id="ap-dir" autocomplete="street-address"><textarea class="ap-in" id="ap-not" rows="2"></textarea>'
   '<p class="ap-err" id="ap-err" hidden></p>'
@@ -200,6 +200,12 @@ def build():
 .ap-cal-leg{display:flex;gap:14px;justify-content:center;margin-top:12px;font-size:11.5px;color:#8a7a62}.ap-cal-leg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px}
 .l-ok{background:#FAF6EF;border:1px solid var(--crd)}.l-sel{background:var(--nv)}.l-off{background:#e3dbcc}
 #ap-book [hidden]{display:none!important}
+.ap-me{display:flex;gap:12px;align-items:center;border:1px solid rgba(201,168,76,.45);background:#FFFBF0;border-radius:14px;padding:12px 14px;margin-bottom:10px}
+.ap-me .av{flex:none;width:40px;height:40px;border-radius:50%;background:var(--nv);color:var(--gdl);display:flex;align-items:center;justify-content:center;font:400 18px 'DM Serif Display',serif}
+.ap-me .tx{flex:1;min-width:0;font-size:13px;color:#8a7a62;line-height:1.45}.ap-me .tx b{display:block;color:var(--nv);font-size:15px;font-weight:600}
+.ap-me .tx span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ap-me button{flex:none;background:none;border:none;color:#8a7a62;text-decoration:underline;text-underline-offset:3px;font:500 12.5px 'DM Sans',sans-serif;cursor:pointer}
+.ap-me-hint{font-size:12.5px;color:#a08a5c;margin:-2px 0 8px}
 .ap-wd{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
 .ap-wd button{border:1px solid #E3D9C8;background:#FCFAF6;border-radius:14px;padding:12px 4px 10px;cursor:pointer;font:600 14px 'DM Sans',sans-serif;color:var(--nv);transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:3px}
 .ap-wd button small{font:400 10.5px 'DM Sans',sans-serif;color:#a08a5c}.ap-wd button:hover:not([disabled]){border-color:var(--gd);transform:translateY(-2px)}
@@ -422,6 +428,28 @@ function planner(){
   mes=new Date(new Date(sel[0]+'T12:00:00').getFullYear(),new Date(sel[0]+'T12:00:00').getMonth(),1);lista();
 }
 function err(m){var e=document.getElementById('ap-err');e.textContent=m||'';e.hidden=!m;}
+var yo=null;
+function sesionLocal(){try{var raw=null;for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf('sb-')===0&&/-auth-token$/.test(k)){raw=localStorage.getItem(k);break;}}
+  if(!raw)return null;var p=JSON.parse(raw);if(p&&p.currentSession)p=p.currentSession;if(!p||!p.access_token||!p.user)return null;if(p.expires_at&&Date.now()/1000>p.expires_at)return null;return p;}catch(e){return null;}}
+async function cargarYo(){var s=sesionLocal();if(!s)return;var u=s.user,perf={};
+  try{var r=await fetch(S.url+'/rest/v1/clientes?id=eq.'+u.id+'&select=*&limit=1',{headers:{apikey:S.key,Authorization:'Bearer '+s.access_token}});var j=await r.json();if(Array.isArray(j)&&j[0])perf=j[0];}catch(e){}
+  yo={nom:perf.nombre||(u.user_metadata&&(u.user_metadata.full_name||u.user_metadata.name))||'',mail:u.email||perf.email||'',tel:perf.telefono||perf.tel||'',dir:perf.direccion||perf.dir||''};
+  pintarYo(false);}
+function pintarYo(editar){if(!yo)return;var me=document.getElementById('ap-me');
+  ['nom','tel','mail','dir'].forEach(function(f){var el=document.getElementById('ap-'+f);if(yo[f]&&!el.value)el.value=yo[f];});
+  var falta=['nom','tel','dir'].filter(function(f){return document.getElementById('ap-'+f).value.trim().length<3;});
+  document.getElementById('ap-mail').hidden=!editar;
+  ['nom','tel','dir'].forEach(function(f){document.getElementById('ap-'+f).hidden=!editar&&falta.indexOf(f)<0;});
+  var v=function(f){return document.getElementById('ap-'+f).value.trim();};
+  me.innerHTML='<div class="av">'+((v('nom')||v('mail')||'?').charAt(0).toUpperCase())+'</div><div class="tx"><b>'+(v('nom')?L('Reservás como ','Booking as ')+v('nom').split(' ')[0]:L('Tu cuenta','Your account'))+'</b>'+
+    '<span>'+v('mail')+(v('tel')?' · '+v('tel'):'')+'</span>'+(v('dir')?'<span>📍 '+v('dir')+'</span>':'')+'</div>'+
+    (editar?'':'<button type="button" id="ap-me-ed">'+L('Editar','Edit')+'</button>')+
+    (falta.length&&!editar?'':'');
+  me.hidden=false;
+  var h=document.getElementById('ap-me-hint');if(!h){h=document.createElement('p');h.id='ap-me-hint';h.className='ap-me-hint';me.after(h);}
+  h.textContent=falta.length&&!editar?L('Completá solo lo que falta:','Just fill in what is missing:'):'';h.hidden=!h.textContent;
+  var b=document.getElementById('ap-me-ed');if(b)b.addEventListener('click',function(){pintarYo(true);});
+  valida();}
 function placeholders(){var ph={'ap-nom':L('Nombre y apellido *','Full name *'),'ap-tel':L('Teléfono / WhatsApp *','Phone / WhatsApp *'),'ap-mail':L('Email *','Email *'),'ap-dir':L('Dirección de la clase (calle, número, barrio) *','Class address (street, number, area) *'),'ap-not':L('Restricciones, nivel, algo que quieras contarme...','Restrictions, level, anything you want to tell me...')};
   Object.keys(ph).forEach(function(id){document.getElementById(id).placeholder=ph[id];});
   var cu=document.getElementById('ap-cual'),v=cu.value;cu.innerHTML=C.map(function(c,i){return '<option value="'+i+'">'+c[1]+' '+L('Clase ','Class ')+(i+1)+' · '+L(c[2],c[3])+'</option>';}).join('');cu.value=v||'0';}
@@ -458,7 +486,7 @@ async function confirmar(){
 }
 window.apBookSync=function(){if(!mes)return;if(sel.length>need())sel=sel.slice(0,need());render();planner();};
 document.getElementById('ap-elegir').addEventListener('click',async function(){
-  book.hidden=false;okBox.hidden=true;if(!mes){mes=new Date(minD.getFullYear(),minD.getMonth(),1);placeholders();await cargar();}render();planner();
+  book.hidden=false;okBox.hidden=true;if(!mes){mes=new Date(minD.getFullYear(),minD.getMonth(),1);placeholders();await Promise.all([cargar(),cargarYo()]);}render();planner();
   setTimeout(function(){book.scrollIntoView({behavior:'smooth',block:'start'});},60);});
 document.getElementById('ap-prev').addEventListener('click',function(){mes=new Date(mes.getFullYear(),mes.getMonth()-1,1);render();});
 document.getElementById('ap-next').addEventListener('click',function(){mes=new Date(mes.getFullYear(),mes.getMonth()+1,1);render();});
