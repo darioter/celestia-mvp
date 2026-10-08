@@ -276,6 +276,28 @@
     color: var(--gold-light);
     text-align: right;
   }
+  .adm-desglose{margin-top:8px;font-size:11.5px;color:rgba(250,246,239,0.55);line-height:1.5;border:1px solid rgba(201,168,76,0.18);border-radius:10px;padding:8px 10px;background:rgba(201,168,76,0.04)}
+  .adm-desglose div{display:flex;justify-content:space-between;gap:10px}
+  .adm-desglose b{font-weight:500;color:var(--cream)}
+  .adm-desglose .tot{border-top:1px solid rgba(201,168,76,0.2);margin-top:4px;padding-top:4px}.adm-desglose .tot b{color:var(--gold-light);font-family:'DM Serif Display',serif;font-size:15px;font-weight:400}
+  .adm-desglose .pg span{color:rgba(250,246,239,0.4)}
+  .adm-desglose small{display:block;margin-top:4px;color:rgba(250,246,239,0.3);font-size:10px}
+  .ing-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .ing-kpi{background:rgba(255,255,255,0.03);border:1px solid rgba(201,168,76,0.15);border-radius:14px;padding:14px 16px}
+  .ing-kpi small{display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(250,246,239,0.4)}
+  .ing-kpi b{display:block;font-family:'DM Serif Display',serif;font-weight:400;font-size:24px;color:var(--gold-light);margin-top:4px}
+  .ing-kpi span{font-size:11px;color:rgba(250,246,239,0.4)}
+  .ing-t{width:100%;border-collapse:collapse;font-size:13px}
+  .ing-t th{text-align:left;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:500;padding:10px 12px;border-bottom:1px solid rgba(201,168,76,0.2)}
+  .ing-t td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.05);color:var(--cream);vertical-align:top}
+  .ing-t tr:hover td{background:rgba(201,168,76,0.04)}
+  .ing-t .mut{color:rgba(250,246,239,0.4);font-size:11.5px}
+  .ing-tag{display:inline-block;font-size:10px;padding:2px 8px;border-radius:20px;margin-left:6px;vertical-align:1px}
+  .ing-tag.c{background:rgba(201,168,76,0.12);color:var(--gold-light);border:1px solid rgba(201,168,76,0.3)}
+  .ing-tag.m{background:rgba(124,158,191,0.12);color:#9fbcd8;border:1px solid rgba(124,158,191,0.3)}
+  .ing-up{color:#E2A33E}.ing-down{color:#5DBF87}
+  .ing-bar{display:inline-block;height:6px;border-radius:3px;background:linear-gradient(90deg,var(--gold),var(--gold-light));vertical-align:middle;margin-right:6px}
+  @media(max-width:800px){.ing-kpis{grid-template-columns:1fr 1fr}.ing-t .hide-m{display:none}}
   .res-senia {
     font-size: 11px;
     color: rgba(250,246,239,0.4);
@@ -909,6 +931,7 @@
       <button class="filter-btn" onclick="verSeccion('chefs',this)">Chefs</button>
       <button class="filter-btn" onclick="verSeccion('casos',this)">Casos de éxito</button>
       <button class="filter-btn" onclick="verSeccion('resenas',this)">Reseñas</button>
+      <button class="filter-btn" onclick="verSeccion('ingredientes',this)">Ingredientes</button>
       <button class="filter-btn" onclick="verSeccion('platos',this)">Platos</button>
       <button class="filter-btn" onclick="verSeccion('cupones',this)">Cupones</button>
       <button class="filter-btn" onclick="verSeccion('banners',this)">Banners</button>
@@ -1069,6 +1092,23 @@
     </div>
 
     <!-- SECCIÓN RESEÑAS -->
+    <!-- SECCIÓN INGREDIENTES -->
+    <div id="seccion-ingredientes" style="display:none;">
+      <div class="section-title">✦ Ingredientes — canasta de referencia + lo que usaste en tus menús</div>
+      <div style="font-size:12px;color:rgba(250,246,239,0.45);margin:-6px 0 18px;line-height:1.6;max-width:760px;">
+        Los productos con <b style="color:var(--gold-light)">📈 seguimiento</b> se actualizan solos todos los lunes (Jumbo y Carrefour) y mueven el índice que ajusta los ingredientes estimados del sitio.
+        El resto se suma automáticamente a medida que cargás la lista de compras de cada menú confirmado.
+      </div>
+      <div class="ing-kpis" id="ing-kpis"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 12px;align-items:center;">
+        <input class="bloqueo-input" id="ing-buscar" placeholder="Buscar ingrediente..." oninput="renderIngredientes()" style="max-width:280px;margin:0;">
+        <button class="filter-btn active" data-ingf="todos" onclick="filtroIng('todos',this)">Todos</button>
+        <button class="filter-btn" data-ingf="canasta" onclick="filtroIng('canasta',this)">📈 Con seguimiento</button>
+        <button class="filter-btn" data-ingf="menus" onclick="filtroIng('menus',this)">🍽 De mis menús</button>
+      </div>
+      <div id="ing-tabla"><div class="loading">Cargando ingredientes...</div></div>
+    </div>
+
     <div id="seccion-resenas" style="display:none;">
       <div class="section-title">✦ Reseñas de clientes — se muestran en la landing</div>
       <div style="font-size:12px;color:rgba(250,246,239,0.45);margin-bottom:20px;max-width:640px;">
@@ -1403,15 +1443,15 @@ const MP_ACCESS_TOKEN = 'TEST-'; // Reemplazar con token real de MP
 
 function calcularFinanciero(r) {
   const servicio = r.precio_servicio || r.honorario || 0;
-  const market   = r.precio_market || 0;
+  const market   = r.precio_market || Number(r.ingredientes) || 0;   // ingredientes
   const extras   = r.precio_extras || 0;
   const express  = r.recargo_express || 0;
   const retPct   = (r.retencion_pct || 15) / 100;
 
   const totalServicio = servicio + express;
   const totalCliente  = totalServicio + market + extras;
-  const seniaMonto    = Math.round(totalServicio * 0.5) + market + extras; // 50% servicio + 100% market+extras
-  const saldoMonto    = Math.round(totalServicio * 0.5);                    // 50% servicio restante
+  const seniaMonto    = Math.round(totalServicio * 0.5);                    // seña: 50% del servicio
+  const saldoMonto    = totalCliente - seniaMonto;                          // resto (50% servicio + ingredientes + extras) el día del servicio
   const comisionApp   = Math.round(totalServicio * COMISION_APP);
   const baseChef      = Math.round(totalServicio * (1 - COMISION_APP));     // 70% del servicio
   const retencionChef = Math.round(baseChef * retPct);
@@ -1486,6 +1526,7 @@ async function cargarPagos() {
             <div style="font-size:10px;color:rgba(250,246,239,0.3);">Total cliente</div>
             <div style="font-family:'DM Serif Display',serif;font-size:18px;color:var(--gold-light);">${fmt(f.totalCliente)}</div>
           </div>
+          <div style="text-align:right;font-size:10px;color:rgba(250,246,239,0.35);line-height:1.5;">Servicio ${fmt(f.totalServicio)}<br>Ingredientes ${fmt(f.market)}</div>
           <button onclick="editarPrecios('${r.id}')" style="font-size:11px;color:rgba(250,246,239,0.3);background:transparent;border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:5px 12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;">Editar precios</button>
           ${r.tel ? `<button class="accion-btn btn-whatsapp" onclick="waRecordatorio('${r.tel}','${r.nombre}','${r.ref}',${f.seniaMonto},${!seniaCobrada})" style="padding:5px 12px;font-size:11px;">WA</button>` : ''}
         </div>
@@ -1502,7 +1543,7 @@ async function cargarPagos() {
           <div class="pago-monto-row ${seniaCobrada?'cobrado':''}">
             <div>
               <div class="pago-monto-label">Seña — al reservar</div>
-              <div style="font-size:10px;color:rgba(250,246,239,0.25);margin-top:1px;">50% servicio + 100% market/extras</div>
+              <div style="font-size:10px;color:rgba(250,246,239,0.25);margin-top:1px;">50% del servicio</div>
             </div>
             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
               <div class="pago-monto-valor">${fmt(f.seniaMonto)}</div>
@@ -1513,8 +1554,8 @@ async function cargarPagos() {
           <!-- Saldo -->
           <div class="pago-monto-row ${saldoCobrado?'cobrado':''} ${!seniaCobrada?'bloqueado':''}">
             <div>
-              <div class="pago-monto-label">Saldo — al iniciar servicio</div>
-              <div style="font-size:10px;color:rgba(250,246,239,0.25);margin-top:1px;">50% servicio restante</div>
+              <div class="pago-monto-label">Resto — el día del servicio</div>
+              <div style="font-size:10px;color:rgba(250,246,239,0.25);margin-top:1px;">50% servicio + ingredientes${f.market ? ' (' + fmt(f.market) + ')' : ''}</div>
             </div>
             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
               <div class="pago-monto-valor">${fmt(f.saldoMonto)}</div>
@@ -1912,7 +1953,7 @@ function detenerRealtimeAdmin() {
 }
 
 function verSeccion(seccion, btn) {
-  ['reservas','semanal','agenda','pagos','bloqueos','chefs','casos','resenas','platos','cupones','banners'].forEach(s => {
+  ['reservas','semanal','agenda','pagos','bloqueos','chefs','casos','resenas','ingredientes','platos','cupones','banners'].forEach(s => {
     const el = document.getElementById('seccion-'+s);
     if (el) el.style.display = seccion === s ? 'block' : 'none';
   });
@@ -1930,6 +1971,7 @@ function verSeccion(seccion, btn) {
   if (seccion === 'casos') cargarCasos();
   if (seccion === 'resenas') cargarResenas();
   if (seccion === 'platos') cargarPlatosCatalogo();
+  if (seccion === 'ingredientes') cargarIngredientes();
   if (seccion === 'cupones') cargarCupones();
   if (seccion === 'banners') cargarBanners();
 }
@@ -2683,13 +2725,13 @@ function renderReservas() {
     const trasladoOk = tr && tr.cotizado;
     const totalEst = honorario + ingEst + (trasladoOk ? tr.monto : 0);
     const aTransferir = p.senia_cliente + (trasladoOk ? tr.monto : 0);
-    const msgM3 = `Hola ${primerNombre}, ¡tenemos disponibilidad! Confirmamos tu experiencia Celestia 🍽\\n\\n*${r.menu}* · ${fechaStr} · ${turnoStr} · ${r.personas} personas\\n\\n*Servicio:* ${fmt(honorario)}\\n${ingEst ? `*Ingredientes (estimado):* ${fmt(ingEst)} — se ajusta al menú final y a los precios de compra\\n` : ''}${trasladoOk ? `*Traslado a ${tr.zona}:* ${fmt(tr.monto)}\\n` : ''}*Total estimado:* ${fmt(totalEst)}\\n\\n*Para reservar la fecha* transferí *${fmt(aTransferir)}* (${trasladoOk ? 'seña del 50% del servicio + traslado' : 'seña del 50% del servicio'}) al alias *daro.chef* y mandanos el comprobante por acá 🙌\\n\\n*El resto se abona así:*\\n• Ingredientes: cuando llego a tu casa, por el costo final de la compra\\n• Saldo del servicio (${fmt(p.saldo_cliente)}): al terminar el servicio\\n\\n— Daro · Celestia Chef Privado`;
+    const msgM3 = `Hola ${primerNombre}, ¡tenemos disponibilidad! Confirmamos tu experiencia Celestia 🍽\\n\\n*${r.menu}* · ${fechaStr} · ${turnoStr} · ${r.personas} personas\\n\\n*Total (todo incluido):* ${fmt(totalEst)}\\n_Servicio, asistentes e ingredientes${trasladoOk ? ' y traslado' : ''}. Si el menú o los detalles cambian, te confirmo el importe final con el menú._\\n\\n*Para reservar la fecha* transferí la seña de *${fmt(aTransferir)}* al alias *daro.chef* y mandanos el comprobante por acá 🙌\\n\\n*El resto (${fmt(totalEst - aTransferir)})* se abona el día del servicio.\\n\\n— Daro · Celestia Chef Privado`;
 
     const msgMN = `Hola ${primerNombre} 👋 Te comparto el menú de tu experiencia del *${fechaStr}*:\\n\\n${(r.menu_definitivo || '').replace(/[`"$\\]/g, '').replace(/\n/g, '\\n')}\\n\\nSi querés ajustar algo, avisame por acá.\\n\\n— Daro · Celestia Chef Privado`;
 
     const msgM4 = `Hola ${primerNombre} 👋 Tu experiencia Celestia es el *${fechaStr}*.\\n\\nVoy a llegar entre las *${llegadaVentana}* para el mise en place (depende del menú); el día anterior te confirmo el horario exacto. El servicio comienza a las *${inicioStr}*.\\n\\nEn los días previos coordinamos los últimos detalles por acá.\\n\\n¡Nos vemos pronto! — Daro · Celestia Chef Privado`;
 
-    const msgM5 = `Hola ${primerNombre} 👋 ¡Mañana es tu experiencia Celestia!\\n\\n*${r.menu}* · ${turnoStr} · ${r.personas} personas · ${r.dir || ''}\\n\\nLlego con anticipación para el mise en place; te confirmo por acá el horario exacto.\\n\\nPara que lo tengas a mano:\\n• Ingredientes${ingEst ? ` (estimado ${fmt(ingEst)})` : ''}: se abonan cuando llego, por el costo final de la compra\\n• Saldo del servicio: *${fmt(p.saldo_cliente)}*, al terminar\\n\\nCualquier última consulta, acá estoy. ¡Hasta mañana! — Daro · Celestia Chef Privado`;
+    const msgM5 = `Hola ${primerNombre} 👋 ¡Mañana es tu experiencia Celestia!\\n\\n*${r.menu}* · ${turnoStr} · ${r.personas} personas · ${r.dir || ''}\\n\\nLlego con anticipación para el mise en place; te confirmo por acá el horario exacto.\\n\\nPara que lo tengas a mano: el resto a abonar es *${fmt(totalEst - aTransferir)}*, el día del servicio.\\n\\nCualquier última consulta, acá estoy. ¡Hasta mañana! — Daro · Celestia Chef Privado`;
 
     const msgM6 = `Hola ${primerNombre}, fue un placer compartir la experiencia con vos y tus invitados 🙌\\n\\nEspero que haya sido un momento especial. Si tenés un minuto, nos ayuda muchísimo una reseña en Google: podés escanear la tarjeta que te dejé o entrar acá:\\n\\nhttps://g.page/r/CWYAy7Wn5FfhEBM/review\\n\\n¡Hasta la próxima! — Daro · Celestia Chef Privado`;
 
@@ -2729,15 +2771,24 @@ function renderReservas() {
       <div>
         <div class="res-menu">${r.menu || '—'}</div>
         <div class="res-personas">${r.personas} personas</div>
-        <div class="pago-bloque-titulo" style="margin-top:10px;">Honorario</div>
+        <div class="pago-bloque-titulo" style="margin-top:10px;">Servicio <span style="opacity:.5;text-transform:none;letter-spacing:0">(honorario + asistentes)</span></div>
         <div class="precio-wrap">
           <input class="precio-input" id="precio-${r.id}" value="${honorario}" type="number">
           <button class="precio-ok-btn" onclick="guardarPrecio('${r.id}')">✓ OK</button>
         </div>
-        <div style="font-size:11px;color:rgba(250,246,239,0.35);margin-top:4px;line-height:1.6;">
-          <div>Seña cliente: ${fmt(p.senia_cliente)} (50%)</div>
-          <div>Saldo cliente: ${fmt(p.saldo_cliente)} (50%)</div>
-          ${tr && tr.cotizado ? `<div style="margin-top:3px;color:#E2A33E;">+ Traslado: ${fmt(tr.monto)}</div>` : ''}
+        <div class="pago-bloque-titulo" style="margin-top:8px;">Ingredientes <span style="opacity:.5;text-transform:none;letter-spacing:0">(estimado)</span></div>
+        <div class="precio-wrap">
+          <input class="precio-input" id="ing-${r.id}" value="${ingEst}" type="number">
+          <button class="precio-ok-btn" onclick="guardarIngredientes('${r.id}')">✓ OK</button>
+        </div>
+        <div class="adm-desglose">
+          <div><span>Servicio</span><b>${fmt(honorario)}</b></div>
+          <div><span>Ingredientes</span><b>${fmt(ingEst)}</b></div>
+          ${trasladoOk ? `<div><span>Traslado</span><b>${fmt(tr.monto)}</b></div>` : ''}
+          <div class="tot"><span>Total cliente</span><b>${fmt(totalEst)}</b></div>
+          <div class="pg"><span>Seña (50% servicio${trasladoOk ? ' + traslado' : ''})</span><b>${fmt(aTransferir)}</b></div>
+          <div class="pg"><span>Resto el día del servicio</span><b>${fmt(totalEst - aTransferir)}</b></div>
+          <small>El cliente ve un solo total. El desglose es solo para vos.</small>
         </div>
         <div style="margin-top:8px;"><span class="estado-badge ${r.estado}">${r.estado === 'reservada' ? 'pendiente de validación' : r.estado}</span></div>
       </div>
@@ -2779,6 +2830,86 @@ async function enviarM(id, mKey, telWA, msg) {
     r.mensajes_enviados = enviados;
     renderReservas();
   }
+}
+
+
+// ─── INGREDIENTES: canasta de referencia + listas de compras de menús ───
+let ING_DATA = [], ING_FILTRO = 'todos';
+const ingNorm = t => (t||'').toString().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\(.*?\)/g,'').replace(/\s+/g,' ').trim();
+function filtroIng(f, btn){ ING_FILTRO = f; document.querySelectorAll('[data-ingf]').forEach(b=>b.classList.toggle('active', b===btn)); renderIngredientes(); }
+async function cargarIngredientes(){
+  document.getElementById('ing-tabla').innerHTML = '<div class="loading">Cargando ingredientes...</div>';
+  const [prod, prec, idx, res] = await Promise.all([
+    supa.from('canasta_productos').select('*').eq('activo', true),
+    supa.from('canasta_precios').select('fecha,super,clave,sku,nombre,precio').order('fecha', { ascending: true }),
+    supa.from('canasta_indice').select('*').order('fecha', { ascending: true }),
+    supa.from('reservas').select('id,ref,fecha,menu,estado,personas,lista_compras').not('lista_compras', 'is', null).neq('estado', 'cancelada')
+  ]);
+  const productos = prod.data || [], precios = prec.data || [], indices = idx.data || [], reservas = res.data || [];
+  // Canasta: precio base (primera semana) y último por super/sku
+  const porClave = {};
+  productos.forEach(p => { (porClave[p.clave] = porClave[p.clave] || { clave: p.clave, nombre: p.nombre, supers: {} }); });
+  precios.forEach(x => {
+    const c = porClave[x.clave]; if (!c) return;
+    const k = x.super; const o = c.supers[k] = c.supers[k] || { base: x.precio, ult: x.precio, fecha: x.fecha, prod: x.nombre };
+    o.ult = x.precio; o.fecha = x.fecha; o.prod = x.nombre;
+  });
+  const items = {};
+  Object.values(porClave).forEach(c => {
+    const vars = Object.values(c.supers).map(o => o.ult / o.base - 1);
+    items[ingNorm(c.nombre)] = { nombre: c.nombre, canasta: true, supers: c.supers, variacion: vars.length ? vars.reduce((a,b)=>a+b,0)/vars.length : null, usos: 0, menus: [], categoria: 'Canasta', cantidades: [] };
+  });
+  // Menús: listas de compras
+  reservas.forEach(r => {
+    const secs = (r.lista_compras && r.lista_compras.secciones) || [];
+    const vistos = new Set();
+    secs.forEach(sec => (sec.items || []).forEach(it => {
+      const n = ingNorm(it.nombre); if (!n || vistos.has(n)) return; vistos.add(n);
+      let key = n;
+      const canastaKey = Object.keys(items).find(k => items[k].canasta && (n.includes(k) || k.includes(n)));
+      if (canastaKey) key = canastaKey;
+      const o = items[key] = items[key] || { nombre: it.nombre, canasta: false, usos: 0, menus: [], categoria: sec.categoria || '', cantidades: [] };
+      o.usos++; o.menus.push({ fecha: r.fecha, menu: r.menu, ref: r.ref, personas: r.personas });
+      if (it.cantidad) o.cantidades.push(it.cantidad + (r.personas ? ' · ' + r.personas + 'p' : ''));
+      if (!o.categoria && sec.categoria) o.categoria = sec.categoria;
+    }));
+  });
+  ING_DATA = Object.values(items).sort((a,b) => (b.canasta - a.canasta) || (b.usos - a.usos) || a.nombre.localeCompare(b.nombre));
+  const ultIdx = indices.length ? indices[indices.length - 1] : null;
+  const nMenus = ING_DATA.filter(i => i.usos > 0).length;
+  document.getElementById('ing-kpis').innerHTML =
+    `<div class="ing-kpi"><small>Índice ingredientes</small><b>${ultIdx ? (ultIdx.indice >= 1 ? '+' : '') + ((ultIdx.indice - 1) * 100).toFixed(1) + '%' : '—'}</b><span>${ultIdx ? 'vs. semana base · ' + new Date(ultIdx.fecha + 'T12:00:00').toLocaleDateString('es-AR', { day: 'numeric', month: 'short' }) : 'sin datos aún'}</span></div>` +
+    `<div class="ing-kpi"><small>Con seguimiento</small><b>${Object.keys(porClave).length}</b><span>Jumbo + Carrefour, cada lunes</span></div>` +
+    `<div class="ing-kpi"><small>De tus menús</small><b>${nMenus}</b><span>${reservas.length} listas de compras</span></div>` +
+    `<div class="ing-kpi"><small>Semanas registradas</small><b>${indices.length}</b><span>historial de precios</span></div>`;
+  renderIngredientes();
+}
+function renderIngredientes(){
+  const q = ingNorm(document.getElementById('ing-buscar')?.value || '');
+  const fmtP = n => n ? '$' + Math.round(n).toLocaleString('es-AR') : '—';
+  let rows = ING_DATA.filter(i => (!q || ingNorm(i.nombre).includes(q)) && (ING_FILTRO === 'todos' || (ING_FILTRO === 'canasta' ? i.canasta : i.usos > 0)));
+  if (!rows.length) { document.getElementById('ing-tabla').innerHTML = '<div class="loading">Todavía no hay ingredientes para mostrar. Se suman solos cuando cargás la lista de compras de un menú confirmado.</div>'; return; }
+  const maxU = Math.max(1, ...rows.map(r => r.usos));
+  document.getElementById('ing-tabla').innerHTML = `<table class="ing-t"><thead><tr><th>Ingrediente</th><th class="hide-m">Categoría</th><th>Precio de referencia</th><th>Variación</th><th>Usado en</th><th class="hide-m">Cantidades usadas</th></tr></thead><tbody>` +
+    rows.map(i => {
+      const sp = i.supers ? Object.entries(i.supers).map(([k,o]) => `<div>${k === 'jumbo' ? 'Jumbo' : 'Carrefour'} <b>${fmtP(o.ult)}</b></div><div class="mut" style="margin-bottom:3px">${(o.prod||'').slice(0,42)}</div>`).join('') : '<span class="mut">—</span>';
+      const v = i.variacion == null ? '<span class="mut">—</span>' : `<span class="${i.variacion > 0.001 ? 'ing-up' : i.variacion < -0.001 ? 'ing-down' : 'mut'}">${i.variacion > 0 ? '▲ +' : i.variacion < 0 ? '▼ ' : ''}${(i.variacion * 100).toFixed(1)}%</span>`;
+      const u = i.usos ? `<span class="ing-bar" style="width:${Math.max(6, 60 * i.usos / maxU)}px"></span>${i.usos} menú${i.usos > 1 ? 's' : ''}<div class="mut">${i.menus.slice(-2).map(m => (m.ref || '') + ' · ' + (m.menu || '')).join('<br>')}</div>` : '<span class="mut">—</span>';
+      return `<tr><td><b style="font-weight:500">${i.nombre}</b>${i.canasta ? '<span class="ing-tag c">📈 seguimiento</span>' : ''}${i.usos ? '<span class="ing-tag m">🍽 menús</span>' : ''}</td>` +
+        `<td class="hide-m mut">${i.categoria || ''}</td><td>${sp}</td><td>${v}</td><td>${u}</td><td class="hide-m mut">${i.cantidades.slice(-3).join('<br>') || '—'}</td></tr>`;
+    }).join('') + '</tbody></table>';
+}
+
+async function guardarIngredientes(id) {
+  const input = document.getElementById('ing-' + id);
+  const nuevo = parseInt(input.value);
+  if (isNaN(nuevo) || nuevo < 0) return;
+  const r = todasReservas.find(r => r.id === id);
+  const hon = r ? (r.honorario_final || r.honorario || 0) : 0;
+  const { error } = await supa.from('reservas').update({ ingredientes: nuevo, total: hon + nuevo }).eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  if (r) { r.ingredientes = nuevo; r.total = hon + nuevo; }
+  renderReservas();
 }
 
 async function guardarPrecio(id) {
