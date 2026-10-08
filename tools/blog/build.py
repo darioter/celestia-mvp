@@ -152,7 +152,7 @@ def card(a):
             f'<span>{c["icono"]} {bi(c["es"], c["en"])}</span></div><div class="cp-card-b"><h3>{bi(a["es"]["titulo"], a["en"]["titulo"])}</h3>'
             f'<p>{bi(a["es"]["bajada"], a["en"]["bajada"])}</p><small>{bi(str(minutos(a["es"]["cuerpo"]))+" min de lectura", str(minutos(a["en"]["cuerpo"]))+" min read")}</small></div></a>')
 
-NAV = dict(nav_caps=bi('Lo que no te enseñan', "What they don’t teach you"), nav_home=bi('Inicio', 'Home'), nav_book=bi('Reservar →', 'Book →'))
+NAV = dict(nav_caps=bi('Blog', 'Blog'), nav_home=bi('Inicio', 'Home'), nav_book=bi('Reservar →', 'Book →'))
 
 def escribir(rel, contenido):
     p = os.path.join(ROOT, rel); os.makedirs(os.path.dirname(p), exist_ok=True)
@@ -168,10 +168,10 @@ def articulo(a):
         "publisher": {"@type": "Organization", "name": "Celestia Chef Privado", "url": SITE},
         "mainEntityOfPage": url}, ensure_ascii=False) + '</script>'
     otros = [x for x in ARTICULOS if x['slug'] != a['slug']][:3]
-    h = HEAD.format(title=html.escape(es['titulo'] + ' · Lo que no te enseñan · Celestia'), title_en=html.escape(en['titulo'] + " · What they don’t teach you · Celestia"),
+    h = HEAD.format(title=html.escape(es['titulo'] + ' · Blog Celestia'), title_en=html.escape(en['titulo'] + ' · Celestia Blog'),
                     desc=html.escape(es['bajada']), url=url, ogtype='article', ogimg=U(a['img'], 1200, 630), css=CSS, ld=ld, **NAV)
     h += (f'<section class="cp-hero" style="background-image:url(\'{U(a["img"],1800,900)}\')"><div class="cp-hero-in">'
-          f'<a class="cp-k" href="/blog" style="text-decoration:none">✦ {bi("Lo que no te enseñan","What they don’t teach you")} · {c["icono"]} {bi(c["es"], c["en"])}</a>'
+          f'<a class="cp-k" href="/blog" style="text-decoration:none">✦ {bi("Blog","Blog")} · {c["icono"]} {bi(c["es"], c["en"])}</a>'
           f'<h1>{bi(es["titulo"], en["titulo"])}</h1><p class="cp-baj">{bi(es["bajada"], en["bajada"])}</p>'
           f'<div class="cp-meta"><img src="/img/daro-avatar.webp" alt="Daro Castello"><span>{bi("Por Daro Castello","By Daro Castello")}</span>'
           f'<span>{bi(fecha(a["fecha"],"es"), fecha(a["fecha"],"en"))}</span><span>{bi(str(minutos(es["cuerpo"]))+" min de lectura", str(minutos(en["cuerpo"]))+" min read")}</span></div></div></section>')
@@ -181,23 +181,23 @@ def articulo(a):
           '</p><a class="cp-btn" href="/">' + bi('Reservar una experiencia →', 'Book an experience →') + '</a></div></section>')
     h += f'<p class="cp-cred">{bi("Foto de referencia", "Reference photo")}: {a["foto"]} · <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a></p>'
     h += '<section class="cp-rel"><h3>' + bi('Seguí leyendo', 'Keep reading') + '</h3><div class="cp-grid">' + ''.join(card(x) for x in otros) + '</div></section>'
-    h += FOOT.format(caps=bi('Lo que no te enseñan', "What they don’t teach you"))
+    h += FOOT.format(caps=bi('Blog', 'Blog'))
     escribir(f'blog/{a["slug"]}/index.html', h)
 
 def indice():
     url = f'{SITE}/blog'
-    h = HEAD.format(title='Lo que no te enseñan · Trucos de chef, cortes y técnicas | Celestia Chef Privado', title_en="What they don’t teach you · Chef tricks, cuts and techniques | Celestia Private Chef",
-                    desc='Lo que no te enseñan en las recetas, contado por Daro Castello: cortes, salsas madre, técnicas y recetas fáciles con toques de chef.',
+    h = HEAD.format(title='Blog · Lo que me enseñaron en la escuela de cocina | Celestia Chef Privado', title_en='Blog · What I learned at culinary school | Celestia Private Chef',
+                    desc='Lo que me enseñaron en la escuela de cocina, contado por Daro Castello: cortes, salsas madre, técnicas y recetas fáciles con toques de chef.',
                     url=url, ogtype='website', ogimg=U(ARTICULOS[0]['img'], 1200, 630), css=CSS, ld='', **NAV)
-    h += ('<section class="cp-top"><span class="cp-k">✦ ' + bi('Desde la cocina de Daro', "From Daro's kitchen") + '</span><h1>' +
-          bi('Lo que no te <em>enseñan</em>', "What they don't <em>teach you</em>") + '</h1><p>' +
+    h += ('<section class="cp-top"><span class="cp-k">✦ ' + bi('Blog', 'Blog') + '</span><h1>' +
+          bi('Lo que me enseñaron en la <em>escuela de cocina</em>', 'What I learned at <em>culinary school</em>') + '</h1><p>' +
           bi('Trucos de escuela contados simple: cortes, salsas, técnicas y recetas fáciles con ese detalle que te hace ver como chef.',
              'Culinary-school tricks made simple: cuts, sauces, techniques and easy recipes with that detail that makes you look like a chef.') + '</p></section>')
     usadas = [k for k in CATS if any(a['cat'] == k for a in ARTICULOS)]
     h += '<div class="cp-chips"><button type="button" class="cp-chip on" data-cat="todas">' + bi('Todas', 'All') + '</button>' + ''.join(
         f'<button type="button" class="cp-chip" data-cat="{k}">{CATS[k]["icono"]} {bi(CATS[k]["es"], CATS[k]["en"])}</button>' for k in usadas) + '</div>'
     h += '<div class="cp-grid">' + ''.join(card(a) for a in sorted(ARTICULOS, key=lambda x: x['fecha'], reverse=True)) + '</div>'
-    h += FOOT.format(caps=bi('Lo que no te enseñan', "What they don’t teach you"))
+    h += FOOT.format(caps=bi('Blog', 'Blog'))
     escribir('blog/index.html', h)
 
 def franja_landing():
@@ -209,7 +209,7 @@ def franja_landing():
         f'<span class="bl-cp-t">{bi(a["es"]["titulo"], a["en"]["titulo"])}</span><span class="bl-cp-m">{bi(str(minutos(a["es"]["cuerpo"]))+" min de lectura →", str(minutos(a["en"]["cuerpo"]))+" min read →")}</span></a>'
         for a in ult)
     bloque = (ini + '<div id="bl-capsulas" class="bl-sec" data-no-tr style="padding:60px 48px"><div style="text-align:center;margin-bottom:26px">'
-              '<span class="bl-stag">✦ ' + bi('DESDE LA COCINA DE DARO', "FROM DARO'S KITCHEN") + '</span><span class="bl-sh" style="display:block">' + bi('Lo que no te enseñan', "What they don’t teach you") +
+              '<span class="bl-stag">✦ ' + bi('BLOG', 'BLOG') + '</span><span class="bl-sh" style="display:block">' + bi('Lo que me enseñaron en la escuela de cocina', 'What I learned at culinary school') +
               '</span><span class="bl-sp" style="max-width:560px;margin:0 auto;display:block">' + bi('Cortes, salsas madre y trucos de escuela contados simple, para cocinar con detalles de chef.',
               "Cuts, mother sauces and culinary-school tricks made simple, so you can cook with a chef's touch.") + '</span></div>'
               '<div class="bl-cp-g">' + cards + '</div><div style="text-align:center;margin-top:24px"><a class="bl-cp-all" href="/blog">' + bi('Ver todos los trucos →', 'See all the tricks →') + '</a></div></div>' + fin)

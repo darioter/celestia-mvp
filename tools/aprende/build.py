@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Genera /aprende/index.html (curso "Tu cocina, nivel chef") y la franja de la landing.
+"""Genera /aprende/index.html (curso "Te enseño cocina nivel chef") y la franja de la landing.
 Uso: python3 tools/aprende/build.py  (desde la raíz del repo)"""
 import os, re, sys, json, html
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'blog'))
@@ -244,20 +244,20 @@ def build():
 @media(max-width:900px){.ap-et,.ap-cls{grid-template-columns:1fr}.ap-et::before{display:none}.ap-e{margin-bottom:28px}.ap-inc{grid-template-columns:1fr 1fr}.ap-pro-in{grid-template-columns:1fr;padding:34px 24px}.ap-hero h1{font-size:36px}.ap-hero{min-height:560px;background-position:70% center}.ap-hero::after{background:linear-gradient(180deg,rgba(13,27,42,.55) 0%,rgba(13,27,42,.95) 55%)}.ap-hero-in{align-self:flex-end}.ap-h2{font-size:28px}}
 @media(max-width:520px){.ap-inc{grid-template-columns:1fr}}
 '''
-    msg_es = 'Hola Daro, quiero sumarme al curso "Tu cocina, nivel chef" (6 clases). ¿Cómo seguimos?'
+    msg_es = 'Hola Daro, quiero sumarme al curso "Te enseño cocina nivel chef" (6 clases). ¿Cómo seguimos?'
     msg_pro = 'Hola Daro, terminé el curso y quiero una clase Pro de un plato técnico. ¿Coordinamos?'
     ld = '<script type="application/ld+json">' + json.dumps({
-        "@context": "https://schema.org", "@type": "Course", "name": "Tu cocina, nivel chef · curso con Daro Castello",
+        "@context": "https://schema.org", "@type": "Course", "name": "Te enseño cocina nivel chef · curso con Daro Castello",
         "description": "Curso práctico de 6 clases en tu casa: yo cocino y vos mirás, cocinamos juntos, vos cocinás y yo miro.",
         "provider": {"@type": "Organization", "name": "Celestia Chef Privado", "sameAs": SITE},
         "inLanguage": "es-AR", "hasCourseInstance": {"@type": "CourseInstance", "courseMode": "onsite", "location": "Buenos Aires"}}, ensure_ascii=False) + '</script>'
-    nav = dict(nav_caps=bi('Lo que no te enseñan', "What they don’t teach you"), nav_home=bi('Inicio', 'Home'), nav_book=bi('Quiero aprender →', 'I want to learn →'))
-    h = HEAD.format(title='Tu cocina, nivel chef · 6 clases prácticas con Daro Castello | Celestia', title_en='Your kitchen, chef level · 6 hands-on classes with Daro Castello | Celestia',
+    nav = dict(nav_caps=bi('Blog', 'Blog'), nav_home=bi('Inicio', 'Home'), nav_book=bi('Quiero aprender →', 'I want to learn →'))
+    h = HEAD.format(title='Te enseño cocina nivel chef · 6 clases prácticas con Daro Castello | Celestia', title_en='I teach you chef-level cooking · 6 hands-on classes with Daro Castello | Celestia',
                     desc='Curso práctico de 6 clases en tu casa: yo cocino y vos mirás, cocinamos juntos y vos cocinás mientras yo miro. Cortes, fuego, salsas y tu primer menú de 3 pasos.',
                     url=url, ogtype='website', ogimg=SITE + '/img/hero-desktop-poster.webp', css=CSS + css_extra, ld=ld, **nav)
     h = h.replace('<a href="/" class="cp-cta">', f'<a href="{wa(msg_es)}" target="_blank" rel="noopener" class="cp-cta">')
     # Hero
-    h += ('<section class="ap-hero"><div class="ap-hero-in"><span class="cp-k">✦ ' + bi('Tu cocina, nivel chef', 'Your kitchen, chef level') + '</span>'
+    h += ('<section class="ap-hero"><div class="ap-hero-in"><span class="cp-k">✦ ' + bi('Te enseño cocina nivel chef', 'I teach you chef-level cooking') + '</span>'
           '<h1>' + bi('Aprendé a cocinar <em>como chef</em>, en tu propia cocina.', 'Learn to cook <em>like a chef</em>, in your own kitchen.') + '</h1>'
           '<p>' + bi('Un curso práctico de 6 clases conmigo: primero cocino yo y vos mirás, después cocinamos juntos y al final cocinás vos mientras yo te miro.',
                       'A hands-on 6-class course with me: first I cook and you watch, then we cook together, and in the end you cook while I watch.') + '</p>'
@@ -323,7 +323,7 @@ function calc(){
   C.forEach(function(c,i){var hc=st.mod==='pack'?hon*(1-P.pack_desc):hon;t+='<tr><td>'+c[1]+' '+L(c[2],c[3])+'</td><td>'+f(hc)+'</td><td>'+f(via)+'</td><td>'+f(P.ing_pp[i]*porc)+'</td></tr>';});
   t+='</tbody></table><p class="ap-mini">'+L('Valores por clase para '+st.al+(st.al>1?' alumnos':' alumno')+'. Los ingredientes se calculan para al menos 2 porciones.','Per-class values for '+st.al+(st.al>1?' students':' student')+'. Ingredients are calculated for at least 2 portions.')+'</p>';
   document.getElementById('ap-tbl').innerHTML=t;
-  var msg=L('Hola Daro, quiero reservar el curso "Tu cocina, nivel chef": ','Hi Daro, I want to book the "Your kitchen, chef level" course: ')+(st.mod==='pack'?L('curso completo (6 clases)','full course (6 classes)'):L('una clase suelta','a single class'))+', '+st.al+' '+L(st.al>1?'alumnos':'alumno',st.al>1?'students':'student')+', '+st.zona.toUpperCase()+'. '+L('Total (todo incluido)','Total (all included)')+': '+f(tot)+'.';
+  var msg=L('Hola Daro, quiero reservar el curso "Te enseño cocina nivel chef": ','Hi Daro, I want to book the "I teach you chef-level cooking" course: ')+(st.mod==='pack'?L('curso completo (6 clases)','full course (6 classes)'):L('una clase suelta','a single class'))+', '+st.al+' '+L(st.al>1?'alumnos':'alumno',st.al>1?'students':'student')+', '+st.zona.toUpperCase()+'. '+L('Total (todo incluido)','Total (all included)')+': '+f(tot)+'.';
   document.getElementById('ap-cta').href='https://wa.me/5491160410607?text='+encodeURIComponent(msg);
 }
 document.querySelectorAll('.ap-o').forEach(function(b){b.addEventListener('click',function(){var k=b.getAttribute('data-k'),v=b.getAttribute('data-v');st[k]=k==='al'?parseInt(v,10):v;document.querySelectorAll('.ap-o[data-k="'+k+'"]').forEach(function(x){x.classList.toggle('on',x===b);});calc();});});
@@ -468,8 +468,8 @@ async function confirmar(){
   var cual=parseInt(document.getElementById('ap-cual').value||'0',10);
   var rows=sel.map(function(k,i){var ci=n===6?i:cual,c=C[ci],ing=apIng(P.ing_pp[ci]*R.porc);
     return {ref:grp+'-'+(i+1),tipo:'clase',fecha:k,turno:turno,estado:'reservada',
-      menu:'Tu cocina, nivel chef · '+(n===6?'Clase '+(i+1)+'/6':'Clase suelta')+' · '+c[2],personas:st.al,nombre:nom,tel:tel,email:mail,dir:dir,
-      ocasion:'Curso Tu cocina, nivel chef · '+(n===6?'curso completo':'clase suelta')+' · '+st.zona.toUpperCase(),
+      menu:'Te enseño cocina nivel chef · '+(n===6?'Clase '+(i+1)+'/6':'Clase suelta')+' · '+c[2],personas:st.al,nombre:nom,tel:tel,email:mail,dir:dir,
+      ocasion:'Curso Te enseño cocina nivel chef · '+(n===6?'curso completo':'clase suelta')+' · '+st.zona.toUpperCase(),
       notas:'['+grp+'] '+(turno==='almuerzo'?'Mañana 10-13':'Tarde 15-18')+(nota?' · '+nota:''),
       honorario:R.honClase,ingredientes:ing,total:R.honClase+R.via+ing,senia_monto:Math.round(R.honClase*0.5)};});
   try{
@@ -477,11 +477,11 @@ async function confirmar(){
     if(!res.ok)throw new Error('HTTP '+res.status);
   }catch(e){btn.innerHTML=txt;btn.disabled=false;err(L('No pudimos guardar la reserva. Probá de nuevo o escribime por WhatsApp.','We could not save the booking. Try again or message me on WhatsApp.'));return;}
   var senia=Math.round(R.honT*0.5);
-  try{fetch('/api/notify',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json'},body:JSON.stringify({ref:grp,tipo:'clase',menu:'Tu cocina, nivel chef · '+(n===6?'curso completo (6 clases)':'clase suelta: '+C[cual][2]),
+  try{fetch('/api/notify',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json'},body:JSON.stringify({ref:grp,tipo:'clase',menu:'Te enseño cocina nivel chef · '+(n===6?'curso completo (6 clases)':'clase suelta: '+C[cual][2]),
     fecha:sel[0],turno:turno==='almuerzo'?'Mañana 10-13':'Tarde 15-18',personas:st.al,dir:dir,zona:st.zona.toUpperCase(),nombre:nom,tel:tel,email:mail,
     notas:'Fechas: '+sel.join(', ')+(nota?' · '+nota:''),honorario:R.honT,ingredientes:R.ing,total:R.tot})});}catch(e){}
-  var msg=L('Hola Daro, reservé '+(n===6?'el curso "Tu cocina, nivel chef"':'una clase de "Tu cocina, nivel chef"')+' ('+grp+'). Fechas: '+sel.map(fecha).join(', ')+'. Te paso el comprobante de la seña.',
-            'Hi Daro, I booked '+(n===6?'the "Your kitchen, chef level" course':'a "Your kitchen, chef level" class')+' ('+grp+'). Dates: '+sel.map(fecha).join(', ')+'. Here is the deposit receipt.');
+  var msg=L('Hola Daro, reservé '+(n===6?'el curso "Te enseño cocina nivel chef"':'una clase de "Te enseño cocina nivel chef"')+' ('+grp+'). Fechas: '+sel.map(fecha).join(', ')+'. Te paso el comprobante de la seña.',
+            'Hi Daro, I booked '+(n===6?'the "I teach you chef-level cooking" course':'a "I teach you chef-level cooking" class')+' ('+grp+'). Dates: '+sel.map(fecha).join(', ')+'. Here is the deposit receipt.');
   okBox.innerHTML='<div class="ap-ok-in"><div class="ap-ok-ic">✓</div><span class="cp-k">✦ '+L('Reserva recibida','Booking received')+' · '+grp+'</span><h3>'+L('¡Nos vemos en tu cocina!','See you in your kitchen!')+'</h3>'+
     '<ol class="ap-sel">'+sel.map(function(k,i){var c=C[n===6?i:cual];return '<li class="ok"><span>'+c[1]+' '+(n===6?L('Clase ','Class ')+(i+1)+' · ':'')+L(c[2],c[3])+'</span><b>'+fecha(k)+' · '+(turno==='almuerzo'?'10:00':'15:00')+'</b></li>';}).join('')+'</ol>'+
     '<p>'+L('Para confirmar, transferí la seña de <b>'+f(senia)+'</b> (50% del honorario) al alias <b>daro.chef</b> y mandame el comprobante por WhatsApp. Las fechas quedan reservadas al acreditarse.',
@@ -531,7 +531,7 @@ var et=document.querySelector('.ap-et');if(et)new IntersectionObserver(function(
              "Message me and we'll arrange days, times and course fees. If you like, our first chat is just to see what you'd like to learn.") +
           f'</p><a class="ap-wa" href="{wa(msg_es)}" target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.2 13.8c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2.1 1-2.4c.3-.3.6-.3.8-.3h.6c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .5l-.3.5-.4.5c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.2 1.4 2.5 1.5.3.1.5.1.7-.1l.9-1.1c.2-.3.4-.2.7-.1l2 1c.3.1.5.2.5.3.1.2.1.7-.1 1.3z"/></svg>' +
           bi('Escribime por WhatsApp', 'Message me on WhatsApp') + '</a></section>')
-    h += ('<footer class="cp-ftr"><a href="/">chefprivado.ar</a>·<a href="/blog">' + bi('Lo que no te enseñan', "What they don’t teach you") + '</a>·<a href="https://www.instagram.com/celestiachefprivado/" target="_blank" rel="noopener">Instagram</a>'
+    h += ('<footer class="cp-ftr"><a href="/">chefprivado.ar</a>·<a href="/blog">' + bi('Blog', 'Blog') + '</a>·<a href="https://www.instagram.com/celestiachefprivado/" target="_blank" rel="noopener">Instagram</a>'
           '<div style="margin-top:8px">Celestia · Chef Privado · Buenos Aires © 2026</div></footer><script src="/js/i18n.js"></script></body></html>')
     escribir('aprende/index.html', h)
 
@@ -539,7 +539,7 @@ def franja_landing():
     p = os.path.join(ROOT, 'index.html'); t = open(p, encoding='utf-8').read()
     ini, fin = '<!--APRENDE-START-->', '<!--APRENDE-END-->'
     bloque = (ini + '<div id="bl-aprende" data-no-tr><a class="bl-ap" href="/aprende"><span class="bl-ap-img"></span><span class="bl-ap-tx">'
-              '<span class="bl-stag">✦ ' + bi('NUEVO · TU COCINA, NIVEL CHEF', 'NEW · YOUR KITCHEN, CHEF LEVEL') + '</span>'
+              '<span class="bl-stag">✦ ' + bi('NUEVO · TE ENSEÑO COCINA NIVEL CHEF', 'NEW · CHEF-LEVEL COOKING CLASSES') + '</span>'
               '<span class="bl-ap-h">' + bi('Aprendé a cocinar <em>como chef</em> en 6 clases', 'Learn to cook <em>like a chef</em> in 6 classes') + '</span>'
               '<span class="bl-ap-p">' + bi('Primero cocino yo y vos mirás, después cocinamos juntos y al final cocinás vos. En tu cocina, con acompañamiento y clases Pro para después.',
                                           'First I cook and you watch, then we cook together, and finally you cook. In your kitchen, with ongoing support and Pro classes afterwards.') + '</span>'
