@@ -288,16 +288,19 @@ def build():
           '<button type="button" class="ap-o" data-k="zona" data-v="gba"><b>GBA</b><small>' + bi('Gran Buenos Aires', 'Greater Buenos Aires') + '</small></button></div>'
           '<p class="ap-mini">' + bi('Fuera de CABA/GBA, el traslado se cotiza aparte.', 'Outside Buenos Aires City/Greater BA, travel is quoted separately.') + '</p>'
           '</div><aside class="ap-sum"><span class="cp-k">✦ ' + bi('Tu curso', 'Your course') + '</span><div class="ap-rows" id="ap-rows"></div>'
-          '<div class="ap-tot"><span>' + bi('Total estimado', 'Estimated total') + '</span><b id="ap-total">—</b></div><p class="ap-pp" id="ap-pp"></p>'
-          '<p class="ap-note">' + bi('Los ingredientes son una estimación: se ajustan a la compra real de cada clase. Para reservar el curso se abona una seña del 50% del honorario.',
-                                     'Ingredients are an estimate: they are adjusted to the actual shopping for each class. A 50% deposit of the fee reserves the course.') + '</p>'
+          '<div class="ap-tot"><span>' + bi('Total · todo incluido', 'Total · all included') + '</span><b id="ap-total">—</b></div><p class="ap-pp" id="ap-pp"></p>'
+          '<p class="ap-note">' + bi('Incluye clases, traslado e ingredientes. El importe puede variar según los platos y detalles que definamos: lo confirmamos antes de la seña.',
+                                     'Includes classes, travel and ingredients. The amount may vary with the dishes and details we agree on: we confirm it before the deposit.') + '</p>'
           '<button type="button" class="cp-btn ap-btn-full" id="ap-elegir">' + bi('Elegir fechas y reservar →', 'Pick dates and book →') + '</button>'
           f'<a class="ap-wa-link" id="ap-cta" href="{wa(msg_es)}" target="_blank" rel="noopener">' + bi('o consultame por WhatsApp', 'or ask me on WhatsApp') + '</a></aside></div>'
           + BOOK_HTML +
-          '<details class="ap-det"><summary>' + bi('Ver el detalle clase por clase', 'See the class-by-class breakdown') + '</summary><div class="ap-tbl" id="ap-tbl"></div></details></section>')
+          '<div id="ap-tbl" hidden></div></section>')
     h += '<script>window.AP_PRECIOS=' + json.dumps(P) + ';window.AP_CLASES=' + json.dumps([[c[0], c[1], c[2], c[3]] for c in CLASES], ensure_ascii=False) + ';</script>'
     h += r"""<script>(function(){
 var P=window.AP_PRECIOS,C=window.AP_CLASES,st={al:2,mod:'pack',zona:'caba'};window.AP_ST=st;window.apCalc=function(){calc();};
+window.AP_IDX=1;function apIdxLoad(){var S=window.AP_SUPA;if(!S)return;fetch(S.url+'/rest/v1/canasta_indice?select=indice&order=fecha.desc&limit=1',{headers:{apikey:S.key,Authorization:'Bearer '+S.key}}).then(function(r){return r.ok?r.json():[];}).then(function(j){var x=j&&j[0]&&+j[0].indice;if(x>0.5&&x<3){window.AP_IDX=x;calc();}}).catch(function(){});}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apIdxLoad);else setTimeout(apIdxLoad,0);
+window.apIng=function(v){return Math.round(v*(window.AP_IDX||1)/1000)*1000;};
 function f(n){return '$'+Math.round(n).toLocaleString('es-AR');}
 function en(){return document.documentElement.classList.contains('lang-en');}
 function L(es,e){return en()?e:es;}
@@ -305,14 +308,14 @@ function calc(){
   var hon=P.honorario[st.al],porc=Math.max(st.al,P.ing_min_porciones),via=P.viaticos[st.zona];
   var clases=st.mod==='pack'?C.map(function(c,i){return i;}):[0];
   var honT=hon*clases.length, desc=st.mod==='pack'?Math.round(honT*P.pack_desc/1000)*1000:0;
-  var ing=clases.reduce(function(a,i){return a+P.ing_pp[i]*porc;},0), viaT=via*clases.length;
+  var ing=clases.reduce(function(a,i){return a+apIng(P.ing_pp[i]*porc);},0), viaT=via*clases.length;
   var tot=honT-desc+viaT+ing;
   window.AP_RES={hon:hon,honClase:st.mod==='pack'?Math.round(hon*(1-P.pack_desc)):hon,via:via,porc:porc,n:clases.length,honT:honT-desc,viaT:viaT,ing:ing,tot:tot};
   if(window.apBookSync)window.apBookSync();
-  var rows='<div><span>'+L('Honorario','Fee')+'</span><span>'+f(honT)+'<small>'+clases.length+' × '+f(hon)+' · '+P.horas+' hs</small></span></div>';
-  if(desc)rows+='<div class="ap-desc"><span>'+L('Descuento curso completo','Full-course discount')+'</span><span>− '+f(desc)+'</span></div>';
-  rows+='<div><span>'+L('Viáticos','Travel')+'</span><span>'+f(viaT)+'<small>'+clases.length+' × '+f(via)+'</small></span></div>';
-  rows+='<div><span>'+L('Ingredientes (estimado)','Ingredients (estimate)')+'</span><span>'+f(ing)+'</span></div>';
+  var rows='<div><span>✓ '+(clases.length>1?L(clases.length+' clases de '+P.horas+' horas',clases.length+' classes of '+P.horas+' hours'):L('1 clase de '+P.horas+' horas','1 class of '+P.horas+' hours'))+'</span><span></span></div>';
+  rows+='<div><span>✓ '+L('Ingredientes de cada clase','Ingredients for every class')+'</span><span></span></div>';
+  rows+='<div><span>✓ '+L('Traslado a tu casa','Travel to your home')+' ('+st.zona.toUpperCase()+')</span><span></span></div>';
+  if(desc)rows+='<div class="ap-desc"><span>✦ '+L('Curso completo: 10% off ya aplicado','Full course: 10% off already applied')+'</span><span></span></div>';
   document.getElementById('ap-rows').innerHTML=rows;
   document.getElementById('ap-total').textContent=f(tot);
   document.getElementById('ap-pp').textContent=(st.al>1?f(tot/st.al)+' '+L('por alumno','per student')+' · ':'')+(st.mod==='pack'?f(tot/6)+' '+L('por clase','per class'):L('clase de '+P.horas+' horas','class of '+P.horas+' hours'));
@@ -320,7 +323,7 @@ function calc(){
   C.forEach(function(c,i){var hc=st.mod==='pack'?hon*(1-P.pack_desc):hon;t+='<tr><td>'+c[1]+' '+L(c[2],c[3])+'</td><td>'+f(hc)+'</td><td>'+f(via)+'</td><td>'+f(P.ing_pp[i]*porc)+'</td></tr>';});
   t+='</tbody></table><p class="ap-mini">'+L('Valores por clase para '+st.al+(st.al>1?' alumnos':' alumno')+'. Los ingredientes se calculan para al menos 2 porciones.','Per-class values for '+st.al+(st.al>1?' students':' student')+'. Ingredients are calculated for at least 2 portions.')+'</p>';
   document.getElementById('ap-tbl').innerHTML=t;
-  var msg=L('Hola Daro, quiero reservar el curso "Aprendé a cocinar en casa": ','Hi Daro, I want to book the "Learn to cook at home" course: ')+(st.mod==='pack'?L('curso completo (6 clases)','full course (6 classes)'):L('una clase suelta','a single class'))+', '+st.al+' '+L(st.al>1?'alumnos':'alumno',st.al>1?'students':'student')+', '+st.zona.toUpperCase()+'. '+L('Total estimado','Estimated total')+': '+f(tot)+'.';
+  var msg=L('Hola Daro, quiero reservar el curso "Aprendé a cocinar en casa": ','Hi Daro, I want to book the "Learn to cook at home" course: ')+(st.mod==='pack'?L('curso completo (6 clases)','full course (6 classes)'):L('una clase suelta','a single class'))+', '+st.al+' '+L(st.al>1?'alumnos':'alumno',st.al>1?'students':'student')+', '+st.zona.toUpperCase()+'. '+L('Total (todo incluido)','Total (all included)')+': '+f(tot)+'.';
   document.getElementById('ap-cta').href='https://wa.me/5491160410607?text='+encodeURIComponent(msg);
 }
 document.querySelectorAll('.ap-o').forEach(function(b){b.addEventListener('click',function(){var k=b.getAttribute('data-k'),v=b.getAttribute('data-v');st[k]=k==='al'?parseInt(v,10):v;document.querySelectorAll('.ap-o[data-k="'+k+'"]').forEach(function(x){x.classList.toggle('on',x===b);});calc();});});
@@ -463,7 +466,7 @@ async function confirmar(){
   var st=window.AP_ST,R=window.AP_RES,grp='AC-'+Date.now().toString(36).toUpperCase(),n=need();
   var nom=document.getElementById('ap-nom').value.trim(),tel=document.getElementById('ap-tel').value.trim(),mail=document.getElementById('ap-mail').value.trim(),dir=document.getElementById('ap-dir').value.trim(),nota=document.getElementById('ap-not').value.trim();
   var cual=parseInt(document.getElementById('ap-cual').value||'0',10);
-  var rows=sel.map(function(k,i){var ci=n===6?i:cual,c=C[ci],ing=P.ing_pp[ci]*R.porc;
+  var rows=sel.map(function(k,i){var ci=n===6?i:cual,c=C[ci],ing=apIng(P.ing_pp[ci]*R.porc);
     return {ref:grp+'-'+(i+1),tipo:'clase',fecha:k,turno:turno,estado:'reservada',
       menu:'Aprendé en casa · '+(n===6?'Clase '+(i+1)+'/6':'Clase suelta')+' · '+c[2],personas:st.al,nombre:nom,tel:tel,email:mail,dir:dir,
       ocasion:'Curso Aprendé en casa · '+(n===6?'curso completo':'clase suelta')+' · '+st.zona.toUpperCase(),
