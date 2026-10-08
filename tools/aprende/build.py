@@ -61,6 +61,17 @@ INCLUYE = [
   ("🎯", "A tu ritmo", "At your pace", "Coordinamos días y horarios. Ideal para hacer solo, en pareja o con alguien de la familia.", "We schedule days and times together. Great on your own, as a couple or with family."),
 ]
 
+# ── Valores (propuesta, ARS) ─────────────────────────────────────────────────
+PRECIOS = {
+  'horas': 3,
+  'honorario': {1: 120000, 2: 150000, 3: 180000, 4: 210000},   # por clase de 3 hs, según alumnos
+  'pack_desc': 0.10,                                             # 10% off pagando el pack de 6 clases
+  'viaticos': {'caba': 15000, 'gba': 25000},                     # por clase
+  'ing_pp': [15000, 18000, 35000, 25000, 20000, 40000],          # ingredientes estimados por alumno, clase 1..6
+  'ing_min_porciones': 2,                                        # siempre se cocina al menos para 2
+  'pro': {'honorario': 180000, 'nota_ing': 'ingredientes según el plato'},
+}
+
 def build():
     url = f'{SITE}/aprende'
     css_extra = r'''
@@ -114,6 +125,29 @@ def build():
 .ap-fin h2{font-family:'DM Serif Display',serif;font-weight:400;font-size:34px;color:var(--nv);margin-bottom:10px}
 .ap-fin p{color:#6B5F4F;margin-bottom:22px}
 .ap-wa{display:inline-flex;align-items:center;gap:10px;background:#25D366;color:#fff;text-decoration:none;font-weight:600;padding:14px 26px;border-radius:999px;box-shadow:0 8px 22px rgba(37,211,102,.3)}
+.ap-calc{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:32px;align-items:start}
+.ap-q{font-family:'DM Serif Display',serif;font-size:21px;color:var(--nv);margin:22px 0 12px}.ap-q:first-child{margin-top:0}
+.ap-opts{display:grid;gap:12px}.ap-o4{grid-template-columns:repeat(4,1fr)}.ap-o2{grid-template-columns:1fr 1fr}
+.ap-o{position:relative;background:#fff;border:1.5px solid var(--crd);border-radius:16px;padding:16px 10px;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--nv);transition:all .2s}
+.ap-o:hover{border-color:#E2C97E;transform:translateY(-2px)}
+.ap-o.on{border-color:var(--gd);background:#FFFBF0;box-shadow:0 0 0 4px rgba(201,168,76,.15)}
+.ap-o b{font-family:'DM Serif Display',serif;font-weight:400;font-size:22px}.ap-o small{font-size:12px;color:#8a7a62}
+.ap-badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--nv);color:var(--gdl);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.ap-mini{font-size:12.5px;color:#8a7a62;margin-top:10px}
+.ap-sum{position:sticky;top:84px;background:var(--nv);color:var(--cr);border-radius:20px;padding:24px;border:1px solid rgba(201,168,76,.3);box-shadow:0 18px 40px rgba(13,27,42,.18)}
+.ap-rows{margin:12px 0}.ap-rows div{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-top:1px solid rgba(250,246,239,.08);font-size:13.5px}
+.ap-rows div span:first-child{color:rgba(250,246,239,.6)}.ap-rows div span:last-child{text-align:right}
+.ap-rows small{display:block;font-size:11px;color:rgba(250,246,239,.45)}
+.ap-rows .ap-desc span:last-child{color:#7fd1a3}
+.ap-tot{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid rgba(201,168,76,.35);padding-top:14px}
+.ap-tot span{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(250,246,239,.6)}.ap-tot b{font-family:'DM Serif Display',serif;font-weight:400;font-size:32px;color:var(--gdl)}
+.ap-pp{font-size:12.5px;color:rgba(250,246,239,.6);text-align:right;margin-top:2px}
+.ap-note{font-size:11.5px;color:rgba(250,246,239,.5);line-height:1.6;margin:14px 0 16px}
+.ap-tbl{margin-top:26px;overflow-x:auto}.ap-tbl table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--crd);border-radius:14px;overflow:hidden;font-size:13.5px}
+.ap-tbl th{background:var(--nv);color:var(--gdl);text-align:left;font-weight:500;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:11px 14px}
+.ap-tbl td{padding:10px 14px;border-top:1px solid #F0E8D6}.ap-tbl td:first-child{color:var(--nv)}
+.ap-pro-price{border-bottom:0!important;color:var(--gdl)!important}
+@media(max-width:900px){.ap-calc{grid-template-columns:1fr}.ap-sum{position:relative;top:0}.ap-o4{grid-template-columns:repeat(4,1fr)}}
 @media(max-width:900px){.ap-et,.ap-cls{grid-template-columns:1fr}.ap-et::before{display:none}.ap-e{margin-bottom:28px}.ap-inc{grid-template-columns:1fr 1fr}.ap-pro-in{grid-template-columns:1fr;padding:34px 24px}.ap-hero h1{font-size:36px}.ap-hero{min-height:560px;background-position:70% center}.ap-hero::after{background:linear-gradient(180deg,rgba(13,27,42,.55) 0%,rgba(13,27,42,.95) 55%)}.ap-hero-in{align-self:flex-end}.ap-h2{font-size:28px}}
 @media(max-width:520px){.ap-inc{grid-template-columns:1fr}}
 '''
@@ -159,6 +193,58 @@ def build():
     for ic, tes, ten, des, den in INCLUYE:
         h += f'<div class="ap-i"><i>{ic}</i><h4>{bi(tes, ten)}</h4><p>{bi(des, den)}</p></div>'
     h += '</div></section>'
+
+    # Valores
+    P = PRECIOS
+    h += ('<section class="ap-sec" id="valores"><span class="cp-k">✦ ' + bi('Valores', 'Pricing') + '</span><h2 class="ap-h2">' + bi('Armá tu curso', 'Build your course') +
+          '</h2><p class="ap-sub">' + bi('Cada clase dura como mínimo 3 horas. Al honorario se suman los viáticos y los ingredientes de cada clase, que se estiman según la cantidad de alumnos.',
+                                       'Each class lasts at least 3 hours. Travel and the ingredients for each class are added to the fee, estimated by the number of students.') + '</p>'
+          '<div class="ap-calc"><div class="ap-cfg">'
+          '<div class="ap-q">' + bi('¿Cuántos alumnos?', 'How many students?') + '</div><div class="ap-opts ap-o4">' +
+          ''.join(f'<button type="button" class="ap-o{" on" if n==2 else ""}" data-k="al" data-v="{n}"><b>{n}</b><small>{bi("alumno" if n==1 else "alumnos", "student" if n==1 else "students")}</small></button>' for n in (1,2,3,4)) + '</div>'
+          '<div class="ap-q">' + bi('¿Cómo lo querés hacer?', 'How do you want to do it?') + '</div><div class="ap-opts ap-o2">'
+          '<button type="button" class="ap-o on" data-k="mod" data-v="pack"><span class="ap-badge">' + bi('10% off', '10% off') + '</span><b>' + bi('Curso completo', 'Full course') + '</b><small>' + bi('Las 6 clases', 'All 6 classes') + '</small></button>'
+          '<button type="button" class="ap-o" data-k="mod" data-v="suelta"><b>' + bi('Clase suelta', 'Single class') + '</b><small>' + bi('Para probar o repasar', 'To try it or review') + '</small></button></div>'
+          '<div class="ap-q">' + bi('¿Dónde es la clase?', 'Where is the class?') + '</div><div class="ap-opts ap-o2">'
+          '<button type="button" class="ap-o on" data-k="zona" data-v="caba"><b>CABA</b><small>' + bi('Ciudad de Buenos Aires', 'Buenos Aires City') + '</small></button>'
+          '<button type="button" class="ap-o" data-k="zona" data-v="gba"><b>GBA</b><small>' + bi('Gran Buenos Aires', 'Greater Buenos Aires') + '</small></button></div>'
+          '<p class="ap-mini">' + bi('Fuera de CABA/GBA, el traslado se cotiza aparte.', 'Outside Buenos Aires City/Greater BA, travel is quoted separately.') + '</p>'
+          '</div><aside class="ap-sum"><span class="cp-k">✦ ' + bi('Tu curso', 'Your course') + '</span><div class="ap-rows" id="ap-rows"></div>'
+          '<div class="ap-tot"><span>' + bi('Total estimado', 'Estimated total') + '</span><b id="ap-total">—</b></div><p class="ap-pp" id="ap-pp"></p>'
+          '<p class="ap-note">' + bi('Los ingredientes son una estimación: se ajustan a la compra real de cada clase. Para reservar el curso se abona una seña del 50% del honorario.',
+                                     'Ingredients are an estimate: they are adjusted to the actual shopping for each class. A 50% deposit of the fee reserves the course.') + '</p>'
+          f'<a class="cp-btn" id="ap-cta" href="{wa(msg_es)}" target="_blank" rel="noopener" style="width:100%;text-align:center">' + bi('Reservar por WhatsApp →', 'Book on WhatsApp →') + '</a></aside></div>'
+          '<div class="ap-tbl" id="ap-tbl"></div></section>')
+    h += '<script>window.AP_PRECIOS=' + json.dumps(P) + ';window.AP_CLASES=' + json.dumps([[c[0], c[1], c[2], c[3]] for c in CLASES], ensure_ascii=False) + ';</script>'
+    h += r"""<script>(function(){
+var P=window.AP_PRECIOS,C=window.AP_CLASES,st={al:2,mod:'pack',zona:'caba'};
+function f(n){return '$'+Math.round(n).toLocaleString('es-AR');}
+function en(){return document.documentElement.classList.contains('lang-en');}
+function L(es,e){return en()?e:es;}
+function calc(){
+  var hon=P.honorario[st.al],porc=Math.max(st.al,P.ing_min_porciones),via=P.viaticos[st.zona];
+  var clases=st.mod==='pack'?C.map(function(c,i){return i;}):[0];
+  var honT=hon*clases.length, desc=st.mod==='pack'?Math.round(honT*P.pack_desc/1000)*1000:0;
+  var ing=clases.reduce(function(a,i){return a+P.ing_pp[i]*porc;},0), viaT=via*clases.length;
+  var tot=honT-desc+viaT+ing;
+  var rows='<div><span>'+L('Honorario','Fee')+'</span><span>'+f(honT)+'<small>'+clases.length+' × '+f(hon)+' · '+P.horas+' hs</small></span></div>';
+  if(desc)rows+='<div class="ap-desc"><span>'+L('Descuento curso completo','Full-course discount')+'</span><span>− '+f(desc)+'</span></div>';
+  rows+='<div><span>'+L('Viáticos','Travel')+'</span><span>'+f(viaT)+'<small>'+clases.length+' × '+f(via)+'</small></span></div>';
+  rows+='<div><span>'+L('Ingredientes (estimado)','Ingredients (estimate)')+'</span><span>'+f(ing)+'</span></div>';
+  document.getElementById('ap-rows').innerHTML=rows;
+  document.getElementById('ap-total').textContent=f(tot);
+  document.getElementById('ap-pp').textContent=(st.al>1?f(tot/st.al)+' '+L('por alumno','per student')+' · ':'')+(st.mod==='pack'?f(tot/6)+' '+L('por clase','per class'):L('clase de '+P.horas+' horas','class of '+P.horas+' hours'));
+  var t='<table><thead><tr><th>'+L('Clase','Class')+'</th><th>'+L('Honorario','Fee')+'</th><th>'+L('Viáticos','Travel')+'</th><th>'+L('Ingredientes','Ingredients')+'</th></tr></thead><tbody>';
+  C.forEach(function(c,i){var hc=st.mod==='pack'?hon*(1-P.pack_desc):hon;t+='<tr><td>'+c[1]+' '+L(c[2],c[3])+'</td><td>'+f(hc)+'</td><td>'+f(via)+'</td><td>'+f(P.ing_pp[i]*porc)+'</td></tr>';});
+  t+='</tbody></table><p class="ap-mini">'+L('Valores por clase para '+st.al+(st.al>1?' alumnos':' alumno')+'. Los ingredientes se calculan para al menos 2 porciones.','Per-class values for '+st.al+(st.al>1?' students':' student')+'. Ingredients are calculated for at least 2 portions.')+'</p>';
+  document.getElementById('ap-tbl').innerHTML=t;
+  var msg=L('Hola Daro, quiero reservar el curso "Aprendé a cocinar en casa": ','Hi Daro, I want to book the "Learn to cook at home" course: ')+(st.mod==='pack'?L('curso completo (6 clases)','full course (6 classes)'):L('una clase suelta','a single class'))+', '+st.al+' '+L(st.al>1?'alumnos':'alumno',st.al>1?'students':'student')+', '+st.zona.toUpperCase()+'. '+L('Total estimado','Estimated total')+': '+f(tot)+'.';
+  document.getElementById('ap-cta').href='https://wa.me/5491160410607?text='+encodeURIComponent(msg);
+}
+document.querySelectorAll('.ap-o').forEach(function(b){b.addEventListener('click',function(){var k=b.getAttribute('data-k'),v=b.getAttribute('data-v');st[k]=k==='al'?parseInt(v,10):v;document.querySelectorAll('.ap-o[data-k="'+k+'"]').forEach(function(x){x.classList.toggle('on',x===b);});calc();});});
+document.querySelectorAll('[data-cel-lang]').forEach(function(b){b.addEventListener('click',function(){setTimeout(calc,30);});});
+calc();
+})();</script>"""
     # Pro
     h += ('<section class="ap-pro"><div class="ap-pro-in"><div><span class="cp-k">✦ ' + bi('Después del curso', 'After the course') + '</span><h2>' +
           bi('Clases <em>Pro</em>: el vínculo queda abierto', '<em>Pro</em> classes: the door stays open') + '</h2><p>' +
@@ -168,7 +254,8 @@ def build():
           '<li>' + bi('<b>Un plato técnico por clase:</b> lo elegimos juntos según lo que quieras dominar.', '<b>One technical dish per class:</b> we choose it together based on what you want to master.') + '</li>' +
           '<li>' + bi('<b>Menús de Celestia:</b> aprendé a cocinar un menú de 3 pasos de nuestra carta.', '<b>Celestia menus:</b> learn to cook a 3-course menu from our offering.') + '</li>' +
           '<li>' + bi('<b>Sin volver a empezar:</b> partimos de todo lo que ya aprendiste en el curso.', '<b>No starting over:</b> we build on everything you already learned in the course.') + '</li>' +
-          '<li>' + bi('<b>Cuando quieras:</b> clases sueltas, coordinadas por WhatsApp.', '<b>Whenever you want:</b> one-off classes, scheduled on WhatsApp.') + '</li></ul></div></section>')
+          '<li>' + bi('<b>Cuando quieras:</b> clases sueltas, coordinadas por WhatsApp.', '<b>Whenever you want:</b> one-off classes, scheduled on WhatsApp.') + '</li>' +
+          '<li class="ap-pro-price">' + bi('Clase Pro de 3 hs: <b>$' + format(PRECIOS['pro']['honorario'],',').replace(',','.') + '</b> + viáticos + ingredientes según el plato', '3-hour Pro class: <b>$' + format(PRECIOS['pro']['honorario'],',').replace(',','.') + '</b> + travel + ingredients for the dish') + '</li></ul></div></section>')
     # Cierre
     h += ('<section class="ap-fin"><h2>' + bi('¿Arrancamos?', 'Shall we start?') + '</h2><p>' +
           bi('Escribime y coordinamos días, horarios y valores del curso. Si querés, la primera charla es para ver qué te gustaría aprender.',
