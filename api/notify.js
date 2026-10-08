@@ -36,7 +36,7 @@ export default async function handler(req) {
   if (!d || !d.ref || !d.nombre) return json({ ok: false, error: 'Faltan datos' }, 400);
 
   const fuera = !!d.fuera_amba;
-  const tipo = d.tipo === 'semanal' ? 'Chef semanal' : 'Experiencia';
+  const tipo = d.tipo === 'semanal' ? 'Chef semanal' : d.tipo === 'clase' ? 'Clase · Aprendé en casa' : 'Experiencia';
   const telDigits = String(d.tel || '').replace(/\D/g, '');
   const telWA = telDigits ? (telDigits.startsWith('54') ? telDigits : '54' + telDigits) : '';
 

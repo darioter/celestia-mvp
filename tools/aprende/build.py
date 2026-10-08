@@ -4,6 +4,7 @@ Uso: python3 tools/aprende/build.py  (desde la raíz del repo)"""
 import os, re, sys, json, html
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'blog'))
 from build import CSS, HEAD, bi, ROOT, SITE, escribir
+import re
 
 WA = 'https://wa.me/5491160410607?text='
 def wa(msg): return WA + __import__('urllib.parse').parse.quote(msg)
@@ -72,6 +73,33 @@ PRECIOS = {
   'pro': {'honorario': 180000, 'nota_ing': 'ingredientes según el plato'},
 }
 
+
+SUPA = {}
+_idx = open(os.path.join(ROOT, 'index.html'), encoding='utf-8').read()
+SUPA['url'] = re.search(r"const SUPA_URL = '([^']+)'", _idx).group(1)
+SUPA['key'] = re.search(r"const SUPA_KEY = '([^']+)'", _idx).group(1)
+
+BOOK_HTML = ('<div class="ap-book" id="ap-book" hidden><div class="ap-book-hd"><span class="cp-k">✦ ' + bi('Reserva', 'Booking') + '</span>'
+  '<h3>' + bi('Elegí tus fechas', 'Pick your dates') + '</h3><p>' + bi('La agenda es la misma de las experiencias y del chef semanal: solo ves los días libres. Cada clase ocupa el día completo.',
+  'The calendar is shared with the dining experiences and the weekly chef: you only see free days. Each class takes the whole day.') + '</p></div>'
+  '<div class="ap-book-g"><div class="ap-cal"><div class="ap-cal-hd"><button type="button" id="ap-prev" aria-label="Mes anterior">‹</button><b id="ap-mes"></b><button type="button" id="ap-next" aria-label="Mes siguiente">›</button></div>'
+  '<div class="ap-cal-dn" id="ap-dn"></div><div class="ap-cal-g" id="ap-cal"></div>'
+  '<div class="ap-cal-leg"><span><i class="l-ok"></i>' + bi('Disponible', 'Available') + '</span><span><i class="l-sel"></i>' + bi('Elegido', 'Selected') + '</span><span><i class="l-off"></i>' + bi('Ocupado', 'Booked') + '</span></div>'
+  '<button type="button" class="ap-auto" id="ap-auto">' + bi('✦ Completar una vez por semana', '✦ Fill in once a week') + '</button></div>'
+  '<div class="ap-bk-r"><div class="ap-bk-q">' + bi('Horario', 'Time') + '</div><div class="ap-opts ap-o2">'
+  '<button type="button" class="ap-o ap-tu on" data-tu="almuerzo"><b>☀️ ' + bi('Mañana', 'Morning') + '</b><small>10:00 – 13:00</small></button>'
+  '<button type="button" class="ap-o ap-tu" data-tu="cena"><b>🌙 ' + bi('Tarde', 'Afternoon') + '</b><small>16:00 – 19:00</small></button></div>'
+  '<div class="ap-bk-q" id="ap-cual-q">' + bi('¿Qué clase?', 'Which class?') + '</div><select id="ap-cual" class="ap-in"></select>'
+  '<div class="ap-bk-q">' + bi('Tus fechas', 'Your dates') + ' <small id="ap-cnt"></small></div><ol class="ap-sel" id="ap-sel"></ol>'
+  '<div class="ap-bk-q">' + bi('Tus datos', 'Your details') + '</div>'
+  '<input class="ap-in" id="ap-nom" autocomplete="name"><input class="ap-in" id="ap-tel" type="tel" autocomplete="tel"><input class="ap-in" id="ap-mail" type="email" autocomplete="email">'
+  '<input class="ap-in" id="ap-dir" autocomplete="street-address"><textarea class="ap-in" id="ap-not" rows="2"></textarea>'
+  '<p class="ap-err" id="ap-err" hidden></p>'
+  '<button type="button" class="cp-btn ap-btn-full" id="ap-conf" disabled>' + bi('Confirmar reserva →', 'Confirm booking →') + '</button>'
+  '<p class="ap-mini">' + bi('Te confirmamos por WhatsApp y te pasamos los datos para la seña (50% del honorario). La fecha queda reservada al acreditarse.',
+                             'We confirm on WhatsApp and send you the deposit details (50% of the fee). Dates are secured once it is received.') + '</p></div></div></div>'
+  '<div class="ap-ok" id="ap-ok" hidden></div>')
+
 def build():
     url = f'{SITE}/aprende'
     css_extra = r'''
@@ -83,11 +111,11 @@ def build():
 .ap-hero p{max-width:520px;color:rgba(250,246,239,.78);font-size:17px}
 .ap-hero .cp-btn{margin-top:26px}
 .ap-pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
-.ap-pills span{border:1px solid rgba(201,168,76,.4);color:var(--gdl);border-radius:999px;padding:6px 13px;font-size:12px;background:rgba(13,27,42,.4)}
-.ap-sec{max-width:1140px;margin:0 auto;padding:72px 22px 0}
+.ap-pills>span{border:1px solid rgba(201,168,76,.4);color:var(--gdl);border-radius:999px;padding:6px 13px;font-size:12px;background:rgba(13,27,42,.4)}
+.ap-sec{max-width:1140px;margin:0 auto;padding:56px 22px 0}
 .ap-sec>.cp-k{display:block;text-align:center}
 .ap-h2{font-family:'DM Serif Display',serif;font-weight:400;font-size:36px;line-height:1.15;color:var(--nv);text-align:center;margin:8px 0 10px}
-.ap-sub{text-align:center;max-width:620px;margin:0 auto 36px;color:#6B5F4F}
+.ap-sub{text-align:center;max-width:620px;margin:0 auto 28px;color:#6B5F4F}
 .ap-et{display:grid;grid-template-columns:repeat(3,1fr);gap:0;position:relative}
 .ap-et::before{content:'';position:absolute;left:16.6%;right:16.6%;top:40px;height:2px;background:linear-gradient(90deg,var(--gd),var(--gdl))}
 .ap-e{text-align:center;padding:0 20px;position:relative}
@@ -111,7 +139,7 @@ def build():
 .ap-i i{font-style:normal;font-size:28px;display:block;margin-bottom:8px}
 .ap-i h4{font-family:'DM Serif Display',serif;font-weight:400;font-size:19px;color:var(--nv);margin-bottom:6px}
 .ap-i p{font-size:13.5px;color:#6B5F4F}
-.ap-pro{max-width:1140px;margin:80px auto 0;padding:0 22px}
+.ap-pro{max-width:1140px;margin:60px auto 0;padding:0 22px}
 .ap-pro-in{background:linear-gradient(135deg,#0D1B2A 0%,#13263a 60%,#1d3348 100%);border-radius:24px;color:var(--cr);padding:46px 44px;display:grid;grid-template-columns:1.2fr 1fr;gap:40px;align-items:center;border:1px solid rgba(201,168,76,.35);position:relative;overflow:hidden}
 .ap-pro-in::before{content:'PRO';position:absolute;right:-10px;bottom:-40px;font-family:'DM Serif Display',serif;font-size:200px;color:rgba(201,168,76,.07);line-height:1}
 .ap-pro h2{font-family:'DM Serif Display',serif;font-weight:400;font-size:34px;line-height:1.15;margin:8px 0 12px}
@@ -121,7 +149,7 @@ def build():
 .ap-pro li{padding:12px 0 12px 36px;border-bottom:1px solid rgba(250,246,239,.1);position:relative;font-size:14.5px;color:rgba(250,246,239,.85)}
 .ap-pro li b{color:#fff;font-weight:500}
 .ap-pro li::before{content:'✓';position:absolute;left:0;top:12px;width:24px;height:24px;border-radius:50%;background:rgba(201,168,76,.18);color:var(--gdl);display:flex;align-items:center;justify-content:center;font-size:12px}
-.ap-fin{max-width:760px;margin:80px auto 0;padding:0 22px 80px;text-align:center}
+.ap-fin{max-width:760px;margin:60px auto 0;padding:0 22px 70px;text-align:center}
 .ap-fin h2{font-family:'DM Serif Display',serif;font-weight:400;font-size:34px;color:var(--nv);margin-bottom:10px}
 .ap-fin p{color:#6B5F4F;margin-bottom:22px}
 .ap-wa{display:inline-flex;align-items:center;gap:10px;background:#25D366;color:#fff;text-decoration:none;font-weight:600;padding:14px 26px;border-radius:999px;box-shadow:0 8px 22px rgba(37,211,102,.3)}
@@ -147,6 +175,41 @@ def build():
 .ap-tbl th{background:var(--nv);color:var(--gdl);text-align:left;font-weight:500;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:11px 14px}
 .ap-tbl td{padding:10px 14px;border-top:1px solid #F0E8D6}.ap-tbl td:first-child{color:var(--nv)}
 .ap-pro-price{border-bottom:0!important;color:var(--gdl)!important}
+.ap-hero-btns{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:26px}.ap-hero-btns .cp-btn{margin-top:0}
+.ap-ghost{color:var(--cr);text-decoration:none;border:1px solid rgba(250,246,239,.35);border-radius:999px;padding:12px 22px;font-size:14px}.ap-ghost:hover{border-color:var(--gdl);color:var(--gdl)}
+.ap-btn-full{width:100%;text-align:center;border:0;cursor:pointer;font-family:inherit;font-size:15px}
+.ap-wa-link{display:block;text-align:center;margin-top:10px;font-size:12.5px;color:rgba(250,246,239,.6)}
+.ap-det{margin-top:22px}.ap-det summary{cursor:pointer;color:var(--nv);font-weight:500;font-size:14px;list-style:none;text-align:center;padding:10px;border:1px dashed var(--crd);border-radius:12px}
+.ap-det summary::-webkit-details-marker{display:none}.ap-det[open] summary{margin-bottom:14px}
+.ap-book{margin-top:28px;background:#fff;border:1px solid var(--crd);border-radius:22px;padding:28px;box-shadow:0 14px 36px rgba(13,27,42,.08);animation:apIn .5s ease}
+.ap-book-hd{text-align:center;margin-bottom:22px}.ap-book-hd h3{font-family:'DM Serif Display',serif;font-weight:400;font-size:28px;color:var(--nv);margin:6px 0}.ap-book-hd p{font-size:14px;color:#6B5F4F;max-width:560px;margin:0 auto}
+.ap-book-g{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:start}
+.ap-cal-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.ap-cal-hd b{font-family:'DM Serif Display',serif;font-weight:400;font-size:22px;color:var(--nv)}
+.ap-cal-hd button{width:38px;height:38px;border-radius:50%;border:1px solid var(--crd);background:#fff;cursor:pointer;font-size:18px;color:var(--nv)}.ap-cal-hd button:disabled{opacity:.3;cursor:default}
+.ap-cal-dn,.ap-cal-g{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center}.ap-cal-dn span{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#a08a5c;padding:4px 0}
+.ap-d{position:relative;aspect-ratio:1/1;border-radius:50%;border:1px solid transparent;background:#FAF6EF;color:var(--nv);font:500 14px 'DM Sans',sans-serif;cursor:pointer;transition:all .15s}
+.ap-d:hover:not([disabled]){border-color:var(--gd);transform:scale(1.06)}.ap-d.sel{background:var(--nv);color:var(--gdl);box-shadow:0 0 0 3px rgba(201,168,76,.45)}
+.ap-d i{position:absolute;top:-4px;right:-4px;width:17px;height:17px;border-radius:50%;background:var(--gd);color:var(--nv);font-size:10px;font-style:normal;display:flex;align-items:center;justify-content:center}
+.ap-d.off{background:none;color:#cfc6b8;cursor:default}.ap-d.busy{background:repeating-linear-gradient(45deg,#f3eee6,#f3eee6 4px,#ebe4d8 4px,#ebe4d8 8px);color:#b6ab99;cursor:not-allowed;text-decoration:line-through}
+.ap-cal-leg{display:flex;gap:14px;justify-content:center;margin-top:12px;font-size:11.5px;color:#8a7a62}.ap-cal-leg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+.l-ok{background:#FAF6EF;border:1px solid var(--crd)}.l-sel{background:var(--nv)}.l-off{background:#e3dbcc}
+#ap-book [hidden]{display:none!important}
+.ap-auto{display:block;margin:14px auto 0;background:none;border:1px solid var(--gd);color:var(--nv);border-radius:999px;padding:9px 16px;font:500 12.5px 'DM Sans',sans-serif;cursor:pointer}.ap-auto:hover{background:var(--nv);color:var(--gdl)}
+.ap-bk-q{font-family:'DM Serif Display',serif;font-size:18px;color:var(--nv);margin:16px 0 8px}.ap-bk-q:first-child{margin-top:0}.ap-bk-q small{font-family:'DM Sans',sans-serif;font-size:12px;color:#a08a5c}
+.ap-in{display:block;width:100%;border:1px solid #E3D9C8;background:#FCFAF6;border-radius:12px;padding:12px 14px;font:15px 'DM Sans',sans-serif;color:var(--nv);margin-bottom:8px;outline:none}.ap-in:focus{border-color:var(--gd);background:#fff;box-shadow:0 0 0 4px rgba(201,168,76,.15)}
+.ap-sel{list-style:none;padding:0;margin:0 0 6px}.ap-sel li{display:flex;justify-content:space-between;gap:10px;padding:8px 12px;border-radius:10px;font-size:13px;margin-bottom:5px;background:#FAF6EF;color:#8a7a62}
+.ap-sel li.ok{background:#FFFBF0;color:var(--nv);border:1px solid rgba(201,168,76,.35)}.ap-sel li b{font-weight:500;text-align:right}
+.ap-err{color:#b23b3b;font-size:13px;margin:4px 0 8px}
+.ap-ok{margin-top:28px}.ap-ok-in{background:var(--nv);color:var(--cr);border-radius:22px;padding:34px 30px;text-align:center;border:1px solid rgba(201,168,76,.4);animation:apIn .5s ease}
+.ap-ok-ic{width:64px;height:64px;border-radius:50%;margin:0 auto 12px;background:linear-gradient(135deg,var(--gd),var(--gdl));color:var(--nv);font-size:30px;display:flex;align-items:center;justify-content:center}
+.ap-ok-in h3{font-family:'DM Serif Display',serif;font-weight:400;font-size:30px;margin:8px 0 16px}.ap-ok-in .ap-sel{max-width:520px;margin:0 auto 16px;text-align:left}.ap-ok-in p{color:rgba(250,246,239,.78);max-width:560px;margin:0 auto 18px}.ap-ok-in p b{color:var(--gdl)}.ap-ok-in .ap-sel li b{color:var(--nv);font-weight:600}
+@keyframes apIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.rv{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s cubic-bezier(.16,.84,.44,1)}.rv.in{opacity:1;transform:none}
+.ap-et::before{transform:scaleX(0);transform-origin:left;transition:transform 1.4s cubic-bezier(.65,0,.35,1) .3s}.ap-et.draw::before{transform:scaleX(1)}
+.ap-hero-in>*{animation:apIn .8s ease both}.ap-hero-in>*:nth-child(2){animation-delay:.1s}.ap-hero-in>*:nth-child(3){animation-delay:.2s}.ap-hero-in>*:nth-child(4){animation-delay:.3s}.ap-hero-in>*:nth-child(5){animation-delay:.4s}
+.ap-c,.ap-i{transition:opacity .7s ease,transform .7s cubic-bezier(.16,.84,.44,1),box-shadow .25s}.ap-c:hover,.ap-i:hover{box-shadow:0 18px 36px rgba(13,27,42,.12)}
+@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}.ap-et::before{transform:none}.ap-hero-in>*{animation:none}}
+@media(max-width:900px){.ap-book-g{grid-template-columns:1fr}.ap-book{padding:20px 16px}}
 @media(max-width:900px){.ap-calc{grid-template-columns:1fr}.ap-sum{position:relative;top:0}.ap-o4{grid-template-columns:repeat(4,1fr)}}
 @media(max-width:900px){.ap-et,.ap-cls{grid-template-columns:1fr}.ap-et::before{display:none}.ap-e{margin-bottom:28px}.ap-inc{grid-template-columns:1fr 1fr}.ap-pro-in{grid-template-columns:1fr;padding:34px 24px}.ap-hero h1{font-size:36px}.ap-hero{min-height:560px;background-position:70% center}.ap-hero::after{background:linear-gradient(180deg,rgba(13,27,42,.55) 0%,rgba(13,27,42,.95) 55%)}.ap-hero-in{align-self:flex-end}.ap-h2{font-size:28px}}
 @media(max-width:520px){.ap-inc{grid-template-columns:1fr}}
@@ -170,7 +233,8 @@ def build():
                       'A hands-on 6-class course with me: first I cook and you watch, then we cook together, and in the end you cook while I watch.') + '</p>'
           '<div class="ap-pills"><span>' + bi('6 clases prácticas', '6 hands-on classes') + '</span><span>' + bi('En tu casa', 'At your home') + '</span><span>' +
           bi('Acompañamiento por WhatsApp', 'WhatsApp support') + '</span><span>' + bi('Clases Pro después', 'Pro classes afterwards') + '</span></div>'
-          f'<a class="cp-btn" href="{wa(msg_es)}" target="_blank" rel="noopener">' + bi('Quiero sumarme →', 'I want to join →') + '</a></div></section>')
+          '<div class="ap-hero-btns"><a class="cp-btn" href="#valores">' + bi('Ver valores y fechas ↓', 'See prices and dates ↓') + '</a>'
+          f'<a class="ap-ghost" href="{wa(msg_es)}" target="_blank" rel="noopener">' + bi('Consultar por WhatsApp', 'Ask on WhatsApp') + '</a></div></div></section>')
     # Método
     h += ('<section class="ap-sec"><span class="cp-k">✦ ' + bi('El método', 'The method') + '</span><h2 class="ap-h2">' + bi('De mirar a cocinar solo, en tres etapas', 'From watching to cooking on your own, in three stages') +
           '</h2><p class="ap-sub">' + bi('Así se aprende en una cocina profesional: viendo, haciendo con alguien al lado y, por último, haciendo solo.',
@@ -178,22 +242,6 @@ def build():
     for ic, tes, ten, ces, cen, des, den in ETAPAS:
         h += f'<div class="ap-e"><div class="ap-e-ic">{ic}</div><small>{bi(ces, cen)}</small><h3>{bi(tes, ten)}</h3><p>{bi(des, den)}</p></div>'
     h += '</div></section>'
-    # Programa
-    etapa = {'1': 'e1', '2': 'e1', '3': 'e2', '4': 'e2', '5': 'e3', '6': 'e3'}
-    etq = {'e1': ('Yo cocino, vos mirás', 'I cook, you watch'), 'e2': ('Cocinamos juntos', 'We cook together'), 'e3': ('Vos cocinás, yo miro', 'You cook, I watch')}
-    h += ('<section class="ap-sec"><span class="cp-k">✦ ' + bi('El programa', 'The program') + '</span><h2 class="ap-h2">' + bi('6 clases, de lo básico a tu primer menú', '6 classes, from the basics to your first menu') +
-          '</h2><p class="ap-sub">' + bi('Cada clase suma una técnica y un plato. Al final, cocinás un menú de 3 pasos completo.', 'Each class adds a technique and a dish. By the end, you cook a full 3-course menu.') + '</p><div class="ap-cls">')
-    for n, ic, tes, ten, des, den, les, len_ in CLASES:
-        e = etapa[n]
-        h += (f'<article class="ap-c" data-n="{n}"><span class="ap-c-tag {e}">{bi("Clase "+n, "Class "+n)} · {bi(*etq[e])}</span><h3><i>{ic}</i>{bi(tes, ten)}</h3><p>{bi(des, den)}</p>'
-              '<ul>' + ''.join(f'<li>{bi(a, b)}</li>' for a, b in zip(les, len_)) + '</ul></article>')
-    h += '</div></section>'
-    # Incluye
-    h += '<section class="ap-sec"><span class="cp-k">✦ ' + bi('Qué incluye', "What's included") + '</span><h2 class="ap-h2">' + bi('Pensado para que lo sigas haciendo', 'Designed so you keep doing it') + '</h2><p class="ap-sub"></p><div class="ap-inc">'
-    for ic, tes, ten, des, den in INCLUYE:
-        h += f'<div class="ap-i"><i>{ic}</i><h4>{bi(tes, ten)}</h4><p>{bi(des, den)}</p></div>'
-    h += '</div></section>'
-
     # Valores
     P = PRECIOS
     h += ('<section class="ap-sec" id="valores"><span class="cp-k">✦ ' + bi('Valores', 'Pricing') + '</span><h2 class="ap-h2">' + bi('Armá tu curso', 'Build your course') +
@@ -213,11 +261,13 @@ def build():
           '<div class="ap-tot"><span>' + bi('Total estimado', 'Estimated total') + '</span><b id="ap-total">—</b></div><p class="ap-pp" id="ap-pp"></p>'
           '<p class="ap-note">' + bi('Los ingredientes son una estimación: se ajustan a la compra real de cada clase. Para reservar el curso se abona una seña del 50% del honorario.',
                                      'Ingredients are an estimate: they are adjusted to the actual shopping for each class. A 50% deposit of the fee reserves the course.') + '</p>'
-          f'<a class="cp-btn" id="ap-cta" href="{wa(msg_es)}" target="_blank" rel="noopener" style="width:100%;text-align:center">' + bi('Reservar por WhatsApp →', 'Book on WhatsApp →') + '</a></aside></div>'
-          '<div class="ap-tbl" id="ap-tbl"></div></section>')
+          '<button type="button" class="cp-btn ap-btn-full" id="ap-elegir">' + bi('Elegir fechas y reservar →', 'Pick dates and book →') + '</button>'
+          f'<a class="ap-wa-link" id="ap-cta" href="{wa(msg_es)}" target="_blank" rel="noopener">' + bi('o consultame por WhatsApp', 'or ask me on WhatsApp') + '</a></aside></div>'
+          + BOOK_HTML +
+          '<details class="ap-det"><summary>' + bi('Ver el detalle clase por clase', 'See the class-by-class breakdown') + '</summary><div class="ap-tbl" id="ap-tbl"></div></details></section>')
     h += '<script>window.AP_PRECIOS=' + json.dumps(P) + ';window.AP_CLASES=' + json.dumps([[c[0], c[1], c[2], c[3]] for c in CLASES], ensure_ascii=False) + ';</script>'
     h += r"""<script>(function(){
-var P=window.AP_PRECIOS,C=window.AP_CLASES,st={al:2,mod:'pack',zona:'caba'};
+var P=window.AP_PRECIOS,C=window.AP_CLASES,st={al:2,mod:'pack',zona:'caba'};window.AP_ST=st;window.apCalc=function(){calc();};
 function f(n){return '$'+Math.round(n).toLocaleString('es-AR');}
 function en(){return document.documentElement.classList.contains('lang-en');}
 function L(es,e){return en()?e:es;}
@@ -227,6 +277,8 @@ function calc(){
   var honT=hon*clases.length, desc=st.mod==='pack'?Math.round(honT*P.pack_desc/1000)*1000:0;
   var ing=clases.reduce(function(a,i){return a+P.ing_pp[i]*porc;},0), viaT=via*clases.length;
   var tot=honT-desc+viaT+ing;
+  window.AP_RES={hon:hon,honClase:st.mod==='pack'?Math.round(hon*(1-P.pack_desc)):hon,via:via,porc:porc,n:clases.length,honT:honT-desc,viaT:viaT,ing:ing,tot:tot};
+  if(window.apBookSync)window.apBookSync();
   var rows='<div><span>'+L('Honorario','Fee')+'</span><span>'+f(honT)+'<small>'+clases.length+' × '+f(hon)+' · '+P.horas+' hs</small></span></div>';
   if(desc)rows+='<div class="ap-desc"><span>'+L('Descuento curso completo','Full-course discount')+'</span><span>− '+f(desc)+'</span></div>';
   rows+='<div><span>'+L('Viáticos','Travel')+'</span><span>'+f(viaT)+'<small>'+clases.length+' × '+f(via)+'</small></span></div>';
@@ -244,6 +296,142 @@ function calc(){
 document.querySelectorAll('.ap-o').forEach(function(b){b.addEventListener('click',function(){var k=b.getAttribute('data-k'),v=b.getAttribute('data-v');st[k]=k==='al'?parseInt(v,10):v;document.querySelectorAll('.ap-o[data-k="'+k+'"]').forEach(function(x){x.classList.toggle('on',x===b);});calc();});});
 document.querySelectorAll('[data-cel-lang]').forEach(function(b){b.addEventListener('click',function(){setTimeout(calc,30);});});
 calc();
+})();</script>"""
+    # Programa
+    etapa = {'1': 'e1', '2': 'e1', '3': 'e2', '4': 'e2', '5': 'e3', '6': 'e3'}
+    etq = {'e1': ('Yo cocino, vos mirás', 'I cook, you watch'), 'e2': ('Cocinamos juntos', 'We cook together'), 'e3': ('Vos cocinás, yo miro', 'You cook, I watch')}
+    h += ('<section class="ap-sec"><span class="cp-k">✦ ' + bi('El programa', 'The program') + '</span><h2 class="ap-h2">' + bi('6 clases, de lo básico a tu primer menú', '6 classes, from the basics to your first menu') +
+          '</h2><p class="ap-sub">' + bi('Cada clase suma una técnica y un plato. Al final, cocinás un menú de 3 pasos completo.', 'Each class adds a technique and a dish. By the end, you cook a full 3-course menu.') + '</p><div class="ap-cls">')
+    for n, ic, tes, ten, des, den, les, len_ in CLASES:
+        e = etapa[n]
+        h += (f'<article class="ap-c" data-n="{n}"><span class="ap-c-tag {e}">{bi("Clase "+n, "Class "+n)} · {bi(*etq[e])}</span><h3><i>{ic}</i>{bi(tes, ten)}</h3><p>{bi(des, den)}</p>'
+              '<ul>' + ''.join(f'<li>{bi(a, b)}</li>' for a, b in zip(les, len_)) + '</ul></article>')
+    h += '</div></section>'
+    # Incluye
+    h += '<section class="ap-sec"><span class="cp-k">✦ ' + bi('Qué incluye', "What's included") + '</span><h2 class="ap-h2">' + bi('Pensado para que lo sigas haciendo', 'Designed so you keep doing it') + '</h2><p class="ap-sub"></p><div class="ap-inc">'
+    for ic, tes, ten, des, den in INCLUYE:
+        h += f'<div class="ap-i"><i>{ic}</i><h4>{bi(tes, ten)}</h4><p>{bi(des, den)}</p></div>'
+    h += '</div></section>'
+
+
+    h += '<script>window.AP_SUPA=' + json.dumps(SUPA) + ';</script>'
+    h += r"""<script>(function(){
+var S=window.AP_SUPA,P=window.AP_PRECIOS,C=window.AP_CLASES;
+var book=document.getElementById('ap-book'),okBox=document.getElementById('ap-ok');
+var ocupados={},bloq={},sel=[],turno='almuerzo',mes=null;
+function en(){return document.documentElement.classList.contains('lang-en');}
+function L(a,b){return en()?b:a;}
+function f(n){return '$'+Math.round(n).toLocaleString('es-AR');}
+function pad(n){return n<10?'0'+n:''+n;}
+function iso(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+function need(){return (window.AP_ST&&window.AP_ST.mod==='pack')?6:1;}
+var MES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'],MON=['January','February','March','April','May','June','July','August','September','October','November','December'];
+var minD=new Date();minD.setHours(0,0,0,0);minD.setDate(minD.getDate()+2);
+async function cargar(){
+  var h={apikey:S.key,Authorization:'Bearer '+S.key};
+  try{
+    var r=await Promise.all([fetch(S.url+'/rest/v1/reservas?select=fecha,turno,estado&estado=in.(reservada,confirmada,ofrecida,aceptada)',{headers:h}).then(function(x){return x.json();}),
+      fetch(S.url+'/rest/v1/bloqueos?select=fecha',{headers:h}).then(function(x){return x.json();})]);
+    ocupados={};bloq={};
+    (Array.isArray(r[0])?r[0]:[]).forEach(function(x){if(x.fecha)ocupados[x.fecha.slice(0,10)]=1;});
+    (Array.isArray(r[1])?r[1]:[]).forEach(function(x){if(x.fecha)bloq[x.fecha.slice(0,10)]=1;});
+  }catch(e){console.warn('agenda',e);}
+}
+function libre(k,d){return d>=minD&&d.getDay()!==0&&!ocupados[k]&&!bloq[k];}
+function render(){
+  var y=mes.getFullYear(),m=mes.getMonth();
+  document.getElementById('ap-mes').textContent=(en()?MON[m]:MES[m].charAt(0).toUpperCase()+MES[m].slice(1))+' '+y;
+  var dn=en()?['Mo','Tu','We','Th','Fr','Sa','Su']:['Lu','Ma','Mi','Ju','Vi','Sá','Do'];
+  document.getElementById('ap-dn').innerHTML=dn.map(function(x){return '<span>'+x+'</span>';}).join('');
+  var first=new Date(y,m,1),off=(first.getDay()+6)%7,dias=new Date(y,m+1,0).getDate(),hh='';
+  for(var i=0;i<off;i++)hh+='<span></span>';
+  for(var d=1;d<=dias;d++){var dt=new Date(y,m,d),k=iso(dt),cls='ap-d';
+    if(sel.indexOf(k)>=0)cls+=' sel';else if(!libre(k,dt))cls+=(dt>=minD&&(ocupados[k]||bloq[k]))?' busy':' off';
+    var n=sel.indexOf(k);hh+='<button type="button" class="'+cls+'" data-k="'+k+'"'+(cls.indexOf('off')>0||cls.indexOf('busy')>0?' disabled':'')+'>'+d+(n>=0&&need()>1?'<i>'+(n+1)+'</i>':'')+'</button>';}
+  var g=document.getElementById('ap-cal');g.innerHTML=hh;
+  g.querySelectorAll('.ap-d:not([disabled])').forEach(function(b){b.addEventListener('click',function(){toggle(b.getAttribute('data-k'));});});
+  var hoy=new Date();document.getElementById('ap-prev').disabled=(y===hoy.getFullYear()&&m<=hoy.getMonth());
+  lista();
+}
+function toggle(k){var i=sel.indexOf(k);if(i>=0)sel.splice(i,1);else{if(sel.length>=need()){if(need()===1)sel=[];else return;}sel.push(k);}sel.sort();render();}
+function fecha(k){var d=new Date(k+'T12:00:00');var t=d.toLocaleDateString(en()?'en-US':'es-AR',{weekday:'long',day:'numeric',month:'long'});return t.charAt(0).toUpperCase()+t.slice(1);}
+function lista(){
+  var n=need(),ol=document.getElementById('ap-sel');document.getElementById('ap-cnt').textContent='('+sel.length+'/'+n+')';
+  var html='';for(var i=0;i<n;i++){var c=n===6?C[i]:C[parseInt(document.getElementById('ap-cual').value||'0',10)];
+    html+='<li class="'+(sel[i]?'ok':'')+'"><span>'+c[1]+' '+(n===6?L('Clase ','Class ')+(i+1)+' · ':'')+L(c[2],c[3])+'</span><b>'+(sel[i]?fecha(sel[i]):L('elegí un día','pick a day'))+'</b></li>';}
+  ol.innerHTML=html;document.getElementById('ap-cual-q').hidden=document.getElementById('ap-cual').hidden=(n===6);
+  document.getElementById('ap-auto').hidden=(n===1);
+  valida();
+}
+function valida(){var ok=sel.length===need()&&['ap-nom','ap-tel','ap-mail','ap-dir'].every(function(id){return document.getElementById(id).value.trim().length>2;})&&/@/.test(document.getElementById('ap-mail').value);
+  document.getElementById('ap-conf').disabled=!ok;}
+function auto(){
+  err('');var b0;
+  if(sel.length)b0=new Date(sel[0]+'T12:00:00');
+  else{b0=new Date(minD);var g0=0;while(!libre(iso(b0),b0)&&g0<120){b0.setDate(b0.getDate()+1);g0++;}}
+  var base=b0,out=[iso(b0)],d=new Date(base),lim=0;
+  while(out.length<6&&lim++<30){d.setDate(d.getDate()+7);var k=iso(d),t=new Date(d);var guard=0;
+    while(!libre(k,t)&&guard<6){t.setDate(t.getDate()+1);k=iso(t);guard++;}
+    if(libre(k,t)&&out.indexOf(k)<0)out.push(k);}
+  sel=out.sort();mes=new Date(base.getFullYear(),base.getMonth(),1);render();
+}
+function err(m){var e=document.getElementById('ap-err');e.textContent=m||'';e.hidden=!m;}
+function placeholders(){var ph={'ap-nom':L('Nombre y apellido *','Full name *'),'ap-tel':L('Teléfono / WhatsApp *','Phone / WhatsApp *'),'ap-mail':L('Email *','Email *'),'ap-dir':L('Dirección de la clase (calle, número, barrio) *','Class address (street, number, area) *'),'ap-not':L('Restricciones, nivel, algo que quieras contarme...','Restrictions, level, anything you want to tell me...')};
+  Object.keys(ph).forEach(function(id){document.getElementById(id).placeholder=ph[id];});
+  var cu=document.getElementById('ap-cual'),v=cu.value;cu.innerHTML=C.map(function(c,i){return '<option value="'+i+'">'+c[1]+' '+L('Clase ','Class ')+(i+1)+' · '+L(c[2],c[3])+'</option>';}).join('');cu.value=v||'0';}
+async function confirmar(){
+  err('');var btn=document.getElementById('ap-conf');btn.disabled=true;var txt=btn.innerHTML;btn.textContent=L('Reservando...','Booking...');
+  await cargar();
+  var choque=sel.filter(function(k){return ocupados[k]||bloq[k];});
+  if(choque.length){sel=sel.filter(function(k){return choque.indexOf(k)<0;});render();err(L('Alguien acaba de reservar '+choque.map(fecha).join(', ')+'. Elegí otro día.','Someone just booked '+choque.map(fecha).join(', ')+'. Please pick another day.'));btn.innerHTML=txt;return;}
+  var st=window.AP_ST,R=window.AP_RES,grp='AC-'+Date.now().toString(36).toUpperCase(),n=need();
+  var nom=document.getElementById('ap-nom').value.trim(),tel=document.getElementById('ap-tel').value.trim(),mail=document.getElementById('ap-mail').value.trim(),dir=document.getElementById('ap-dir').value.trim(),nota=document.getElementById('ap-not').value.trim();
+  var cual=parseInt(document.getElementById('ap-cual').value||'0',10);
+  var rows=sel.map(function(k,i){var ci=n===6?i:cual,c=C[ci],ing=P.ing_pp[ci]*R.porc;
+    return {ref:grp+'-'+(i+1),tipo:'clase',fecha:k,turno:turno,estado:'reservada',
+      menu:'Aprendé en casa · '+(n===6?'Clase '+(i+1)+'/6':'Clase suelta')+' · '+c[2],personas:st.al,nombre:nom,tel:tel,email:mail,dir:dir,
+      ocasion:'Curso Aprendé en casa · '+(n===6?'curso completo':'clase suelta')+' · '+st.zona.toUpperCase(),
+      notas:'['+grp+'] '+(turno==='almuerzo'?'Mañana 10-13':'Tarde 16-19')+(nota?' · '+nota:''),
+      honorario:R.honClase,ingredientes:ing,total:R.honClase+R.via+ing,senia_monto:Math.round(R.honClase*0.5)};});
+  try{
+    var res=await fetch(S.url+'/rest/v1/reservas',{method:'POST',headers:{apikey:S.key,Authorization:'Bearer '+S.key,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(rows)});
+    if(!res.ok)throw new Error('HTTP '+res.status);
+  }catch(e){btn.innerHTML=txt;btn.disabled=false;err(L('No pudimos guardar la reserva. Probá de nuevo o escribime por WhatsApp.','We could not save the booking. Try again or message me on WhatsApp.'));return;}
+  var senia=Math.round(R.honT*0.5);
+  try{fetch('/api/notify',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json'},body:JSON.stringify({ref:grp,tipo:'clase',menu:'Aprendé en casa · '+(n===6?'curso completo (6 clases)':'clase suelta: '+C[cual][2]),
+    fecha:sel[0],turno:turno==='almuerzo'?'Mañana 10-13':'Tarde 16-19',personas:st.al,dir:dir,zona:st.zona.toUpperCase(),nombre:nom,tel:tel,email:mail,
+    notas:'Fechas: '+sel.join(', ')+(nota?' · '+nota:''),honorario:R.honT,ingredientes:R.ing,total:R.tot})});}catch(e){}
+  var msg=L('Hola Daro, reservé '+(n===6?'el curso "Aprendé en casa"':'una clase de "Aprendé en casa"')+' ('+grp+'). Fechas: '+sel.map(fecha).join(', ')+'. Te paso el comprobante de la seña.',
+            'Hi Daro, I booked '+(n===6?'the "Learn at home" course':'a "Learn at home" class')+' ('+grp+'). Dates: '+sel.map(fecha).join(', ')+'. Here is the deposit receipt.');
+  okBox.innerHTML='<div class="ap-ok-in"><div class="ap-ok-ic">✓</div><span class="cp-k">✦ '+L('Reserva recibida','Booking received')+' · '+grp+'</span><h3>'+L('¡Nos vemos en tu cocina!','See you in your kitchen!')+'</h3>'+
+    '<ol class="ap-sel">'+sel.map(function(k,i){var c=C[n===6?i:cual];return '<li class="ok"><span>'+c[1]+' '+(n===6?L('Clase ','Class ')+(i+1)+' · ':'')+L(c[2],c[3])+'</span><b>'+fecha(k)+' · '+(turno==='almuerzo'?'10:00':'16:00')+'</b></li>';}).join('')+'</ol>'+
+    '<p>'+L('Para confirmar, transferí la seña de <b>'+f(senia)+'</b> (50% del honorario) al alias <b>daro.chef</b> y mandame el comprobante por WhatsApp. Las fechas quedan reservadas al acreditarse.',
+             'To confirm, transfer the <b>'+f(senia)+'</b> deposit (50% of the fee) to alias <b>daro.chef</b> and send me the receipt on WhatsApp. Dates are secured once it is received.')+'</p>'+
+    '<a class="ap-wa" target="_blank" rel="noopener" href="https://wa.me/5491160410607?text='+encodeURIComponent(msg)+'">'+L('Enviar comprobante por WhatsApp','Send receipt on WhatsApp')+'</a></div>';
+  book.hidden=true;okBox.hidden=false;okBox.scrollIntoView({behavior:'smooth',block:'center'});
+}
+window.apBookSync=function(){if(!mes)return;if(sel.length>need())sel=sel.slice(0,need());render();};
+document.getElementById('ap-elegir').addEventListener('click',async function(){
+  book.hidden=false;okBox.hidden=true;if(!mes){mes=new Date(minD.getFullYear(),minD.getMonth(),1);placeholders();await cargar();}render();
+  setTimeout(function(){book.scrollIntoView({behavior:'smooth',block:'start'});},60);});
+document.getElementById('ap-prev').addEventListener('click',function(){mes=new Date(mes.getFullYear(),mes.getMonth()-1,1);render();});
+document.getElementById('ap-next').addEventListener('click',function(){mes=new Date(mes.getFullYear(),mes.getMonth()+1,1);render();});
+document.getElementById('ap-auto').addEventListener('click',auto);
+document.getElementById('ap-cual').addEventListener('change',lista);
+document.querySelectorAll('.ap-tu').forEach(function(b){b.addEventListener('click',function(){turno=b.getAttribute('data-tu');document.querySelectorAll('.ap-tu').forEach(function(x){x.classList.toggle('on',x===b);});});});
+['ap-nom','ap-tel','ap-mail','ap-dir'].forEach(function(id){document.getElementById(id).addEventListener('input',valida);});
+document.getElementById('ap-conf').addEventListener('click',confirmar);
+document.querySelectorAll('[data-cel-lang]').forEach(function(b){b.addEventListener('click',function(){setTimeout(function(){if(mes){placeholders();render();}},40);});});
+})();</script>"""
+    # Animaciones de entrada
+    h += r"""<script>(function(){
+var els=document.querySelectorAll('.ap-sec .cp-k,.ap-h2,.ap-sub,.ap-e,.ap-c,.ap-i,.ap-calc,.ap-pro-in,.ap-fin>*,.ap-det');
+els.forEach(function(e){e.classList.add('rv');});
+document.querySelectorAll('.ap-et,.ap-cls,.ap-inc').forEach(function(g){[].forEach.call(g.children,function(c,i){c.style.transitionDelay=(i%6*90)+'ms';});});
+if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in');});return;}
+var io=new IntersectionObserver(function(es){es.forEach(function(x){if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target);}});},{threshold:.12,rootMargin:'0px 0px -40px 0px'});
+els.forEach(function(e){io.observe(e);});
+var et=document.querySelector('.ap-et');if(et)new IntersectionObserver(function(es,o){if(es[0].isIntersecting){et.classList.add('draw');o.disconnect();}},{threshold:.4}).observe(et);
 })();</script>"""
     # Pro
     h += ('<section class="ap-pro"><div class="ap-pro-in"><div><span class="cp-k">✦ ' + bi('Después del curso', 'After the course') + '</span><h2>' +
