@@ -11,15 +11,15 @@ def wa(msg): return WA + __import__('urllib.parse').parse.quote(msg)
 
 # ── Contenido ────────────────────────────────────────────────────────────────
 ETAPAS = [
-  ("👀", "Yo cocino, vos mirás", "I cook, you watch", "Clases 1 y 2", "Classes 1 & 2",
-   "Te muestro cada gesto de cerca y te explico el porqué: cómo se agarra el cuchillo, cuándo está caliente la sartén, cómo se ve un punto justo.",
-   "I show you every move up close and explain the why: how to hold the knife, when the pan is hot enough, what the right doneness looks like."),
+  ("👨‍🍳", "Te muestro", "I show you", "Clases 1 y 2", "Classes 1 & 2",
+   "Cocino frente a vos, paso a paso, y te explico el porqué: cómo se agarra el cuchillo, cuándo está caliente la sartén, cómo se ve un punto justo.",
+   "I cook in front of you, step by step, and explain the why: how to hold the knife, when the pan is hot enough, what the right doneness looks like."),
   ("🤝", "Cocinamos juntos", "We cook together", "Clases 3 y 4", "Classes 3 & 4",
    "Codo a codo en tu cocina. Vos tomás el cuchillo y la sartén; yo te acompaño, te corrijo y te paso los trucos en el momento.",
    "Side by side in your kitchen. You take the knife and the pan; I guide you, correct you and share the tricks in the moment."),
-  ("👨‍🍳", "Vos cocinás, yo miro", "You cook, I watch", "Clases 5 y 6", "Classes 5 & 6",
-   "Llevás el plato de principio a fin. Yo solo observo y te doy la devolución final: ya cocinás con criterio propio.",
-   "You take the dish from start to finish. I just observe and give you the final feedback: you now cook with your own judgment."),
+  ("🔥", "Cocinás vos", "You cook", "Clases 5 y 6", "Classes 5 & 6",
+   "Llevás el plato de principio a fin con mi guía al lado: te ajusto los detalles y te doy la devolución final. Ya cocinás con criterio propio.",
+   "You take the dish from start to finish with my guidance beside you: I fine-tune the details and give you final feedback. You now cook with your own judgment."),
 ]
 
 CLASES = [
@@ -248,27 +248,27 @@ def build():
     msg_pro = 'Hola Daro, terminé el curso y quiero una clase Pro de un plato técnico. ¿Coordinamos?'
     ld = '<script type="application/ld+json">' + json.dumps({
         "@context": "https://schema.org", "@type": "Course", "name": "Te enseño cocina nivel chef · curso con Daro Castello",
-        "description": "Curso práctico de 6 clases en tu casa: yo cocino y vos mirás, cocinamos juntos, vos cocinás y yo miro.",
+        "description": "Curso práctico de 6 clases en tu casa: te muestro, cocinamos juntos y cocinás vos con mi guía.",
         "provider": {"@type": "Organization", "name": "Celestia Chef Privado", "sameAs": SITE},
         "inLanguage": "es-AR", "hasCourseInstance": {"@type": "CourseInstance", "courseMode": "onsite", "location": "Buenos Aires"}}, ensure_ascii=False) + '</script>'
     nav = dict(nav_caps=bi('Blog', 'Blog'), nav_home=bi('Inicio', 'Home'), nav_book=bi('Quiero aprender →', 'I want to learn →'))
     h = HEAD.format(title='Te enseño cocina nivel chef · 6 clases prácticas con Daro Castello | Celestia', title_en='I teach you chef-level cooking · 6 hands-on classes with Daro Castello | Celestia',
-                    desc='Curso práctico de 6 clases en tu casa: yo cocino y vos mirás, cocinamos juntos y vos cocinás mientras yo miro. Cortes, fuego, salsas y tu primer menú de 3 pasos.',
+                    desc='Curso práctico de 6 clases en tu casa: te muestro, cocinamos juntos y al final cocinás vos con mi guía. Cortes, fuego, salsas y tu primer menú de 3 pasos.',
                     url=url, ogtype='website', ogimg=SITE + '/img/hero-desktop-poster.webp', css=CSS + css_extra, ld=ld, **nav)
     h = h.replace('<a href="/" class="cp-cta">', f'<a href="{wa(msg_es)}" target="_blank" rel="noopener" class="cp-cta">')
     # Hero
     h += ('<section class="ap-hero"><div class="ap-hero-in"><span class="cp-k">✦ ' + bi('Te enseño cocina nivel chef', 'I teach you chef-level cooking') + '</span>'
           '<h1>' + bi('Aprendé a cocinar <em>como chef</em>, en tu propia cocina.', 'Learn to cook <em>like a chef</em>, in your own kitchen.') + '</h1>'
-          '<p>' + bi('Un curso práctico de 6 clases conmigo: primero cocino yo y vos mirás, después cocinamos juntos y al final cocinás vos mientras yo te miro.',
-                      'A hands-on 6-class course with me: first I cook and you watch, then we cook together, and in the end you cook while I watch.') + '</p>'
+          '<p>' + bi('Un curso práctico de 6 clases conmigo: primero te muestro, después cocinamos juntos y al final cocinás vos, con mi guía.',
+                      'A hands-on 6-class course with me: first I show you, then we cook together, and in the end you cook, with my guidance.') + '</p>'
           '<div class="ap-pills"><span>' + bi('6 clases prácticas', '6 hands-on classes') + '</span><span>' + bi('En tu casa', 'At your home') + '</span><span>' +
           bi('Acompañamiento por WhatsApp', 'WhatsApp support') + '</span><span>' + bi('Clases Pro después', 'Pro classes afterwards') + '</span></div>'
           '<div class="ap-hero-btns"><a class="cp-btn" href="#valores">' + bi('Ver valores y fechas ↓', 'See prices and dates ↓') + '</a>'
           f'<a class="ap-ghost" href="{wa(msg_es)}" target="_blank" rel="noopener">' + bi('Consultar por WhatsApp', 'Ask on WhatsApp') + '</a></div></div></section>')
     # Método
-    h += ('<section class="ap-sec"><span class="cp-k">✦ ' + bi('El método', 'The method') + '</span><h2 class="ap-h2">' + bi('De mirar a cocinar solo, en tres etapas', 'From watching to cooking on your own, in three stages') +
-          '</h2><p class="ap-sub">' + bi('Así se aprende en una cocina profesional: viendo, haciendo con alguien al lado y, por último, haciendo solo.',
-                                       'This is how people learn in a professional kitchen: watching, doing with someone beside you and, finally, doing it alone.') + '</p><div class="ap-et">')
+    h += ('<section class="ap-sec"><span class="cp-k">✦ ' + bi('El método', 'The method') + '</span><h2 class="ap-h2">' + bi('Del primer corte a tu propio menú, en tres etapas', 'From the first cut to your own menu, in three stages') +
+          '</h2><p class="ap-sub">' + bi('Así se aprende en una cocina profesional: primero te muestran, después lo hacés con alguien al lado y, por último, lo hacés solo.',
+                                       'This is how people learn in a professional kitchen: first someone shows you, then you do it with someone beside you and, finally, on your own.') + '</p><div class="ap-et">')
     for ic, tes, ten, ces, cen, des, den in ETAPAS:
         h += f'<div class="ap-e"><div class="ap-e-ic">{ic}</div><small>{bi(ces, cen)}</small><h3>{bi(tes, ten)}</h3><p>{bi(des, den)}</p></div>'
     h += '</div></section>'
@@ -332,7 +332,7 @@ calc();
 })();</script>"""
     # Programa
     etapa = {'1': 'e1', '2': 'e1', '3': 'e2', '4': 'e2', '5': 'e3', '6': 'e3'}
-    etq = {'e1': ('Yo cocino, vos mirás', 'I cook, you watch'), 'e2': ('Cocinamos juntos', 'We cook together'), 'e3': ('Vos cocinás, yo miro', 'You cook, I watch')}
+    etq = {'e1': ('Te muestro', 'I show you'), 'e2': ('Cocinamos juntos', 'We cook together'), 'e3': ('Cocinás vos', 'You cook')}
     h += ('<section class="ap-sec"><span class="cp-k">✦ ' + bi('El programa', 'The program') + '</span><h2 class="ap-h2">' + bi('6 clases, de lo básico a tu primer menú', '6 classes, from the basics to your first menu') +
           '</h2><p class="ap-sub">' + bi('Cada clase suma una técnica y un plato. Al final, cocinás un menú de 3 pasos completo.', 'Each class adds a technique and a dish. By the end, you cook a full 3-course menu.') + '</p><div class="ap-cls">')
     for n, ic, tes, ten, des, den, les, len_ in CLASES:
@@ -541,9 +541,9 @@ def franja_landing():
     bloque = (ini + '<div id="bl-aprende" data-no-tr><a class="bl-ap" href="/aprende"><span class="bl-ap-img"></span><span class="bl-ap-tx">'
               '<span class="bl-stag">✦ ' + bi('NUEVO · TE ENSEÑO COCINA NIVEL CHEF', 'NEW · CHEF-LEVEL COOKING CLASSES') + '</span>'
               '<span class="bl-ap-h">' + bi('Aprendé a cocinar <em>como chef</em> en 6 clases', 'Learn to cook <em>like a chef</em> in 6 classes') + '</span>'
-              '<span class="bl-ap-p">' + bi('Primero cocino yo y vos mirás, después cocinamos juntos y al final cocinás vos. En tu cocina, con acompañamiento y clases Pro para después.',
-                                          'First I cook and you watch, then we cook together, and finally you cook. In your kitchen, with ongoing support and Pro classes afterwards.') + '</span>'
-              '<span class="bl-ap-steps"><i>👀 ' + bi('Mirás', 'Watch') + '</i><b>→</b><i>🤝 ' + bi('Cocinamos', 'Cook together') + '</i><b>→</b><i>👨‍🍳 ' + bi('Cocinás', 'You cook') + '</i></span>'
+              '<span class="bl-ap-p">' + bi('Primero te muestro, después cocinamos juntos y al final cocinás vos. En tu cocina, con acompañamiento y clases Pro para después.',
+                                          'First I show you, then we cook together, and finally you cook. In your kitchen, with ongoing support and Pro classes afterwards.') + '</span>'
+              '<span class="bl-ap-steps"><i>👨‍🍳 ' + bi('Te muestro', 'I show you') + '</i><b>→</b><i>🤝 ' + bi('Cocinamos', 'Cook together') + '</i><b>→</b><i>🔥 ' + bi('Cocinás vos', 'You cook') + '</i></span>'
               '<span class="bl-ap-btn">' + bi('Ver el programa →', 'See the program →') + '</span></span></a></div>' + fin)
     if ini in t:
         t = re.sub(re.escape(ini) + '.*?' + re.escape(fin), lambda m: bloque, t, flags=re.S)
