@@ -1395,6 +1395,14 @@ body.beta-mode > [id*="section"],
 #beta-landing .bl-nav{display:flex!important;align-items:center!important;gap:6px!important}
 #beta-landing .bl-nl{font-size:10px!important;color:rgba(250,246,239,.42)!important;cursor:pointer!important;padding:0 6px!important;background:none!important;border:none!important;font-family:'DM Sans',sans-serif!important}
 #beta-landing .bl-nl:hover{color:var(--gdl)!important}
+#beta-landing .bl-burger{display:none;flex-direction:column;justify-content:center;gap:4px;width:38px;height:38px;margin-left:4px;padding:0 9px;border-radius:10px;border:1px solid rgba(201,168,76,.35);background:none;cursor:pointer}
+#beta-landing .bl-burger i{display:block;height:1.5px;background:#E8C97A;border-radius:2px;transition:transform .25s,opacity .2s}
+#beta-landing .bl-open .bl-burger i:nth-child(1){transform:translateY(5.5px) rotate(45deg)}#beta-landing .bl-open .bl-burger i:nth-child(2){opacity:0}#beta-landing .bl-open .bl-burger i:nth-child(3){transform:translateY(-5.5px) rotate(-45deg)}
+#beta-landing .bl-hdr{position:sticky}#beta-landing .bl-drawer{position:absolute;left:0;right:0;top:60px;background:#0D1B2A;border-bottom:1px solid rgba(201,168,76,.3);box-shadow:0 18px 40px rgba(0,0,0,.35);padding:8px 16px 16px;display:flex;flex-direction:column;animation:blDr .25s ease}
+#beta-landing .bl-drawer[hidden]{display:none}
+#beta-landing .bl-dl{display:block;text-align:left;background:none;border:none;border-bottom:1px solid rgba(250,246,239,.08);color:#FAF6EF;font:400 20px 'DM Serif Display',serif;padding:14px 4px;cursor:pointer;text-decoration:none}
+#beta-landing .bl-dl:last-child{border-bottom:none}#beta-landing .bl-dl-acc{font:500 14px 'DM Sans',sans-serif;color:rgba(250,246,239,.6);margin-top:6px}#beta-landing .bl-dl:active,#beta-landing .bl-dl:hover{color:#E8C97A}
+@keyframes blDr{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
 #beta-landing .bl-hbtn{font-size:10px!important;font-weight:600!important;border-radius:20px!important;padding:7px 16px!important;cursor:pointer!important;font-family:'DM Sans',sans-serif!important;transition:transform .2s ease,box-shadow .2s ease,background .2s ease,border-color .2s ease,color .2s ease!important;border:1px solid transparent!important;text-decoration:none!important;display:inline-flex!important;align-items:center!important;white-space:nowrap!important}
 #beta-landing .bl-acc{color:rgba(250,246,239,.6)!important;background:rgba(250,246,239,.04)!important;border-color:rgba(250,246,239,.16)!important}
 #beta-landing .bl-acc:hover{color:var(--cr)!important;background:rgba(250,246,239,.09)!important;border-color:rgba(250,246,239,.32)!important;transform:translateY(-1px)!important}
@@ -1718,6 +1726,10 @@ body.beta-mode > [id*="section"],
 @media(max-width:768px){
   #beta-landing .bl-hdr{padding:0 16px!important}
   #beta-landing .bl-nav .bl-nl{display:none!important}
+  #beta-landing .bl-burger{display:flex!important}
+  #beta-landing .bl-nav .bl-acc{display:none!important}
+  #beta-landing .bl-nav{gap:6px!important}
+  #beta-landing .bl-logo img{height:32px!important}
   #beta-landing .bl-hero{height:100svh!important;min-height:500px!important}
   #beta-landing .bl-hero-cnt{padding:0 24px 36px!important;max-width:100%!important}
   #beta-landing .bl-h1{font-size:30px!important}
@@ -1744,7 +1756,15 @@ body.beta-mode > [id*="section"],
 
 </style>
 <body>
-<div id="beta-landing"><div class="bl-hdr"><div class="bl-logo" onclick="window.scrollTo({top:0,behavior:'smooth'})"><img src="/img/img-d316320d6b.webp" alt="Celestia Chef Privado" style="height:36px;width:auto;display:block"/></div><div class="bl-nav"><button class="bl-nl" onclick="document.getElementById('bl-servicios').scrollIntoView({behavior:'smooth'})">Experiencias</button><button class="bl-nl" onclick="document.getElementById('bl-plat').scrollIntoView({behavior:'smooth'})">C&oacute;mo funciona</button><button class="bl-nl" onclick="abrirConsultaCorporativa()">Corporativos</button><button class="bl-nl" onclick="exitBetaLanding('semanal')">Chef Semanal</button><a class="bl-nl" href="/aprende" data-no-tr style="text-decoration:none"><span class="b-es">Aprendé</span><span class="b-en" lang="en">Classes</span></a><a class="bl-nl" href="/blog" data-no-tr style="text-decoration:none"><span class="b-es">Cápsulas</span><span class="b-en" lang="en">Kitchen notes</span></a><div class="bl-lang" role="group" aria-label="Idioma"><button type="button" data-cel-lang="es">ES</button><span>|</span><button type="button" data-cel-lang="en">EN</button></div><a href="/clientes" class="bl-hbtn bl-acc">Acceder</a><button class="bl-hbtn bl-host" onclick="exitBetaLanding('host')">Reservar &rarr;</button></div></div><style>
+<div id="beta-landing"><div class="bl-hdr"><div class="bl-logo" onclick="window.scrollTo({top:0,behavior:'smooth'})"><img src="/img/img-d316320d6b.webp" alt="Celestia Chef Privado" style="height:36px;width:auto;display:block"/></div><div class="bl-nav"><button class="bl-nl" onclick="document.getElementById('bl-servicios').scrollIntoView({behavior:'smooth'})">Experiencias</button><button class="bl-nl" onclick="document.getElementById('bl-plat').scrollIntoView({behavior:'smooth'})">C&oacute;mo funciona</button><button class="bl-nl" onclick="abrirConsultaCorporativa()">Corporativos</button><button class="bl-nl" onclick="exitBetaLanding('semanal')">Chef Semanal</button><a class="bl-nl" href="/aprende" data-no-tr style="text-decoration:none"><span class="b-es">Aprendé</span><span class="b-en" lang="en">Classes</span></a><a class="bl-nl" href="/blog" data-no-tr style="text-decoration:none"><span class="b-es">Cápsulas</span><span class="b-en" lang="en">Kitchen notes</span></a><div class="bl-lang" role="group" aria-label="Idioma"><button type="button" data-cel-lang="es">ES</button><span>|</span><button type="button" data-cel-lang="en">EN</button></div><a href="/clientes" class="bl-hbtn bl-acc">Acceder</a><button class="bl-hbtn bl-host" onclick="exitBetaLanding('host')">Reservar &rarr;</button><button type="button" class="bl-burger" id="bl-burger" aria-label="Menú" aria-expanded="false" aria-controls="bl-drawer"><i></i><i></i><i></i></button></div><div class="bl-drawer" id="bl-drawer" hidden></div></div>
+<script>(function(){var b=document.getElementById('bl-burger'),d=document.getElementById('bl-drawer'),h=b.closest('.bl-hdr');
+document.querySelectorAll('#beta-landing .bl-nav .bl-nl').forEach(function(n){var c=n.cloneNode(true);c.classList.remove('bl-nl');c.classList.add('bl-dl');c.removeAttribute('style');d.appendChild(c);});var a=document.querySelector('#beta-landing .bl-acc');if(a){var c=document.createElement('a');c.href=a.getAttribute('href');c.className='bl-dl bl-dl-acc';c.setAttribute('data-no-tr','');c.innerHTML='<span class="b-es">Acceder a mi cuenta</span><span class="b-en" lang="en">Log in to my account</span>';d.appendChild(c);}
+function set(o){h.classList.toggle('bl-open',o);d.hidden=!o;b.setAttribute('aria-expanded',o?'true':'false');}
+b.addEventListener('click',function(e){e.stopPropagation();set(d.hidden);});
+d.addEventListener('click',function(){setTimeout(function(){set(false);},0);});
+document.addEventListener('click',function(e){if(!d.hidden&&!d.contains(e.target))set(false);});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')set(false);});
+window.addEventListener('resize',function(){if(innerWidth>768)set(false);});})();</script><style>
 #bl-banner-bienvenida{display:none;position:fixed;top:76px;left:50%;transform:translateX(-50%);z-index:500;width:calc(100% - 32px);max-width:460px;background:linear-gradient(100deg,#C9A84C 0%,#E7CE86 45%,#C9A84C 100%);background-size:220% 100%;color:#0D1B2A;padding:14px 34px 14px 16px;font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:600;text-align:center;border-radius:16px;border:1px solid rgba(255,255,255,.4);box-shadow:0 16px 36px rgba(9,17,28,.4),0 3px 10px rgba(201,168,76,.3);overflow:hidden;animation:bl-float 4.5s ease-in-out infinite;}
 #bl-banner-bienvenida::before{content:'';position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);animation:bl-shimmer 6s ease-in-out infinite;pointer-events:none;}
 @keyframes bl-shimmer{0%{left:-60%;}45%{left:130%;}100%{left:130%;}}

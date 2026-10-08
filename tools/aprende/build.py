@@ -94,7 +94,7 @@ BOOK_HTML = ('<div class="ap-book" id="ap-book" hidden><div class="ap-book-hd"><
   '<button type="button" class="ap-manual" id="ap-back">' + bi('← Volver a la elección automática', '← Back to automatic dates') + '</button></div></div>'
   '<div class="ap-bk-r"><div class="ap-bk-q">' + bi('Horario', 'Time') + '</div><div class="ap-opts ap-o2">'
   '<button type="button" class="ap-o ap-tu on" data-tu="almuerzo"><b>☀️ ' + bi('Mañana', 'Morning') + '</b><small>10:00 – 13:00</small></button>'
-  '<button type="button" class="ap-o ap-tu" data-tu="cena"><b>🌙 ' + bi('Tarde', 'Afternoon') + '</b><small>16:00 – 19:00</small></button></div>'
+  '<button type="button" class="ap-o ap-tu" data-tu="cena"><b>🌙 ' + bi('Tarde', 'Afternoon') + '</b><small>15:00 – 18:00</small></button></div>'
   '<div class="ap-bk-q" id="ap-cual-q">' + bi('¿Qué clase?', 'Which class?') + '</div><select id="ap-cual" class="ap-in"></select>'
   '<div class="ap-bk-q">' + bi('Tus fechas', 'Your dates') + ' <small id="ap-cnt"></small></div><ol class="ap-sel" id="ap-sel"></ol>'
   '<div class="ap-bk-q">' + bi('Tus datos', 'Your details') + '</div>'
@@ -437,7 +437,7 @@ async function confirmar(){
     return {ref:grp+'-'+(i+1),tipo:'clase',fecha:k,turno:turno,estado:'reservada',
       menu:'Aprendé en casa · '+(n===6?'Clase '+(i+1)+'/6':'Clase suelta')+' · '+c[2],personas:st.al,nombre:nom,tel:tel,email:mail,dir:dir,
       ocasion:'Curso Aprendé en casa · '+(n===6?'curso completo':'clase suelta')+' · '+st.zona.toUpperCase(),
-      notas:'['+grp+'] '+(turno==='almuerzo'?'Mañana 10-13':'Tarde 16-19')+(nota?' · '+nota:''),
+      notas:'['+grp+'] '+(turno==='almuerzo'?'Mañana 10-13':'Tarde 15-18')+(nota?' · '+nota:''),
       honorario:R.honClase,ingredientes:ing,total:R.honClase+R.via+ing,senia_monto:Math.round(R.honClase*0.5)};});
   try{
     var res=await fetch(S.url+'/rest/v1/reservas',{method:'POST',headers:{apikey:S.key,Authorization:'Bearer '+S.key,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(rows)});
@@ -445,12 +445,12 @@ async function confirmar(){
   }catch(e){btn.innerHTML=txt;btn.disabled=false;err(L('No pudimos guardar la reserva. Probá de nuevo o escribime por WhatsApp.','We could not save the booking. Try again or message me on WhatsApp.'));return;}
   var senia=Math.round(R.honT*0.5);
   try{fetch('/api/notify',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json'},body:JSON.stringify({ref:grp,tipo:'clase',menu:'Aprendé en casa · '+(n===6?'curso completo (6 clases)':'clase suelta: '+C[cual][2]),
-    fecha:sel[0],turno:turno==='almuerzo'?'Mañana 10-13':'Tarde 16-19',personas:st.al,dir:dir,zona:st.zona.toUpperCase(),nombre:nom,tel:tel,email:mail,
+    fecha:sel[0],turno:turno==='almuerzo'?'Mañana 10-13':'Tarde 15-18',personas:st.al,dir:dir,zona:st.zona.toUpperCase(),nombre:nom,tel:tel,email:mail,
     notas:'Fechas: '+sel.join(', ')+(nota?' · '+nota:''),honorario:R.honT,ingredientes:R.ing,total:R.tot})});}catch(e){}
   var msg=L('Hola Daro, reservé '+(n===6?'el curso "Aprendé en casa"':'una clase de "Aprendé en casa"')+' ('+grp+'). Fechas: '+sel.map(fecha).join(', ')+'. Te paso el comprobante de la seña.',
             'Hi Daro, I booked '+(n===6?'the "Learn at home" course':'a "Learn at home" class')+' ('+grp+'). Dates: '+sel.map(fecha).join(', ')+'. Here is the deposit receipt.');
   okBox.innerHTML='<div class="ap-ok-in"><div class="ap-ok-ic">✓</div><span class="cp-k">✦ '+L('Reserva recibida','Booking received')+' · '+grp+'</span><h3>'+L('¡Nos vemos en tu cocina!','See you in your kitchen!')+'</h3>'+
-    '<ol class="ap-sel">'+sel.map(function(k,i){var c=C[n===6?i:cual];return '<li class="ok"><span>'+c[1]+' '+(n===6?L('Clase ','Class ')+(i+1)+' · ':'')+L(c[2],c[3])+'</span><b>'+fecha(k)+' · '+(turno==='almuerzo'?'10:00':'16:00')+'</b></li>';}).join('')+'</ol>'+
+    '<ol class="ap-sel">'+sel.map(function(k,i){var c=C[n===6?i:cual];return '<li class="ok"><span>'+c[1]+' '+(n===6?L('Clase ','Class ')+(i+1)+' · ':'')+L(c[2],c[3])+'</span><b>'+fecha(k)+' · '+(turno==='almuerzo'?'10:00':'15:00')+'</b></li>';}).join('')+'</ol>'+
     '<p>'+L('Para confirmar, transferí la seña de <b>'+f(senia)+'</b> (50% del honorario) al alias <b>daro.chef</b> y mandame el comprobante por WhatsApp. Las fechas quedan reservadas al acreditarse.',
              'To confirm, transfer the <b>'+f(senia)+'</b> deposit (50% of the fee) to alias <b>daro.chef</b> and send me the receipt on WhatsApp. Dates are secured once it is received.')+'</p>'+
     '<a class="ap-wa" target="_blank" rel="noopener" href="https://wa.me/5491160410607?text='+encodeURIComponent(msg)+'">'+L('Enviar comprobante por WhatsApp','Send receipt on WhatsApp')+'</a></div>';
