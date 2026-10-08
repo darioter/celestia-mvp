@@ -89,7 +89,7 @@ function apply(l){
   document.documentElement.classList.toggle('lang-en',lang==='en');
   if(lang==='en'){
     walk(document.body);
-    document.title='Private Chef in Buenos Aires · Celestia | Daro Castello';
+    document.title=document.documentElement.getAttribute('data-title-en')||'Private Chef in Buenos Aires · Celestia | Daro Castello';
     obs.observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:ATTR});
   }else{
     obs.disconnect(); revert(); document.title=TITLE_ES;
