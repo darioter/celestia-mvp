@@ -82,10 +82,16 @@ SUPA['key'] = re.search(r"const SUPA_KEY = '([^']+)'", _idx).group(1)
 BOOK_HTML = ('<div class="ap-book" id="ap-book" hidden><div class="ap-book-hd"><span class="cp-k">✦ ' + bi('Reserva', 'Booking') + '</span>'
   '<h3>' + bi('Elegí tus fechas', 'Pick your dates') + '</h3><p>' + bi('La agenda es la misma de las experiencias y del chef semanal: solo ves los días libres. Cada clase ocupa el día completo.',
   'The calendar is shared with the dining experiences and the weekly chef: you only see free days. Each class takes the whole day.') + '</p></div>'
-  '<div class="ap-book-g"><div class="ap-cal"><div class="ap-cal-hd"><button type="button" id="ap-prev" aria-label="Mes anterior">‹</button><b id="ap-mes"></b><button type="button" id="ap-next" aria-label="Mes siguiente">›</button></div>'
+  '<div class="ap-book-g"><div class="ap-left"><div class="ap-plan" id="ap-plan">'
+  '<div class="ap-bk-q">' + bi('¿Qué día de la semana te queda cómodo?', 'Which weekday suits you?') + '</div>'
+  '<p class="ap-mini" style="margin-top:-2px">' + bi('Las 6 clases van ese mismo día, una por semana. Nosotros armamos el calendario.', 'All 6 classes go on that weekday, once a week. We build the calendar for you.') + '</p>'
+  '<div class="ap-wd" id="ap-wd"></div>'
+  '<div class="ap-bk-q">' + bi('¿Cuándo arrancás?', 'When do you start?') + '</div><div class="ap-st" id="ap-st"></div>'
+  '<button type="button" class="ap-manual" id="ap-manual">' + bi('Prefiero elegir las fechas a mano', "I'd rather pick dates myself") + '</button></div>'
+  '<div class="ap-cal" id="ap-calw"><div class="ap-cal-hd"><button type="button" id="ap-prev" aria-label="Mes anterior">‹</button><b id="ap-mes"></b><button type="button" id="ap-next" aria-label="Mes siguiente">›</button></div>'
   '<div class="ap-cal-dn" id="ap-dn"></div><div class="ap-cal-g" id="ap-cal"></div>'
   '<div class="ap-cal-leg"><span><i class="l-ok"></i>' + bi('Disponible', 'Available') + '</span><span><i class="l-sel"></i>' + bi('Elegido', 'Selected') + '</span><span><i class="l-off"></i>' + bi('Ocupado', 'Booked') + '</span></div>'
-  '<button type="button" class="ap-auto" id="ap-auto">' + bi('✦ Completar una vez por semana', '✦ Fill in once a week') + '</button></div>'
+  '<button type="button" class="ap-manual" id="ap-back">' + bi('← Volver a la elección automática', '← Back to automatic dates') + '</button></div></div>'
   '<div class="ap-bk-r"><div class="ap-bk-q">' + bi('Horario', 'Time') + '</div><div class="ap-opts ap-o2">'
   '<button type="button" class="ap-o ap-tu on" data-tu="almuerzo"><b>☀️ ' + bi('Mañana', 'Morning') + '</b><small>10:00 – 13:00</small></button>'
   '<button type="button" class="ap-o ap-tu" data-tu="cena"><b>🌙 ' + bi('Tarde', 'Afternoon') + '</b><small>16:00 – 19:00</small></button></div>'
@@ -194,7 +200,23 @@ def build():
 .ap-cal-leg{display:flex;gap:14px;justify-content:center;margin-top:12px;font-size:11.5px;color:#8a7a62}.ap-cal-leg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px}
 .l-ok{background:#FAF6EF;border:1px solid var(--crd)}.l-sel{background:var(--nv)}.l-off{background:#e3dbcc}
 #ap-book [hidden]{display:none!important}
-.ap-auto{display:block;margin:14px auto 0;background:none;border:1px solid var(--gd);color:var(--nv);border-radius:999px;padding:9px 16px;font:500 12.5px 'DM Sans',sans-serif;cursor:pointer}.ap-auto:hover{background:var(--nv);color:var(--gdl)}
+.ap-wd{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.ap-wd button{border:1px solid #E3D9C8;background:#FCFAF6;border-radius:14px;padding:12px 4px 10px;cursor:pointer;font:600 14px 'DM Sans',sans-serif;color:var(--nv);transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:3px}
+.ap-wd button small{font:400 10.5px 'DM Sans',sans-serif;color:#a08a5c}.ap-wd button:hover:not([disabled]){border-color:var(--gd);transform:translateY(-2px)}
+.ap-wd button.on{background:var(--nv);color:var(--gdl);border-color:var(--nv);box-shadow:0 8px 20px rgba(13,27,42,.18)}.ap-wd button.on small{color:rgba(232,201,122,.8)}
+.ap-wd button[disabled]{opacity:.4;cursor:not-allowed}
+.ap-st{display:grid;gap:10px}
+.ap-sc{position:relative;text-align:left;border:1px solid #E3D9C8;background:#fff;border-radius:16px;padding:14px 16px;cursor:pointer;font:14px 'DM Sans',sans-serif;color:var(--nv);transition:all .18s;display:grid;grid-template-columns:auto 1fr;gap:4px 14px;align-items:center}
+.ap-sc:hover{border-color:var(--gd);transform:translateY(-2px);box-shadow:0 10px 24px rgba(13,27,42,.08)}
+.ap-sc.on{border-color:var(--gd);background:#FFFBF0;box-shadow:0 0 0 3px rgba(201,168,76,.3)}
+.ap-sc .d{grid-row:span 2;width:54px;height:58px;border-radius:12px;background:var(--nv);color:var(--gdl);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.ap-sc .d b{font:400 24px 'DM Serif Display',serif}.ap-sc .d small{font-size:10px;text-transform:uppercase;letter-spacing:.08em;margin-top:3px}
+.ap-sc strong{font-weight:600;font-size:15px}.ap-sc span{font-size:12.5px;color:#8a7a62}
+.ap-sc em{position:absolute;top:-9px;right:14px;background:var(--gd);color:var(--nv);font:600 10px 'DM Sans',sans-serif;font-style:normal;padding:3px 9px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase}
+.ap-sc .dots{grid-column:2;display:flex;gap:4px;margin-top:4px}.ap-sc .dots i{width:8px;height:8px;border-radius:50%;background:var(--gd)}.ap-sc .dots i.sk{background:none;border:1px dashed #c9b88f}
+.ap-manual{display:block;margin:14px auto 0;background:none;border:none;color:#8a7a62;font:500 12.5px 'DM Sans',sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer}.ap-manual:hover{color:var(--nv)}
+.ap-none{padding:14px;border-radius:12px;background:#FAF6EF;color:#8a7a62;font-size:13px}
+@media(max-width:560px){.ap-wd{grid-template-columns:repeat(3,1fr)}}
 .ap-bk-q{font-family:'DM Serif Display',serif;font-size:18px;color:var(--nv);margin:16px 0 8px}.ap-bk-q:first-child{margin-top:0}.ap-bk-q small{font-family:'DM Sans',sans-serif;font-size:12px;color:#a08a5c}
 .ap-in{display:block;width:100%;border:1px solid #E3D9C8;background:#FCFAF6;border-radius:12px;padding:12px 14px;font:15px 'DM Sans',sans-serif;color:var(--nv);margin-bottom:8px;outline:none}.ap-in:focus{border-color:var(--gd);background:#fff;box-shadow:0 0 0 4px rgba(201,168,76,.15)}
 .ap-sel{list-style:none;padding:0;margin:0 0 6px}.ap-sel li{display:flex;justify-content:space-between;gap:10px;padding:8px 12px;border-radius:10px;font-size:13px;margin-bottom:5px;background:#FAF6EF;color:#8a7a62}
@@ -360,20 +382,44 @@ function lista(){
   var html='';for(var i=0;i<n;i++){var c=n===6?C[i]:C[parseInt(document.getElementById('ap-cual').value||'0',10)];
     html+='<li class="'+(sel[i]?'ok':'')+'"><span>'+c[1]+' '+(n===6?L('Clase ','Class ')+(i+1)+' · ':'')+L(c[2],c[3])+'</span><b>'+(sel[i]?fecha(sel[i]):L('elegí un día','pick a day'))+'</b></li>';}
   ol.innerHTML=html;document.getElementById('ap-cual-q').hidden=document.getElementById('ap-cual').hidden=(n===6);
-  document.getElementById('ap-auto').hidden=(n===1);
   valida();
 }
 function valida(){var ok=sel.length===need()&&['ap-nom','ap-tel','ap-mail','ap-dir'].every(function(id){return document.getElementById(id).value.trim().length>2;})&&/@/.test(document.getElementById('ap-mail').value);
   document.getElementById('ap-conf').disabled=!ok;}
-function auto(){
-  err('');var b0;
-  if(sel.length)b0=new Date(sel[0]+'T12:00:00');
-  else{b0=new Date(minD);var g0=0;while(!libre(iso(b0),b0)&&g0<120){b0.setDate(b0.getDate()+1);g0++;}}
-  var base=b0,out=[iso(b0)],d=new Date(base),lim=0;
-  while(out.length<6&&lim++<30){d.setDate(d.getDate()+7);var k=iso(d),t=new Date(d);var guard=0;
-    while(!libre(k,t)&&guard<6){t.setDate(t.getDate()+1);k=iso(t);guard++;}
-    if(libre(k,t)&&out.indexOf(k)<0)out.push(k);}
-  sel=out.sort();mes=new Date(base.getFullYear(),base.getMonth(),1);render();
+var wd=null,stK=null,manual=false;
+var WD=[1,2,3,4,5,6],WDN=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'],WDE=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+var MC=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'],MCE=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function primero(w){var d=new Date(minD);d.setHours(12);while(d.getDay()!==w)d.setDate(d.getDate()+1);return d;}
+function plan(start){var out=[],sk=0,d=new Date(start);for(var g=0;g<12&&out.length<6;g++){var k=iso(d);if(libre(k,d))out.push(k);else if(out.length)sk++;d.setDate(d.getDate()+7);}
+  return out.length===6?{f:out,sk:sk}:null;}
+function opciones(w){var res=[],d=primero(w);for(var g=0;g<10&&res.length<3;g++){var k=iso(d);if(libre(k,d)){var p=plan(d);if(p&&(p.sk===0||res.length<2))res.push(p);}d.setDate(d.getDate()+7);}
+  if(!res.length){d=primero(w);for(g=0;g<10&&res.length<3;g++){if(libre(iso(d),d)){p=plan(d);if(p)res.push(p);}d.setDate(d.getDate()+7);}}
+  return res;}
+function corto(k){var d=new Date(k+'T12:00:00');return d.getDate()+' '+(en()?MCE:MC)[d.getMonth()];}
+function planner(){
+  var n=need(),pl=document.getElementById('ap-plan'),cw=document.getElementById('ap-calw');
+  pl.hidden=(n===1||manual);cw.hidden=!(n===1||manual);document.getElementById('ap-back').hidden=(n===1);
+  if(pl.hidden)return;
+  var best=null,bestD=null;
+  document.getElementById('ap-wd').innerHTML=WD.map(function(w){var o=opciones(w),f0=o.length?o[0].f[0]:null;
+    if(f0&&(!bestD||f0<bestD)){bestD=f0;best=w;}
+    return '<button type="button" data-w="'+w+'"'+(f0?'':' disabled')+'>'+(en()?WDE:WDN)[w]+'<small>'+(f0?L('desde ','from ')+corto(f0):L('sin lugar','full'))+'</small></button>';}).join('');
+  if(wd===null)wd=best;
+  document.querySelectorAll('#ap-wd button').forEach(function(b){var w=+b.getAttribute('data-w');b.classList.toggle('on',w===wd);
+    b.addEventListener('click',function(){wd=w;stK=null;planner();});});
+  var o=wd===null?[]:opciones(wd),st=document.getElementById('ap-st');
+  if(!o.length){st.innerHTML='<div class="ap-none">'+L('No hay lugar ese día en las próximas semanas. Probá otro día o escribime por WhatsApp.','No room on that day in the coming weeks. Try another day or message me on WhatsApp.')+'</div>';sel=[];lista();return;}
+  if(!stK||!o.some(function(p){return p.f[0]===stK;}))stK=o[0].f[0];
+  st.innerHTML=o.map(function(p,i){var d0=new Date(p.f[0]+'T12:00:00');
+    var dots='';var a=new Date(p.f[0]+'T12:00:00'),z=p.f[5];while(iso(a)<=z){dots+='<i'+(p.f.indexOf(iso(a))<0?' class="sk"':'')+'></i>';a.setDate(a.getDate()+7);}
+    return '<button type="button" class="ap-sc'+(p.f[0]===stK?' on':'')+'" data-k="'+p.f[0]+'">'+(i===0?'<em>'+L('Lo antes posible','Soonest')+'</em>':'')+
+      '<div class="d"><b>'+d0.getDate()+'</b><small>'+(en()?MCE:MC)[d0.getMonth()]+'</small></div>'+
+      '<strong>'+L('Empezás el ','Start on ')+fecha(p.f[0]).toLowerCase()+'</strong>'+
+      '<span>'+L('Terminás el ','Finish on ')+corto(p.f[5])+' · '+(p.sk?L('salta '+p.sk+' semana'+(p.sk>1?'s':'')+' por agenda','skips '+p.sk+' week'+(p.sk>1?'s':'')+' (calendar)'):L('6 semanas seguidas','6 weeks in a row'))+'</span>'+
+      '<div class="dots">'+dots+'</div></button>';}).join('');
+  st.querySelectorAll('.ap-sc').forEach(function(b){b.addEventListener('click',function(){stK=b.getAttribute('data-k');planner();});});
+  var p=o.filter(function(p){return p.f[0]===stK;})[0];sel=p.f.slice();
+  mes=new Date(new Date(sel[0]+'T12:00:00').getFullYear(),new Date(sel[0]+'T12:00:00').getMonth(),1);lista();
 }
 function err(m){var e=document.getElementById('ap-err');e.textContent=m||'';e.hidden=!m;}
 function placeholders(){var ph={'ap-nom':L('Nombre y apellido *','Full name *'),'ap-tel':L('Teléfono / WhatsApp *','Phone / WhatsApp *'),'ap-mail':L('Email *','Email *'),'ap-dir':L('Dirección de la clase (calle, número, barrio) *','Class address (street, number, area) *'),'ap-not':L('Restricciones, nivel, algo que quieras contarme...','Restrictions, level, anything you want to tell me...')};
@@ -383,7 +429,7 @@ async function confirmar(){
   err('');var btn=document.getElementById('ap-conf');btn.disabled=true;var txt=btn.innerHTML;btn.textContent=L('Reservando...','Booking...');
   await cargar();
   var choque=sel.filter(function(k){return ocupados[k]||bloq[k];});
-  if(choque.length){sel=sel.filter(function(k){return choque.indexOf(k)<0;});render();err(L('Alguien acaba de reservar '+choque.map(fecha).join(', ')+'. Elegí otro día.','Someone just booked '+choque.map(fecha).join(', ')+'. Please pick another day.'));btn.innerHTML=txt;return;}
+  if(choque.length){sel=sel.filter(function(k){return choque.indexOf(k)<0;});render();if(!manual&&need()===6){stK=null;planner();}err(L('Alguien acaba de reservar '+choque.map(fecha).join(', ')+'. Elegí otro día.','Someone just booked '+choque.map(fecha).join(', ')+'. Please pick another day.'));btn.innerHTML=txt;return;}
   var st=window.AP_ST,R=window.AP_RES,grp='AC-'+Date.now().toString(36).toUpperCase(),n=need();
   var nom=document.getElementById('ap-nom').value.trim(),tel=document.getElementById('ap-tel').value.trim(),mail=document.getElementById('ap-mail').value.trim(),dir=document.getElementById('ap-dir').value.trim(),nota=document.getElementById('ap-not').value.trim();
   var cual=parseInt(document.getElementById('ap-cual').value||'0',10);
@@ -410,13 +456,14 @@ async function confirmar(){
     '<a class="ap-wa" target="_blank" rel="noopener" href="https://wa.me/5491160410607?text='+encodeURIComponent(msg)+'">'+L('Enviar comprobante por WhatsApp','Send receipt on WhatsApp')+'</a></div>';
   book.hidden=true;okBox.hidden=false;okBox.scrollIntoView({behavior:'smooth',block:'center'});
 }
-window.apBookSync=function(){if(!mes)return;if(sel.length>need())sel=sel.slice(0,need());render();};
+window.apBookSync=function(){if(!mes)return;if(sel.length>need())sel=sel.slice(0,need());render();planner();};
 document.getElementById('ap-elegir').addEventListener('click',async function(){
-  book.hidden=false;okBox.hidden=true;if(!mes){mes=new Date(minD.getFullYear(),minD.getMonth(),1);placeholders();await cargar();}render();
+  book.hidden=false;okBox.hidden=true;if(!mes){mes=new Date(minD.getFullYear(),minD.getMonth(),1);placeholders();await cargar();}render();planner();
   setTimeout(function(){book.scrollIntoView({behavior:'smooth',block:'start'});},60);});
 document.getElementById('ap-prev').addEventListener('click',function(){mes=new Date(mes.getFullYear(),mes.getMonth()-1,1);render();});
 document.getElementById('ap-next').addEventListener('click',function(){mes=new Date(mes.getFullYear(),mes.getMonth()+1,1);render();});
-document.getElementById('ap-auto').addEventListener('click',auto);
+document.getElementById('ap-manual').addEventListener('click',function(){manual=true;planner();render();});
+document.getElementById('ap-back').addEventListener('click',function(){manual=false;planner();});
 document.getElementById('ap-cual').addEventListener('change',lista);
 document.querySelectorAll('.ap-tu').forEach(function(b){b.addEventListener('click',function(){turno=b.getAttribute('data-tu');document.querySelectorAll('.ap-tu').forEach(function(x){x.classList.toggle('on',x===b);});});});
 ['ap-nom','ap-tel','ap-mail','ap-dir'].forEach(function(id){document.getElementById(id).addEventListener('input',valida);});
