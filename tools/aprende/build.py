@@ -557,10 +557,7 @@ def franja_landing():
     open(p, 'w', encoding='utf-8').write(t)
 
 def sitemap():
-    p = os.path.join(ROOT, 'sitemap.xml'); t = open(p, encoding='utf-8').read()
-    if 'chefprivado.ar/aprende' not in t:
-        t = t.replace('</urlset>', '  <url>\n    <loc>https://chefprivado.ar/aprende</loc>\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n  </url>\n</urlset>')
-        open(p, 'w', encoding='utf-8').write(t)
+    import sys as _s; _s.path.insert(0, os.path.join(ROOT, 'tools')); import sitemap as _sm; _sm.generar()
 
 if __name__ == '__main__':
     build(); franja_landing(); sitemap(); print('ok aprende')

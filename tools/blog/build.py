@@ -222,12 +222,7 @@ def franja_landing():
     open(p, 'w', encoding='utf-8').write(t)
 
 def sitemap():
-    p = os.path.join(ROOT, 'sitemap.xml'); t = open(p, encoding='utf-8').read()
-    t = re.sub(r'\s*<url>\s*<loc>https://chefprivado\.ar/blog[^<]*</loc>.*?</url>', '', t, flags=re.S)
-    urls = ['https://chefprivado.ar/blog'] + [f'https://chefprivado.ar/blog/{a["slug"]}' for a in ARTICULOS]
-    extra = ''.join(f'\n  <url>\n    <loc>{u}</loc>\n    <lastmod>{datetime.date.today().isoformat()}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>\n  </url>' for u in urls)
-    t = t.replace('</urlset>', extra.lstrip('\n') + '\n</urlset>') if '</urlset>' in t else t
-    open(p, 'w', encoding='utf-8').write(t)
+    import sys as _s; _s.path.insert(0, os.path.join(ROOT, 'tools')); import sitemap as _sm; _sm.generar()
 
 if __name__ == '__main__':
     for a in ARTICULOS: articulo(a)

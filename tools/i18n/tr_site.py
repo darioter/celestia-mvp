@@ -533,4 +533,5 @@ TR.update({
 "¿Ya tenés cuenta? Ingresá":"Have an account? Log in","Seguir sin cuenta →":"Continue without an account →",
 "Ingresá y completamos tus datos automáticamente. Si preferís, podés seguir sin cuenta.":"Log in and we fill in your details automatically. If you prefer, you can continue without an account.",
 "Elegí tu fecha y reservá en menos de 5 minutos, sin crear cuenta.":"Pick your date and book in under 5 minutes, no account needed.",
+"Cena romántica":"Romantic dinner","Degustación 7 pasos":"7-course tasting","Eventos y empresas":"Events & companies",
 })
