@@ -527,4 +527,5 @@ TR.update({
 "Leer el blog →":"Read the blog →",
 "Empresas y eventos":"Companies & events","Clases":"Classes","Blog":"Blog",
 "5 reseñas en Google ↗":"5 Google reviews ↗",
+"Seña para reservar la fecha":"Deposit to secure the date","Tu total con todo incluido, antes de elegir la fecha":"Your all-inclusive total, before choosing the date",
 })

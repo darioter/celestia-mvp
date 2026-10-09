@@ -1,13 +1,32 @@
 {
-  "rewrites": [
+  "redirects": [
     {
-      "source": "/",
-      "destination": "/index-beta.html"
+      "source": "/index-beta.html",
+      "destination": "/",
+      "permanent": true
     },
     {
       "source": "/beta",
-      "destination": "/index-beta.html"
+      "destination": "/",
+      "permanent": true
     },
+    {
+      "source": "/index-beta-export.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/index-original-temp.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/ARCHIVOS SEGURIDAD/:path*",
+      "destination": "/",
+      "permanent": false
+    }
+  ],
+  "rewrites": [
     {
       "source": "/admin",
       "destination": "/admin.html"

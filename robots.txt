@@ -2,5 +2,7 @@ User-agent: *
 Allow: /
 Disallow: /admin.html
 Disallow: /admin
+Disallow: /celestia-game.html
+Disallow: /celestia-game-v2.html
 
-Sitemap: https://chefprivado.ar/sitemap.xml
+Sitemap: https://www.chefprivado.ar/sitemap.xml

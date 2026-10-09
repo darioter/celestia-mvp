@@ -15,14 +15,14 @@
 <meta name="keywords" content="chef privado Buenos Aires, chef a domicilio CABA, cena privada chef, experiencia gastronómica privada, chef para eventos Buenos Aires, menú degustación privado, chef privado Argentina">
 <meta name="author" content="Daro Castello · Celestia">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://chefprivado.ar">
+<link rel="canonical" href="https://www.chefprivado.ar/">
 
 <!-- ─── OPEN GRAPH (WhatsApp, Facebook, LinkedIn) ─── -->
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://chefprivado.ar">
+<meta property="og:url" content="https://www.chefprivado.ar/">
 <meta property="og:title" content="Chef Privado en Buenos Aires · Celestia">
 <meta property="og:description" content="Alta cocina en tu casa, diseñada y cocinada por Daro Castello. Menús de 3 y 7 pasos en CABA y GBA, en la intimidad de tu casa.">
-<meta property="og:image" content="https://chefprivado.ar/og-image.jpg">
+<meta property="og:image" content="https://www.chefprivado.ar/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="es_AR">
@@ -32,7 +32,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Chef Privado en Buenos Aires · Celestia">
 <meta name="twitter:description" content="Alta cocina en tu casa, diseñada y cocinada por Daro Castello. Menús de 3 y 7 pasos en CABA y GBA.">
-<meta name="twitter:image" content="https://chefprivado.ar/og-image.jpg">
+<meta name="twitter:image" content="https://www.chefprivado.ar/og-image.jpg">
 
 <!-- ─── SCHEMA.ORG STRUCTURED DATA ─── -->
 <script type="application/ld+json">
@@ -44,7 +44,7 @@
       "@id": "https://chefprivado.ar/#business",
       "name": "Celestia · Chef Privado",
       "description": "Servicio de chef privado en Buenos Aires. Experiencias gastronómicas personalizadas con menús de 3 y 7 pasos en la intimidad de tu hogar.",
-      "url": "https://chefprivado.ar",
+      "url": "https://www.chefprivado.ar/",
       "telephone": "+5491160410607",
       "email": "celestiachefs@gmail.com",
       "image": "https://chefprivado.ar/og-image.jpg",
@@ -88,7 +88,7 @@
             "itemOffered": {
               "@type": "Service",
               "name": "Menú de Tres Pasos",
-              "description": "Una cena íntima con estructura clásica. Entrada, principal y postre pensados como un recorrido."
+              "description": "Una cena íntima con estructura clásica. Entrada, principal y postre pensados como un recorrido. Desde $480.000 para 2 personas, todo incluido (servicio, asistentes e ingredientes)."
             }
           },
           {
@@ -96,7 +96,7 @@
             "itemOffered": {
               "@type": "Service",
               "name": "Experiencia de 7 Pasos",
-              "description": "Una jornada gastronómica completa. Siete momentos diseñados para que cada invitado viva la cena como un recorrido."
+              "description": "Una jornada gastronómica completa. Siete momentos diseñados para que cada invitado viva la cena como un recorrido. Desde $720.000 para 2 personas, todo incluido (servicio, asistentes e ingredientes)."
             }
           },
           {
@@ -122,7 +122,7 @@
     {
       "@type": "WebSite",
       "@id": "https://chefprivado.ar/#website",
-      "url": "https://chefprivado.ar",
+      "url": "https://www.chefprivado.ar/",
       "name": "Celestia · Chef Privado Buenos Aires",
       "description": "Reservá tu experiencia gastronómica privada en Buenos Aires",
       "inLanguage": "es-AR",
@@ -2220,7 +2220,7 @@ programar();
   <!-- PASO 2.5: DESGLOSE DETALLADO -->
   <div id="screen-25" class="screen" style="display:none">
     <h2 class="section-title" id="i18n-p25-titulo">Resumen de tu experiencia</h2>
-    <p class="section-sub" id="i18n-p25-sub">Desglose estimado antes de elegir la fecha</p>
+    <p class="section-sub" id="i18n-p25-sub">Tu total con todo incluido, antes de elegir la fecha</p>
     <div id="desglose-content"></div>
     <div class="nav-btns">
       <button class="btn-back" onclick="goTo(2)"><span class="i18n-cambiar-menu">← Cambiar menú</span></button>
@@ -2504,7 +2504,7 @@ programar();
                 <div style="font-size:16px;font-weight:600;color:var(--navy);letter-spacing:0.03em;">daro.chef</div>
               </div>
               <div>
-                <div style="font-size:11px;color:var(--text-light);margin-bottom:4px;">Seña (50% del servicio)</div>
+                <div style="font-size:11px;color:var(--text-light);margin-bottom:4px;">Seña para reservar la fecha</div>
                 <div id="ticket-senia" style="font-size:16px;font-weight:600;color:var(--navy);"></div>
               </div>
             </div>
@@ -5509,7 +5509,7 @@ function markSent() {
     (state.fueraAMBA ? `\nEs fuera de CABA/GBA (${zonaTxt}): quedo a la espera del costo de traslado.\n` : '') +
     (state.ocasion ? `*Ocasión:* ${state.ocasion}\n` : '') +
     (state.notas ? `*Notas:* ${state.notas}\n` : '') +
-    `\n*Total estimado:* ${fmt(totalFinal)} (ingredientes estimados)\n` +
+    `\n*Total (todo incluido):* ${fmt(totalFinal)}\n` +
     `Ref: ${ref}\n\n` +
     `Quedo a la espera de la confirmación. ¡Gracias!\n— ${state.nombre}`;
 
@@ -6007,7 +6007,7 @@ var I18N = {
     resumen_titulo: '✦ Detalle de tu reserva',
     resumen_chef: 'Chef', resumen_servicio: 'Servicio', resumen_fecha: 'Fecha',
     resumen_turno: 'Turno', resumen_honorario: 'Honorario', resumen_ingredientes: 'Ingredientes (estimado)',
-    resumen_total: 'Total estimado', resumen_presencia: 'Presencia', resumen_dir: 'Dirección',
+    resumen_total: 'Total · todo incluido', resumen_presencia: 'Presencia', resumen_dir: 'Dirección',
     dir_evento: 'Dirección del evento *', dir_label: 'Dirección *',
     resumen_contacto: 'Contacto', resumen_ocasion: 'Ocasión', resumen_notas: 'Notas',
     ingredientes_sub: 'estimación · se ajusta al menú final y a los precios de compra',
@@ -6033,9 +6033,9 @@ var I18N = {
     honorario_servicio: 'Honorario del servicio', ingredientes_est: 'Ingredientes estimados',
     honorario_nota: 'Honorario puro de servicio. El desglose con ingredientes y menú de ejemplo aparece en el siguiente paso.',
     // Pantalla 25 — desglose
-    p25_titulo: 'Resumen de tu experiencia', p25_sub: 'Desglose estimado antes de elegir la fecha',
+    p25_titulo: 'Resumen de tu experiencia', p25_sub: 'Tu total con todo incluido, antes de elegir la fecha',
     por_ejemplo: 'Por ejemplo',
-    total_estimado: 'Total estimado', pp_label: 'por persona',
+    total_estimado: 'Total · todo incluido', pp_label: 'por persona',
     honorario_desc: 'El honorario incluye la planificación del menú, la visita previa a tu domicilio, la gestión de compras, el mise en place, el servicio completo y el cierre. Los ingredientes se cotizan por separado y su costo es orientativo — el menú definitivo y el desglose final se acuerdan con vos antes del evento. Las bebidas corren por cuenta del anfitrión; si lo deseás, Daro puede recomendar maridajes según el menú elegido.',
     dias_finde: '✦ Días disponibles: viernes noche · sábado · domingo',
     dias_semana: '✦ Días disponibles: lunes a viernes · mediodía',
@@ -6053,9 +6053,9 @@ var I18N = {
     ticket_label_servicio: 'Servicio', ticket_label_fecha: 'Fecha y turno',
     ticket_label_dir: 'Dirección', ticket_label_anfitrion: 'Anfitrión',
     ticket_honorario: 'Honorario del servicio', ticket_ingredientes: 'Ingredientes estimados',
-    ticket_total: 'Total estimado',
+    ticket_total: 'Total · todo incluido',
     ticket_info_pago: '✦ Información de pago',
-    ticket_alias: 'Alias Mercado Pago', ticket_seña: 'Seña (50% del servicio)',
+    ticket_alias: 'Alias Mercado Pago', ticket_seña: 'Seña para reservar la fecha',
     ticket_saldo: 'El resto se abona el día del servicio · Propina sugerida 15%',
     descargar_ticket: 'Descargar ticket', nueva_reserva: 'Nueva reserva',
     // Nota mapa paso 1
@@ -6250,7 +6250,7 @@ var I18N = {
     resumen_titulo: '✦ Detalhes da sua reserva',
     resumen_chef: 'Chef', resumen_servicio: 'Serviço', resumen_fecha: 'Data',
     resumen_turno: 'Turno', resumen_honorario: 'Honorário', resumen_ingredientes: 'Ingredientes (estimado)',
-    resumen_total: 'Total estimado', resumen_presencia: 'Presença', resumen_dir: 'Endereço',
+    resumen_total: 'Total · todo incluido', resumen_presencia: 'Presença', resumen_dir: 'Endereço',
     dir_evento: 'Endereço do evento *', dir_label: 'Endereço *',
     resumen_contacto: 'Contato', resumen_ocasion: 'Ocasião', resumen_notas: 'Notas',
     ingredientes_sub: 'estimativa · sujeito ao menu final',
@@ -6286,7 +6286,7 @@ var I18N = {
     ticket_label_servicio: 'Serviço', ticket_label_fecha: 'Data e turno',
     ticket_label_dir: 'Endereço', ticket_label_anfitrion: 'Anfitrião',
     ticket_honorario: 'Honorário do serviço', ticket_ingredientes: 'Ingredientes estimados',
-    ticket_total: 'Total estimado',
+    ticket_total: 'Total · todo incluido',
     ticket_info_pago: '✦ Informações de pagamento',
     ticket_alias: 'Alias MercadoPago', ticket_seña: 'Sinal sugerido (50%)',
     ticket_saldo: 'Saldo pago ao final do serviço. Gorjeta sugerida 15%',
