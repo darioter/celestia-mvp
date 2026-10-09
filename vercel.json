@@ -1,4 +1,6 @@
 {
+  "buildCommand": "node tools/check-scripts.js",
+  "outputDirectory": ".",
   "redirects": [
     {
       "source": "/index-beta.html",
