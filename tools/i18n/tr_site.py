@@ -528,4 +528,9 @@ TR.update({
 "Empresas y eventos":"Companies & events","Clases":"Classes","Blog":"Blog",
 "5 reseñas en Google ↗":"5 Google reviews ↗",
 "Seña para reservar la fecha":"Deposit to secure the date","Tu total con todo incluido, antes de elegir la fecha":"Your all-inclusive total, before choosing the date",
+"✓ Reservás sin crear cuenta. Solo necesitamos tus datos para coordinar.":"✓ Book without creating an account. We only need your details to coordinate.",
+"✓":"✓","Reservás sin crear cuenta.":"Book without an account.","Solo necesitamos tus datos para coordinar.":"We only need your details to coordinate.",
+"¿Ya tenés cuenta? Ingresá":"Have an account? Log in","Seguir sin cuenta →":"Continue without an account →",
+"Ingresá y completamos tus datos automáticamente. Si preferís, podés seguir sin cuenta.":"Log in and we fill in your details automatically. If you prefer, you can continue without an account.",
+"Elegí tu fecha y reservá en menos de 5 minutos, sin crear cuenta.":"Pick your date and book in under 5 minutes, no account needed.",
 })
