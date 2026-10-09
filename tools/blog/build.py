@@ -142,7 +142,7 @@ HEAD = '''<!doctype html>
 <nav class="cp-nav"><a href="/blog" class="cp-hide">{nav_caps}</a><a href="/" class="cp-hide">{nav_home}</a><div class="cp-lang"><button type="button" data-cel-lang="es">ES</button><span>|</span><button type="button" data-cel-lang="en">EN</button></div><a href="/" class="cp-cta">{nav_book}</a></nav></header>
 '''
 FOOT = '''<footer class="cp-ftr"><a href="/">chefprivado.ar</a>·<a href="/blog">{caps}</a>·<a href="https://www.instagram.com/celestiachefprivado/" target="_blank" rel="noopener">Instagram</a><div style="margin-top:8px">Celestia · Chef Privado · Buenos Aires © 2026</div></footer>
-<script src="/js/i18n.js"></script>
+<script src="/js/i18n.js"></script><script src="/js/analytics.js"></script>
 <script>document.querySelectorAll('.cp-chip').forEach(function(c){{c.addEventListener('click',function(){{var k=c.getAttribute('data-cat');document.querySelectorAll('.cp-chip').forEach(function(x){{x.classList.toggle('on',x===c);}});document.querySelectorAll('.cp-grid .cp-card').forEach(function(a){{a.classList.toggle('hide',k!=='todas'&&a.getAttribute('data-cat')!==k);}});}});}});</script>
 </body></html>'''
 

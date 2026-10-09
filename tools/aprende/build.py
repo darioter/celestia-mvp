@@ -490,11 +490,11 @@ async function confirmar(){
     '<p>'+L('Para confirmar, transferí la seña de <b>'+f(senia)+'</b> (50% del honorario) al alias <b>daro.chef</b> y mandame el comprobante por WhatsApp. Las fechas quedan reservadas al acreditarse.',
              'To confirm, transfer the <b>'+f(senia)+'</b> deposit (50% of the fee) to alias <b>daro.chef</b> and send me the receipt on WhatsApp. Dates are secured once it is received.')+'</p>'+
     '<a class="ap-wa" target="_blank" rel="noopener" href="https://wa.me/5491160410607?text='+encodeURIComponent(msg)+'">'+L('Enviar comprobante por WhatsApp','Send receipt on WhatsApp')+'</a></div>';
-  book.hidden=true;okBox.hidden=false;okBox.scrollIntoView({behavior:'smooth',block:'center'});
+  try{window.celTrack&&celTrack('reserva_completada',{servicio:'clases',modalidad:n===6?'curso':'suelta',value:R.tot,currency:'ARS'});window.celTrack&&celTrack('generate_lead',{value:R.tot,currency:'ARS'});}catch(e){}book.hidden=true;okBox.hidden=false;okBox.scrollIntoView({behavior:'smooth',block:'center'});
 }
 window.apBookSync=function(){if(!mes)return;if(sel.length>need())sel=sel.slice(0,need());render();planner();};
 document.getElementById('ap-elegir').addEventListener('click',async function(){
-  book.hidden=false;okBox.hidden=true;if(!mes){mes=new Date(minD.getFullYear(),minD.getMonth(),1);placeholders();await Promise.all([cargar(),cargarYo()]);}render();planner();
+  try{window.celTrack&&celTrack('reserva_inicio',{servicio:'clases',origen:'aprende'});}catch(e){}book.hidden=false;okBox.hidden=true;if(!mes){mes=new Date(minD.getFullYear(),minD.getMonth(),1);placeholders();await Promise.all([cargar(),cargarYo()]);}render();planner();
   setTimeout(function(){book.scrollIntoView({behavior:'smooth',block:'start'});},60);});
 document.getElementById('ap-prev').addEventListener('click',function(){mes=new Date(mes.getFullYear(),mes.getMonth()-1,1);render();});
 document.getElementById('ap-next').addEventListener('click',function(){mes=new Date(mes.getFullYear(),mes.getMonth()+1,1);render();});
@@ -535,7 +535,7 @@ var et=document.querySelector('.ap-et');if(et)new IntersectionObserver(function(
           f'</p><a class="ap-wa" href="{wa(msg_es)}" target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.2 13.8c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2.1 1-2.4c.3-.3.6-.3.8-.3h.6c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .5l-.3.5-.4.5c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.2 1.4 2.5 1.5.3.1.5.1.7-.1l.9-1.1c.2-.3.4-.2.7-.1l2 1c.3.1.5.2.5.3.1.2.1.7-.1 1.3z"/></svg>' +
           bi('Escribime por WhatsApp', 'Message me on WhatsApp') + '</a></section>')
     h += ('<footer class="cp-ftr"><a href="/">chefprivado.ar</a>·<a href="/blog">' + bi('Blog', 'Blog') + '</a>·<a href="https://www.instagram.com/celestiachefprivado/" target="_blank" rel="noopener">Instagram</a>'
-          '<div style="margin-top:8px">Celestia · Chef Privado · Buenos Aires © 2026</div></footer><script src="/js/i18n.js"></script></body></html>')
+          '<div style="margin-top:8px">Celestia · Chef Privado · Buenos Aires © 2026</div></footer><script src="/js/analytics.js"></script><script src="/js/i18n.js"></script></body></html>')
     escribir('aprende/index.html', h)
 
 def franja_landing():

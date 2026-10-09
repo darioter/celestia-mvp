@@ -1340,6 +1340,7 @@ textarea { resize: vertical; min-height: 80px; }
     .disponibilidad-banner .text strong { color: var(--gold); font-weight: 600; }
   </style>
 
+<script src="/js/analytics.js" defer></script>
 </head>
 <style id="beta-css">
 /* ══ CELESTIA BETA LANDING — CSS LIMPIO ══ */
@@ -4927,6 +4928,7 @@ async function mpConfirmarReserva() {
 
     document.getElementById('mp-confirm-section').style.display = 'none';
     document.getElementById('mp-success-section').style.display = 'block';
+    try { window.celTrack && celTrack('reserva_completada', { servicio: 'chef_semanal', value: hon, currency: 'ARS' }); window.celTrack && celTrack('generate_lead', { value: hon, currency: 'ARS' }); } catch(e) {}
     await cargarFechasBloqueadas();
   } catch(e) {
     console.error('Error:', e);
@@ -5491,6 +5493,7 @@ function markSent() {
   });
   document.getElementById('screen-25').style.display = 'none';
   document.getElementById('screen-success').style.display = 'block';
+  try { window.celTrack && celTrack('reserva_completada', { servicio: 'experiencia', menu: state.menu && state.menu.nombre, personas: personas, value: totalFinal, currency: 'ARS' }); window.celTrack && celTrack('generate_lead', { value: totalFinal, currency: 'ARS' }); } catch(e) {}
 
   // Steps → todos done
   [1,2,3,4,5].forEach(s => {
