@@ -206,7 +206,7 @@ def pagina(P):
           {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Celestia", "item": SITE + "/"}, {"@type": "ListItem", "position": 2, "name": P['k'][0].split(' · ')[0], "item": url}]}]
     if P['menu']:
         ld[0]["offers"] = {"@type": "Offer", "priceCurrency": "ARS", "price": str(total(P['menu'], 2)), "description": "Desde, para 2 personas, todo incluido"}
-    head = HEAD.format(title=P['title'], title_en=P['title_en'], desc=P['desc'], url=url, ogtype='website', ogimg=SITE + P['img'],
+    head = HEAD.format(title=P['title'], title_en=P['title_en'], desc=P['desc'], url=url, ogtype='website', ogimg=SITE + '/img/og/' + {'cena-romantica-en-casa':'cena-romantica','menu-degustacion-7-pasos':'degustacion','chef-semanal':'chef-semanal','eventos-corporativos':'eventos'}[P['slug']] + '.jpg',
                        css=CSS + EXTRA_CSS, ld=''.join(f'<script type="application/ld+json">{json.dumps(x, ensure_ascii=False)}</script>' for x in ld),
                        nav_caps=bi('Blog', 'Blog'), nav_home=bi('Inicio', 'Home'), nav_book=bi('Reservar →', 'Book →'))
     wa = WA + quote(P['wa'])
