@@ -480,6 +480,13 @@ TR.update({
 "Incluye servicio, asistentes e ingredientes estimados (tarifa fin de semana). Para confirmar se abona una seña del 50% del servicio.":"Includes service, assistants and estimated ingredients (weekend rate). A 50% service deposit confirms the booking.",
 "Incluye servicio, asistentes e ingredientes estimados. Para confirmar se abona una seña del 50% del servicio.":"Includes service, assistants and estimated ingredients. A 50% service deposit confirms the booking.",
 "✦ Idioma":"✦ Language","Idioma":"Language",
+"Preparado en mi cocina y terminado en tu casa, con presentación de nivel restaurante. De 2 a 12 personas.":"Prepared in my kitchen and finished at your home, with restaurant-level plating. For 2 to 12 guests.",
+"Terminado y emplatado en tu casa":"Finished and plated at your home",
+"Daro llega con la preproducción hecha en su cocina, termina cada paso en la tuya —lo que va al momento, como las pastas, se cocina ahí— y lo presenta con su historia. Vos y tus invitados solo se ocupan de disfrutar.":"Daro arrives with the prep done in his kitchen and finishes each course in yours —what needs to be made à la minute, like fresh pasta, is cooked there— and presents it with its story. You and your guests just enjoy.",
+"Terminado al momento":"Finished on the spot",
+"Entrada, principal y postre. Preparado en mi cocina y terminado en tu casa, con presentación de nivel restaurante. De 2 a 12 personas.":"Starter, main and dessert. Prepared in my kitchen and finished at your home, with restaurant-level plating. For 2 to 12 guests.",
+"El diseño del menú, las compras, la preproducción en mi cocina y, en tu casa, la terminación y presentación de cada paso. Las bebidas quedan a cargo del anfitrión.":"Menu design, shopping, prep in my kitchen and, at your home, finishing and presenting each course. Drinks are on the host.",
+"Daro llega a tu domicilio con la preproducción hecha, termina cada paso al momento y lo presenta. Vos y tus invitados disfrutan — sin moverse, sin esperar, sin reservar con meses de anticipación.":"Daro arrives with the prep done, finishes each course on the spot and presents it. You and your guests enjoy — without moving, without waiting, without booking months ahead.",
 })
 TR.update({
 "Consultá tu fecha":"Check your date","⚡ Fecha urgente":"⚡ Urgent date","Fecha urgente":"Urgent date",
@@ -534,4 +541,11 @@ TR.update({
 "Ingresá y completamos tus datos automáticamente. Si preferís, podés seguir sin cuenta.":"Log in and we fill in your details automatically. If you prefer, you can continue without an account.",
 "Elegí tu fecha y reservá en menos de 5 minutos, sin crear cuenta.":"Pick your date and book in under 5 minutes, no account needed.",
 "Cena romántica":"Romantic dinner","Degustación 7 pasos":"7-course tasting","Eventos y empresas":"Events & companies",
+"Preparado en mi cocina y terminado en tu casa, con presentación de nivel restaurante. De 2 a 12 personas.":"Prepared in my kitchen and finished at your home, with restaurant-level plating. For 2 to 12 guests.",
+"Terminado y emplatado en tu casa":"Finished and plated at your home",
+"Daro llega con la preproducción hecha en su cocina, termina cada paso en la tuya —lo que va al momento, como las pastas, se cocina ahí— y lo presenta con su historia. Vos y tus invitados solo se ocupan de disfrutar.":"Daro arrives with the prep done in his kitchen and finishes each course in yours —what needs to be made à la minute, like fresh pasta, is cooked there— and presents it with its story. You and your guests just enjoy.",
+"Terminado al momento":"Finished on the spot",
+"Entrada, principal y postre. Preparado en mi cocina y terminado en tu casa, con presentación de nivel restaurante. De 2 a 12 personas.":"Starter, main and dessert. Prepared in my kitchen and finished at your home, with restaurant-level plating. For 2 to 12 guests.",
+"El diseño del menú, las compras, la preproducción en mi cocina y, en tu casa, la terminación y presentación de cada paso. Las bebidas quedan a cargo del anfitrión.":"Menu design, shopping, prep in my kitchen and, at your home, finishing and presenting each course. Drinks are on the host.",
+"Daro llega a tu domicilio con la preproducción hecha, termina cada paso al momento y lo presenta. Vos y tus invitados disfrutan — sin moverse, sin esperar, sin reservar con meses de anticipación.":"Daro arrives with the prep done, finishes each course on the spot and presents it. You and your guests enjoy — without moving, without waiting, without booking months ahead.",
 })

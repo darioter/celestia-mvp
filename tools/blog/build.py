@@ -177,7 +177,7 @@ def articulo(a):
           f'<span>{bi(fecha(a["fecha"],"es"), fecha(a["fecha"],"en"))}</span><span>{bi(str(minutos(es["cuerpo"]))+" min de lectura", str(minutos(en["cuerpo"]))+" min read")}</span></div></div></section>')
     h += f'<article class="cp-body"><div class="b-es">{bloques(es["cuerpo"],"es")}</div><div class="b-en" lang="en">{bloques(en["cuerpo"],"en")}</div></article>'
     h += ('<section class="cp-ctab"><div><h3>' + bi('¿Querés que lo cocine en tu casa?', 'Want me to cook it at your home?') + '</h3><p>' +
-          bi('Menús de 3 o 7 pasos, cocina en vivo y servicio completo en CABA y GBA.', '3- or 7-course menus, live cooking and full service in Buenos Aires.') +
+          bi('Menús de 3 o 7 pasos, terminados en tu casa y con servicio completo en CABA y GBA.', '3- or 7-course menus, finished at your home with full service in Buenos Aires.') +
           '</p><a class="cp-btn" href="/">' + bi('Reservar una experiencia →', 'Book an experience →') + '</a></div></section>')
     h += f'<p class="cp-cred">{bi("Foto de referencia", "Reference photo")}: {a["foto"]} · <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a></p>'
     h += '<section class="cp-rel"><h3>' + bi('Seguí leyendo', 'Keep reading') + '</h3><div class="cp-grid">' + ''.join(card(x) for x in otros) + '</div></section>'
