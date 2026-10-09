@@ -3,12 +3,15 @@
   var ID = 'G-578D98JM6M';
   var h = location.hostname;
   if (!/chefprivado\.ar$/.test(h)) return;            // solo producción (no previews ni local)
+  var yaEsta = !!document.querySelector('script[src*="googletagmanager.com/gtag/js"]');
   window.dataLayer = window.dataLayer || [];
   window.gtag = window.gtag || function(){ dataLayer.push(arguments); };
-  gtag('js', new Date());
-  gtag('config', ID);
-  var s = document.createElement('script'); s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=' + ID;
-  document.head.appendChild(s);
+  if (!yaEsta) {
+    gtag('js', new Date());
+    gtag('config', ID);
+    var s = document.createElement('script'); s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=' + ID;
+    document.head.appendChild(s);
+  }
 
   // API simple para el resto del sitio
   window.celTrack = function(ev, params){ try { gtag('event', ev, params || {}); } catch(e){} };
