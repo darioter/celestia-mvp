@@ -500,4 +500,16 @@ TR.update({
 "Servicio, asistentes e ingredientes incluidos. El importe puede variar según el menú: lo confirmamos antes de la seña.":"Service, assistants and ingredients included. The amount may vary with the menu: we confirm it before the deposit.",
 "El resto se abona el día del servicio · Propina sugerida 15%":"The rest is paid on the day of the service · Suggested tip 15%",
 "El resto se abona el día del servicio":"The rest is paid on the day of the service",
+# ── Chef semanal: comidas por día ──
+"¿Cuántas comidas por día te dejo listas?":"How many meals a day should I leave ready?",
+"Elegí una opción. Más comidas, más preparaciones: la jornada es más larga.":"Pick one. More meals means more dishes: the session is longer.",
+"Esencial":"Essential","Día completo":"Full day","2 comidas por día":"2 meals a day","5 comidas por día":"5 meals a day",
+"Desayuno, almuerzo, merienda, cena y postre":"Breakfast, lunch, afternoon snack, dinner and dessert",
+"⏱ ~8 hs por jornada":"⏱ ~8 hrs per session","⏱ ~12 hs por jornada":"⏱ ~12 hrs per session",
+"~8 hs":"~8 hrs","~12 hs":"~12 hrs","~16 hs":"~16 hrs","~24 hs":"~24 hrs",
+"mitad de semana":"mid-week","semana completa":"full week",
+"2 comidas por día · almuerzo y cena":"2 meals a day · lunch and dinner","5 comidas por día · desayuno a postre":"5 meals a day · breakfast to dessert",
+"2 por día · almuerzo y cena":"2 a day · lunch and dinner","5 por día · desayuno a postre":"5 a day · breakfast to dessert",
+"Cocino en tu casa y te dejo la semana resuelta, fraccionada y etiquetada. 2 comidas por día (~8 hs por jornada) o 5 comidas por día (~12 hs).":"I cook at your home and leave your week sorted, portioned and labeled. 2 meals a day (~8 hrs per session) or 5 meals a day (~12 hrs).",
+"Desde $160.000":"From $160,000","por jornada":"per session",
 })
