@@ -1,6 +1,17 @@
 # -*- coding: utf-8 -*-
 # Traducciones ES -> EN del sitio (landing + flujos). Clave = texto visible en español (espacios normalizados).
 TR = {
+# ── Accesos del hero / panel platos ──
+"Menús de ejemplo": "Sample menus",
+"10 estilos de cocina": "10 cooking styles",
+"Explorar platos": "Explore dishes",
+"Por cocina o dieta": "By cuisine or diet",
+"Tu semana resuelta": "Your week, sorted",
+"Menús": "Menus",
+"Platos": "Dishes",
+"✦ Explorar platos": "✦ Explore dishes",
+"Encontrá inspiración para tu menú": "Find inspiration for your menu",
+"Filtrá por cocina o dieta y guardá los que te gusten: los sumamos a tu propuesta.": "Filter by cuisine or diet and save the ones you like: we'll add them to your proposal.",
 # ── Header / nav ──
 "Experiencias": "Experiences",
 "Cómo funciona": "How it works",
