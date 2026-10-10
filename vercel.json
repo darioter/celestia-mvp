@@ -3,6 +3,26 @@
   "outputDirectory": ".",
   "redirects": [
     {
+      "source": "/opinion",
+      "destination": "https://g.page/r/CWYAy7Wn5FfhEBM/review",
+      "permanent": false
+    },
+    {
+      "source": "/review",
+      "destination": "https://g.page/r/CWYAy7Wn5FfhEBM/review",
+      "permanent": false
+    },
+    {
+      "source": "/reseña",
+      "destination": "https://g.page/r/CWYAy7Wn5FfhEBM/review",
+      "permanent": false
+    },
+    {
+      "source": "/resena",
+      "destination": "https://g.page/r/CWYAy7Wn5FfhEBM/review",
+      "permanent": false
+    },
+    {
       "source": "/index-beta.html",
       "destination": "/",
       "permanent": true
