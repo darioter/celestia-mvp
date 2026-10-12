@@ -79,10 +79,7 @@ PRECIOS = {
 # ── Experiencia entre amigos: pastas frescas (propuesta, ARS) ───────────────
 AMIGOS = {
   'min': 4, 'max': 10, 'horas': 4,
-  'honorario_base': 180000, 'base_personas': 4,   # honorario hasta 4 personas
-  'extra_pp': 25000,                              # honorario por persona adicional
-  'ing_pp': 14000,                                # ingredientes por persona (se ajusta con el índice de precios)
-  'viaticos': {'caba': 15000, 'gba': 25000},
+  'pp': 65000,                                    # precio por persona, todo incluido (clase, ingredientes y traslado)
   'img': 'https://images.unsplash.com/photo-1447279506476-3faec8071eee?w=1100&q=70&auto=format&fit=crop',
 }
 AMIGOS_HACEMOS = [
@@ -395,33 +392,30 @@ calc();
           ''.join(f'<li><b>{bi(a, b)}</b>{bi(c, d)}</li>' for a, b, c, d in AMIGOS_HACEMOS) + '</ul></div></div>'
           '<div class="ap-am-calc"><div><div class="ap-q" style="margin-top:0">' + bi('¿Cuántos son?', 'How many of you?') + '</div>'
           '<div class="ap-am-st"><button type="button" id="am-menos" aria-label="Menos personas">−</button><output id="am-n">6</output><button type="button" id="am-mas" aria-label="Más personas">+</button><small>' + bi('personas', 'people') + '</small></div>'
-          '<div class="ap-opts ap-o2"><button type="button" class="am-z ap-o on" data-z="caba"><b>CABA</b></button><button type="button" class="am-z ap-o" data-z="gba"><b>GBA</b></button></div>'
-          '<p class="ap-mini">' + bi('Ustedes ponen la mesa y la bebida; ingredientes, recetas y la clase corren por mi cuenta.', "You bring the table and the drinks; ingredients, recipes and the class are on me.") + '</p></div>'
+                    '<p class="ap-mini">' + bi('$65.000 por persona, todo incluido: clase, ingredientes y traslado (CABA y GBA). Ustedes ponen la mesa y la bebida.', '$65,000 per person, all included: class, ingredients and travel (Buenos Aires City and Greater BA). You bring the table and the drinks.') + '</p></div>'
           '<aside class="ap-sum"><span class="cp-k">✦ ' + bi('Tu experiencia', 'Your experience') + '</span><div class="ap-rows" id="am-rows"></div>'
           '<div class="ap-tot"><span>' + bi('Total · todo incluido', 'Total · all included') + '</span><b id="am-total">—</b></div><p class="ap-pp" id="am-pp"></p>'
           f'<a class="cp-btn ap-btn-full" id="am-cta" style="display:block;margin-top:14px" href="{wa(msg_am)}" target="_blank" rel="noopener">' + bi('Reservar fecha por WhatsApp →', 'Book a date on WhatsApp →') + '</a></aside></div></section>')
     h += '<script>window.AP_AMIGOS=' + json.dumps({k: v for k, v in A.items() if k != 'img'}) + ';</script>'
     h += r"""<script>(function(){
-var A=window.AP_AMIGOS,st={n:6,z:'caba'};
+var A=window.AP_AMIGOS,st={n:6};
 function f(n){return '$'+Math.round(n).toLocaleString('es-AR');}
 function en(){return document.documentElement.classList.contains('lang-en');}
 function L(a,b){return en()?b:a;}
-function ing(v){return window.apIng?window.apIng(v):Math.round(v/1000)*1000;}
 function calc(){
-  var hon=A.honorario_base+Math.max(0,st.n-A.base_personas)*A.extra_pp,ig=ing(A.ing_pp*st.n),via=A.viaticos[st.z],tot=hon+ig+via;
+  var tot=A.pp*st.n;
   document.getElementById('am-n').textContent=st.n;
   document.getElementById('am-menos').disabled=st.n<=A.min;document.getElementById('am-mas').disabled=st.n>=A.max;
-  document.getElementById('am-rows').innerHTML='<div><span>✓ '+L('Clase de ~'+A.horas+' horas para '+st.n,'~'+A.horas+'-hour class for '+st.n)+'</span><span></span></div><div><span>✓ '+L('Ingredientes para todos','Ingredients for everyone')+'</span><span></span></div><div><span>✓ '+L('Traslado','Travel')+' ('+st.z.toUpperCase()+')</span><span></span></div>';
+  document.getElementById('am-rows').innerHTML='<div><span>✓ '+L('Clase de ~'+A.horas+' horas para '+st.n,'~'+A.horas+'-hour class for '+st.n)+'</span><span></span></div><div><span>✓ '+L('Ingredientes para todos','Ingredients for everyone')+'</span><span></span></div><div><span>✓ '+L('Traslado (CABA y GBA)','Travel (Buenos Aires area)')+'</span><span></span></div>';
   document.getElementById('am-total').textContent=f(tot);
-  document.getElementById('am-pp').textContent=f(tot/st.n)+' '+L('por persona','per person');
-  var msg=L('Hola Daro, quiero reservar la experiencia "Pastas entre amigos" para '+st.n+' personas en '+st.z.toUpperCase()+'. Total (todo incluido): '+f(tot)+'. ¿Qué fechas tenés?','Hi Daro, I want to book the "Fresh pasta with friends" experience for '+st.n+' people in '+st.z.toUpperCase()+'. Total (all included): '+f(tot)+'. Which dates do you have?');
+  document.getElementById('am-pp').textContent=f(A.pp)+' '+L('por persona','per person');
+  var msg=L('Hola Daro, quiero reservar la experiencia "Pastas entre amigos" para '+st.n+' personas. Total (todo incluido): '+f(tot)+'. ¿Qué fechas tenés?','Hi Daro, I want to book the "Fresh pasta with friends" experience for '+st.n+' people. Total (all included): '+f(tot)+'. Which dates do you have?');
   document.getElementById('am-cta').href='https://wa.me/5491160410607?text='+encodeURIComponent(msg);
 }
 document.getElementById('am-menos').addEventListener('click',function(){if(st.n>A.min){st.n--;calc();}});
 document.getElementById('am-mas').addEventListener('click',function(){if(st.n<A.max){st.n++;calc();}});
-document.querySelectorAll('.am-z').forEach(function(b){b.addEventListener('click',function(){st.z=b.getAttribute('data-z');document.querySelectorAll('.am-z').forEach(function(x){x.classList.toggle('on',x===b);});calc();});});
 document.querySelectorAll('[data-cel-lang]').forEach(function(b){b.addEventListener('click',function(){setTimeout(calc,40);});});
-document.addEventListener('ap-idx',calc);setTimeout(calc,1500);calc();
+calc();
 })();</script>"""
 
     h += '<script>window.AP_SUPA=' + json.dumps(SUPA) + ';</script>'
