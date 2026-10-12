@@ -76,6 +76,21 @@ PRECIOS = {
   'pro': {'honorario': 180000, 'nota_ing': 'ingredientes según el plato'},
 }
 
+# ── Experiencia entre amigos: pastas frescas (propuesta, ARS) ───────────────
+AMIGOS = {
+  'min': 4, 'max': 10, 'horas': 4,
+  'honorario_base': 180000, 'base_personas': 4,   # honorario hasta 4 personas
+  'extra_pp': 25000,                              # honorario por persona adicional
+  'ing_pp': 14000,                                # ingredientes por persona (se ajusta con el índice de precios)
+  'viaticos': {'caba': 15000, 'gba': 25000},
+  'img': 'https://images.unsplash.com/photo-1649400454485-b8ad827f929d?w=1100&q=70&auto=format&fit=crop',
+}
+AMIGOS_HACEMOS = [
+  ("Amasamos la pasta al huevo", "We make egg pasta dough", "Harina, huevo y mano: el punto de la masa, el reposo y el estirado parejo.", "Flour, eggs and hands: the right dough, resting and rolling it evenly."),
+  ("Cortes y rellenos", "Cuts and fillings", "Tallarines o pappardelle cortados a mano y ravioles o sorrentinos rellenos.", "Hand-cut tagliatelle or pappardelle, and filled ravioli or sorrentinos."),
+  ("Dos salsas de verdad", "Two proper sauces", "Un pomodoro bien hecho y una de manteca y salvia, o la que prefieran.", "A proper pomodoro and a butter-and-sage sauce, or whichever you prefer."),
+  ("Terminamos en la mesa", "We finish at the table", "Cocinamos la pasta al momento y la comemos juntos lo que hicieron.", "We cook the pasta on the spot and eat together what you made."),
+]
 
 SUPA = {}
 _idx = open(os.path.join(ROOT, 'index.html'), encoding='utf-8').read()
@@ -246,6 +261,25 @@ def build():
 @media(max-width:900px){.ap-calc{grid-template-columns:1fr}.ap-sum{position:relative;top:0}.ap-o4{grid-template-columns:repeat(4,1fr)}}
 @media(max-width:900px){.ap-et,.ap-cls{grid-template-columns:1fr}.ap-et::before{display:none}.ap-e{margin-bottom:28px}.ap-inc{grid-template-columns:1fr 1fr}.ap-pro-in{grid-template-columns:1fr;padding:34px 24px}.ap-hero h1{font-size:36px}.ap-hero{min-height:560px;background-position:70% center}.ap-hero::after{background:linear-gradient(180deg,rgba(13,27,42,.55) 0%,rgba(13,27,42,.95) 55%)}.ap-hero-in{align-self:flex-end}.ap-h2{font-size:28px}}
 @media(max-width:520px){.ap-inc{grid-template-columns:1fr}}
+.ap-am{max-width:1140px;margin:60px auto 0;padding:0 22px;scroll-margin-top:80px}
+.ap-am-in{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);background:#fff;border:1px solid var(--crd);border-radius:24px;overflow:hidden;box-shadow:0 14px 40px rgba(13,27,42,.08)}
+.ap-am-img{position:relative;min-height:420px;background:#e8e0d5 center/cover no-repeat}
+.ap-am-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(13,27,42,.75) 0%,rgba(13,27,42,0) 50%)}
+.ap-am-chips{position:absolute;left:22px;right:22px;bottom:20px;z-index:1;display:flex;flex-wrap:wrap;gap:8px}
+.ap-am-chips i{white-space:nowrap;font-style:normal;background:rgba(13,27,42,.7);border:1px solid rgba(201,168,76,.5);color:var(--gdl);border-radius:999px;padding:6px 12px;font-size:12px;backdrop-filter:blur(4px)}
+.ap-am-cr{position:absolute;right:12px;top:10px;z-index:1;font-size:10px;color:rgba(250,246,239,.7)}
+.ap-am-tx{padding:36px 36px 30px}
+.ap-am-tx h2{font-family:'DM Serif Display',serif;font-weight:400;font-size:34px;line-height:1.15;color:var(--nv);margin:8px 0 10px}.ap-am-tx h2 em{color:var(--gd)}
+.ap-am-tx>p{color:#6B5F4F;font-size:15px}
+.ap-am-l{list-style:none;padding:0;margin:18px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:14px 18px}
+.ap-am-l li{font-size:13px;color:#6B5F4F;line-height:1.5}.ap-am-l b{display:block;font-family:'DM Serif Display',serif;font-weight:400;font-size:17px;color:var(--nv);margin-bottom:2px}
+.ap-am-calc{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:28px;align-items:center;margin-top:22px;background:#FAF6EF;border:1px solid var(--crd);border-radius:20px;padding:22px 24px}
+.ap-am-st{display:flex;align-items:center;gap:14px;margin:4px 0 14px}
+.ap-am-st button{width:44px;height:44px;border-radius:50%;border:1.5px solid var(--crd);background:#fff;font-size:22px;color:var(--nv);cursor:pointer}.ap-am-st button:hover:not([disabled]){border-color:var(--gd)}.ap-am-st button[disabled]{opacity:.35;cursor:default}
+.ap-am-st output{font-family:'DM Serif Display',serif;font-size:34px;color:var(--nv);min-width:44px;text-align:center}.ap-am-st small{font-size:13px;color:#8a7a62}
+.ap-am-calc .ap-opts{max-width:320px}
+.ap-am .ap-sum{position:relative;top:0}
+@media(max-width:900px){.ap-am-in{grid-template-columns:1fr}.ap-am-img{min-height:260px}.ap-am-tx{padding:26px 20px 22px}.ap-am-tx h2{font-size:28px}.ap-am-calc{grid-template-columns:1fr;padding:18px 16px}.ap-am-l{grid-template-columns:1fr}}
 '''
     msg_es = 'Hola Daro, quiero sumarme al curso "Te enseño cocina nivel chef" (6 clases). ¿Cómo seguimos?'
     msg_pro = 'Hola Daro, terminé el curso y quiero una clase Pro de un plato técnico. ¿Coordinamos?'
@@ -267,6 +301,7 @@ def build():
           '<div class="ap-pills"><span>' + bi('6 clases prácticas', '6 hands-on classes') + '</span><span>' + bi('En tu casa', 'At your home') + '</span><span>' +
           bi('Acompañamiento por WhatsApp', 'WhatsApp support') + '</span><span>' + bi('Clases Pro después', 'Pro classes afterwards') + '</span></div>'
           '<div class="ap-hero-btns"><a class="cp-btn" href="#valores">' + bi('Ver valores y fechas ↓', 'See prices and dates ↓') + '</a>'
+          '<a class="ap-ghost" href="#amigos">🍝 ' + bi('Pastas entre amigos', 'Pasta with friends') + '</a>'
           f'<a class="ap-ghost" href="{wa(msg_es)}" target="_blank" rel="noopener">' + bi('Consultar por WhatsApp', 'Ask on WhatsApp') + '</a></div></div></section>')
     # Método
     h += ('<section class="ap-sec"><span class="cp-k">✦ ' + bi('El método', 'The method') + '</span><h2 class="ap-h2">' + bi('De observar a cocinar solo, en cuatro etapas', 'From observing to cooking on your own, in four stages') +
@@ -348,7 +383,46 @@ calc();
     for ic, tes, ten, des, den in INCLUYE:
         h += f'<div class="ap-i"><i>{ic}</i><h4>{bi(tes, ten)}</h4><p>{bi(des, den)}</p></div>'
     h += '</div></section>'
-
+    # Experiencia entre amigos
+    A = AMIGOS
+    msg_am = 'Hola Daro, quiero reservar la experiencia "Pastas entre amigos". ¿Qué fechas tenés?'
+    h += ('<section class="ap-am" id="amigos"><div class="ap-am-in"><div class="ap-am-img" style="background-image:url(\'' + A['img'] + '\')"><span class="ap-am-cr">Foto: Paras Kapoor / Unsplash</span><span class="ap-am-chips"><i>' +
+          bi(f"{A['min']} a {A['max']} personas", f"{A['min']} to {A['max']} people") + '</i><i>' + bi(f"~{A['horas']} horas", f"~{A['horas']} hours") + '</i><i>' + bi('En tu casa', 'At your home') + '</i></span></div>'
+          '<div class="ap-am-tx"><span class="cp-k">✦ ' + bi('Experiencia entre amigos', 'Experience with friends') + '</span>'
+          '<h2>' + bi('Pastas frescas <em>entre amigos</em>', 'Fresh pasta <em>with friends</em>') + '</h2>'
+          '<p>' + bi('Una clase para hacer en grupo: juntás a tus amigos o a tu familia, amasamos y cocinamos todos juntos y cerramos sentados a la mesa, comiendo lo que hicieron. Ideal para cumpleaños, after office o un sábado distinto.',
+                     'A class to enjoy as a group: gather your friends or family, we knead and cook together and finish sitting at the table, eating what you made. Perfect for birthdays, after-work get-togethers or a different kind of Saturday.') + '</p><ul class="ap-am-l">' +
+          ''.join(f'<li><b>{bi(a, b)}</b>{bi(c, d)}</li>' for a, b, c, d in AMIGOS_HACEMOS) + '</ul></div></div>'
+          '<div class="ap-am-calc"><div><div class="ap-q" style="margin-top:0">' + bi('¿Cuántos son?', 'How many of you?') + '</div>'
+          '<div class="ap-am-st"><button type="button" id="am-menos" aria-label="Menos personas">−</button><output id="am-n">6</output><button type="button" id="am-mas" aria-label="Más personas">+</button><small>' + bi('personas', 'people') + '</small></div>'
+          '<div class="ap-opts ap-o2"><button type="button" class="am-z ap-o on" data-z="caba"><b>CABA</b></button><button type="button" class="am-z ap-o" data-z="gba"><b>GBA</b></button></div>'
+          '<p class="ap-mini">' + bi('Ustedes ponen la mesa y la bebida; ingredientes, recetas y la clase corren por mi cuenta.', "You bring the table and the drinks; ingredients, recipes and the class are on me.") + '</p></div>'
+          '<aside class="ap-sum"><span class="cp-k">✦ ' + bi('Tu experiencia', 'Your experience') + '</span><div class="ap-rows" id="am-rows"></div>'
+          '<div class="ap-tot"><span>' + bi('Total · todo incluido', 'Total · all included') + '</span><b id="am-total">—</b></div><p class="ap-pp" id="am-pp"></p>'
+          f'<a class="cp-btn ap-btn-full" id="am-cta" style="display:block;margin-top:14px" href="{wa(msg_am)}" target="_blank" rel="noopener">' + bi('Reservar fecha por WhatsApp →', 'Book a date on WhatsApp →') + '</a></aside></div></section>')
+    h += '<script>window.AP_AMIGOS=' + json.dumps({k: v for k, v in A.items() if k != 'img'}) + ';</script>'
+    h += r"""<script>(function(){
+var A=window.AP_AMIGOS,st={n:6,z:'caba'};
+function f(n){return '$'+Math.round(n).toLocaleString('es-AR');}
+function en(){return document.documentElement.classList.contains('lang-en');}
+function L(a,b){return en()?b:a;}
+function ing(v){return window.apIng?window.apIng(v):Math.round(v/1000)*1000;}
+function calc(){
+  var hon=A.honorario_base+Math.max(0,st.n-A.base_personas)*A.extra_pp,ig=ing(A.ing_pp*st.n),via=A.viaticos[st.z],tot=hon+ig+via;
+  document.getElementById('am-n').textContent=st.n;
+  document.getElementById('am-menos').disabled=st.n<=A.min;document.getElementById('am-mas').disabled=st.n>=A.max;
+  document.getElementById('am-rows').innerHTML='<div><span>✓ '+L('Clase de ~'+A.horas+' horas para '+st.n,'~'+A.horas+'-hour class for '+st.n)+'</span><span></span></div><div><span>✓ '+L('Ingredientes para todos','Ingredients for everyone')+'</span><span></span></div><div><span>✓ '+L('Traslado','Travel')+' ('+st.z.toUpperCase()+')</span><span></span></div>';
+  document.getElementById('am-total').textContent=f(tot);
+  document.getElementById('am-pp').textContent=f(tot/st.n)+' '+L('por persona','per person');
+  var msg=L('Hola Daro, quiero reservar la experiencia "Pastas entre amigos" para '+st.n+' personas en '+st.z.toUpperCase()+'. Total (todo incluido): '+f(tot)+'. ¿Qué fechas tenés?','Hi Daro, I want to book the "Fresh pasta with friends" experience for '+st.n+' people in '+st.z.toUpperCase()+'. Total (all included): '+f(tot)+'. Which dates do you have?');
+  document.getElementById('am-cta').href='https://wa.me/5491160410607?text='+encodeURIComponent(msg);
+}
+document.getElementById('am-menos').addEventListener('click',function(){if(st.n>A.min){st.n--;calc();}});
+document.getElementById('am-mas').addEventListener('click',function(){if(st.n<A.max){st.n++;calc();}});
+document.querySelectorAll('.am-z').forEach(function(b){b.addEventListener('click',function(){st.z=b.getAttribute('data-z');document.querySelectorAll('.am-z').forEach(function(x){x.classList.toggle('on',x===b);});calc();});});
+document.querySelectorAll('[data-cel-lang]').forEach(function(b){b.addEventListener('click',function(){setTimeout(calc,40);});});
+document.addEventListener('ap-idx',calc);setTimeout(calc,1500);calc();
+})();</script>"""
 
     h += '<script>window.AP_SUPA=' + json.dumps(SUPA) + ';</script>'
     h += r"""<script>(function(){
@@ -509,7 +583,7 @@ document.querySelectorAll('[data-cel-lang]').forEach(function(b){b.addEventListe
 })();</script>"""
     # Animaciones de entrada
     h += r"""<script>(function(){
-var els=document.querySelectorAll('.ap-sec .cp-k,.ap-h2,.ap-sub,.ap-e,.ap-c,.ap-i,.ap-calc,.ap-pro-in,.ap-fin>*,.ap-det');
+var els=document.querySelectorAll('.ap-sec .cp-k,.ap-h2,.ap-sub,.ap-e,.ap-c,.ap-i,.ap-calc,.ap-am-in,.ap-am-calc,.ap-pro-in,.ap-fin>*,.ap-det');
 els.forEach(function(e){e.classList.add('rv');});
 document.querySelectorAll('.ap-et,.ap-cls,.ap-inc').forEach(function(g){[].forEach.call(g.children,function(c,i){c.style.transitionDelay=(i%6*90)+'ms';});});
 if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in');});return;}
