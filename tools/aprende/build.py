@@ -83,7 +83,7 @@ AMIGOS = {
   'extra_pp': 25000,                              # honorario por persona adicional
   'ing_pp': 14000,                                # ingredientes por persona (se ajusta con el índice de precios)
   'viaticos': {'caba': 15000, 'gba': 25000},
-  'img': 'https://images.unsplash.com/photo-1649400454485-b8ad827f929d?w=1100&q=70&auto=format&fit=crop',
+  'img': 'https://images.unsplash.com/photo-1447279506476-3faec8071eee?w=1100&q=70&auto=format&fit=crop',
 }
 AMIGOS_HACEMOS = [
   ("Amasamos la pasta al huevo", "We make egg pasta dough", "Harina, huevo y mano: el punto de la masa, el reposo y el estirado parejo.", "Flour, eggs and hands: the right dough, resting and rolling it evenly."),
@@ -386,7 +386,7 @@ calc();
     # Experiencia entre amigos
     A = AMIGOS
     msg_am = 'Hola Daro, quiero reservar la experiencia "Pastas entre amigos". ¿Qué fechas tenés?'
-    h += ('<section class="ap-am" id="amigos"><div class="ap-am-in"><div class="ap-am-img" style="background-image:url(\'' + A['img'] + '\')"><span class="ap-am-cr">Foto: Paras Kapoor / Unsplash</span><span class="ap-am-chips"><i>' +
+    h += ('<section class="ap-am" id="amigos"><div class="ap-am-in"><div class="ap-am-img" style="background-image:url(\'' + A['img'] + '\')"><span class="ap-am-cr">Foto: Jorge Zapata / Unsplash</span><span class="ap-am-chips"><i>' +
           bi(f"{A['min']} a {A['max']} personas", f"{A['min']} to {A['max']} people") + '</i><i>' + bi(f"~{A['horas']} horas", f"~{A['horas']} hours") + '</i><i>' + bi('En tu casa', 'At your home') + '</i></span></div>'
           '<div class="ap-am-tx"><span class="cp-k">✦ ' + bi('Experiencia entre amigos', 'Experience with friends') + '</span>'
           '<h2>' + bi('Pastas frescas <em>entre amigos</em>', 'Fresh pasta <em>with friends</em>') + '</h2>'
