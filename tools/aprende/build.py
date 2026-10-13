@@ -79,7 +79,7 @@ PRECIOS = {
 # ── Experiencia entre amigos: pastas frescas (propuesta, ARS) ───────────────
 AMIGOS = {
   'min': 4, 'max': 10, 'horas': 4,
-  'pp': 65000,                                    # precio por persona, todo incluido (clase, ingredientes y traslado)
+  # Precio = el mismo de una experiencia de 3 pasos (TARIFAS[1] de index.html): servicio + ingredientes (indexados) + asistentes
   'img': 'https://images.unsplash.com/photo-1447279506476-3faec8071eee?w=1100&q=70&auto=format&fit=crop',
 }
 AMIGOS_HACEMOS = [
@@ -91,6 +91,12 @@ AMIGOS_HACEMOS = [
 
 SUPA = {}
 _idx = open(os.path.join(ROOT, 'index.html'), encoding='utf-8').read()
+def _tabla(nombre):
+    blk = re.search(r'1: \{ // 3 pasos(.*?)\n  \}', _idx, re.S).group(1)
+    return {int(k): int(v) for k, v in re.findall(r'(\d+):(\d+)', re.search(nombre + r':\s*\{([^}]*)\}', blk).group(1))}
+AMIGOS['serv'] = _tabla('servicio'); AMIGOS['ing'] = _tabla('ingredientes')
+AMIGOS['asist'] = int(re.search(r'const VALOR_ASISTENTE = (\d+);', _idx).group(1))
+AMIGOS['cant_asist'] = {n: (2 if n >= 9 else (1 if n >= 3 else 0)) for n in range(1, 13)}
 SUPA['url'] = re.search(r"const SUPA_URL = '([^']+)'", _idx).group(1)
 SUPA['key'] = re.search(r"const SUPA_KEY = '([^']+)'", _idx).group(1)
 
@@ -392,7 +398,7 @@ calc();
           ''.join(f'<li><b>{bi(a, b)}</b>{bi(c, d)}</li>' for a, b, c, d in AMIGOS_HACEMOS) + '</ul></div></div>'
           '<div class="ap-am-calc"><div><div class="ap-q" style="margin-top:0">' + bi('¿Cuántos son?', 'How many of you?') + '</div>'
           '<div class="ap-am-st"><button type="button" id="am-menos" aria-label="Menos personas">−</button><output id="am-n">6</output><button type="button" id="am-mas" aria-label="Más personas">+</button><small>' + bi('personas', 'people') + '</small></div>'
-                    '<p class="ap-mini">' + bi('$65.000 por persona, todo incluido: clase, ingredientes y traslado (CABA y GBA). Ustedes ponen la mesa y la bebida.', '$65,000 per person, all included: class, ingredients and travel (Buenos Aires City and Greater BA). You bring the table and the drinks.') + '</p></div>'
+                    '<p class="ap-mini">' + bi('Mismo valor que una experiencia de 3 pasos, todo incluido: clase, ingredientes y asistente. Ustedes ponen la mesa y la bebida.', 'Same price as a 3-course experience, all included: class, ingredients and assistant. You bring the table and the drinks.') + '</p></div>'
           '<aside class="ap-sum"><span class="cp-k">✦ ' + bi('Tu experiencia', 'Your experience') + '</span><div class="ap-rows" id="am-rows"></div>'
           '<div class="ap-tot"><span>' + bi('Total · todo incluido', 'Total · all included') + '</span><b id="am-total">—</b></div><p class="ap-pp" id="am-pp"></p>'
           f'<a class="cp-btn ap-btn-full" id="am-cta" style="display:block;margin-top:14px" href="{wa(msg_am)}" target="_blank" rel="noopener">' + bi('Reservar fecha por WhatsApp →', 'Book a date on WhatsApp →') + '</a></aside></div></section>')
@@ -403,17 +409,18 @@ function f(n){return '$'+Math.round(n).toLocaleString('es-AR');}
 function en(){return document.documentElement.classList.contains('lang-en');}
 function L(a,b){return en()?b:a;}
 function calc(){
-  var tot=A.pp*st.n;
+  var tot=A.serv[st.n]+(window.apIng?window.apIng(A.ing[st.n]):A.ing[st.n])+A.cant_asist[st.n]*A.asist;
   document.getElementById('am-n').textContent=st.n;
   document.getElementById('am-menos').disabled=st.n<=A.min;document.getElementById('am-mas').disabled=st.n>=A.max;
-  document.getElementById('am-rows').innerHTML='<div><span>✓ '+L('Clase de ~'+A.horas+' horas para '+st.n,'~'+A.horas+'-hour class for '+st.n)+'</span><span></span></div><div><span>✓ '+L('Ingredientes para todos','Ingredients for everyone')+'</span><span></span></div><div><span>✓ '+L('Traslado (CABA y GBA)','Travel (Buenos Aires area)')+'</span><span></span></div>';
+  document.getElementById('am-rows').innerHTML='<div><span>✓ '+L('Clase de ~'+A.horas+' horas para '+st.n,'~'+A.horas+'-hour class for '+st.n)+'</span><span></span></div><div><span>✓ '+L('Ingredientes para todos','Ingredients for everyone')+'</span><span></span></div><div><span>✓ '+(A.cant_asist[st.n]>1?L('2 asistentes','2 assistants'):L('Asistente','Assistant'))+'</span><span></span></div>';
   document.getElementById('am-total').textContent=f(tot);
-  document.getElementById('am-pp').textContent=f(A.pp)+' '+L('por persona','per person');
+  document.getElementById('am-pp').textContent=f(Math.round(tot/st.n/1000)*1000)+' '+L('por persona','per person');
   var msg=L('Hola Daro, quiero reservar la experiencia "Pastas entre amigos" para '+st.n+' personas. Total (todo incluido): '+f(tot)+'. ¿Qué fechas tenés?','Hi Daro, I want to book the "Fresh pasta with friends" experience for '+st.n+' people. Total (all included): '+f(tot)+'. Which dates do you have?');
   document.getElementById('am-cta').href='https://wa.me/5491160410607?text='+encodeURIComponent(msg);
 }
 document.getElementById('am-menos').addEventListener('click',function(){if(st.n>A.min){st.n--;calc();}});
 document.getElementById('am-mas').addEventListener('click',function(){if(st.n<A.max){st.n++;calc();}});
+setTimeout(calc,1500);setTimeout(calc,4000);
 document.querySelectorAll('[data-cel-lang]').forEach(function(b){b.addEventListener('click',function(){setTimeout(calc,40);});});
 calc();
 })();</script>"""
