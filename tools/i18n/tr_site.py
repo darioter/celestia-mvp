@@ -1,6 +1,19 @@
 # -*- coding: utf-8 -*-
 # Traducciones ES -> EN del sitio (landing + flujos). Clave = texto visible en español (espacios normalizados).
 TR = {
+# ── Agenda primero / pre-reserva ──
+"✦ RESERVÁ TU FECHA · SIN COMPROMISO": "✦ BOOK YOUR DATE · NO COMMITMENT",
+"Elegí el día y dejalo pre-reservado": "Pick the day and pre-book it",
+"No pagás nada ahora. Te escribo por WhatsApp para armar el menú juntos y recién ahí confirmás con la seña.": "You pay nothing now. I'll message you on WhatsApp to plan the menu together, and only then you confirm with the deposit.",
+"✓ Sin pago ahora": "✓ No payment now",
+"✓ Menú a tu medida": "✓ Menu tailored to you",
+"✓ Cancelación gratuita hasta 15 días antes": "✓ Free cancellation up to 15 days before",
+"Pre-reservar esta fecha →": "Pre-book this date →",
+"Reservar mi fecha →": "Book my date →",
+"¿Dudas? Escribime": "Questions? Message me",
+"Confirmá tu pre-reserva": "Confirm your pre-booking",
+"✓ Pre-reservar mi fecha": "✓ Pre-book my date",
+"Sin compromiso: te escribimos por WhatsApp para armar el menú. La fecha queda confirmada recién con la seña.": "No commitment: we'll message you on WhatsApp to plan the menu. Your date is confirmed only once the deposit is paid.",
 # ── Accesos del hero / panel platos ──
 "Menús de ejemplo": "Sample menus",
 "10 estilos de cocina": "10 cooking styles",
