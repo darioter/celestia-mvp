@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
 # Traducciones ES -> EN del sitio (landing + flujos). Clave = texto visible en español (espacios normalizados).
 TR = {
+# ── Política de cancelación (oct 2026) ──
+"✓ Reprogramación por fuerza mayor": "✓ Rescheduling for force majeure",
+"✓ Pre-reservá tu fecha sin pagar nada": "✓ Pre-book your date without paying anything",
+"La fecha se confirma con una seña del 50%, que no es reembolsable. Si cancelás, se abona un porcentaje del total según la anticipación: con más de 15 días, el 50%; entre 15 y 10 días, el 60%; entre 10 días y 72 horas, el 80%; con menos de 72 horas, el 100%. La seña se toma a cuenta. Si no se puede hacer por fuerza mayor, pasamos a otra fecha de común acuerdo.": "Your date is confirmed with a non-refundable 50% deposit. If you cancel, a share of the total applies depending on notice: more than 15 days, 50%; 15 to 10 days, 60%; 10 days to 72 hours, 80%; under 72 hours, 100%. The deposit counts toward it. If it can't happen due to force majeure, we move to a new date by mutual agreement.",
+"Ver la política completa": "See the full policy",
 # ── Agenda primero / pre-reserva ──
 "✦ RESERVÁ TU FECHA · SIN COMPROMISO": "✦ BOOK YOUR DATE · NO COMMITMENT",
 "Elegí el día y dejalo pre-reservado": "Pick the day and pre-book it",
 "No pagás nada ahora. Te escribo por WhatsApp para armar el menú juntos y recién ahí confirmás con la seña.": "You pay nothing now. I'll message you on WhatsApp to plan the menu together, and only then you confirm with the deposit.",
 "✓ Sin pago ahora": "✓ No payment now",
 "✓ Menú a tu medida": "✓ Menu tailored to you",
-"✓ Cancelación gratuita hasta 15 días antes": "✓ Free cancellation up to 15 days before",
 "Pre-reservar esta fecha →": "Pre-book this date →",
 "Reservar mi fecha →": "Book my date →",
 "¿Dudas? Escribime": "Questions? Message me",
@@ -40,7 +44,6 @@ TR = {
 "Menús de 3 o 7 pasos": "3- or 7-course menus",
 "para aniversarios, cumpleaños y cenas con clientes. Vos elegís la fecha; las compras, la cocina y el servicio corren por nuestra cuenta. CABA y Gran Buenos Aires.": "for anniversaries, birthdays and client dinners. You pick the date; we take care of the shopping, the cooking and the service. Buenos Aires City and Greater Buenos Aires.",
 "Reservar experiencia →": "Book an experience →",
-"✓ Cancelación gratuita hasta 15 días antes": "✓ Free cancellation up to 15 days before",
 "Chef semanal": "Weekly chef",
 "✦ Menús de ejemplo": "✦ Sample menus",
 "✦ Explorar platos": "✦ Explore dishes",
@@ -208,7 +211,6 @@ TR = {
 "¿Cómo se paga?": "How do I pay?",
 "Una seña del 50% del servicio por transferencia reserva la fecha. Los ingredientes se abonan cuando llego a tu casa, por el costo final de la compra, y el saldo del servicio al terminar. Los ingredientes que ves al reservar son una estimación: el costo final depende del menú que cerremos y de los precios del día de compra.": "A 50% deposit of the service fee by bank transfer secures the date. Ingredients are paid when I arrive at your home, at the final shopping cost, and the service balance at the end. The ingredients you see when booking are an estimate: the final cost depends on the menu we agree on and on prices on the shopping day.",
 "¿Qué pasa si tengo que cancelar?": "What if I need to cancel?",
-"Con más de 15 días de anticipación te devolvemos el total de la seña; entre 7 y 15 días, el 50%; con menos de 7 días no hay devolución.": "More than 15 days ahead, we refund the full deposit; between 7 and 15 days, 50%; less than 7 days, no refund.",
 "¿Adaptan el menú a restricciones alimentarias?": "Do you adapt the menu to dietary restrictions?",
 "Sí. Contanos al reservar si hay vegetarianos, celíacos, alergias o cualquier preferencia y adaptamos el menú.": "Yes. Tell us when booking about vegetarians, celiacs, allergies or any preference and we'll adapt the menu.",
 "¿Para cuántas personas?": "For how many guests?",

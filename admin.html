@@ -2717,7 +2717,7 @@ function renderReservas() {
     const ingEst = Number(r.ingredientes) || 0;
     const llegadaVentana = r.turno === 'almuerzo' ? '08:00 y las 11:00' : '16:00 y las 19:00';
     const inicioStr = r.turno === 'almuerzo' ? '12:00hs' : '20:00hs';
-    const politica = `_Política de cancelación: más de 15 días devolución total · entre 7 y 15 días 50% · menos de 7 días sin devolución._`;
+    const politica = `_Política de cancelación: la seña (50%) no es reembolsable. Si se cancela se abona del total: +15 días 50% · 15 a 10 días 60% · 10 días a 72 hs 80% · menos de 72 hs 100%. Detalle: chefprivado.ar/terminos_`;
 
     const msgM2 = `Hola ${primerNombre} 👋\\n\\nRecibimos tu solicitud para una *${r.menu}* el *${fechaStr}* en turno *${turnoStr}* para *${r.personas} personas*.\\n\\nRevisamos la disponibilidad y te confirmamos a la brevedad. En ese mensaje te pasamos los datos para la seña, que reserva la fecha exclusivamente para vos.\\n\\nCualquier consulta respondemos por acá.\\n\\n— Daro · Celestia Chef Privado\\n\\n${politica}`;
 
