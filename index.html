@@ -1791,15 +1791,16 @@ body.beta-mode > [id*="section"],
 #bl-hcal .hc-go:hover{filter:brightness(1.05)}
 #bl-hcal .hc-ft{display:flex;justify-content:center;gap:12px;margin-top:8px;font-size:10.5px;color:rgba(250,246,239,.6)}
 #beta-landing #bl-hero-dates{display:none!important}
+@media(max-width:900px){body.bl-en-hero #bl-wa-float{opacity:0!important;pointer-events:none!important;transition:opacity .25s}}
 @media(min-width:901px){#bl-hcal{position:absolute;right:52px;bottom:78px;width:420px}}
-@media(max-width:900px){#beta-landing #bl-hcal{position:relative;margin:12px 0 2px;padding:10px 10px 10px!important;border-radius:14px}#bl-hcal .hc-hd{margin-bottom:7px}#bl-hcal .hc-hd b{font-size:16px}#bl-hcal .hc-hd small{font-size:10px}#bl-hcal .hc-d{flex-basis:44px;padding:5px 0 4px;border-radius:10px}#bl-hcal .hc-d b{font-size:18px}#bl-hcal .hc-d i{display:none}#bl-hcal .hc-go{margin-top:8px;padding:9px 12px;font-size:13px}#bl-hcal .hc-ft{display:none}#beta-landing .bl-hero{height:max(100svh,900px)!important}#beta-landing .bl-hero-cnt .bl-btns,#beta-landing .bl-hero-cnt .bl-risk-note{display:none!important}}
+@media(max-width:900px){#beta-landing #bl-hcal{position:absolute;left:20px;right:20px;bottom:64px;margin:0;padding:10px 10px 10px!important;border-radius:14px}#bl-hcal .hc-hd{margin-bottom:7px}#bl-hcal .hc-hd b{font-size:16px}#bl-hcal .hc-hd small{font-size:10px}#bl-hcal .hc-d{flex-basis:44px;padding:5px 0 4px;border-radius:10px}#bl-hcal .hc-d b{font-size:18px}#bl-hcal .hc-d i{display:none}#bl-hcal .hc-go{margin-top:8px;padding:9px 12px;font-size:13px}#bl-hcal .hc-ft{display:none}#beta-landing .bl-hero{height:max(100svh,760px)!important}#beta-landing .bl-hero .bl-hx-row{display:none!important}#beta-landing .bl-hero .bl-hero-cnt{padding-bottom:222px!important}#beta-landing .bl-hero .bl-hs-c{padding-bottom:222px!important}#beta-landing .bl-hero-cnt .bl-btns,#beta-landing .bl-hero-cnt .bl-risk-note{display:none!important}}
 </style>
 <div id="bl-hcal" role="group" aria-label="Elegí tu fecha"><div class="hc-hd"><b id="hc-t">Reserv&aacute; tu fecha</b><small id="hc-s">Sin compromiso &middot; sin pago ahora</small></div><div class="hc-days" id="hc-days"></div><button type="button" class="hc-go" id="hc-go">Ver fechas &rarr;</button><div class="hc-ft"><span id="hc-f1">&#9679; Libre</span><span id="hc-f2" style="color:#E8C96B">&#9679; Finde +10%</span></div></div>
 <script>document.addEventListener('DOMContentLoaded',function(){
 var box=document.getElementById('bl-hcal'),days=document.getElementById('hc-days'),go=document.getElementById('hc-go');if(!box)return;
 var hero=document.querySelector('#beta-landing .bl-hero'),cnt=document.querySelector('#beta-landing .bl-hero-cnt'),hd=document.getElementById('bl-hero-dates');
 var mq=window.matchMedia('(min-width:901px)'),sel=null;
-var btns=cnt&&cnt.querySelector('.bl-btns');function place(){if(mq.matches){if(box.parentNode!==hero)hero.appendChild(box);}else if(btns&&box.nextSibling!==btns){btns.parentNode.insertBefore(box,btns);}}
+function place(){if(box.parentNode!==hero)hero.appendChild(box);}
 function en(){return document.documentElement.classList.contains('lang-en');}
 function pad(n){return n<10?'0'+n:''+n;}
 function iso(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
@@ -1819,6 +1820,7 @@ days.addEventListener('click',function(e){var b=e.target.closest('.hc-d');if(!b|
 function irA(k,n){var cg=document.getElementById('bl-cg');var c=cg&&cg.querySelector('.bl-cd[data-fecha="'+k+'"]');if(c||n>=3){if(window.blIrAFecha)blIrAFecha(k);return;}var nx=document.getElementById('bl-cal-next');if(nx){nx.click();setTimeout(function(){irA(k,(n||0)+1);},120);}}
 go.addEventListener('click',function(){try{if(window.celTrack)celTrack('hero_calendario_cta',{fecha:sel||''});}catch(_){}if(sel)irA(sel,0);else{var ag=document.getElementById('bl-agenda');if(ag)ag.scrollIntoView({behavior:'smooth'});}});
 place();if(mq.addEventListener)mq.addEventListener('change',place);render();
+if('IntersectionObserver' in window&&hero)new IntersectionObserver(function(e){document.body.classList.toggle('bl-en-hero',e[0].isIntersecting);},{rootMargin:'0px 0px -35% 0px'}).observe(hero);
 var _r=window.blRenderCalendario;if(typeof _r==='function'){window.blRenderCalendario=function(){var x=_r.apply(this,arguments);try{render();}catch(e){}return x;};}
 setTimeout(render,1500);setTimeout(render,4000);
 document.querySelectorAll('[data-cel-lang]').forEach(function(x){x.addEventListener('click',function(){setTimeout(render,40);});});
