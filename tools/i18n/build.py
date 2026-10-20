@@ -112,6 +112,7 @@ function apply(l){
 }
 function inicial(){
   try{var s=localStorage.getItem('celestia_idioma');if(s==='en'||s==='es')return s;}catch(e){}
+  if(/bot|crawl|spider|slurp|google|bing|yandex|baidu|duckduck|facebookexternalhit|embedly|preview|headless/i.test(navigator.userAgent||''))return 'es';
   var nav=(navigator.language||'es').toLowerCase();
   return nav.indexOf('en')===0?'en':'es';
 }
