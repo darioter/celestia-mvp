@@ -1,6 +1,17 @@
 # -*- coding: utf-8 -*-
 # Traducciones ES -> EN del sitio (landing + flujos). Clave = texto visible en español (espacios normalizados).
 TR = {
+# ── Reservar sin costo (oct 2026) ──
+"✦ RESERVÁ TU FECHA · SIN COSTO": "✦ BOOK YOUR DATE · FREE",
+"Elegí el día y reservalo": "Pick the day and book it",
+"Reservar no tiene costo. Te escribo por WhatsApp para armar el menú juntos y la fecha queda confirmada con la seña.": "Booking is free. I'll message you on WhatsApp to plan the menu together, and your date is confirmed with the deposit.",
+"✓ Sin costo para reservar": "✓ Free to book",
+"Sin costo para reservar": "Free to book",
+"Reservar esta fecha →": "Book this date →",
+"✓ Reservar no tiene costo": "✓ Booking is free",
+"Confirmá tu reserva": "Confirm your booking",
+"✓ Reservar mi fecha": "✓ Book my date",
+"Reservar no tiene costo: te escribimos por WhatsApp para armar el menú y la fecha queda confirmada con la seña.": "Booking is free: we'll message you on WhatsApp to plan the menu, and your date is confirmed with the deposit.",
 # ── Política de cancelación (oct 2026) ──
 "✓ Reprogramación por fuerza mayor": "✓ Rescheduling for force majeure",
 "✓ Pre-reservá tu fecha sin pagar nada": "✓ Pre-book your date without paying anything",
