@@ -1771,7 +1771,37 @@ body.beta-mode > [id*="section"],
 
 </style>
 <body>
-<div id="beta-landing" role="main"><div class="bl-hdr"><div class="bl-logo" onclick="window.scrollTo({top:0,behavior:'smooth'})"><img src="/img/img-d316320d6b.webp" alt="Celestia Chef Privado" style="height:36px;width:auto;display:block"/></div><div class="bl-nav"><button class="bl-nl" onclick="document.getElementById('bl-servicios').scrollIntoView({behavior:'smooth'})">Experiencias</button><button class="bl-nl" onclick="blMenusAbrir()">Men&uacute;s</button><button class="bl-nl" onclick="openExplorarPlatos()">Platos</button><button class="bl-nl" onclick="document.getElementById('bl-plat').scrollIntoView({behavior:'smooth'})">C&oacute;mo funciona</button><button class="bl-nl" onclick="abrirConsultaCorporativa()">Corporativos</button><button class="bl-nl" onclick="exitBetaLanding('semanal')">Chef Semanal</button><a class="bl-nl" href="/aprende" data-no-tr style="text-decoration:none"><span class="b-es">Clases</span><span class="b-en" lang="en">Classes</span></a><a class="bl-nl" href="/blog" data-no-tr style="text-decoration:none"><span class="b-es">Blog</span><span class="b-en" lang="en">Blog</span></a><div class="bl-lang" role="group" aria-label="Idioma"><button type="button" data-cel-lang="es">ES</button><span>|</span><button type="button" data-cel-lang="en">EN</button></div><a href="/clientes" class="bl-hbtn bl-acc">Acceder</a><button class="bl-hbtn bl-host" onclick="exitBetaLanding('host')">Reservar &rarr;</button><button type="button" class="bl-burger" id="bl-burger" aria-label="Menú" aria-expanded="false" aria-controls="bl-drawer"><i></i><i></i><i></i></button></div><div class="bl-drawer" id="bl-drawer" hidden></div></div>
+<div id="beta-landing" role="main"><style id="agf-css">
+#bl-agf{position:fixed;left:20px;bottom:20px;z-index:940;display:flex;align-items:center;gap:12px;max-width:calc(100vw - 120px);background:#0D1B2A;color:#FAF6EF;border:1px solid rgba(201,168,76,.6);border-radius:999px;padding:8px 24px 8px 8px!important;font-family:'DM Sans',sans-serif;cursor:pointer;box-shadow:0 12px 30px rgba(13,27,42,.35);transform:translateY(140%);opacity:0;pointer-events:none;transition:transform .35s cubic-bezier(.16,.84,.44,1),opacity .25s}
+#bl-agf.on{transform:none;opacity:1;pointer-events:auto}
+#bl-agf:hover{border-color:#E8C96B}
+#bl-agf .ic{flex:none;width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#C9A84C,#E8C96B);color:#0D1B2A;display:flex;align-items:center;justify-content:center;font-size:18px}
+#bl-agf .tx{display:flex;flex-direction:column;line-height:1.2;text-align:left;min-width:0}
+#bl-agf .tx b{font-family:'DM Serif Display',serif;font-weight:400;font-size:16px;white-space:nowrap}
+#bl-agf .tx small{font-size:11.5px;color:#E8C96B;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#bl-agf .ar{flex:none;font-size:16px;color:#E8C96B;margin-left:4px}
+#bl-agf .tx{flex:1 1 auto}
+@media(min-width:601px){#bl-agf{width:max-content}}
+@media(max-width:600px){#bl-agf{left:12px;right:78px;bottom:14px;max-width:none;padding:6px 16px 6px 6px;gap:10px}#bl-agf .ic{width:36px;height:36px;font-size:16px}#bl-agf .tx b{font-size:15px}#bl-agf .ar{margin-left:auto}}
+@media(prefers-reduced-motion:reduce){#bl-agf{transition:none}}
+</style>
+<button type="button" id="bl-agf" aria-label="Reservar fecha"><span class="ic" aria-hidden="true">&#128197;</span><span class="tx"><b id="bl-agf-t">Reserv&aacute; tu fecha</b><small id="bl-agf-s">Sin compromiso &middot; sin pago ahora</small></span><span class="ar" aria-hidden="true">&rarr;</span></button>
+<script>document.addEventListener('DOMContentLoaded',function(){var b=document.getElementById('bl-agf');if(!b)return;
+var hero=document.querySelector('#beta-landing .bl-hero'),ag=document.getElementById('bl-agenda'),pastHero=false,inAg=false;
+function en(){return document.documentElement.classList.contains('lang-en');}
+function chip(){return document.querySelector('#bl-hero-dates-list .bl-hdate-chip');}
+function label(){var c=chip();document.getElementById('bl-agf-t').textContent=en()?'Book your date':'Reservá tu fecha';
+document.getElementById('bl-agf-s').textContent=c?(en()?'Next free: ':'Próxima libre: ')+c.textContent+(en()?' · no payment now':' · sin pago ahora'):(en()?'No commitment · no payment now':'Sin compromiso · sin pago ahora');}
+function upd(){b.classList.toggle('on',pastHero&&!inAg);}
+if('IntersectionObserver' in window){
+ if(hero)new IntersectionObserver(function(e){pastHero=!e[0].isIntersecting;upd();},{rootMargin:'-120px 0px 0px 0px'}).observe(hero);
+ if(ag)new IntersectionObserver(function(e){inAg=e[0].isIntersecting;upd();},{threshold:0.15}).observe(ag);
+}else{window.addEventListener('scroll',function(){pastHero=window.scrollY>600;upd();},{passive:true});}
+b.addEventListener('click',function(){try{if(window.celTrack)celTrack('agenda_flotante_click');}catch(e){}var c=chip();if(c)c.click();else if(ag)ag.scrollIntoView({behavior:'smooth'});});
+label();setTimeout(label,2500);setTimeout(label,6000);
+document.querySelectorAll('[data-cel-lang]').forEach(function(x){x.addEventListener('click',function(){setTimeout(label,40);});});
+});</script>
+<div class="bl-hdr"><div class="bl-logo" onclick="window.scrollTo({top:0,behavior:'smooth'})"><img src="/img/img-d316320d6b.webp" alt="Celestia Chef Privado" style="height:36px;width:auto;display:block"/></div><div class="bl-nav"><button class="bl-nl" onclick="document.getElementById('bl-servicios').scrollIntoView({behavior:'smooth'})">Experiencias</button><button class="bl-nl" onclick="blMenusAbrir()">Men&uacute;s</button><button class="bl-nl" onclick="openExplorarPlatos()">Platos</button><button class="bl-nl" onclick="document.getElementById('bl-plat').scrollIntoView({behavior:'smooth'})">C&oacute;mo funciona</button><button class="bl-nl" onclick="abrirConsultaCorporativa()">Corporativos</button><button class="bl-nl" onclick="exitBetaLanding('semanal')">Chef Semanal</button><a class="bl-nl" href="/aprende" data-no-tr style="text-decoration:none"><span class="b-es">Clases</span><span class="b-en" lang="en">Classes</span></a><a class="bl-nl" href="/blog" data-no-tr style="text-decoration:none"><span class="b-es">Blog</span><span class="b-en" lang="en">Blog</span></a><div class="bl-lang" role="group" aria-label="Idioma"><button type="button" data-cel-lang="es">ES</button><span>|</span><button type="button" data-cel-lang="en">EN</button></div><a href="/clientes" class="bl-hbtn bl-acc">Acceder</a><button class="bl-hbtn bl-host" onclick="exitBetaLanding('host')">Reservar &rarr;</button><button type="button" class="bl-burger" id="bl-burger" aria-label="Menú" aria-expanded="false" aria-controls="bl-drawer"><i></i><i></i><i></i></button></div><div class="bl-drawer" id="bl-drawer" hidden></div></div>
 <script>(function(){var b=document.getElementById('bl-burger'),d=document.getElementById('bl-drawer'),h=b.closest('.bl-hdr');
 document.querySelectorAll('#beta-landing .bl-nav .bl-nl').forEach(function(n){var c=n.cloneNode(true);c.classList.remove('bl-nl');c.classList.add('bl-dl');c.removeAttribute('style');d.appendChild(c);});var a=document.querySelector('#beta-landing .bl-acc');if(a){var c=document.createElement('a');c.href=a.getAttribute('href');c.className='bl-dl bl-dl-acc';c.setAttribute('data-no-tr','');c.innerHTML='<span class="b-es">Acceder a mi cuenta</span><span class="b-en" lang="en">Log in to my account</span>';d.appendChild(c);}
 function set(o){h.classList.toggle('bl-open',o);d.hidden=!o;b.setAttribute('aria-expanded',o?'true':'false');}
