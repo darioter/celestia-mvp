@@ -1771,7 +1771,59 @@ body.beta-mode > [id*="section"],
 
 </style>
 <body>
-<div id="beta-landing" role="main"><style id="agf-css">
+<div id="beta-landing" role="main"><style id="hcal-css">
+#beta-landing #bl-hcal{z-index:7;box-sizing:border-box;background:rgba(13,27,42,.72);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(201,168,76,.55);border-radius:18px;padding:16px 18px!important;color:#FAF6EF;font-family:'DM Sans',sans-serif;box-shadow:0 18px 44px rgba(0,0,0,.35)}
+#bl-hcal .hc-hd{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px}
+#bl-hcal .hc-hd b{font-family:'DM Serif Display',serif;font-weight:400;font-size:19px}
+#bl-hcal .hc-hd small{font-size:11px;color:#E8C96B;letter-spacing:.04em;white-space:nowrap}
+#bl-hcal .hc-days{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 1px 4px;scroll-snap-type:x mandatory}
+#bl-hcal .hc-days::-webkit-scrollbar{display:none}
+#bl-hcal .hc-d{flex:0 0 52px;scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;gap:1px;padding:8px 0 7px;border-radius:12px;border:1px solid rgba(250,246,239,.22);background:rgba(250,246,239,.06);color:#FAF6EF;cursor:pointer;font-family:inherit;transition:transform .15s,background .15s,border-color .15s}
+#bl-hcal .hc-d small{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:rgba(250,246,239,.65)}
+#bl-hcal .hc-d b{font-family:'DM Serif Display',serif;font-weight:400;font-size:21px;line-height:1.05}
+#bl-hcal .hc-d i{font-style:normal;font-size:9.5px;color:rgba(250,246,239,.55)}
+#bl-hcal .hc-d.we{border-color:rgba(201,168,76,.55)}
+#bl-hcal .hc-d:hover:not([disabled]){transform:translateY(-2px);border-color:#E8C96B}
+#bl-hcal .hc-d.on{background:linear-gradient(135deg,#C9A84C,#E8C96B);border-color:#E8C96B;color:#0D1B2A}
+#bl-hcal .hc-d.on small,#bl-hcal .hc-d.on i{color:#0D1B2A}
+#bl-hcal .hc-d[disabled]{opacity:.35;cursor:not-allowed;text-decoration:line-through}
+#bl-hcal .hc-go{display:block;width:100%;margin-top:10px;border:0;border-radius:999px;padding:11px 14px;background:linear-gradient(135deg,#C9A84C,#E8C96B);color:#0D1B2A;font:600 14px 'DM Sans',sans-serif;cursor:pointer;box-shadow:0 8px 22px rgba(201,168,76,.3)}
+#bl-hcal .hc-go:hover{filter:brightness(1.05)}
+#bl-hcal .hc-ft{display:flex;justify-content:center;gap:12px;margin-top:8px;font-size:10.5px;color:rgba(250,246,239,.6)}
+#beta-landing #bl-hero-dates{display:none!important}
+@media(min-width:901px){#bl-hcal{position:absolute;right:52px;bottom:78px;width:420px}}
+@media(max-width:900px){#beta-landing #bl-hcal{position:relative;margin:12px 0 2px;padding:10px 10px 10px!important;border-radius:14px}#bl-hcal .hc-hd{margin-bottom:7px}#bl-hcal .hc-hd b{font-size:16px}#bl-hcal .hc-hd small{font-size:10px}#bl-hcal .hc-d{flex-basis:44px;padding:5px 0 4px;border-radius:10px}#bl-hcal .hc-d b{font-size:18px}#bl-hcal .hc-d i{display:none}#bl-hcal .hc-go{margin-top:8px;padding:9px 12px;font-size:13px}#bl-hcal .hc-ft{display:none}#beta-landing .bl-hero{height:max(100svh,900px)!important}#beta-landing .bl-hero-cnt .bl-btns,#beta-landing .bl-hero-cnt .bl-risk-note{display:none!important}}
+</style>
+<div id="bl-hcal" role="group" aria-label="Elegí tu fecha"><div class="hc-hd"><b id="hc-t">Reserv&aacute; tu fecha</b><small id="hc-s">Sin compromiso &middot; sin pago ahora</small></div><div class="hc-days" id="hc-days"></div><button type="button" class="hc-go" id="hc-go">Ver fechas &rarr;</button><div class="hc-ft"><span id="hc-f1">&#9679; Libre</span><span id="hc-f2" style="color:#E8C96B">&#9679; Finde +10%</span></div></div>
+<script>document.addEventListener('DOMContentLoaded',function(){
+var box=document.getElementById('bl-hcal'),days=document.getElementById('hc-days'),go=document.getElementById('hc-go');if(!box)return;
+var hero=document.querySelector('#beta-landing .bl-hero'),cnt=document.querySelector('#beta-landing .bl-hero-cnt'),hd=document.getElementById('bl-hero-dates');
+var mq=window.matchMedia('(min-width:901px)'),sel=null;
+var btns=cnt&&cnt.querySelector('.bl-btns');function place(){if(mq.matches){if(box.parentNode!==hero)hero.appendChild(box);}else if(btns&&box.nextSibling!==btns){btns.parentNode.insertBefore(box,btns);}}
+function en(){return document.documentElement.classList.contains('lang-en');}
+function pad(n){return n<10?'0'+n:''+n;}
+function iso(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+var DES=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'],DEN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],MES=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],MEN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function libre(k){try{var b=(typeof fechasBloqueadas!=='undefined')?fechasBloqueadas[k]:null;var a=!!(b&&b.almuerzo),c=!!(b&&b.cena);var full=(typeof UN_SERVICIO_POR_DIA!=='undefined'&&UN_SERVICIO_POR_DIA)?(a||c):(a&&c);var man=(typeof diasBloqueados!=='undefined'&&diasBloqueados)?diasBloqueados.indexOf(k)>=0:false;return !full&&!man;}catch(e){return true;}}
+function lab(k){var d=new Date(k+'T12:00:00');return (en()?DEN:DES)[d.getDay()]+' '+d.getDate()+' '+(en()?MEN:MES)[d.getMonth()];}
+function render(){var d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()+2);var h='',first=null;
+ for(var i=0;i<14;i++){var k=iso(d),ok=libre(k),w=d.getDay(),we=(w===0||w===5||w===6);if(ok&&!first)first=k;
+  h+='<button type="button" class="hc-d'+(we?' we':'')+(sel===k?' on':'')+'" data-k="'+k+'"'+(ok?'':' disabled')+' aria-label="'+lab(k)+(ok?'':(en()?' · booked':' · ocupado'))+'"><small>'+(en()?DEN:DES)[w]+'</small><b>'+d.getDate()+'</b><i>'+(en()?MEN:MES)[d.getMonth()]+'</i></button>';d.setDate(d.getDate()+1);}
+ days.innerHTML=h;if(sel&&!libre(sel))sel=null;txt();}
+function txt(){document.getElementById('hc-t').textContent=en()?'Book your date':'Reservá tu fecha';document.getElementById('hc-s').textContent=en()?'No commitment · no payment now':'Sin compromiso · sin pago ahora';
+ document.getElementById('hc-f1').textContent=en()?'● Free':'● Libre';document.getElementById('hc-f2').textContent=en()?'● Weekend +10%':'● Finde +10%';
+ go.textContent=sel?(en()?'Pre-book '+lab(sel)+' →':'Pre-reservar '+lab(sel)+' →'):(en()?'See all dates →':'Ver todas las fechas →');}
+function stopHero(){try{hero.classList.add('bl-hs-stop');}catch(e){}}
+ box.addEventListener('pointerdown',stopHero);
+days.addEventListener('click',function(e){var b=e.target.closest('.hc-d');if(!b||b.disabled)return;sel=b.getAttribute('data-k');stopHero();days.querySelectorAll('.hc-d').forEach(function(x){x.classList.toggle('on',x===b);});txt();try{if(window.celTrack)celTrack('hero_fecha_click',{fecha:sel});}catch(_){}});
+function irA(k,n){var cg=document.getElementById('bl-cg');var c=cg&&cg.querySelector('.bl-cd[data-fecha="'+k+'"]');if(c||n>=3){if(window.blIrAFecha)blIrAFecha(k);return;}var nx=document.getElementById('bl-cal-next');if(nx){nx.click();setTimeout(function(){irA(k,(n||0)+1);},120);}}
+go.addEventListener('click',function(){try{if(window.celTrack)celTrack('hero_calendario_cta',{fecha:sel||''});}catch(_){}if(sel)irA(sel,0);else{var ag=document.getElementById('bl-agenda');if(ag)ag.scrollIntoView({behavior:'smooth'});}});
+place();if(mq.addEventListener)mq.addEventListener('change',place);render();
+var _r=window.blRenderCalendario;if(typeof _r==='function'){window.blRenderCalendario=function(){var x=_r.apply(this,arguments);try{render();}catch(e){}return x;};}
+setTimeout(render,1500);setTimeout(render,4000);
+document.querySelectorAll('[data-cel-lang]').forEach(function(x){x.addEventListener('click',function(){setTimeout(render,40);});});
+});</script>
+<style id="agf-css">
 #bl-agf{position:fixed;left:20px;bottom:20px;z-index:940;display:flex;align-items:center;gap:12px;max-width:calc(100vw - 120px);background:#0D1B2A;color:#FAF6EF;border:1px solid rgba(201,168,76,.6);border-radius:999px;padding:8px 24px 8px 8px!important;font-family:'DM Sans',sans-serif;cursor:pointer;box-shadow:0 12px 30px rgba(13,27,42,.35);transform:translateY(140%);opacity:0;pointer-events:none;transition:transform .35s cubic-bezier(.16,.84,.44,1),opacity .25s}
 #bl-agf.on{transform:none;opacity:1;pointer-events:auto}
 #bl-agf:hover{border-color:#E8C96B}
@@ -1969,7 +2021,7 @@ function go(n){
   tabs[i].classList.add('on');tabs[i].setAttribute('aria-selected','true');hero.style.setProperty('--acc',tabs[i].style.getPropertyValue('--c')||'#E8C96B');var _nm=document.getElementById('bl-hn-name'),_nu=document.getElementById('bl-hn-num');if(_nm){var _l=tabs[i].querySelector('.hn-l');_nm.textContent=_l?_l.textContent:tabs[i].textContent;}if(_nu)_nu.textContent=(i+1)+' / '+tabs.length;try{var bar=tabs[i].parentNode;if(bar.scrollWidth>bar.clientWidth)bar.scrollTo({left:tabs[i].offsetLeft-bar.clientWidth/2+tabs[i].offsetWidth/2,behavior:'smooth'});}catch(e){}
   programar();
 }
-function programar(){clearTimeout(timer);if(reduce||document.hidden)return;timer=setTimeout(function(){go(i+1);},DUR[i]);}
+function programar(){clearTimeout(timer);if(reduce||document.hidden||hero.classList.contains('bl-hs-stop'))return;timer=setTimeout(function(){go(i+1);},DUR[i]);}
 tabs.forEach(function(t,k){t.addEventListener('click',function(){go(k);});});
 document.addEventListener('visibilitychange',function(){if(document.hidden)clearTimeout(timer);else go(i);});
 if(reduce)hero.classList.add('bl-hs-stop');
