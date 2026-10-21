@@ -86,6 +86,12 @@ input[type=range]{width:100%;accent-color:var(--gold)}
 .r-cap-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;font-size:13.5px}
 .r-cap-h span{font-size:11.5px;color:var(--mut)}
 .r-cap textarea{min-height:230px;font-size:13px;line-height:1.5;margin:0}
+.r-pt{display:grid;grid-template-columns:120px 1fr;gap:12px;align-items:start}
+.r-pt canvas{width:120px;height:213px;border-radius:10px;background:#000}
+.r-pt .inp{margin-bottom:6px;font-size:12.5px;padding:8px 10px}
+.r-est{display:flex;gap:4px;margin-bottom:8px}
+.r-est button{flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:var(--cream);border-radius:8px;padding:6px 4px;font-size:11.5px}
+.r-est button.on{background:var(--gold);color:var(--navy);border-color:var(--gold);font-weight:600}
 .r-list{display:flex;flex-direction:column;gap:10px}
 .rf{display:grid;grid-template-columns:72px 1fr auto;gap:12px;background:var(--navy3);border:1px solid var(--line);border-radius:14px;padding:10px;align-items:start}
 .rf canvas{width:72px;height:128px;border-radius:8px;background:#000;cursor:pointer}
@@ -166,6 +172,23 @@ input[type=range]{width:100%;accent-color:var(--gold)}
           <label class="r-lab">Segundos por placa: <b id="r-seg-v">3</b></label>
           <input type="range" min="2" max="6" step=".5" value="3" id="r-seg" oninput="REEL.seg=+this.value;document.getElementById('r-seg-v').textContent=this.value;reelInfo()">
           <p class="hint" id="r-info"></p>
+          <div class="r-cap" id="r-port">
+            <div class="r-cap-h"><b>🖼 Portada del reel</b><span>la línea punteada es lo que se ve en tu perfil</span></div>
+            <div class="r-pt">
+              <canvas id="p-cv" width="1080" height="1920"></canvas>
+              <div>
+                <div class="r-est" id="p-est"><button data-e="impacto" class="on">Impacto</button><button data-e="numero">Número</button><button data-e="dividida">Dividida</button></div>
+                <input class="inp" id="p-tit" placeholder="Titular grande" oninput="PORT.titular=this.value;portDibujar()">
+                <input class="inp" id="p-dest" placeholder="Palabra en dorado" oninput="PORT.destacado=this.value;portDibujar()">
+                <input class="inp" id="p-baj" placeholder="Bajada corta" oninput="PORT.bajada=this.value;portDibujar()">
+                <input class="inp" id="p-num" placeholder="Número grande (estilo Número)" oninput="PORT.numero=this.value;portDibujar()">
+                <div class="r-ctrl" style="margin:4px 0 0">
+                  <button class="btn sm" onclick="portBajar()">⬇ Portada</button>
+                  <button class="btn sec sm" onclick="portFoto()">Cambiar foto</button>
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="r-cap">
             <div class="r-cap-h"><b>📝 Texto de la publicación</b><span id="r-cap-n"></span></div>
             <textarea class="inp" id="r-cap" placeholder="Se genera solo cuando armás el reel" oninput="capCont()"></textarea>
@@ -468,10 +491,10 @@ function fondoNavy(x, seed) {
   const g = x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#13263a'); g.addColorStop(1, C.navy);
   x.fillStyle = g; x.fillRect(0, 0, W, H); estrellas(x, 0, 0, 0, 170, seed);
 }
-function logoTop(x, logo) {
+function logoTop(x, logo, y0 = 240) {
   if (!logo) return; const w = 300, hh = w * logo.height / logo.width;
   x.save(); x.shadowColor = 'rgba(0,0,0,.45)'; x.shadowBlur = 30; x.shadowOffsetY = 6;
-  x.drawImage(logo, (W - w) / 2, 240, w, hh); x.restore();
+  x.drawImage(logo, (W - w) / 2, y0, w, hh); x.restore();
 }
 function pie(x, logo, oscuro = true) {
   if (logo) { const w = 330, hh = w * logo.height / logo.width; x.drawImage(logo, (W - w) / 2, 1585, w, hh); }
@@ -656,7 +679,7 @@ function reelDesdeNota(i) {
   if (n.tips[0]) fr.push({ tipo: 'texto', kicker: '💡 Tip de chef', titulo: n.tips[0], texto: '', img: null });
   fr.push({ tipo: 'cierre', kicker: 'Leé la nota completa', titulo: 'chefprivado.ar/blog', texto: 'Y si querés vivirlo en tu casa, reservá tu fecha sin costo', img: null });
   REEL.frames = fr.map((f, k) => Object.assign({ foco: 50, dir: k % 2 }, f));
-  reelRepartirFotos(); reelRender(); reelDibujarEn(0); capGenerar(); toast('Reel armado: ' + REEL.frames.length + ' placas');
+  reelRepartirFotos(); reelRender(); reelDibujarEn(0); capGenerar(); portDesdeReel(); toast('Reel armado: ' + REEL.frames.length + ' placas');
 }
 function reelDesdeFotos() {
   if (!REEL.fotos.length) { toast('Primero subí las fotos'); document.getElementById('r-fotos').click(); return; }
@@ -666,7 +689,7 @@ function reelDesdeFotos() {
   });
   fr.push({ tipo: 'cierre', kicker: 'Reservá tu fecha sin costo', titulo: 'chefprivado.ar', texto: 'Cenas de 3 y 7 pasos en tu casa, con servicio completo', img: null });
   REEL.frames = fr.map((f, k) => Object.assign({ foco: 50, dir: k % 2 }, f)); REEL.nota = null;
-  reelRender(); reelDibujarEn(0); capGenerar(); toast('Reel armado con ' + REEL.fotos.length + ' fotos');
+  reelRender(); reelDibujarEn(0); capGenerar(); portDesdeReel(); toast('Reel armado con ' + REEL.fotos.length + ' fotos');
 }
 function reelAgregar() { REEL.frames.splice(Math.max(REEL.frames.length - 1, 0), 0, { tipo: 'texto', kicker: '', titulo: 'Nuevo texto', texto: '', img: null, foco: 50, dir: REEL.frames.length % 2 }); reelRender(); }
 const TIPOS_R = { portada: 'Portada', foto: 'Foto + texto', texto: 'Solo texto', cierre: 'Cierre' };
@@ -833,6 +856,7 @@ async function reelPlacas() {
     try { zip.file('reel-placa-' + String(i + 1).padStart(2, '0') + '.png', await new Promise((res, rej) => cv.toBlob(b => b ? res(b) : rej(), 'image/png'))); } catch (e) { fallas.push(i + 1); }
   }
   const cap = document.getElementById('r-cap').value; if (cap) zip.file('texto-publicacion.txt', cap);
+  try { if (PORT.titular) zip.file('reel-placa-00-portada.png', await portBlob()); } catch (e) {}
   bajar(await zip.generateAsync({ type: 'blob' }), 'celestia-reel-placas.zip');
   toast(fallas.length ? 'Listo. Sin exportar: ' + fallas.join(', ') : 'Placas descargadas');
 }
@@ -965,6 +989,104 @@ async function reelCompartir() {
   try { await navigator.share({ files: [REEL.video], title: 'Reel Celestia', text: document.getElementById('r-cap').value || '' }); }
   catch (e) { if (e && e.name !== 'AbortError') bajar(REEL.video, REEL.video.name); }
 }
+
+/* ───────── portada del reel ───────── */
+const PORT = { estilo: 'impacto', titular: '', destacado: '', bajada: '', numero: '', kicker: '', img: null, foco: 50 };
+document.getElementById('p-est').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; PORT.estilo = b.dataset.e; document.querySelectorAll('#p-est button').forEach(x => x.classList.toggle('on', x === b)); portDibujar(); });
+function portDesdeReel() {
+  const n = REEL.nota, f0 = REEL.frames[0] || {};
+  let tit, baj;
+  if (n) { const [a, ...b] = n.titulo.split(':'); tit = a.trim(); baj = b.join(':').trim(); baj = baj ? baj.charAt(0).toUpperCase() + baj.slice(1) : ''; }
+  else { tit = f0.titulo || 'Una noche de chef en casa'; baj = 'Así se vive una experiencia Celestia'; }
+  const palabras = tit.replace(/[¿?¡!()"]/g, '').split(/\s+/).filter(w => w.length > 3);
+  const num = ((n ? n.titulo : tit).match(/\d+/) || [''])[0];
+  Object.assign(PORT, { titular: tit, bajada: baj, destacado: palabras[palabras.length - 1] || '', numero: num, kicker: n ? n.icono + ' ' + n.cat : '✦ Chef privado',
+    img: (REEL.frames.find(f => f.img) || {}).img || (n && n.img) || null });
+  if (num && PORT.estilo === 'impacto') { PORT.estilo = 'numero'; document.querySelectorAll('#p-est button').forEach(x => x.classList.toggle('on', x.dataset.e === 'numero')); }
+  ['tit:titular', 'dest:destacado', 'baj:bajada', 'num:numero'].forEach(k => { const [id, c] = k.split(':'); document.getElementById('p-' + id).value = PORT[c] || ''; });
+  portDibujar();
+}
+/* titular con una palabra resaltada en dorado y cursiva */
+function titularRico(x, txt, dest, { size, min, maxW, maxLines, y, align = 'center', color = C.cream, lh = 1.04 }) {
+  const words = String(txt || '').split(/\s+/).filter(Boolean); const d = (dest || '').toLowerCase().replace(/[^\wáéíóúñü]/g, '');
+  const esHi = w => d && w.toLowerCase().replace(/[^\wáéíóúñü]/g, '') === d;
+  let s = size, lines;
+  const fnt = (hi, s) => (hi ? 'italic ' : '') + '400 ' + s + 'px "DM Serif Display"';
+  const ancho = (w, s) => { x.font = fnt(esHi(w), s); return x.measureText(w).width; };
+  for (;;) {
+    lines = []; let cur = [], cw = 0; x.font = fnt(false, s); const sp = x.measureText(' ').width;
+    words.forEach(w => { const ww = ancho(w, s); if (cur.length && cw + sp + ww > maxW) { lines.push(cur); cur = [w]; cw = ww; } else { cw += (cur.length ? sp : 0) + ww; cur.push(w); } });
+    if (cur.length) lines.push(cur);
+    if (lines.length <= maxLines || s <= min) break; s -= 4;
+  }
+  x.textAlign = 'left';
+  lines.forEach((ln, k) => {
+    x.font = fnt(false, s); const sp = x.measureText(' ').width;
+    const tw = ln.reduce((a, w, i) => a + ancho(w, s) + (i ? sp : 0), 0);
+    let px = align === 'center' ? (W - tw) / 2 : 90; const py = y + s + k * s * lh;
+    ln.forEach(w => { const hi = esHi(w); x.font = fnt(hi, s); x.fillStyle = hi ? C.gold2 : color; x.fillText(w, px, py); px += x.measureText(w).width + sp; });
+  });
+  return y + s + (lines.length - 1) * s * lh;
+}
+function portRender(x, img, logo, guia) {
+  const P = PORT; x.clearRect(0, 0, W, H);
+  const kick = (y, col = C.gold2) => { x.font = '600 34px "DM Sans"'; if ('letterSpacing' in x) x.letterSpacing = '6px'; const t = (P.kicker || '').toUpperCase(); const w = x.measureText(t).width + 70;
+    x.fillStyle = 'rgba(13,27,42,.55)'; x.strokeStyle = 'rgba(232,201,106,.7)'; x.lineWidth = 2; x.beginPath(); x.roundRect((W - w) / 2, y, w, 76, 38); x.fill(); x.stroke();
+    x.fillStyle = col; x.textAlign = 'center'; x.fillText(t, W / 2 + 3, y + 50); if ('letterSpacing' in x) x.letterSpacing = '0px'; };
+  const guardar = y => { x.font = '600 32px "DM Sans"'; x.textAlign = 'center'; x.fillStyle = 'rgba(250,246,239,.85)'; if ('letterSpacing' in x) x.letterSpacing = '5px'; x.fillText('GUARDALO PARA DESPUÉS  🔖', W / 2, y); if ('letterSpacing' in x) x.letterSpacing = '0px'; };
+  if (P.estilo === 'dividida') {
+    x.fillStyle = C.navy; x.fillRect(0, 0, W, H);
+    if (img) cover(x, img, 0, 0, W, 1020, P.foco, 1.05);
+    const g = x.createLinearGradient(0, 760, 0, 1030); g.addColorStop(0, 'rgba(13,27,42,0)'); g.addColorStop(1, C.navy); x.fillStyle = g; x.fillRect(0, 760, W, 270);
+    logoTop(x, logo, 300);
+    kick(930);
+    let y = titularRico(x, P.titular, P.destacado, { size: 140, min: 80, maxW: W - 140, maxLines: 4, y: 1030 });
+    bloque(x, P.bajada, { font: '400 {s}px "DM Sans"', size: 42, maxW: W - 200, maxLines: 2, y: y + 40, color: 'rgba(250,246,239,.8)', align: 'center', lh: 1.3 });
+    guardar(1630);
+  } else {
+    if (img) { cover(x, img, 0, 0, W, H, P.foco, 1.08); x.fillStyle = 'rgba(13,27,42,.5)'; x.fillRect(0, 0, W, H); }
+    else fondoNavy(x, 5);
+    const g = x.createRadialGradient(W / 2, H / 2, 200, W / 2, H / 2, 1100); g.addColorStop(0, 'rgba(13,27,42,.35)'); g.addColorStop(1, 'rgba(13,27,42,.92)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
+    logoTop(x, logo, 300);
+    if (P.estilo === 'numero' && P.numero) {
+      kick(430);
+      x.font = '400 520px "DM Serif Display"'; x.textAlign = 'center';
+      const gg = x.createLinearGradient(0, 560, 0, 1000); gg.addColorStop(0, C.gold2); gg.addColorStop(1, C.gold); x.fillStyle = gg;
+      x.save(); x.shadowColor = 'rgba(0,0,0,.4)'; x.shadowBlur = 40; x.fillText(P.numero, W / 2, 960); x.restore();
+      let y = titularRico(x, P.titular, P.destacado, { size: 104, min: 66, maxW: W - 150, maxLines: 3, y: 1000 });
+      bloque(x, P.bajada, { font: '400 {s}px "DM Sans"', size: 40, maxW: W - 200, maxLines: 2, y: y + 36, color: 'rgba(250,246,239,.82)', align: 'center', lh: 1.3 });
+    } else {
+      kick(520);
+      x.save(); x.shadowColor = 'rgba(0,0,0,.45)'; x.shadowBlur = 30;
+      let y = titularRico(x, P.titular, P.destacado, { size: 170, min: 90, maxW: W - 130, maxLines: 5, y: 640 });
+      x.restore();
+      x.fillStyle = C.gold; x.fillRect(W / 2 - 60, y + 50, 120, 5);
+      bloque(x, P.bajada, { font: '400 {s}px "DM Sans"', size: 44, maxW: W - 200, maxLines: 3, y: y + 90, color: 'rgba(250,246,239,.88)', align: 'center', lh: 1.3 });
+    }
+    guardar(1630);
+  }
+  if (guia) { x.setLineDash([24, 18]); x.strokeStyle = 'rgba(232,201,106,.85)'; x.lineWidth = 6; x.strokeRect(6, 240, W - 12, 1440); x.setLineDash([]); }
+}
+async function portDibujar() {
+  const cv = document.getElementById('p-cv'); if (!cv) return;
+  const [img, logo] = await Promise.all([cargarImg(PORT.img), LOGO]);
+  portRender(cv.getContext('2d'), img, logo, true);
+}
+async function portBlob() {
+  const cv = Object.assign(document.createElement('canvas'), { width: W, height: H });
+  const [img, logo] = await Promise.all([cargarImg(PORT.img), LOGO]); portRender(cv.getContext('2d'), img, logo, false);
+  return new Promise((res, rej) => cv.toBlob(b => b ? res(b) : rej(), 'image/png'));
+}
+async function portBajar() {
+  if (!PORT.titular) { toast('Primero armá el reel'); return; }
+  try { bajar(await portBlob(), 'celestia-reel-portada' + (REEL.nota ? '-' + REEL.nota.slug.slice(0, 30) : '') + '.png'); }
+  catch (e) { toast('Esta foto no permite exportar: cambiala por una propia'); }
+}
+function portFoto() { const inp = document.getElementById('f-cambiar'); inp.dataset.reel = 'port'; inp.click(); }
+document.getElementById('f-cambiar').addEventListener('change', e => {
+  if (e.target.dataset.reel !== 'port') return; e.target.dataset.reel = '';
+  const f = e.target.files[0]; if (!f) return; PORT.img = URL.createObjectURL(f); e.target.value = ''; portDibujar();
+}, true);
 </script>
 </body>
 </html>
