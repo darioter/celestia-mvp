@@ -81,6 +81,10 @@ input[type=range]{width:100%;accent-color:var(--gold)}
 .r-rec{position:absolute;top:12px;left:12px;background:#b3261e;color:#fff;font-size:12px;font-weight:600;padding:5px 11px;border-radius:999px;display:none}
 .r-ctrl{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 10px}
 .r-lab{display:block;font-size:13px;color:var(--mut);margin-bottom:4px}
+.r-cap{background:var(--navy3);border:1px solid var(--line);border-radius:14px;padding:12px;margin:6px 0 12px}
+.r-cap-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;font-size:13.5px}
+.r-cap-h span{font-size:11.5px;color:var(--mut)}
+.r-cap textarea{min-height:230px;font-size:13px;line-height:1.5;margin:0}
 .r-list{display:flex;flex-direction:column;gap:10px}
 .rf{display:grid;grid-template-columns:72px 1fr auto;gap:12px;background:var(--navy3);border:1px solid var(--line);border-radius:14px;padding:10px;align-items:start}
 .rf canvas{width:72px;height:128px;border-radius:8px;background:#000;cursor:pointer}
@@ -160,6 +164,15 @@ input[type=range]{width:100%;accent-color:var(--gold)}
           <label class="r-lab">Segundos por placa: <b id="r-seg-v">3</b></label>
           <input type="range" min="2" max="6" step=".5" value="3" id="r-seg" oninput="REEL.seg=+this.value;document.getElementById('r-seg-v').textContent=this.value;reelInfo()">
           <p class="hint" id="r-info"></p>
+          <div class="r-cap">
+            <div class="r-cap-h"><b>📝 Texto de la publicación</b><span id="r-cap-n"></span></div>
+            <textarea class="inp" id="r-cap" placeholder="Se genera solo cuando armás el reel" oninput="capCont()"></textarea>
+            <div class="r-ctrl" style="margin:6px 0 0">
+              <button class="btn sm" onclick="capCopiar()">Copiar texto</button>
+              <button class="btn sec sm" onclick="capGenerar(true)">↻ Otra versión</button>
+              <button class="btn sec sm" id="r-cap-ia" onclick="capIA()">✨ Mejorar con IA</button>
+            </div>
+          </div>
           <p class="hint">El video sale en 1080×1920, sin música: la sumás en Instagram al publicarlo. Si preferís armarlo vos, bajá las placas y cargalas en el editor de reels.</p>
         </div>
         <div class="r-frames">
@@ -641,7 +654,7 @@ function reelDesdeNota(i) {
   if (n.tips[0]) fr.push({ tipo: 'texto', kicker: '💡 Tip de chef', titulo: n.tips[0], texto: '', img: null });
   fr.push({ tipo: 'cierre', kicker: 'Leé la nota completa', titulo: 'chefprivado.ar/blog', texto: 'Y si querés vivirlo en tu casa, reservá tu fecha sin costo', img: null });
   REEL.frames = fr.map((f, k) => Object.assign({ foco: 50, dir: k % 2 }, f));
-  reelRepartirFotos(); reelRender(); reelDibujarEn(0); toast('Reel armado: ' + REEL.frames.length + ' placas');
+  reelRepartirFotos(); reelRender(); reelDibujarEn(0); capGenerar(); toast('Reel armado: ' + REEL.frames.length + ' placas');
 }
 function reelDesdeFotos() {
   if (!REEL.fotos.length) { toast('Primero subí las fotos'); document.getElementById('r-fotos').click(); return; }
@@ -651,7 +664,7 @@ function reelDesdeFotos() {
   });
   fr.push({ tipo: 'cierre', kicker: 'Reservá tu fecha sin costo', titulo: 'chefprivado.ar', texto: 'Cenas de 3 y 7 pasos en tu casa, con servicio completo', img: null });
   REEL.frames = fr.map((f, k) => Object.assign({ foco: 50, dir: k % 2 }, f)); REEL.nota = null;
-  reelRender(); reelDibujarEn(0); toast('Reel armado con ' + REEL.fotos.length + ' fotos');
+  reelRender(); reelDibujarEn(0); capGenerar(); toast('Reel armado con ' + REEL.fotos.length + ' fotos');
 }
 function reelAgregar() { REEL.frames.splice(Math.max(REEL.frames.length - 1, 0), 0, { tipo: 'texto', kicker: '', titulo: 'Nuevo texto', texto: '', img: null, foco: 50, dir: REEL.frames.length % 2 }); reelRender(); }
 const TIPOS_R = { portada: 'Portada', foto: 'Foto + texto', texto: 'Solo texto', cierre: 'Cierre' };
@@ -817,8 +830,80 @@ async function reelPlacas() {
     x.clearRect(0, 0, W, H); reelFrame(x, REEL.frames[i], .5, 1, R.imgs[i], R.logo, R.iso_);
     try { zip.file('reel-placa-' + String(i + 1).padStart(2, '0') + '.png', await new Promise((res, rej) => cv.toBlob(b => b ? res(b) : rej(), 'image/png'))); } catch (e) { fallas.push(i + 1); }
   }
+  const cap = document.getElementById('r-cap').value; if (cap) zip.file('texto-publicacion.txt', cap);
   bajar(await zip.generateAsync({ type: 'blob' }), 'celestia-reel-placas.zip');
   toast(fallas.length ? 'Listo. Sin exportar: ' + fallas.join(', ') : 'Placas descargadas');
+}
+
+/* ───────── texto de la publicación del reel ───────── */
+const HASH_BASE = ['#chefprivado', '#celestiachefprivado', '#cocinaencasa', '#buenosaires', '#gastronomia'];
+const HASH_CAT = {
+  'La despensa': ['#especias', '#ingredientes', '#tipsdecocina'], 'Cortes y técnica': ['#tecnicasdecocina', '#cuchillos', '#tipsdecocina'],
+  'Básicos de cocina': ['#cocinabasica', '#tipsdecocina', '#aprendeacocinar'], 'Fondos y salsas': ['#salsas', '#cocinafrancesa', '#tipsdecocina'],
+  'Pasta fresca': ['#pastafresca', '#pastacasera', '#cocinaitaliana'], 'Carnes': ['#carnes', '#asado', '#parrilla'],
+  'Del mar': ['#pescados', '#mariscos', '#pescadofresco'], 'Panadería en casa': ['#pancasero', '#panaderia', '#masamadre'],
+  'Pastelería': ['#pasteleria', '#reposteria', '#pasteleriacasera'], 'Para recibir': ['#recibirencasa', '#fingerfood', '#coctel'],
+  'Sabores de Latinoamérica': ['#cocinalatinoamericana', '#ceviche', '#comidaperuana'], 'Vuelta al mundo': ['#cocinainternacional', '#cocinafrancesa', '#foodie'],
+  'Sushi': ['#sushi', '#sushicasero', '#comidajaponesa'], 'Emplatado': ['#emplatado', '#plating', '#finedining'],
+  'El arte de la mesa': ['#mesapuesta', '#tablesetting', '#anfitrion'], 'Copa y maridaje': ['#vinos', '#maridaje', '#vinoargentino'],
+  'Comer bien': ['#nutricion', '#alimentacionsaludable', '#mitos'], 'Cocina segura': ['#seguridadalimentaria', '#manipulaciondealimentos', '#tipsdecocina'],
+  'Recetas con toque de chef': ['#recetas', '#recetasfaciles', '#tipsdecocina'], 'La trastienda': ['#restaurantes', '#gastronomia', '#emprendedores'],
+  'Chef privado': ['#chefadomicilio', '#cenaencasa', '#experienciagastronomica']
+};
+const GANCHOS = [
+  n => n.titulo + ' 👇',
+  n => 'Guardá este reel para la próxima vez que cocines 🔖\n\n' + n.titulo,
+  n => '¿Lo sabías? ' + n.titulo.replace(/:.*/, '') + ' explicado simple 👇',
+];
+const CIERRES = [
+  '¿Cuál de estos no sabías? Contame en los comentarios 👇',
+  'Mandáselo a quien cocina en tu casa 📩',
+  '¿Qué querés que explique en el próximo reel? Te leo 👇',
+];
+let _capV = 0;
+function capCont() { const t = document.getElementById('r-cap').value; document.getElementById('r-cap-n').textContent = t.length + ' / 2200'; }
+function capGenerar(otra) {
+  if (otra) _capV++;
+  const ta = document.getElementById('r-cap'); if (!REEL.frames.length) { ta.value = ''; capCont(); return; }
+  const n = REEL.nota, v = _capV % 3, L = [];
+  if (n) {
+    const puntos = REEL.frames.filter(f => /^\d+$/.test(f.kicker || '')).map(f => f.titulo).filter(Boolean);
+    const tip = REEL.frames.find(f => /tip/i.test(f.kicker || ''));
+    L.push(GANCHOS[v](n), '', n.bajada, '');
+    if (puntos.length) { L.push(v === 1 ? 'Lo que vas a ver:' : 'En este reel:'); puntos.forEach((p, k) => L.push((v === 2 ? '▫️ ' : (k + 1) + '. ') + p)); L.push(''); }
+    if (tip && tip.titulo) L.push('💡 Tip de chef: ' + tip.titulo, '');
+    L.push('📖 La nota completa está en el blog: chefprivado.ar/blog (link en la bio).');
+    L.push('🍽️ Y si querés vivirlo en tu casa, reservá tu fecha sin costo.', '', CIERRES[v], '');
+    L.push([...HASH_BASE, ...(HASH_CAT[n.cat] || ['#tipsdecocina'])].join(' '));
+  } else {
+    const frases = REEL.frames.filter(f => f.tipo === 'foto' || f.tipo === 'portada').map(f => f.titulo).filter(Boolean);
+    const g = ['Así es una noche de chef en casa ✨', 'Detrás de escena de una cena Celestia 🍽️', 'Del mercado a tu mesa, en tu propia casa ✨'][v];
+    L.push(g, '');
+    if (frases.length) { frases.slice(0, 5).forEach(f => L.push('▫️ ' + f)); L.push(''); }
+    L.push('Llego unas horas antes, cocino en tu cocina, sirvo cada paso y me voy dejando todo limpio. Vos solo disfrutás con tu gente.', '');
+    L.push('📅 Reservá tu fecha sin costo en chefprivado.ar (link en la bio).', 'Menús de 3 y 7 pasos · CABA y GBA', '', CIERRES[(v + 1) % 3], '');
+    L.push([...HASH_BASE, '#chefadomicilio', '#cenaencasa', '#experienciagastronomica'].join(' '));
+  }
+  ta.value = L.join('\n'); capCont();
+}
+function capCopiar() { const t = document.getElementById('r-cap').value; if (!t) { toast('Primero armá el reel'); return; } (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => toast('Texto copiado'), () => { document.getElementById('r-cap').select(); toast('Seleccionado: copialo con Ctrl+C'); }); }
+async function capIA() {
+  if (!REEL.frames.length) { toast('Primero armá el reel'); return; }
+  const b = document.getElementById('r-cap-ia'); b.disabled = true; b.textContent = '✨ Escribiendo…';
+  const placas = REEL.frames.map((f, i) => `${i + 1}. [${TIPOS_R[f.tipo]}] ${[f.kicker, f.titulo, f.texto].filter(Boolean).join(' — ')}`).join('\n');
+  const pedido = `Sos Daro Castello, chef privado de Celestia (chefprivado.ar) en Buenos Aires. Escribí el texto para publicar un reel de Instagram.
+Tema: ${REEL.nota ? REEL.nota.titulo + ' (' + REEL.nota.cat + '). ' + REEL.nota.bajada : 'detrás de escena de una cena con chef privado en casa'}
+Placas del reel:
+${placas}
+
+Reglas: español rioplatense con voseo, primera persona, tono cálido y experto, sin exagerar. Primera línea con gancho fuerte (se corta a los 125 caracteres). Después 3 a 6 líneas cortas con lo que aprende quien mira, una invitación a guardar o compartir y una pregunta para comentarios. ${REEL.nota ? 'Mencioná que la nota completa está en chefprivado.ar/blog (link en la bio).' : ''} Cerrá con una línea suave invitando a reservar la fecha sin costo. Usá pocos emojis. Al final, en una línea aparte, entre 8 y 12 hashtags en español relevantes (incluí #chefprivado y #celestiachefprivado). Máximo 1200 caracteres. Devolvé solo el texto final, sin comillas ni explicaciones.`;
+  try {
+    const r = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 900, messages: [{ role: 'user', content: pedido }] }) });
+    const d = await r.json(); const t = d && d.content && d.content.map(c => c.text || '').join('').trim();
+    if (!t) throw new Error((d && d.error && (d.error.message || d.error)) || 'sin respuesta');
+    document.getElementById('r-cap').value = t; capCont(); toast('Texto escrito con IA');
+  } catch (e) { toast('No se pudo usar la IA: ' + String(e.message || e).slice(0, 80)); }
+  b.disabled = false; b.textContent = '✨ Mejorar con IA';
 }
 </script>
 </body>
