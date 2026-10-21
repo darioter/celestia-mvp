@@ -139,6 +139,23 @@ html.cel-pre body{visibility:hidden}
 .cp-sb svg{width:16px;height:16px;fill:currentColor}
 .cp-sb.wa{background:#25d366}.cp-sb.fb{background:#1877f2}.cp-sb.x{background:#111}.cp-sb.cp{background:var(--nv)}.cp-sb.nat{background:linear-gradient(135deg,var(--gd),var(--gdl));color:var(--nv)}
 @media(max-width:640px){.cp-vb{padding:10px 16px}.cp-sb span{display:none}.cp-sb{padding:11px}.cp-sb.nat span{display:inline}}
+.cp-temas{max-width:1120px;margin:0 auto;padding:0 22px 70px}
+.cp-temas h2{font-family:'DM Serif Display',serif;font-weight:400;font-size:32px;color:var(--nv);text-align:center;margin:0 0 6px}
+.cp-temas>p{text-align:center;color:#6b6b6b;margin:0 0 26px}
+.cp-tg{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.cp-t{position:relative;text-align:left;background:#fff;border:1px solid var(--crd);border-radius:16px;padding:16px 16px 14px;font-family:'DM Sans',sans-serif;color:var(--nv);cursor:pointer;transition:transform .18s,box-shadow .18s,border-color .18s}
+.cp-t:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(13,27,42,.1);border-color:var(--gd)}
+.cp-t i{font-style:normal;font-size:26px;display:block;margin-bottom:6px}
+.cp-t b{display:block;font-size:15.5px;font-weight:600;margin-bottom:3px}
+.cp-t small{display:block;font-size:12.5px;line-height:1.45;color:#6b6b6b}
+.cp-t em{position:absolute;top:12px;right:12px;font-style:normal;font-size:11px;font-weight:600;letter-spacing:.06em;background:#f3ead6;color:#7a6224;border-radius:999px;padding:3px 9px}
+.cp-t.pr{cursor:default;background:#faf6ef}.cp-t.pr:hover{transform:none;box-shadow:none;border-color:var(--crd)}
+.cp-t.pr em{background:transparent;border:1px dashed #c9b88f;color:#9a8a66}
+.cp-t.pr i,.cp-t.pr b{opacity:.75}
+.cp-t[data-cat=experiencias]{grid-column:1/-1;background:linear-gradient(145deg,#13263a,var(--nv));border-color:rgba(201,168,76,.35);color:var(--cr);display:flex;align-items:center;gap:14px}
+.cp-t[data-cat=experiencias] i{margin:0}.cp-t[data-cat=experiencias] small{color:rgba(250,246,239,.7)}.cp-t[data-cat=experiencias] em{position:static;order:3;margin-left:auto}
+@media(max-width:900px){.cp-tg{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:640px){.cp-tg{grid-template-columns:1fr 1fr;gap:10px}.cp-t{padding:14px 12px 12px}.cp-t small{font-size:12px}.cp-temas h2{font-size:27px}}
 @media(max-width:900px){.cp-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:640px){.cp-grid{grid-template-columns:1fr}.cp-top h1{font-size:34px}.cp-hero{min-height:380px}.cp-hero h1{font-size:31px}.cp-body h2{font-size:24px}.cp-nav a.cp-hide{display:none}.cp-hdr{padding:0 14px}.cp-body td:first-child{white-space:normal}}
 '''
@@ -162,7 +179,7 @@ HEAD = '''<!doctype html>
 '''
 FOOT = '''<footer class="cp-ftr"><a href="/">chefprivado.ar</a>·<a href="/blog">{caps}</a>·<a href="https://www.instagram.com/celestiachefprivado/" target="_blank" rel="noopener">Instagram</a><div style="margin-top:8px">Celestia · Chef Privado · Buenos Aires © 2026</div></footer>
 <script src="/js/i18n.js"></script><script src="/js/analytics.js"></script>
-<script>document.querySelectorAll('.cp-chip').forEach(function(c){{c.addEventListener('click',function(){{var k=c.getAttribute('data-cat');document.querySelectorAll('.cp-chip').forEach(function(x){{x.classList.toggle('on',x===c);}});document.querySelectorAll('.cp-grid .cp-card').forEach(function(a){{a.classList.toggle('hide',k!=='todas'&&a.getAttribute('data-cat')!==k);}});}});}});</script>
+<script>document.querySelectorAll('.cp-t[data-cat]').forEach(function(t){{t.addEventListener('click',function(){{var c=document.querySelector('.cp-chip[data-cat="'+t.getAttribute('data-cat')+'"]');if(c){{c.click();document.querySelector('.cp-chips').scrollIntoView({{behavior:'smooth',block:'start'}});}}}});}});document.querySelectorAll('.cp-chip').forEach(function(c){{c.addEventListener('click',function(){{var k=c.getAttribute('data-cat');document.querySelectorAll('.cp-chip').forEach(function(x){{x.classList.toggle('on',x===c);}});document.querySelectorAll('.cp-grid .cp-card').forEach(function(a){{a.classList.toggle('hide',k!=='todas'&&a.getAttribute('data-cat')!==k);}});}});}});</script>
 <script>(function(){{var b=document.querySelector('.cp-int');if(!b)return;var slug=b.getAttribute('data-slug'),en=document.documentElement.classList.contains('lang-en'),k='cel_voto_'+slug,m=b.querySelector('.cp-vmsg');
 function t(es,e){{return document.documentElement.classList.contains('lang-en')?e:es;}}
 function tr(ev,p){{try{{window.celTrack&&celTrack(ev,p);}}catch(e){{}}}}
@@ -232,6 +249,16 @@ def indice():
     h += '<div class="cp-chips"><button type="button" class="cp-chip on" data-cat="todas">' + bi('Todas', 'All') + '</button>' + ''.join(
         f'<button type="button" class="cp-chip" data-cat="{k}">{CATS[k]["icono"]} {bi(CATS[k]["es"], CATS[k]["en"])}</button>' for k in usadas) + '</div>'
     h += '<div class="cp-grid">' + ''.join(card(a) for a in sorted(ARTICULOS, key=lambda x: x['fecha'], reverse=True)) + '</div>'
+    def tile(k):
+        c = CATS[k]; n = sum(1 for a in ARTICULOS if a['cat'] == k)
+        badge = bi(f'{n} nota' + ('s' if n != 1 else ''), f'{n} note' + ('s' if n != 1 else '')) if n else bi('Pronto', 'Soon')
+        attrs = f'type="button" class="cp-t" data-cat="{k}"' if n else 'type="button" class="cp-t pr" aria-disabled="true"'
+        return (f'<button {attrs}><em>{badge}</em><i aria-hidden="true">{c["icono"]}</i><b>{bi(c["es"], c["en"])}</b>'
+                f'<small>{bi(c.get("d_es",""), c.get("d_en",""))}</small></button>')
+    h += ('<section class="cp-temas" id="temas"><h2>' + bi('Explorá por tema', 'Explore by topic') + '</h2><p>' +
+          bi('Todo lo que aprendí en la escuela de cocina, ordenado para que vayas de lo básico a lo avanzado.',
+             'Everything I learned at culinary school, organized from the basics to the advanced.') + '</p><div class="cp-tg">' +
+          ''.join(tile(k) for k in CATS) + '</div></section>')
     h += FOOT.format(caps=bi('Blog', 'Blog'))
     escribir('blog/index.html', h)
 
