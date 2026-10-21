@@ -120,6 +120,25 @@ html.cel-pre body{visibility:hidden}
 .cp-rel .cp-grid{padding:0 0 70px}
 .cp-ftr{background:var(--nv);color:rgba(250,246,239,.45);text-align:center;font-size:12px;padding:26px 16px}
 .cp-ftr a{color:rgba(250,246,239,.7);text-decoration:none;margin:0 8px}
+.cp-int{max-width:720px;margin:34px auto 0;padding:0 22px}
+.cp-int>div{background:#fff;border:1px solid var(--crd);border-radius:20px;padding:24px 22px;text-align:center}
+.cp-int h3{font-family:'DM Serif Display',serif;font-weight:400;font-size:23px;color:var(--nv);margin:0 0 14px}
+.cp-vot{display:flex;gap:12px;justify-content:center}
+.cp-vb{display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--crd);background:#faf6ef;color:var(--nv);border-radius:999px;padding:10px 20px;font:500 15px 'DM Sans',sans-serif;cursor:pointer;transition:transform .15s,background .2s,border-color .2s}
+.cp-vb svg{width:20px;height:20px}
+.cp-vb:hover{transform:translateY(-2px);border-color:var(--gd)}
+.cp-vb.on{background:linear-gradient(135deg,var(--gd),var(--gdl));border-color:var(--gd)}
+.cp-vb.on svg{animation:cpPop .4s ease}
+@keyframes cpPop{0%{transform:scale(1)}50%{transform:scale(1.35) rotate(-10deg)}100%{transform:scale(1)}}
+.cp-vmsg{min-height:20px;margin:12px 0 0;font-size:14px;color:#7a6a4a}
+.cp-shr{border-top:1px solid var(--crd);margin-top:18px;padding-top:16px}
+.cp-shr p{font-size:14px;color:#6b6b6b;margin:0 0 12px}
+.cp-shb{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.cp-sb{display:inline-flex;align-items:center;gap:7px;border:0;border-radius:999px;padding:9px 15px;font:500 14px 'DM Sans',sans-serif;cursor:pointer;color:#fff;transition:transform .15s,opacity .2s}
+.cp-sb:hover{transform:translateY(-2px)}
+.cp-sb svg{width:16px;height:16px;fill:currentColor}
+.cp-sb.wa{background:#25d366}.cp-sb.fb{background:#1877f2}.cp-sb.x{background:#111}.cp-sb.cp{background:var(--nv)}.cp-sb.nat{background:linear-gradient(135deg,var(--gd),var(--gdl));color:var(--nv)}
+@media(max-width:640px){.cp-vb{padding:10px 16px}.cp-sb span{display:none}.cp-sb{padding:11px}.cp-sb.nat span{display:inline}}
 @media(max-width:900px){.cp-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:640px){.cp-grid{grid-template-columns:1fr}.cp-top h1{font-size:34px}.cp-hero{min-height:380px}.cp-hero h1{font-size:31px}.cp-body h2{font-size:24px}.cp-nav a.cp-hide{display:none}.cp-hdr{padding:0 14px}.cp-body td:first-child{white-space:normal}}
 '''
@@ -144,6 +163,21 @@ HEAD = '''<!doctype html>
 FOOT = '''<footer class="cp-ftr"><a href="/">chefprivado.ar</a>·<a href="/blog">{caps}</a>·<a href="https://www.instagram.com/celestiachefprivado/" target="_blank" rel="noopener">Instagram</a><div style="margin-top:8px">Celestia · Chef Privado · Buenos Aires © 2026</div></footer>
 <script src="/js/i18n.js"></script><script src="/js/analytics.js"></script>
 <script>document.querySelectorAll('.cp-chip').forEach(function(c){{c.addEventListener('click',function(){{var k=c.getAttribute('data-cat');document.querySelectorAll('.cp-chip').forEach(function(x){{x.classList.toggle('on',x===c);}});document.querySelectorAll('.cp-grid .cp-card').forEach(function(a){{a.classList.toggle('hide',k!=='todas'&&a.getAttribute('data-cat')!==k);}});}});}});</script>
+<script>(function(){{var b=document.querySelector('.cp-int');if(!b)return;var slug=b.getAttribute('data-slug'),en=document.documentElement.classList.contains('lang-en'),k='cel_voto_'+slug,m=b.querySelector('.cp-vmsg');
+function t(es,e){{return document.documentElement.classList.contains('lang-en')?e:es;}}
+function tr(ev,p){{try{{window.celTrack&&celTrack(ev,p);}}catch(e){{}}}}
+function marcar(v){{b.querySelectorAll('.cp-vb').forEach(function(x){{x.classList.toggle('on',x.getAttribute('data-v')===v);x.setAttribute('aria-pressed',x.getAttribute('data-v')===v);}});}}
+var prev=null;try{{prev=localStorage.getItem(k);}}catch(e){{}}if(prev)marcar(prev);
+b.querySelectorAll('.cp-vb').forEach(function(x){{x.addEventListener('click',function(){{var v=x.getAttribute('data-v');if(v===prev)return;marcar(v);prev=v;try{{localStorage.setItem(k,v);}}catch(e){{}}
+tr('blog_voto',{{articulo:slug,voto:v}});m.textContent=v==='up'?t('¡Gracias! Si te gustó, compartila con alguien que la aproveche 👇','Thanks! If you liked it, share it with someone who will enjoy it 👇'):t('Gracias por avisar. Escribime qué te faltó y la mejoro.','Thanks for letting me know. Tell me what was missing and I will improve it.');}});}});
+var url=location.origin+location.pathname,tit=document.querySelector('h1 .b-'+(en?'en':'es'));tit=tit?tit.textContent:document.title;
+var nat=b.querySelector('[data-s=nativo]');if(navigator.share)nat.hidden=false;
+b.querySelectorAll('.cp-sb').forEach(function(x){{x.addEventListener('click',function(){{var s=x.getAttribute('data-s'),u=url+'?utm_source='+s+'&utm_medium=compartir&utm_campaign=blog';tr('blog_compartir',{{articulo:slug,red:s}});
+if(s==='nativo'){{navigator.share({{title:tit,url:u}}).catch(function(){{}});}}
+else if(s==='whatsapp')window.open('https://api.whatsapp.com/send?text='+encodeURIComponent(tit+' 👉 '+u),'_blank','noopener');
+else if(s==='facebook')window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(u),'_blank','noopener,width=600,height=500');
+else if(s==='x')window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(tit)+'&url='+encodeURIComponent(u),'_blank','noopener,width=600,height=500');
+else if(s==='copiar'){{(navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(function(){{x.querySelector('span').textContent=t('¡Copiado!','Copied!');}}).catch(function(){{prompt('',u);}});}}}});}});}})();</script>
 </body></html>'''
 
 def card(a):
@@ -176,6 +210,7 @@ def articulo(a):
           f'<div class="cp-meta"><img src="/img/daro-avatar.webp" alt="Daro Castello"><span>{bi("Por Daro Castello","By Daro Castello")}</span>'
           f'<span>{bi(fecha(a["fecha"],"es"), fecha(a["fecha"],"en"))}</span><span>{bi(str(minutos(es["cuerpo"]))+" min de lectura", str(minutos(en["cuerpo"]))+" min read")}</span></div></div></section>')
     h += f'<article class="cp-body"><div class="b-es">{bloques(es["cuerpo"],"es")}</div><div class="b-en" lang="en">{bloques(en["cuerpo"],"en")}</div></article>'
+    h += '<section class="cp-int" data-slug="' + a['slug'] + '"><div><h3>' + bi('¿Te sirvió esta nota?', 'Was this note useful?') + '</h3>' + '<div class="cp-vot"><button type="button" class="cp-vb" data-v="up" aria-label="Me sirvió"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v11H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3zm0 0 4-8a3 3 0 0 1 3 3v4h5.5a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 18.1 21H7"/></svg>' + bi('Sí, me sirvió','Yes') + '</button>' + '<button type="button" class="cp-vb" data-v="down" aria-label="No me sirvió"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="transform:scaleY(-1)"><path d="M7 10v11H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3zm0 0 4-8a3 3 0 0 1 3 3v4h5.5a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 18.1 21H7"/></svg>' + bi('No tanto','Not really') + '</button></div>' + '<p class="cp-vmsg" aria-live="polite"></p>' + '<div class="cp-shr"><p>' + bi('¿Conocés a alguien que cocine? Recomendale esta nota', 'Know someone who cooks? Share this note') + '</p><div class="cp-shb">' + '<button type="button" class="cp-sb nat" data-s="nativo" hidden><svg viewBox="0 0 24 24"><path d="M18 16a3 3 0 0 0-2.4 1.2l-6.7-3.4a3 3 0 0 0 0-1.6l6.7-3.4A3 3 0 1 0 15 7l-6.7 3.4a3 3 0 1 0 0 3.2L15 17a3 3 0 1 0 3-1z"/></svg><span>' + bi('Compartir','Share') + '</span></button>' + '<button type="button" class="cp-sb wa" data-s="whatsapp" aria-label="WhatsApp"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-3.9-4.7-4.1-.1-.2-1.1-1.5-1.1-2.8s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.4.6-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.7-.1l1.9.9c.3.1.5.2.5.3.1.2.1.7-.1 1.3z"/></svg><span>WhatsApp</span></button>' + '<button type="button" class="cp-sb fb" data-s="facebook" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M14 8V6c0-.9.6-1 1-1h3V1h-4c-4 0-5 3-5 5v2H6v4h3v11h5V12h3.6l.4-4z"/></svg><span>Facebook</span></button>' + '<button type="button" class="cp-sb x" data-s="x" aria-label="X"><svg viewBox="0 0 24 24"><path d="M18.2 2h3.4l-7.4 8.5L23 22h-6.8l-5.3-7-6.1 7H1.4l7.9-9L1 2h7l4.8 6.4zm-1.2 18h1.9L7.1 4H5.1z"/></svg><span>X</span></button>' + '<button type="button" class="cp-sb cp" data-s="copiar" aria-label="Copiar link"><svg viewBox="0 0 24 24"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11z"/></svg><span>' + bi('Copiar link','Copy link') + '</span></button>' + '</div></div></div></section>'
     h += ('<section class="cp-ctab"><div><h3>' + bi('¿Querés que lo cocine en tu casa?', 'Want me to cook it at your home?') + '</h3><p>' +
           bi('Menús de 3 o 7 pasos, terminados en tu casa y con servicio completo en CABA y GBA.', '3- or 7-course menus, finished at your home with full service in Buenos Aires.') +
           '</p><a class="cp-btn" href="/">' + bi('Reservar una experiencia →', 'Book an experience →') + '</a></div></section>')
