@@ -1772,88 +1772,167 @@ body.beta-mode > [id*="section"],
 </style>
 <body>
 <div id="beta-landing" role="main"><style id="hcal-css">
-#beta-landing #bl-hcal{z-index:7;box-sizing:border-box;background:rgba(13,27,42,.72);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(201,168,76,.55);border-radius:18px;padding:16px 18px!important;color:#FAF6EF;font-family:'DM Sans',sans-serif;box-shadow:0 18px 44px rgba(0,0,0,.35)}
-#bl-hcal .hc-hd{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px}
-#bl-hcal .hc-hd b{font-family:'DM Serif Display',serif;font-weight:400;font-size:19px}
-#bl-hcal .hc-hd small{font-size:11px;color:#E8C96B;letter-spacing:.04em;white-space:nowrap}
-#bl-hcal .hc-days{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 1px 4px;scroll-snap-type:x mandatory}
-#bl-hcal .hc-days::-webkit-scrollbar{display:none}
-#bl-hcal .hc-d{flex:0 0 52px;scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;gap:1px;padding:8px 0 7px;border-radius:12px;border:1px solid rgba(250,246,239,.22);background:rgba(250,246,239,.06);color:#FAF6EF;cursor:pointer;font-family:inherit;transition:transform .15s,background .15s,border-color .15s}
-#bl-hcal .hc-d small{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:rgba(250,246,239,.65)}
-#bl-hcal .hc-d b{font-family:'DM Serif Display',serif;font-weight:400;font-size:21px;line-height:1.05}
-#bl-hcal .hc-d i{font-style:normal;font-size:9.5px;color:rgba(250,246,239,.55)}
-#bl-hcal .hc-d.we{border-color:rgba(201,168,76,.55)}
-#bl-hcal .hc-d:hover:not([disabled]){transform:translateY(-2px);border-color:#E8C96B}
-#bl-hcal .hc-d.on{background:linear-gradient(135deg,#C9A84C,#E8C96B);border-color:#E8C96B;color:#0D1B2A}
-#bl-hcal .hc-d.on small,#bl-hcal .hc-d.on i{color:#0D1B2A}
-#bl-hcal .hc-d[disabled]{opacity:.35;cursor:not-allowed;text-decoration:line-through}
-#bl-hcal .hc-go{display:block;width:100%;margin-top:10px;border:0;border-radius:999px;padding:11px 14px;background:linear-gradient(135deg,#C9A84C,#E8C96B);color:#0D1B2A;font:600 14px 'DM Sans',sans-serif;cursor:pointer;box-shadow:0 8px 22px rgba(201,168,76,.3)}
-#bl-hcal .hc-go:hover{filter:brightness(1.05)}
-#bl-hcal .hc-ft{display:flex;justify-content:center;gap:12px;margin-top:8px;font-size:10.5px;color:rgba(250,246,239,.6)}
+/* ── Calendario Celestia (hero + flotante) ── */
+.cc{--g:#C9A84C;--gl:#E8C96B;--nv:#0D1B2A;font-family:'DM Sans',sans-serif;color:#FAF6EF}
+.cc-top{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-bottom:10px}
+.cc-k{display:block;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gl);margin-bottom:2px}
+.cc-mo{display:block;font-family:'DM Serif Display',serif;font-weight:400;font-size:22px;line-height:1.1;text-transform:capitalize;overflow:hidden}
+.cc-mo span{display:inline-block;animation:ccMo .45s cubic-bezier(.16,.84,.44,1)}
+.cc-nav{display:flex;gap:6px}
+.cc-nav button{width:32px;height:32px;border-radius:50%;border:1px solid rgba(201,168,76,.5);background:rgba(250,246,239,.06);color:#FAF6EF;font-size:16px;line-height:1;cursor:pointer;transition:background .2s,transform .2s}
+.cc-nav button:hover:not([disabled]){background:rgba(201,168,76,.25);transform:scale(1.08)}
+.cc-nav button[disabled]{opacity:.3;cursor:default}
+.cc-dn,.cc-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;text-align:center}
+.cc-dn span{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(250,246,239,.55);padding:2px 0 4px}
+.cc-dn span:nth-child(n+5){color:rgba(232,201,107,.85)}
+.cc-d{position:relative;aspect-ratio:1/1;min-height:30px;border:0;border-radius:10px;background:rgba(250,246,239,.07);color:#FAF6EF;font:500 14px 'DM Sans',sans-serif;cursor:pointer;opacity:0;animation:ccIn .4s cubic-bezier(.16,.84,.44,1) forwards;animation-delay:calc(var(--i)*14ms);transition:background .18s,transform .18s,box-shadow .18s}
+.cc-d:hover:not([disabled]){background:rgba(201,168,76,.28);transform:translateY(-2px)}
+.cc-d.we::after{content:'';position:absolute;left:50%;bottom:4px;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:var(--gl)}
+.cc-d.hoy{box-shadow:inset 0 0 0 1px rgba(250,246,239,.45)}
+.cc-d[disabled]{background:none;color:rgba(250,246,239,.25);cursor:default}
+.cc-d.oc{text-decoration:line-through;color:rgba(250,246,239,.3)}
+.cc-d.vac{visibility:hidden;animation:none}
+.cc-d.on{background:linear-gradient(135deg,var(--g),var(--gl));color:var(--nv);font-weight:700;transform:scale(1.06);box-shadow:0 0 0 0 rgba(232,201,107,.7);animation:ccIn .4s forwards,ccPulse 1.8s ease-out .4s infinite}
+.cc-d.on::after{background:var(--nv)}
+.cc-ft{display:flex;align-items:center;gap:10px;margin-top:12px}
+.cc-sel{flex:1;min-width:0;font-size:12px;color:rgba(250,246,239,.7);line-height:1.3}
+.cc-sel b{display:block;font-family:'DM Serif Display',serif;font-weight:400;font-size:16px;color:#FAF6EF;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cc-go{position:relative;overflow:hidden;flex:none;border:0;border-radius:999px;padding:11px 18px;background:linear-gradient(135deg,var(--g),var(--gl));color:var(--nv);font:700 13.5px 'DM Sans',sans-serif;cursor:pointer;box-shadow:0 8px 22px rgba(201,168,76,.35);transition:transform .2s}
+.cc-go:hover{transform:translateY(-1px)}
+.cc-go::before{content:'';position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-20deg);animation:ccShine 3.2s ease-in-out infinite}
+.cc-leg{display:flex;justify-content:space-between;gap:8px;margin-top:9px;font-size:10.5px;color:rgba(250,246,239,.55)}
+.cc-leg i{font-style:normal;color:var(--gl)}
+@keyframes ccIn{from{opacity:0;transform:translateY(8px) scale(.92)}to{opacity:1;transform:none}}
+@keyframes ccMo{from{opacity:0;transform:translateY(60%)}to{opacity:1;transform:none}}
+@keyframes ccPulse{0%{box-shadow:0 0 0 0 rgba(232,201,107,.65)}70%{box-shadow:0 0 0 10px rgba(232,201,107,0)}100%{box-shadow:0 0 0 0 rgba(232,201,107,0)}}
+@keyframes ccShine{0%,55%{left:-60%}100%{left:130%}}
+@keyframes ccUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+.cc-still .cc-d{animation:none!important;opacity:1!important}
+.cc-still .cc-d.on{animation:ccPulse 1.8s ease-out infinite!important}
+#beta-landing .cc .cc-top{margin-bottom:10px}
+#beta-landing .cc .cc-ft{margin-top:12px}
+#beta-landing .cc .cc-leg{margin-top:9px}
+#beta-landing .cc .cc-k{margin-bottom:2px}
+#beta-landing .cc .cc-dn span{padding:2px 0 4px}
+#beta-landing .cc .cc-go{padding:11px 18px}
+#beta-landing .cc .cc-d.on{background:linear-gradient(135deg,#C9A84C,#E8C96B);color:#0D1B2A}
+#beta-landing #bl-agp{padding:18px 18px 16px}
+#beta-landing #bl-agp .cc-top{padding-right:34px}
+@media(max-width:900px){#beta-landing #bl-hcal .cc-top{margin-bottom:6px}#beta-landing #bl-hcal .cc-ft{margin-top:9px}#beta-landing #bl-hcal .cc-go{padding:10px 14px}}
+/* tarjeta del hero */
+#beta-landing #bl-hcal{z-index:7;box-sizing:border-box;background:rgba(13,27,42,.74);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid rgba(201,168,76,.55);border-radius:20px;padding:16px 18px!important;box-shadow:0 20px 50px rgba(0,0,0,.4);animation:ccUp .7s cubic-bezier(.16,.84,.44,1) .3s both}
 #beta-landing #bl-hero-dates{display:none!important}
-@media(max-width:900px){body.bl-en-hero #bl-wa-float{opacity:0!important;pointer-events:none!important;transition:opacity .25s}}
-@media(min-width:901px){#bl-hcal{position:absolute;right:52px;bottom:78px;width:420px}}
-@media(max-width:900px){#beta-landing #bl-hcal{position:absolute;left:20px;right:20px;bottom:64px;margin:0;padding:10px 10px 10px!important;border-radius:14px}#bl-hcal .hc-hd{margin-bottom:7px}#bl-hcal .hc-hd b{font-size:16px}#bl-hcal .hc-hd small{font-size:10px}#bl-hcal .hc-d{flex-basis:44px;padding:5px 0 4px;border-radius:10px}#bl-hcal .hc-d b{font-size:18px}#bl-hcal .hc-d i{display:none}#bl-hcal .hc-go{margin-top:8px;padding:9px 12px;font-size:13px}#bl-hcal .hc-ft{display:none}#beta-landing .bl-hero{height:max(100svh,760px)!important}#beta-landing .bl-hero .bl-hx-row{display:none!important}#beta-landing .bl-hero .bl-hero-cnt{padding-bottom:222px!important}#beta-landing .bl-hero .bl-hs-c{padding-bottom:222px!important}#beta-landing .bl-hero-cnt .bl-btns,#beta-landing .bl-hero-cnt .bl-risk-note{display:none!important}}
+@media(min-width:901px){#beta-landing #bl-hcal{position:absolute;right:52px;bottom:74px;width:360px}#bl-hcal .cc-d{aspect-ratio:auto;height:38px;min-height:0}}
+@media(max-width:900px){
+ #beta-landing #bl-hcal{position:absolute;left:16px;right:16px;bottom:60px;margin:0;padding:12px 12px 11px!important;border-radius:16px}
+ #bl-hcal .cc-top{margin-bottom:6px}#bl-hcal .cc-mo{font-size:18px}#bl-hcal .cc-nav button{width:30px;height:30px}
+ #bl-hcal .cc-d{aspect-ratio:auto;height:36px;min-height:0;font-size:13.5px}
+ #bl-hcal .cc-ft{margin-top:9px}#bl-hcal .cc-go{padding:10px 14px;font-size:13px}#bl-hcal .cc-leg{display:none}
+ #beta-landing .bl-hero{height:max(100svh,780px)!important}
+ #beta-landing .bl-hero .bl-hero-cnt{padding-bottom:262px!important}
+ #beta-landing .bl-hero .bl-hs-c{padding-bottom:262px!important}
+ #beta-landing .bl-hero .bl-hx-row{display:none!important}
+ #beta-landing .bl-hero-cnt .bl-btns,#beta-landing .bl-hero-cnt .bl-risk-note{display:none!important}
+ body.bl-en-hero #bl-wa-float{opacity:0!important;pointer-events:none!important;transition:opacity .25s}
+}
+/* flotante */
+#bl-agf{position:fixed;left:20px;bottom:20px;z-index:940;display:flex;align-items:center;gap:12px;max-width:calc(100vw - 120px);background:#0D1B2A;color:#FAF6EF;border:1px solid rgba(201,168,76,.6);border-radius:999px;padding:8px 22px 8px 8px!important;font-family:'DM Sans',sans-serif;cursor:pointer;box-shadow:0 12px 30px rgba(13,27,42,.35);transform:translateY(140%);opacity:0;pointer-events:none;transition:transform .35s cubic-bezier(.16,.84,.44,1),opacity .25s}
+#bl-agf.on{transform:none;opacity:1;pointer-events:auto}
+#bl-agf .ic{position:relative;flex:none;width:42px;height:42px;border-radius:12px;background:#FAF6EF;color:#0D1B2A;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;line-height:1}
+#bl-agf .ic small{display:block;width:100%;text-align:center;background:linear-gradient(135deg,#C9A84C,#E8C96B);font:700 8.5px 'DM Sans',sans-serif;letter-spacing:.08em;text-transform:uppercase;padding:3px 0 2px}
+#bl-agf .ic b{font:400 19px 'DM Serif Display',serif;padding-top:2px}
+#bl-agf.on .ic{animation:ccFlip 6s ease-in-out infinite}
+@keyframes ccFlip{0%,88%,100%{transform:none}92%{transform:rotate(-8deg) scale(1.08)}96%{transform:rotate(6deg) scale(1.04)}}
+#bl-agf .tx{display:flex;flex-direction:column;line-height:1.2;text-align:left;min-width:0;flex:1 1 auto}
+#bl-agf .tx b{font-family:'DM Serif Display',serif;font-weight:400;font-size:16px;white-space:nowrap}
+#bl-agf .tx small{font-size:11.5px;color:#E8C96B;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#bl-agf .ar{flex:none;font-size:16px;color:#E8C96B;margin-left:4px;transition:transform .3s}
+#bl-agf[aria-expanded="true"] .ar{transform:rotate(-90deg)}
+@media(min-width:601px){#bl-agf{width:max-content}}
+@media(max-width:600px){#bl-agf{left:12px;right:78px;bottom:14px;max-width:none;padding:6px 16px 6px 6px!important;gap:10px}#bl-agf .ic{width:38px;height:38px}#bl-agf .tx b{font-size:15px}#bl-agf .ar{margin-left:auto}}
+#bl-agp{position:fixed;left:20px;bottom:86px;z-index:945;width:340px;box-sizing:border-box;background:rgba(13,27,42,.96);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid rgba(201,168,76,.55);border-radius:20px;padding:16px 18px;box-shadow:0 24px 60px rgba(0,0,0,.45);transform-origin:20% 100%;transform:translateY(16px) scale(.94);opacity:0;pointer-events:none;transition:transform .32s cubic-bezier(.16,.84,.44,1),opacity .22s}
+#bl-agp.open{transform:none;opacity:1;pointer-events:auto}
+#bl-agp .cc-x{position:absolute;top:10px;right:12px;background:none;border:0;color:rgba(250,246,239,.6);font-size:20px;cursor:pointer}
+@media(max-width:600px){#bl-agp{left:12px;right:12px;width:auto;bottom:74px}}
+@media(prefers-reduced-motion:reduce){.cc-d,.cc-mo span,#beta-landing #bl-hcal{animation:none!important;opacity:1}.cc-go::before{display:none}#bl-agf,#bl-agp{transition:none}#bl-agf.on .ic{animation:none}}
 </style>
-<div id="bl-hcal" role="group" aria-label="Elegí tu fecha"><div class="hc-hd"><b id="hc-t">Reserv&aacute; tu fecha</b><small id="hc-s">Sin costo para reservar</small></div><div class="hc-days" id="hc-days"></div><button type="button" class="hc-go" id="hc-go">Ver fechas &rarr;</button><div class="hc-ft"><span id="hc-f1">&#9679; Libre</span><span id="hc-f2" style="color:#E8C96B">&#9679; Finde +10%</span></div></div>
+<div id="bl-hcal" class="cc" role="group" aria-label="Elegí tu fecha"></div>
+<button type="button" id="bl-agf" aria-label="Reservar fecha" aria-expanded="false" aria-controls="bl-agp"><span class="ic" aria-hidden="true"><small id="bl-agf-m">Oct</small><b id="bl-agf-d">22</b></span><span class="tx"><b id="bl-agf-t">Reserv&aacute; tu fecha</b><small id="bl-agf-s">Sin costo para reservar</small></span><span class="ar" aria-hidden="true">&rarr;</span></button>
+<div id="bl-agp" class="cc" role="dialog" aria-label="Calendario de reservas"><button type="button" class="cc-x" aria-label="Cerrar">&times;</button></div>
 <script>document.addEventListener('DOMContentLoaded',function(){
-var box=document.getElementById('bl-hcal'),days=document.getElementById('hc-days'),go=document.getElementById('hc-go');if(!box)return;
-var hero=document.querySelector('#beta-landing .bl-hero'),cnt=document.querySelector('#beta-landing .bl-hero-cnt'),hd=document.getElementById('bl-hero-dates');
-var mq=window.matchMedia('(min-width:901px)'),sel=null;
-function place(){if(box.parentNode!==hero)hero.appendChild(box);}
+var hero=document.querySelector('#beta-landing .bl-hero'),ag=document.getElementById('bl-agenda');
 function en(){return document.documentElement.classList.contains('lang-en');}
 function pad(n){return n<10?'0'+n:''+n;}
 function iso(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
-var DES=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'],DEN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],MES=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],MEN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var MES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'],MEN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+var DES=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'],DEN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+var MC=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],MCE=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function minD(){var d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()+2);return d;}
 function libre(k){try{var b=(typeof fechasBloqueadas!=='undefined')?fechasBloqueadas[k]:null;var a=!!(b&&b.almuerzo),c=!!(b&&b.cena);var full=(typeof UN_SERVICIO_POR_DIA!=='undefined'&&UN_SERVICIO_POR_DIA)?(a||c):(a&&c);var man=(typeof diasBloqueados!=='undefined'&&diasBloqueados)?diasBloqueados.indexOf(k)>=0:false;return !full&&!man;}catch(e){return true;}}
-function lab(k){var d=new Date(k+'T12:00:00');return (en()?DEN:DES)[d.getDay()]+' '+d.getDate()+' '+(en()?MEN:MES)[d.getMonth()];}
-function render(){var d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()+2);var h='',first=null;
- for(var i=0;i<14;i++){var k=iso(d),ok=libre(k),w=d.getDay(),we=(w===0||w===5||w===6);if(ok&&!first)first=k;
-  h+='<button type="button" class="hc-d'+(we?' we':'')+(sel===k?' on':'')+'" data-k="'+k+'"'+(ok?'':' disabled')+' aria-label="'+lab(k)+(ok?'':(en()?' · booked':' · ocupado'))+'"><small>'+(en()?DEN:DES)[w]+'</small><b>'+d.getDate()+'</b><i>'+(en()?MEN:MES)[d.getMonth()]+'</i></button>';d.setDate(d.getDate()+1);}
- days.innerHTML=h;if(sel&&!libre(sel))sel=null;txt();}
-function txt(){document.getElementById('hc-t').textContent=en()?'Book your date':'Reservá tu fecha';document.getElementById('hc-s').textContent=en()?'Free to book':'Sin costo para reservar';
- document.getElementById('hc-f1').textContent=en()?'● Free':'● Libre';document.getElementById('hc-f2').textContent=en()?'● Weekend +10%':'● Finde +10%';
- go.textContent=sel?(en()?'Book '+lab(sel)+' →':'Reservar '+lab(sel)+' →'):(en()?'See all dates →':'Ver todas las fechas →');}
+function lab(k){var d=new Date(k+'T12:00:00');return (en()?DEN:DES)[d.getDay()]+' '+d.getDate()+' '+(en()?MCE:MC)[d.getMonth()];}
+function primerLibre(){var d=minD();for(var i=0;i<120;i++){var k=iso(d);if(libre(k))return k;d.setDate(d.getDate()+1);}return null;}
+function irA(k,n){var cg=document.getElementById('bl-cg');var c=cg&&cg.querySelector('.bl-cd[data-fecha="'+k+'"]');if(c||n>=4){if(window.blIrAFecha)blIrAFecha(k);return;}var nx=document.getElementById('bl-cal-next');if(nx){nx.click();setTimeout(function(){irA(k,(n||0)+1);},120);}}
+function track(ev,k){try{if(window.celTrack)celTrack(ev,{fecha:k||''});}catch(e){}}
 function stopHero(){try{hero.classList.add('bl-hs-stop');}catch(e){}}
- box.addEventListener('pointerdown',stopHero);
-days.addEventListener('click',function(e){var b=e.target.closest('.hc-d');if(!b||b.disabled)return;sel=b.getAttribute('data-k');stopHero();days.querySelectorAll('.hc-d').forEach(function(x){x.classList.toggle('on',x===b);});txt();try{if(window.celTrack)celTrack('hero_fecha_click',{fecha:sel});}catch(_){}});
-function irA(k,n){var cg=document.getElementById('bl-cg');var c=cg&&cg.querySelector('.bl-cd[data-fecha="'+k+'"]');if(c||n>=3){if(window.blIrAFecha)blIrAFecha(k);return;}var nx=document.getElementById('bl-cal-next');if(nx){nx.click();setTimeout(function(){irA(k,(n||0)+1);},120);}}
-go.addEventListener('click',function(){try{if(window.celTrack)celTrack('hero_calendario_cta',{fecha:sel||''});}catch(_){}if(sel)irA(sel,0);else{var ag=document.getElementById('bl-agenda');if(ag)ag.scrollIntoView({behavior:'smooth'});}});
-place();if(mq.addEventListener)mq.addEventListener('change',place);render();
-if('IntersectionObserver' in window&&hero)new IntersectionObserver(function(e){document.body.classList.toggle('bl-en-hero',e[0].isIntersecting);},{rootMargin:'0px 0px -35% 0px'}).observe(hero);
-var _r=window.blRenderCalendario;if(typeof _r==='function'){window.blRenderCalendario=function(){var x=_r.apply(this,arguments);try{render();}catch(e){}return x;};}
-setTimeout(render,1500);setTimeout(render,4000);
-document.querySelectorAll('[data-cel-lang]').forEach(function(x){x.addEventListener('click',function(){setTimeout(render,40);});});
-});</script>
-<style id="agf-css">
-#bl-agf{position:fixed;left:20px;bottom:20px;z-index:940;display:flex;align-items:center;gap:12px;max-width:calc(100vw - 120px);background:#0D1B2A;color:#FAF6EF;border:1px solid rgba(201,168,76,.6);border-radius:999px;padding:8px 24px 8px 8px!important;font-family:'DM Sans',sans-serif;cursor:pointer;box-shadow:0 12px 30px rgba(13,27,42,.35);transform:translateY(140%);opacity:0;pointer-events:none;transition:transform .35s cubic-bezier(.16,.84,.44,1),opacity .25s}
-#bl-agf.on{transform:none;opacity:1;pointer-events:auto}
-#bl-agf:hover{border-color:#E8C96B}
-#bl-agf .ic{flex:none;width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#C9A84C,#E8C96B);color:#0D1B2A;display:flex;align-items:center;justify-content:center;font-size:18px}
-#bl-agf .tx{display:flex;flex-direction:column;line-height:1.2;text-align:left;min-width:0}
-#bl-agf .tx b{font-family:'DM Serif Display',serif;font-weight:400;font-size:16px;white-space:nowrap}
-#bl-agf .tx small{font-size:11.5px;color:#E8C96B;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#bl-agf .ar{flex:none;font-size:16px;color:#E8C96B;margin-left:4px}
-#bl-agf .tx{flex:1 1 auto}
-@media(min-width:601px){#bl-agf{width:max-content}}
-@media(max-width:600px){#bl-agf{left:12px;right:78px;bottom:14px;max-width:none;padding:6px 16px 6px 6px;gap:10px}#bl-agf .ic{width:36px;height:36px;font-size:16px}#bl-agf .tx b{font-size:15px}#bl-agf .ar{margin-left:auto}}
-@media(prefers-reduced-motion:reduce){#bl-agf{transition:none}}
-</style>
-<button type="button" id="bl-agf" aria-label="Reservar fecha"><span class="ic" aria-hidden="true">&#128197;</span><span class="tx"><b id="bl-agf-t">Reserv&aacute; tu fecha</b><small id="bl-agf-s">Sin costo para reservar</small></span><span class="ar" aria-hidden="true">&rarr;</span></button>
-<script>document.addEventListener('DOMContentLoaded',function(){var b=document.getElementById('bl-agf');if(!b)return;
-var hero=document.querySelector('#beta-landing .bl-hero'),ag=document.getElementById('bl-agenda'),pastHero=false,inAg=false;
-function en(){return document.documentElement.classList.contains('lang-en');}
-function chip(){return document.querySelector('#bl-hero-dates-list .bl-hdate-chip');}
-function label(){var c=chip();document.getElementById('bl-agf-t').textContent=en()?'Book your date':'Reservá tu fecha';
-document.getElementById('bl-agf-s').textContent=c?(en()?'Next free: ':'Próxima libre: ')+c.textContent+(en()?' · free to book':' · sin costo'):(en()?'Free to book':'Sin costo para reservar');}
-function upd(){b.classList.toggle('on',pastHero&&!inAg);}
-if('IntersectionObserver' in window){
- if(hero)new IntersectionObserver(function(e){pastHero=!e[0].isIntersecting;upd();},{rootMargin:'-120px 0px 0px 0px'}).observe(hero);
- if(ag)new IntersectionObserver(function(e){inAg=e[0].isIntersecting;upd();},{threshold:0.15}).observe(ag);
-}else{window.addEventListener('scroll',function(){pastHero=window.scrollY>600;upd();},{passive:true});}
-b.addEventListener('click',function(){try{if(window.celTrack)celTrack('agenda_flotante_click');}catch(e){}var c=chip();if(c)c.click();else if(ag)ag.scrollIntoView({behavior:'smooth'});});
-label();setTimeout(label,2500);setTimeout(label,6000);
-document.querySelectorAll('[data-cel-lang]').forEach(function(x){x.addEventListener('click',function(){setTimeout(label,40);});});
+/* Componente: modo 'mes' o '2sem' */
+function Cal(root,opt){
+ var sel=null,mode=opt.mode,ref;
+ root.insertAdjacentHTML('beforeend','<div class="cc-top"><div><span class="cc-k"></span><b class="cc-mo"></b></div><div class="cc-nav"><button type="button" class="cc-p" aria-label="Anterior">&lsaquo;</button><button type="button" class="cc-n" aria-label="Siguiente">&rsaquo;</button></div></div><div class="cc-dn"></div><div class="cc-grid"></div><div class="cc-ft"><div class="cc-sel"></div><button type="button" class="cc-go"></button></div><div class="cc-leg"></div>');
+ var q=function(c){return root.querySelector(c);},grid=q('.cc-grid');
+ function resetRef(){var m=minD();if(mode==='mes'){ref=new Date(m.getFullYear(),m.getMonth(),1,12);}else{ref=new Date(m);ref.setDate(ref.getDate()-((ref.getDay()+6)%7));}}
+ resetRef();
+ function render(anim){anim=!!anim;var m=minD(),mk=iso(m),hoy=iso(new Date()),h='',i=0,start,end,titulo;
+  if(mode==='mes'){start=new Date(ref);var off=(start.getDay()+6)%7;for(var v=0;v<off;v++)h+='<span class="cc-d vac" style="--i:0"></span>';end=new Date(ref.getFullYear(),ref.getMonth()+1,0,12);titulo=(en()?MEN:MES)[ref.getMonth()]+' '+ref.getFullYear();}
+  else{start=new Date(ref);end=new Date(ref);end.setDate(end.getDate()+13);var m1=start.getMonth(),m2=end.getMonth();titulo=m1===m2?(en()?MEN:MES)[m1]+' '+start.getFullYear():(en()?MCE:MC)[m1]+' – '+(en()?MCE:MC)[m2]+' '+end.getFullYear();}
+  for(var d=new Date(start);d<=end;d.setDate(d.getDate()+1)){var k=iso(d),w=d.getDay(),pas=k<mk,ok=!pas&&libre(k),we=(w===0||w===5||w===6);
+   h+='<button type="button" class="cc-d'+(we?' we':'')+(k===hoy?' hoy':'')+(!pas&&!ok?' oc':'')+(sel===k?' on':'')+'" style="--i:'+(i++)+'" data-k="'+k+'"'+(ok?'':' disabled')+' aria-label="'+lab(k)+(ok?'':(en()?' · not available':' · no disponible'))+'">'+d.getDate()+'</button>';}
+  var sig=h+'|'+mode;if(sig!==root._sig||anim){root._sig=sig;grid.classList.toggle('cc-still',!anim&&root._drawn);grid.innerHTML=h;root._drawn=true;}
+  var mo=q('.cc-mo');if(mo.textContent!==titulo||anim)mo.innerHTML='<span>'+titulo+'</span>';
+  q('.cc-k').textContent=en()?'✦ Book your date':'✦ Reservá tu fecha';
+  q('.cc-dn').innerHTML=(en()?['M','T','W','T','F','S','S']:['L','M','M','J','V','S','D']).map(function(x){return '<span>'+x+'</span>';}).join('');
+  var first=mode==='mes'?new Date(m.getFullYear(),m.getMonth(),1,12):(function(){var r=new Date(m);r.setDate(r.getDate()-((r.getDay()+6)%7));return r;})();
+  q('.cc-p').disabled=ref<=first;var lim=new Date(m);lim.setMonth(lim.getMonth()+6);q('.cc-n').disabled=ref>=lim;
+  q('.cc-leg').innerHTML=en()?'<span><i>●</i> Fri night &amp; weekend +10%</span><span>Free to book</span>':'<span><i>●</i> Vie noche y finde +10%</span><span>Sin costo para reservar</span>';
+  pie();}
+ function pie(){q('.cc-sel').innerHTML=sel?'<span>'+(en()?'Your date':'Tu fecha')+'</span><b>'+lab(sel)+'</b>':'<span>'+(en()?'Pick a day':'Elegí un día')+'</span><b>'+(en()?'Free to book':'Sin costo para reservar')+'</b>';
+  q('.cc-go').textContent=sel?(en()?'Book →':'Reservar →'):(en()?'Next free →':'Primera libre →');}
+ function mover(dir){if(mode==='mes')ref=new Date(ref.getFullYear(),ref.getMonth()+dir,1,12);else ref.setDate(ref.getDate()+14*dir);render(true);}
+ q('.cc-p').addEventListener('click',function(){mover(-1);});q('.cc-n').addEventListener('click',function(){mover(1);});
+ grid.addEventListener('click',function(e){var b=e.target.closest('.cc-d');if(!b||b.disabled)return;sel=b.getAttribute('data-k');grid.querySelectorAll('.cc-d.on').forEach(function(x){x.classList.remove('on');});b.classList.add('on');pie();track(opt.ev+'_fecha',sel);if(opt.onPick)opt.onPick(sel);});
+ q('.cc-go').addEventListener('click',function(){if(!sel){var f=primerLibre();if(!f)return;sel=f;var d=new Date(f+'T12:00:00');if(mode==='mes')ref=new Date(d.getFullYear(),d.getMonth(),1,12);else{ref=new Date(d);ref.setDate(ref.getDate()-((ref.getDay()+6)%7));}render(true);if(opt.onPick)opt.onPick(sel);return;}track(opt.ev+'_cta',sel);if(opt.onGo)opt.onGo(sel);irA(sel,0);});
+ root.addEventListener('pointerdown',function(){if(opt.onTouch)opt.onTouch();});
+ return {render:render,setMode:function(m){if(m!==mode){mode=m;resetRef();render(true);}},get:function(){return sel;}};
+}
+/* hero */
+var hbox=document.getElementById('bl-hcal'),mq=window.matchMedia('(min-width:901px)');
+if(hbox&&hero){hero.appendChild(hbox);
+ var hc=Cal(hbox,{mode:'2sem',ev:'hero_cal',onTouch:stopHero});hc.render(true);
+ if('IntersectionObserver' in window)new IntersectionObserver(function(e){document.body.classList.toggle('bl-en-hero',e[0].isIntersecting);},{rootMargin:'0px 0px -35% 0px'}).observe(hero);
+}
+/* flotante */
+var b=document.getElementById('bl-agf'),pop=document.getElementById('bl-agp'),pastHero=false,inAg=false,pc=null;
+function etiqueta(){var f=primerLibre();var d=f?new Date(f+'T12:00:00'):minD();document.getElementById('bl-agf-m').textContent=(en()?MCE:MC)[d.getMonth()];document.getElementById('bl-agf-d').textContent=d.getDate();
+ document.getElementById('bl-agf-t').textContent=en()?'Book your date':'Reservá tu fecha';
+ document.getElementById('bl-agf-s').textContent=f?(en()?'Next free: ':'Próxima libre: ')+lab(f)+(en()?' · free to book':' · sin costo'):(en()?'Free to book':'Sin costo para reservar');}
+function cerrar(){pop.classList.remove('open');b.setAttribute('aria-expanded','false');}
+function upd(){var on=pastHero&&!inAg;b.classList.toggle('on',on);if(!on)cerrar();}
+if(b&&pop){
+ pc=Cal(pop,{mode:'mes',ev:'flotante_cal',onGo:cerrar});
+ b.addEventListener('click',function(){var o=!pop.classList.contains('open');if(o){pc.render(true);track('agenda_flotante_click');}pop.classList.toggle('open',o);b.setAttribute('aria-expanded',o?'true':'false');});
+ pop.querySelector('.cc-x').addEventListener('click',cerrar);
+ document.addEventListener('keydown',function(e){if(e.key==='Escape')cerrar();});
+ document.addEventListener('click',function(e){if(pop.classList.contains('open')&&!pop.contains(e.target)&&!b.contains(e.target))cerrar();});
+ if('IntersectionObserver' in window){
+  if(hero)new IntersectionObserver(function(e){pastHero=!e[0].isIntersecting;upd();},{rootMargin:'-120px 0px 0px 0px'}).observe(hero);
+  if(ag)new IntersectionObserver(function(e){inAg=e[0].isIntersecting;upd();},{threshold:0.15}).observe(ag);
+ }else{window.addEventListener('scroll',function(){pastHero=window.scrollY>600;upd();},{passive:true});}
+ etiqueta();
+}
+function todo(){try{if(hc)hc.render();}catch(e){}try{if(pc&&pop.classList.contains('open'))pc.render();}catch(e){}try{if(b)etiqueta();}catch(e){}}
+var _r=window.blRenderCalendario;if(typeof _r==='function'){window.blRenderCalendario=function(){var x=_r.apply(this,arguments);todo();return x;};}
+setTimeout(todo,1500);setTimeout(todo,4000);
+document.querySelectorAll('[data-cel-lang]').forEach(function(x){x.addEventListener('click',function(){setTimeout(todo,40);});});
 });</script>
 <div class="bl-hdr"><div class="bl-logo" onclick="window.scrollTo({top:0,behavior:'smooth'})"><img src="/img/img-d316320d6b.webp" alt="Celestia Chef Privado" style="height:36px;width:auto;display:block"/></div><div class="bl-nav"><button class="bl-nl" onclick="document.getElementById('bl-servicios').scrollIntoView({behavior:'smooth'})">Experiencias</button><button class="bl-nl" onclick="blMenusAbrir()">Men&uacute;s</button><button class="bl-nl" onclick="openExplorarPlatos()">Platos</button><button class="bl-nl" onclick="document.getElementById('bl-plat').scrollIntoView({behavior:'smooth'})">C&oacute;mo funciona</button><button class="bl-nl" onclick="abrirConsultaCorporativa()">Corporativos</button><button class="bl-nl" onclick="exitBetaLanding('semanal')">Chef Semanal</button><a class="bl-nl" href="/aprende" data-no-tr style="text-decoration:none"><span class="b-es">Clases</span><span class="b-en" lang="en">Classes</span></a><a class="bl-nl" href="/blog" data-no-tr style="text-decoration:none"><span class="b-es">Blog</span><span class="b-en" lang="en">Blog</span></a><div class="bl-lang" role="group" aria-label="Idioma"><button type="button" data-cel-lang="es">ES</button><span>|</span><button type="button" data-cel-lang="en">EN</button></div><a href="/clientes" class="bl-hbtn bl-acc">Acceder</a><button class="bl-hbtn bl-host" onclick="exitBetaLanding('host')">Reservar &rarr;</button><button type="button" class="bl-burger" id="bl-burger" aria-label="Menú" aria-expanded="false" aria-controls="bl-drawer"><i></i><i></i><i></i></button></div><div class="bl-drawer" id="bl-drawer" hidden></div></div>
 <script>(function(){var b=document.getElementById('bl-burger'),d=document.getElementById('bl-drawer'),h=b.closest('.bl-hdr');
