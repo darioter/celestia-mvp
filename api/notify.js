@@ -36,7 +36,7 @@ export default async function handler(req) {
   if (!d || !d.ref || !d.nombre) return json({ ok: false, error: 'Faltan datos' }, 400);
 
   const fuera = !!d.fuera_amba;
-  const tipo = d.tipo === 'semanal' ? 'Chef semanal' : d.tipo === 'clase' ? 'Clase · Te enseño cocina nivel chef' : 'Experiencia';
+  const tipo = d.tipo === 'semanal' ? 'Chef semanal' : d.tipo === 'clase' ? 'Clase · Te enseño cocina nivel chef' : d.tipo === 'fiestas' ? 'Cajas de fiestas' : 'Experiencia';
   const telDigits = String(d.tel || '').replace(/\D/g, '');
   const telWA = telDigits ? (telDigits.startsWith('54') ? telDigits : '54' + telDigits) : '';
 
@@ -54,8 +54,8 @@ export default async function handler(req) {
     ['Email', d.email],
     ['Ocasión', d.ocasion],
     ['Notas', d.notas],
-    ['Honorario', money(d.honorario)],
-    ['Ingredientes est.', money(d.ingredientes)],
+    [d.tipo === 'fiestas' ? 'Subtotal cajas' : 'Honorario', money(d.honorario)],
+    [d.tipo === 'fiestas' ? 'Envío' : 'Ingredientes est.', money(d.ingredientes)],
     ['Total est.', money(d.total)],
   ].filter(([, v]) => v !== undefined && v !== null && String(v).trim() !== '');
 
