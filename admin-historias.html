@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="/js/mp4-muxer.js"></script>
 <style>
 :root{--navy:#0D1B2A;--navy2:#13263a;--navy3:#1A2E42;--gold:#C9A84C;--gold2:#E8C96A;--cream:#FAF6EF;--mut:rgba(250,246,239,.55);--line:rgba(201,168,76,.18)}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -160,6 +161,7 @@ input[type=range]{width:100%;accent-color:var(--gold)}
             <button class="btn" id="r-btn-play" onclick="reelPlay()">▶ Reproducir</button>
             <button class="btn" onclick="reelGrabar()">🎬 Generar video</button>
             <button class="btn sec" onclick="reelPlacas()">⬇ Placas (ZIP)</button>
+            <button class="btn" id="r-share" onclick="reelCompartir()" style="display:none">📲 Guardar en el celu</button>
           </div>
           <label class="r-lab">Segundos por placa: <b id="r-seg-v">3</b></label>
           <input type="range" min="2" max="6" step=".5" value="3" id="r-seg" oninput="REEL.seg=+this.value;document.getElementById('r-seg-v').textContent=this.value;reelInfo()">
@@ -802,7 +804,7 @@ function reelTipoVideo() {
   const c = ['video/mp4;codecs=avc1.42E01E', 'video/mp4;codecs=avc1', 'video/mp4', 'video/webm;codecs=vp9', 'video/webm'];
   return c.find(t => window.MediaRecorder && MediaRecorder.isTypeSupported(t)) || '';
 }
-async function reelGrabar() {
+async function reelGrabarMR() {
   if (!REEL.frames.length) { toast('Primero armá el reel'); return; }
   if (!window.MediaRecorder) { toast('Este navegador no puede grabar video: usá Chrome o bajá las placas'); return; }
   if (REEL.playing) reelPlay();
@@ -904,6 +906,64 @@ Reglas: español rioplatense con voseo, primera persona, tono cálido y experto,
     document.getElementById('r-cap').value = t; capCont(); toast('Texto escrito con IA');
   } catch (e) { toast('No se pudo usar la IA: ' + String(e.message || e).slice(0, 80)); }
   b.disabled = false; b.textContent = '✨ Mejorar con IA';
+}
+
+/* ───────── video cuadro por cuadro (WebCodecs + MP4) ─────────
+   No graba en tiempo real: dibuja cada cuadro y lo codifica en H.264.
+   Así el video sale completo aunque el celular esté lento o la pantalla se apague. */
+async function reelCodec() {
+  if (!window.VideoEncoder || !window.VideoFrame || !window.Mp4Muxer) return null;
+  for (const codec of ['avc1.640028', 'avc1.4d0028', 'avc1.42003e', 'avc1.640033']) {
+    try { const r = await VideoEncoder.isConfigSupported({ codec, width: W, height: H, bitrate: 8e6, framerate: 30 }); if (r && r.supported) return codec; } catch (e) {}
+  }
+  return null;
+}
+async function reelGrabar() {
+  if (!REEL.frames.length) { toast('Primero armá el reel'); return; }
+  if (REEL.playing) reelPlay();
+  const codec = await reelCodec();
+  if (!codec) return reelGrabarMR();
+  const badge = document.getElementById('r-rec'); badge.style.display = 'block'; badge.textContent = 'Generando 0%';
+  let R; try { R = await reelImgs(); } catch (e) { toast('No se pudieron cargar las fotos'); badge.style.display = 'none'; return; }
+  const fps = 30, total = REEL.frames.length * REEL.seg + .4, n = Math.round(total * fps);
+  const cv = Object.assign(document.createElement('canvas'), { width: W, height: H }); const x = cv.getContext('2d');
+  const vis = document.getElementById('r-cv').getContext('2d');
+  const muxer = new Mp4Muxer.Muxer({ target: new Mp4Muxer.ArrayBufferTarget(), video: { codec: 'avc', width: W, height: H, frameRate: fps }, fastStart: 'in-memory' });
+  let falla = null;
+  const enc = new VideoEncoder({ output: (chunk, meta) => muxer.addVideoChunk(chunk, meta), error: e => { falla = e; } });
+  enc.configure({ codec, width: W, height: H, bitrate: 8e6, framerate: fps, avc: { format: 'avc' } });
+  REEL.playing = true;
+  try {
+    for (let k = 0; k < n && !falla; k++) {
+      reelEn(x, Math.min(k / fps, total - .41), R);
+      const vf = new VideoFrame(cv, { timestamp: Math.round(k * 1e6 / fps), duration: Math.round(1e6 / fps) });
+      enc.encode(vf, { keyFrame: k % (fps * 2) === 0 }); vf.close();
+      if (k % 6 === 0) {
+        vis.drawImage(cv, 0, 0); badge.textContent = 'Generando ' + Math.round(k / n * 100) + '%';
+        while (enc.encodeQueueSize > 4) await new Promise(r => setTimeout(r, 10));
+        await new Promise(r => setTimeout(r, 0));
+      }
+    }
+    if (falla) throw falla;
+    await enc.flush(); muxer.finalize();
+  } catch (e) {
+    REEL.playing = false; badge.style.display = 'none'; try { enc.close(); } catch (_) {}
+    toast('Falló la codificación, pruebo grabando en vivo…'); return reelGrabarMR();
+  }
+  try { enc.close(); } catch (_) {}
+  REEL.playing = false; badge.style.display = 'none';
+  const nombre = 'celestia-reel-' + (REEL.nota ? REEL.nota.slug.slice(0, 40) : 'fotos') + '.mp4';
+  REEL.video = new File([muxer.target.buffer], nombre, { type: 'video/mp4' });
+  const movil = matchMedia('(pointer: coarse)').matches;
+  if (movil && navigator.canShare && navigator.canShare({ files: [REEL.video] })) {
+    document.getElementById('r-share').style.display = 'inline-block';
+    toast('Video listo: tocá «📲 Guardar en el celu»');
+  } else { bajar(REEL.video, nombre); toast('Video listo (MP4)'); }
+}
+async function reelCompartir() {
+  if (!REEL.video) return;
+  try { await navigator.share({ files: [REEL.video], title: 'Reel Celestia', text: document.getElementById('r-cap').value || '' }); }
+  catch (e) { if (e && e.name !== 'AbortError') bajar(REEL.video, REEL.video.name); }
 }
 </script>
 </body>
