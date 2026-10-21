@@ -403,6 +403,11 @@ function fondoNavy(x, seed) {
   const g = x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#13263a'); g.addColorStop(1, C.navy);
   x.fillStyle = g; x.fillRect(0, 0, W, H); estrellas(x, 0, 0, 0, 170, seed);
 }
+function logoTop(x, logo) {
+  if (!logo) return; const w = 300, hh = w * logo.height / logo.width;
+  x.save(); x.shadowColor = 'rgba(0,0,0,.45)'; x.shadowBlur = 30; x.shadowOffsetY = 6;
+  x.drawImage(logo, (W - w) / 2, 240, w, hh); x.restore();
+}
 function pie(x, logo, oscuro = true) {
   if (logo) { const w = 330, hh = w * logo.height / logo.width; x.drawImage(logo, (W - w) / 2, 1585, w, hh); }
   x.font = '500 30px "DM Sans"'; x.textAlign = 'center'; x.fillStyle = oscuro ? 'rgba(250,246,239,.75)' : 'rgba(13,27,42,.7)';
@@ -422,7 +427,7 @@ const TPL = {
     if (img) cover(x, img, 0, 0, W, H, h.foco, h.zoom); else sinFoto(x);
     let g = x.createLinearGradient(0, 0, 0, 420); g.addColorStop(0, 'rgba(13,27,42,.65)'); g.addColorStop(1, 'rgba(13,27,42,0)'); x.fillStyle = g; x.fillRect(0, 0, W, 420);
     g = x.createLinearGradient(0, H * .45, 0, H); g.addColorStop(0, 'rgba(13,27,42,0)'); g.addColorStop(.45, 'rgba(13,27,42,.82)'); g.addColorStop(1, 'rgba(13,27,42,.97)'); x.fillStyle = g; x.fillRect(0, H * .45, W, H * .55);
-    if (logo) { const w = 270, hh = w * logo.height / logo.width; x.drawImage(logo, (W - w) / 2, 250, w, hh); }
+    logoTop(x, logo);
     let y = 1080;
     y = bloque(x, '✦ ' + (h.kicker || ''), { font: '600 {s}px "DM Sans"', size: 32, maxW: W - 180, maxLines: 1, y, color: C.gold2, align: 'center', upper: true, spacing: 5 });
     y = bloque(x, h.titulo, { font: '400 {s}px "DM Serif Display"', size: 92, maxW: W - 180, maxLines: 3, y: y + 30, color: C.cream, align: 'center' });
@@ -431,7 +436,7 @@ const TPL = {
   },
   plato(x, h, img, logo) {
     x.fillStyle = C.navy; x.fillRect(0, 0, W, H); estrellas(x, 0, 0, 0, 90, 3);
-    if (logo) { const w = 270, hh = w * logo.height / logo.width; x.drawImage(logo, (W - w) / 2, 250, w, hh); }
+    logoTop(x, logo);
     const px = 110, py = 420, pw = W - 220, ph = 820;
     x.save(); x.beginPath(); x.roundRect(px, py, pw, ph, 40); x.clip();
     if (img) cover(x, img, px, py, pw, ph, h.foco, h.zoom); else { x.fillStyle = C.navy2; x.fillRect(px, py, pw, ph); }
@@ -448,7 +453,7 @@ const TPL = {
     if (img) cover(x, img, 0, 0, W, 1120, h.foco, h.zoom); else { x.fillStyle = C.navy2; x.fillRect(0, 0, W, 1120); }
     let g = x.createLinearGradient(0, 760, 0, 1130); g.addColorStop(0, 'rgba(13,27,42,0)'); g.addColorStop(1, C.navy); x.fillStyle = g; x.fillRect(0, 760, W, 370);
     g = x.createLinearGradient(0, 0, 0, 380); g.addColorStop(0, 'rgba(13,27,42,.6)'); g.addColorStop(1, 'rgba(13,27,42,0)'); x.fillStyle = g; x.fillRect(0, 0, W, 380);
-    if (logo) { const w = 270, hh = w * logo.height / logo.width; x.drawImage(logo, (W - w) / 2, 250, w, hh); }
+    logoTop(x, logo);
     let y = 1010;
     x.fillStyle = C.gold; x.fillRect(90, y + 12, 70, 4);
     y = bloque(x, h.kicker, { font: '600 {s}px "DM Sans"', size: 30, maxW: W - 280, maxLines: 1, y: y - 10, color: C.gold2, cx: 180, upper: true, spacing: 4 });
@@ -460,7 +465,7 @@ const TPL = {
     x.fillStyle = C.cream; x.fillRect(0, 0, W, H);
     x.fillStyle = C.navy; x.fillRect(0, 0, W, 520);
     x.save(); x.beginPath(); x.rect(0, 0, W, 520); x.clip(); estrellas(x, 0, 0, 0, 60, 11); x.restore();
-    if (logo) { const w = 270, hh = w * logo.height / logo.width; x.drawImage(logo, (W - w) / 2, 250, w, hh); }
+    logoTop(x, logo);
     if (img) { x.save(); x.beginPath(); x.arc(W / 2, 520, 130, 0, 7); x.clip(); cover(x, img, W / 2 - 130, 390, 260, 260, h.foco, h.zoom); x.restore(); x.strokeStyle = C.gold; x.lineWidth = 8; x.beginPath(); x.arc(W / 2, 520, 134, 0, 7); x.stroke(); }
     let y = 700;
     y = bloque(x, '💡 ' + (h.kicker || 'Tip de chef'), { font: '600 {s}px "DM Sans"', size: 34, maxW: W - 180, maxLines: 1, y, color: '#a08a5c', align: 'center', upper: true, spacing: 6 });
@@ -472,7 +477,7 @@ const TPL = {
   },
   dato(x, h, img, logo) {
     fondoNavy(x, 21);
-    if (logo) { const w = 270, hh = w * logo.height / logo.width; x.drawImage(logo, (W - w) / 2, 250, w, hh); }
+    logoTop(x, logo);
     let y = 560;
     y = bloque(x, '✨ ' + (h.kicker || '¿Sabías que?'), { font: '400 {s}px "DM Serif Display"', size: 96, maxW: W - 180, maxLines: 2, y, color: C.gold2, align: 'center' });
     x.fillStyle = C.gold; x.fillRect(W / 2 - 50, y + 50, 100, 4);
@@ -484,7 +489,7 @@ const TPL = {
   resena(x, h, img, logo) {
     fondoNavy(x, 33);
     if (img) { x.globalAlpha = .22; cover(x, img, 0, 0, W, H, h.foco, h.zoom); x.globalAlpha = 1; }
-    if (logo) { const w = 270, hh = w * logo.height / logo.width; x.drawImage(logo, (W - w) / 2, 250, w, hh); }
+    logoTop(x, logo);
     let y = 560;
     y = bloque(x, h.kicker || 'Lo que dicen', { font: '600 {s}px "DM Sans"', size: 32, maxW: W - 180, maxLines: 1, y, color: C.gold2, align: 'center', upper: true, spacing: 6 });
     const n = Math.max(1, Math.min(5, +h.estrellas || 5));
@@ -495,7 +500,7 @@ const TPL = {
   },
   agenda(x, h, img, logo) {
     fondoNavy(x, 45);
-    if (logo) { const w = 270, hh = w * logo.height / logo.width; x.drawImage(logo, (W - w) / 2, 250, w, hh); }
+    logoTop(x, logo);
     let y = 470;
     y = bloque(x, h.kicker || 'Fechas disponibles', { font: '600 {s}px "DM Sans"', size: 32, maxW: W - 180, maxLines: 1, y, color: C.gold2, align: 'center', upper: true, spacing: 6 });
     y = bloque(x, h.titulo, { font: '400 {s}px "DM Serif Display"', size: 120, maxW: W - 180, maxLines: 1, y: y + 20, color: C.cream, align: 'center' });
