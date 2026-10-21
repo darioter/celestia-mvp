@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Cajas para las fiestas · Navidad y Año Nuevo | Celestia Chef Privado</title>
-<meta name="description" content="Cenas completas, bocados, picada y mesa dulce para Navidad y Año Nuevo, cocinadas por un chef y entregadas en tu casa en CABA y GBA. Llegan listas para la heladera.">
+<title>Cajas Celestia · Cenas de chef para ocasiones especiales | Celestia Chef Privado</title>
+<meta name="description" content="Cajas con cenas completas, bocados y postres de chef para cumpleaños, cenas románticas, encuentros y las fiestas. Preparadas el día anterior y entregadas el día del evento en CABA y GBA, listas para regenerar.">
 <meta name="robots" content="noindex">
-<link rel="canonical" href="https://www.chefprivado.ar/fiestas">
-<meta property="og:type" content="website"><meta property="og:title" content="Cajas para las fiestas · Celestia Chef Privado"><meta property="og:description" content="Cenas completas, bocados y mesa dulce para Navidad y Año Nuevo, cocinadas por un chef y entregadas en tu casa."><meta property="og:image" content="https://images.unsplash.com/photo-1763463608728-6eeb317023d2?w=1200&h=630&fit=crop&q=72&auto=format"><meta property="og:url" content="https://www.chefprivado.ar/fiestas"><meta property="og:locale" content="es_AR">
+<link rel="canonical" href="https://www.chefprivado.ar/cajas">
+<meta property="og:type" content="website"><meta property="og:title" content="Cajas Celestia · Cenas de chef en tu casa"><meta property="og:description" content="Cenas completas, bocados y postres de chef para cada ocasión, entregados el día del evento."><meta property="og:image" content="https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=1200&h=630&fit=crop&q=72&auto=format"><meta property="og:url" content="https://www.chefprivado.ar/cajas"><meta property="og:locale" content="es_AR">
 <link rel="icon" href="/favicom.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -21,7 +21,7 @@ img{max-width:100%;display:block}
 .hdr nav{display:flex;gap:18px;align-items:center}
 .hdr nav a{color:rgba(250,246,239,.75);text-decoration:none;font-size:14px}
 .hdr .cta{background:linear-gradient(135deg,var(--gd),var(--gdl));color:var(--nv)!important;font-weight:600;padding:9px 16px;border-radius:999px}
-.hero{position:relative;min-height:560px;display:flex;align-items:flex-end;color:var(--cr);background:var(--nv) url('https://images.unsplash.com/photo-1763463608728-6eeb317023d2?w=1800&h=1000&fit=crop&q=72&auto=format') center/cover}
+.hero{position:relative;min-height:560px;display:flex;align-items:flex-end;color:var(--cr);background:var(--nv) url('https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=1800&h=1000&fit=crop&q=72&auto=format') center/cover}
 .hero::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,27,42,.35) 0%,rgba(13,27,42,.55) 45%,rgba(13,27,42,.95) 100%)}
 .hero-in{position:relative;max-width:1080px;margin:0 auto;padding:0 28px 64px;width:100%}
 .k{display:inline-block;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--gdl);margin-bottom:14px}
@@ -51,6 +51,8 @@ section{padding:70px 0}
 .fz i{position:absolute;top:18px;right:18px;font-style:normal;font-size:28px}
 .fz .cierre{display:inline-block;margin-top:10px;font-size:12px;background:#f3ead6;color:#7a6224;border-radius:999px;padding:3px 10px}
 .fz.cerrada{opacity:.5;cursor:not-allowed}
+.fiestas.oc{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+.fz small{min-height:20px}
 .franjas{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
 .fr{border:1.5px solid var(--crd);background:#fff;border-radius:12px;padding:10px 14px;cursor:pointer;font:500 14px 'DM Sans',sans-serif;color:var(--tx)}
 .fr.on{border-color:var(--gd);background:#fdf7e8}
@@ -143,24 +145,21 @@ section{padding:70px 0}
 <nav><a href="#cajas">Cajas</a><a href="#mercadito">Mercadito</a><a href="#como">Cómo llega</a><a href="#faq">Preguntas</a><a class="cta" href="#pedido">Hacer mi pedido</a></nav></header>
 
 <section class="hero"><div class="hero-in">
-  <span class="k">✦ Navidad y Año Nuevo · Cupos limitados</span>
-  <h1>Las fiestas, <em>cocinadas por un chef</em>. Vos solo poné la mesa.</h1>
-  <p>Cenas completas, bocados para el brindis y mesa dulce casera. Cocino todo en mi cocina y te lo llevo a tu casa listo para la heladera, con las instrucciones para servir.</p>
-  <div class="hero-chips"><span>🚚 Envío en CABA y GBA</span><span>🧊 Llega fría, lista para servir</span><span>👨‍🍳 Hecho a mano por Daro</span></div>
-  <div style="margin-top:26px"><a class="btn" href="#cajas">Ver las cajas →</a></div>
+  <span class="k" id="hero-k">✦ Cajas Celestia · Para ocasiones especiales</span>
+  <h1>Tu celebración, <em>cocinada por un chef</em>. Vos solo poné la mesa.</h1>
+  <p>Cenas completas, bocados y postres para cumpleaños, cenas románticas, encuentros con amigos y las fiestas. Cocino el día anterior y te lo llevo el día del evento, listo para la heladera y para terminar en minutos.</p>
+  <div class="hero-chips"><span>🚚 Entrega el día del evento</span><span>🔥 Listo para regenerar</span><span>👨‍🍳 Hecho a mano por Daro</span></div>
+  <div style="margin-top:26px"><a class="btn" href="#cajas">Elegir mi caja →</a></div>
 </div></section>
 
 <section id="cajas"><div class="wrap">
-  <div class="paso"><b>1</b> Elegí la fiesta y cuándo la recibís</div>
-  <h2 class="sh">¿Para qué <em>noche</em> es?</h2>
-  <div class="fiestas" id="fiestas"></div>
-  <div class="franjas" id="franjas"></div>
+  <div class="paso"><b>1</b> ¿Qué celebrás?</div>
+  <h2 class="sh">Elegí la <em>ocasión</em></h2>
+  <div class="fiestas oc" id="ocasiones"></div>
+  <div id="cuando" style="margin-top:26px"></div>
 
   <div class="paso" style="margin-top:46px"><b>2</b> Armá tu caja</div>
-  <div class="cat-h"><h3>Cenas completas</h3><span class="sub" style="margin:0">Entradas, principal, guarniciones y postre. Elegís para cuántos.</span></div>
-  <div class="cajas" id="cenas"></div>
-  <div class="cat-h"><h3>Para el brindis y la sobremesa</h3></div>
-  <div class="cajas" id="extras"></div>
+  <div id="catalogo"></div>
 
   <div class="cat-h" id="mercadito"><h3>Mercadito</h3><span class="sub" style="margin:0">Sumá un plato, una guarnición o un postre suelto. También se pide solo.</span></div>
   <div class="merc" id="merc"></div>
@@ -168,20 +167,20 @@ section{padding:70px 0}
 
 <section class="dark" id="como"><div class="wrap">
   <span class="k">✦ Cómo llega a tu casa</span>
-  <h2 class="sh">Sin horno a último momento, <em>sin estrés</em></h2>
-  <p class="sub">Todo llega cocido, frío y en envases listos para la heladera. El día de la fiesta solo terminás un par de cosas y servís.</p>
+  <h2 class="sh">Preparado ayer, <em>terminado en tu casa</em></h2>
+  <p class="sub">No es comida al vacío ni congelada: cocino todo el día anterior, lo enfrío rápido y lo envaso en recipientes aptos para horno o para servir. Llega el mismo día del evento, lo guardás en la heladera y lo regenerás en minutos.</p>
   <div class="pasos3">
-    <div class="p3"><i>🗓️</i><b>Pedís hasta el cierre</b><p>Reservás con una seña del 50% y queda tu lugar. Los cupos por fecha son limitados.</p></div>
-    <div class="p3"><i>👨‍🍳</i><b>Cocino tu pedido</b><p>Todo hecho a mano en los días previos, con producto fresco y elegido para cada fiesta.</p></div>
-    <div class="p3"><i>🚚</i><b>Te lo llevo</b><p>El 23 o el 24 para Navidad, el 30 o el 31 para Año Nuevo, en la franja que elijas.</p></div>
-    <div class="p3"><i>🍽️</i><b>Servís como chef</b><p>Cada caja trae la guía impresa: qué va frío, qué se calienta, cuántos minutos y cómo emplatar.</p></div>
+    <div class="p3"><i>🗓️</i><b>Pedís con tiempo</b><p>Con al menos 48 horas de anticipación (las fiestas tienen fecha de cierre). Reservás con una seña del 50%.</p></div>
+    <div class="p3"><i>👨‍🍳</i><b>Cocino el día anterior</b><p>Con producto fresco, comprado para tu pedido. Cada preparación se enfría rápido para conservar textura y sabor.</p></div>
+    <div class="p3"><i>🚚</i><b>Llega el día del evento</b><p>En la franja que elijas. Lo guardás en la heladera hasta el momento de servir.</p></div>
+    <div class="p3"><i>🔥</i><b>Regenerás y servís</b><p>Cada caja trae la guía: qué va frío, qué va al horno, a cuántos grados, cuántos minutos y cómo emplatar.</p></div>
   </div>
 </div></section>
 
 <section id="pedido"><div class="wrap">
   <div class="paso"><b>3</b> Tus datos y la entrega</div>
   <h2 class="sh">Hacé tu <em>pedido</em></h2>
-  <p class="sub">Reservar es simple: completás tus datos, te paso los datos para la seña y confirmamos por WhatsApp.</p>
+  <p class="sub">Completás tus datos, te paso cómo abonar la seña y confirmamos por WhatsApp.</p>
   <div class="pedido" id="pedido-box" style="margin-top:26px">
     <div class="form">
       <h3>Entrega</h3>
@@ -191,7 +190,7 @@ section{padding:70px 0}
       <h3 style="margin-top:10px">Tus datos</h3>
       <input class="in" id="f-nom" placeholder="Nombre y apellido *" autocomplete="name">
       <div class="two"><input class="in" id="f-tel" type="tel" placeholder="WhatsApp *" autocomplete="tel"><input class="in" id="f-mail" type="email" placeholder="Email" autocomplete="email"></div>
-      <textarea class="in" id="f-not" rows="3" placeholder="Alergias, restricciones o algo que quieras contarme"></textarea>
+      <textarea class="in" id="f-not" rows="3" placeholder="Alergias, restricciones, nombre del cumpleañero o algo que quieras contarme"></textarea>
     </div>
     <aside class="res" id="res"></aside>
   </div>
@@ -201,66 +200,88 @@ section{padding:70px 0}
 <section id="faq" style="padding-top:20px"><div class="wrap">
   <h2 class="sh">Preguntas <em>frecuentes</em></h2>
   <div class="faq">
-    <details><summary>¿Hasta cuándo puedo pedir?</summary><p id="faq-cierre"></p></details>
+    <details><summary>¿Con cuánta anticipación tengo que pedir?</summary><p id="faq-cierre"></p></details>
+    <details><summary>¿Cómo llega la comida?</summary><p>Cocinada el día anterior, enfriada rápido y envasada en recipientes aptos para horno o para servir. No es al vacío ni congelada: está pensada para regenerar en tu horno o servir fría, según cada plato, y queda como recién hecha.</p></details>
+    <details><summary>¿Cuánto dura en la heladera?</summary><p>Está pensada para consumir el mismo día del evento. Guardala en la heladera apenas la recibís y sacá lo que va frío 20 minutos antes de servir.</p></details>
     <details><summary>¿Cómo se paga?</summary><p>Con una seña del 50% por transferencia para confirmar el pedido. El resto lo abonás al recibirlo, por transferencia o en efectivo.</p></details>
     <details><summary>¿A qué zonas llegan?</summary><p>CABA y GBA. El costo de envío depende de tu código postal y lo ves antes de confirmar. Si estás fuera de la zona, hacé igual el pedido y te escribo para ver si llego y cuánto cuesta.</p></details>
-    <details><summary>¿Cuánto dura en la heladera?</summary><p>Todo está pensado para conservarse hasta 48 horas en heladera desde la entrega. Por eso, si lo recibís el 23 o el 30, llega perfecto a la noche siguiente.</p></details>
     <details><summary>¿Tienen opciones sin TACC, vegetarianas o para alergias?</summary><p>Contámelo en las notas del pedido y adapto lo que se pueda. Para celiaquía estricta, escribime antes de pedir: la cocina no es libre de gluten.</p></details>
-    <details><summary>¿Puedo cambiar o cancelar el pedido?</summary><p>Podés cambiar el menú o la cantidad de personas hasta el cierre de pedidos. La seña confirma tu lugar y no es reembolsable, porque la compra de la mercadería se hace con anticipación.</p></details>
-    <details><summary>¿Y si prefiero que cocines en mi casa?</summary><p>También se puede: mirá las <a href="/">experiencias de chef privado</a>. Para las fiestas las fechas vuelan, así que conviene reservar con tiempo.</p></details>
+    <details><summary>¿Puedo cambiar o cancelar el pedido?</summary><p>Podés cambiar el menú o la cantidad de personas hasta 72 horas antes de la entrega. La seña confirma tu fecha y no es reembolsable, porque la mercadería se compra para tu pedido.</p></details>
+    <details><summary>¿Y si prefiero que cocines en mi casa?</summary><p>También se puede: mirá las <a href="/">experiencias de chef privado</a>, con el servicio completo en tu mesa.</p></details>
   </div>
-  <p class="cred">Fotos de referencia: Dragon White Munthe, krakenimages, Hailey Tong, We The Creators, blackieshoot · Unsplash</p>
+  <p class="cred">Fotos de referencia: Priscilla Du Preez, krakenimages, Hailey Tong, Kelsey Chance, Tomáš Vydržal, We The Creators, blackieshoot, American Heritage Chocolate · Unsplash</p>
 </div></section>
 
 <div class="flot" id="flot"><span id="flot-t"></span><a class="btn" href="#pedido">Ver pedido</a></div>
 <footer class="ftr"><a href="/">chefprivado.ar</a>·<a href="/blog">Blog</a>·<a href="/terminos">Términos</a>·<a href="https://www.instagram.com/celestiachefprivado/" target="_blank" rel="noopener">Instagram</a><div style="margin-top:8px">Celestia · Chef Privado · Buenos Aires © 2026</div></footer>
 
 <script>
-/* ═════════ CONFIGURACIÓN: precios, fechas y zonas (editar acá) ═════════ */
-const FIESTAS = {
-  navidad:    { nombre: 'Navidad',    icono: '🎄', noche: 'Nochebuena · 24 de diciembre', cierre: '2026-12-20',
-                entregas: [ { fecha: '2026-12-23', franja: '15 a 20 h' }, { fecha: '2026-12-24', franja: '9 a 13 h' } ] },
-  anio_nuevo: { nombre: 'Año Nuevo',  icono: '🥂', noche: 'Fin de año · 31 de diciembre', cierre: '2026-12-27',
-                entregas: [ { fecha: '2026-12-30', franja: '15 a 20 h' }, { fecha: '2026-12-31', franja: '9 a 13 h' } ] }
+/* ═════════ CONFIGURACIÓN: ocasiones, cajas, precios y zonas (editar acá) ═════════ */
+const ANTICIPACION_HORAS = 48;           // pedidos comunes: mínimo 48 h antes de la entrega
+const FRANJAS = ['10 a 13 h', '16 a 19 h'];
+const OCASIONES = {
+  navidad:    { nombre: 'Navidad',        icono: '🎄', sub: 'Nochebuena · 24 de diciembre', fecha: '2026-12-24', cierre: '2026-12-21', franjas: ['9 a 13 h', '13 a 17 h'] },
+  anio_nuevo: { nombre: 'Año Nuevo',      icono: '🥂', sub: 'Fin de año · 31 de diciembre', fecha: '2026-12-31', cierre: '2026-12-28', franjas: ['9 a 13 h', '13 a 17 h'] },
+  romantica:  { nombre: 'Cena romántica', icono: '❤️', sub: 'Aniversario, San Valentín o porque sí' },
+  cumple:     { nombre: 'Cumpleaños',     icono: '🎂', sub: 'Festejá en casa sin cocinar' },
+  amigos:     { nombre: 'Cena con amigos', icono: '🍽️', sub: 'Cualquier ocasión especial' }
 };
 const SENIA = 0.5;
-const CENAS = [
-  { id: 'cena-tradicion', nombre: 'Cena Tradición', tag: 'Los clásicos de siempre', img: 'photo-1601118964938-228a89955311', pp: 48000, personas: [4, 6, 8, 10],
-    lead: 'La mesa de las fiestas argentinas, hecha como en un restaurante.',
+/* Cajas: tipo 'pp' = precio por persona (elegís personas) · tipo 'fijo' = opciones con precio cerrado.
+   ocasiones: en cuáles aparece. */
+const CAJAS = [
+  { id: 'cena-tradicion', grupo: 'Cenas completas', nombre: 'Cena Tradición', tag: 'Los clásicos de las fiestas', img: 'photo-1601118964938-228a89955311', tipo: 'pp', pp: 48000, personas: [4, 6, 8, 10],
+    ocasiones: ['navidad', 'anio_nuevo'], lead: 'La mesa de las fiestas argentinas, hecha como en un restaurante.',
     menu: [['Entradas', 'Vitel toné de peceto con salsa atonnata casera · Pionono salado de jamón crudo, rúcula y queso crema'],
            ['Principal', 'Matambre de ternera arrollado con verduras y huevo · Pollo deshuesado relleno de verduras y hongos'],
            ['Guarnición', 'Ensalada rusa de chef con mayonesa casera · Hojas verdes, manzana verde y nueces'],
-           ['Postre', 'Tiramisú de fiestas']] },
-  { id: 'cena-celestia', nombre: 'Cena Celestia', tag: 'La de autor', img: 'photo-1735190093468-e59af2d86382', pp: 68000, personas: [4, 6, 8, 10],
-    lead: 'Para una noche distinta: producto premium y sabores de chef.',
+           ['Postre', 'Tiramisú']] },
+  { id: 'cena-celestia', grupo: 'Cenas completas', nombre: 'Cena Celestia', tag: 'La de autor', img: 'photo-1735190093468-e59af2d86382', tipo: 'pp', pp: 68000, personas: [4, 6, 8, 10],
+    ocasiones: ['navidad', 'anio_nuevo', 'cumple', 'amigos'], lead: 'Para una noche distinta: producto premium y sabores de chef.',
     menu: [['Entradas', 'Burrata con tomates confitados, pesto y focaccia de romero · Langostinos con mayonesa de lima y palta'],
-           ['Principal', 'Lomo al Malbec laminado con chimichurri de hierbas · Bondiola braseada a la cerveza y miel'],
+           ['Principal', 'Lomo al Malbec con chimichurri de hierbas · Bondiola braseada a la cerveza y miel'],
            ['Guarnición', 'Papas confitadas al romero · Quinoa con vegetales asados y feta'],
-           ['Postre', 'Pavlova de frutos rojos y crema de mascarpone']] }
-];
-const EXTRAS = [
-  { id: 'bocados', nombre: 'Bocados y picada', tag: 'Para la previa y el brindis', img: 'photo-1678572823447-45fc146df43c', opciones: [{ label: '8 personas', personas: 8, precio: 240000 }, { label: '12 personas', personas: 12, precio: 345000 }],
-    lead: '8 bocados por persona en 6 variedades, más una tabla de quesos y fiambres.',
+           ['Postre', 'Pavlova de frutos rojos y crema de mascarpone']] },
+  { id: 'cena-casera', grupo: 'Cenas completas', nombre: 'Cena de la casa', tag: 'Para compartir', img: 'photo-1519671282429-b44660ead0a7', tipo: 'pp', pp: 42000, personas: [4, 6, 8, 10],
+    ocasiones: ['cumple', 'amigos'], lead: 'Platos generosos para una mesa larga, con sabor de casa y técnica de chef.',
+    menu: [['Entrada', 'Tabla de quesos, fiambres y focaccia · Empanadas de carne cortada a cuchillo'],
+           ['Principal', 'Ossobuco braseado al vino tinto · Pollo al limón y hierbas'],
+           ['Guarnición', 'Puré de papas a la manteca · Vegetales asados'],
+           ['Postre', 'Tiramisú']] },
+  { id: 'romantica', grupo: 'Para dos', nombre: 'Cena romántica', tag: 'Para dos', img: 'photo-1529521001454-2cf987c34008', tipo: 'fijo', opciones: [{ label: 'Para 2', personas: 2, precio: 118000 }],
+    ocasiones: ['romantica'], lead: 'Tres pasos para una noche en casa, con mantel y velas incluidos en la guía.',
+    menu: [['Entrada', 'Burrata con tomates confitados y pesto · Langostinos con mayonesa de lima'],
+           ['Principal', 'Lomo al Malbec con papas confitadas al romero'],
+           ['Postre', 'Volcán de chocolate con frutos rojos'],
+           ['Incluye', 'Guía para regenerar y emplatar, con sugerencia de vino']] },
+  { id: 'bocados', grupo: 'Para picar y brindar', nombre: 'Bocados y picada', tag: 'Para la previa y el brindis', img: 'photo-1678572823447-45fc146df43c', tipo: 'fijo',
+    opciones: [{ label: '8 personas', personas: 8, precio: 240000 }, { label: '12 personas', personas: 12, precio: 345000 }, { label: '20 personas', personas: 20, precio: 540000 }],
+    ocasiones: ['navidad', 'anio_nuevo', 'cumple', 'amigos'], lead: '8 bocados por persona en 6 variedades, más una tabla de quesos y fiambres.',
     menu: [['Bocados', 'Bruschettas de tomates confitados · Tartaletas de queso azul y pera · Mini empanadas de carne cortada a cuchillo · Langostinos crocantes con alioli · Brochettes caprese · Rolls de jamón crudo y rúcula'],
            ['Picada', 'Quesos, fiambres, frutos secos, panes y grisines caseros']] },
-  { id: 'mesa-dulce', nombre: 'Mesa dulce navideña', tag: 'Todo casero', img: 'photo-1636394849426-39501364873c', opciones: [{ label: 'Para 8 a 10', personas: 10, precio: 89000 }],
-    lead: 'Lo dulce de la sobremesa, hecho a mano.',
-    menu: [['Incluye', 'Pan dulce de autor (1 kg) · Budín de limón y amapola · Turrón de almendras y miel · Garrapiñada · 6 alfajores de maicena · 12 trufas de chocolate']] }
+  { id: 'mesa-dulce', grupo: 'Postres', nombre: 'Mesa dulce navideña', tag: 'Todo casero', img: 'photo-1636394849426-39501364873c', tipo: 'fijo', opciones: [{ label: 'Para 8 a 10', personas: 10, precio: 89000 }],
+    ocasiones: ['navidad', 'anio_nuevo'], lead: 'Lo dulce de la sobremesa, hecho a mano.',
+    menu: [['Incluye', 'Pan dulce de autor (1 kg) · Budín de limón y amapola · Turrón de almendras y miel · Garrapiñada · 6 alfajores de maicena · 12 trufas de chocolate']] },
+  { id: 'torta', grupo: 'Postres', nombre: 'Torta de cumpleaños', tag: 'Con vela y cartel', img: 'photo-1588195538326-c5b1e9f80a1b', tipo: 'fijo',
+    opciones: [{ label: '12 porciones', personas: 12, precio: 52000 }, { label: '20 porciones', personas: 20, precio: 78000 }],
+    ocasiones: ['cumple'], lead: 'Elegís el sabor en las notas del pedido.',
+    menu: [['Sabores', 'Chajá (merengue, durazno y dulce de leche) · Selva negra · Rogel · Lemon pie']] }
 ];
 const MERCADITO = [
-  { id: 'm-vitel', ic: '🥩', nombre: 'Vitel toné', det: 'Para 6 personas', precio: 46000 },
+  { id: 'm-vitel', ic: '🥩', nombre: 'Vitel toné', det: 'Para 6 personas', precio: 46000, ocasiones: ['navidad', 'anio_nuevo'] },
   { id: 'm-pionono', ic: '🥖', nombre: 'Pionono salado', det: 'Jamón crudo, rúcula y queso · 8 porciones', precio: 28000 },
-  { id: 'm-lomo', ic: '🍷', nombre: 'Lomo al Malbec laminado', det: '1 kg, con chimichurri', precio: 78000 },
+  { id: 'm-lomo', ic: '🍷', nombre: 'Lomo al Malbec', det: '1 kg, con chimichurri', precio: 78000 },
   { id: 'm-matambre', ic: '🥩', nombre: 'Matambre arrollado', det: '1 kg, laminado', precio: 42000 },
   { id: 'm-langostinos', ic: '🦐', nombre: 'Langostinos con mayo de lima', det: '500 g', precio: 54000 },
   { id: 'm-burrata', ic: '🧀', nombre: 'Burratas con tomates confitados', det: '2 unidades con pesto', precio: 24000 },
+  { id: 'm-empanadas', ic: '🥟', nombre: 'Empanadas de carne cortada a cuchillo', det: '12 unidades, para hornear', precio: 30000 },
   { id: 'm-rusa', ic: '🥗', nombre: 'Ensalada rusa de chef', det: '1 kg', precio: 16000 },
-  { id: 'm-papas', ic: '🥔', nombre: 'Papas confitadas al romero', det: '1 kg, para calentar', precio: 18000 },
+  { id: 'm-papas', ic: '🥔', nombre: 'Papas confitadas al romero', det: '1 kg, para regenerar', precio: 18000 },
   { id: 'm-pavlova', ic: '🍓', nombre: 'Pavlova de frutos rojos', det: '8 porciones', precio: 42000 },
   { id: 'm-tiramisu', ic: '☕', nombre: 'Tiramisú', det: '8 porciones', precio: 38000 },
-  { id: 'm-pandulce', ic: '🍞', nombre: 'Pan dulce de autor', det: '1 kg', precio: 32000 },
-  { id: 'm-turron', ic: '🍯', nombre: 'Turrón de almendras y miel', det: '300 g', precio: 15000 },
-  { id: 'm-garrapinada', ic: '🥜', nombre: 'Garrapiñada', det: '250 g', precio: 8000 }
+  { id: 'm-pandulce', ic: '🍞', nombre: 'Pan dulce de autor', det: '1 kg', precio: 32000, ocasiones: ['navidad', 'anio_nuevo'] },
+  { id: 'm-turron', ic: '🍯', nombre: 'Turrón de almendras y miel', det: '300 g', precio: 15000, ocasiones: ['navidad', 'anio_nuevo'] },
+  { id: 'm-garrapinada', ic: '🥜', nombre: 'Garrapiñada', det: '250 g', precio: 8000, ocasiones: ['navidad', 'anio_nuevo'] }
 ];
 /* Envío por código postal (parte numérica). Zona 1: CABA · Zona 2: GBA cercano · Zona 3: GBA más lejos */
 const ENVIO = { z1: 12000, z2: 16000, z3: 22000 };
@@ -272,61 +293,91 @@ const SUPA = { url: 'https://qolpnuscpmzqeacshfvu.supabase.co', key: 'eyJhbGciOi
 /* ═════════ estado ═════════ */
 const U = (id, w, h) => 'https://images.unsplash.com/' + id + '?w=' + w + '&h=' + h + '&fit=crop&q=72&auto=format';
 const f$ = n => '$' + Math.round(n).toLocaleString('es-AR');
-const hoy = new Date(new Date().toDateString());
-const st = { fiesta: null, entrega: null, carrito: [], sel: {} };
-try { const g = JSON.parse(localStorage.getItem('cel_fiestas') || 'null'); if (g && g.carrito) Object.assign(st, g); } catch (e) {}
-const guardar = () => { try { localStorage.setItem('cel_fiestas', JSON.stringify({ fiesta: st.fiesta, entrega: st.entrega, carrito: st.carrito })); } catch (e) {} };
+const iso = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+const st = { ocasion: null, fecha: null, franja: null, carrito: [], sel: {} };
+let BLOQ = new Set();
+try { const g = JSON.parse(localStorage.getItem('cel_cajas') || 'null'); if (g && g.carrito) Object.assign(st, g); } catch (e) {}
+const guardar = () => { try { localStorage.setItem('cel_cajas', JSON.stringify({ ocasion: st.ocasion, fecha: st.fecha, franja: st.franja, carrito: st.carrito })); } catch (e) {} };
 const fechaLarga = f => new Date(f + 'T12:00:00').toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
-const abierta = k => new Date(FIESTAS[k].cierre + 'T23:59:59') >= new Date();
+const temporada = o => !!OCASIONES[o].fecha;
+const visible = o => !temporada(o) || new Date(OCASIONES[o].fecha + 'T23:59:59') >= new Date();
+const abierta = o => !temporada(o) || new Date(OCASIONES[o].cierre + 'T23:59:59') >= new Date();
+const primeraFecha = () => { const d = new Date(Date.now() + ANTICIPACION_HORAS * 3600e3); if (d.getHours() >= 18) d.setDate(d.getDate() + 1); return iso(d); };
+const ultimaFecha = () => iso(new Date(Date.now() + 90 * 864e5));
+const enCaja = (x, o) => !x.ocasiones || x.ocasiones.includes(o);
 function track(ev, p) { try { window.celTrack && celTrack(ev, p || {}); } catch (e) {} }
+fetch(SUPA.url + '/rest/v1/bloqueos?select=fecha', { headers: { apikey: SUPA.key, Authorization: 'Bearer ' + SUPA.key } })
+  .then(r => r.ok ? r.json() : []).then(j => { BLOQ = new Set((j || []).map(x => String(x.fecha).slice(0, 10))); pintarCuando(); pintarRes(); }).catch(() => {});
 
-/* ═════════ fiesta y entrega ═════════ */
-function pintarFiestas() {
-  document.getElementById('fiestas').innerHTML = Object.entries(FIESTAS).map(([k, f]) => {
-    const ab = abierta(k);
-    return `<button type="button" class="fz${st.fiesta === k ? ' on' : ''}${ab ? '' : ' cerrada'}" data-k="${k}" ${ab ? '' : 'disabled'}><i>${f.icono}</i><b>${f.nombre}</b><small>${f.noche}</small><span class="cierre">${ab ? 'Pedidos hasta el ' + fechaLarga(f.cierre) : 'Pedidos cerrados'}</span></button>`;
+/* ═════════ ocasión y fecha ═════════ */
+function pintarOcasiones() {
+  const ks = Object.keys(OCASIONES).filter(visible);
+  document.getElementById('ocasiones').innerHTML = ks.map(k => {
+    const o = OCASIONES[k], ab = abierta(k);
+    return `<button type="button" class="fz${st.ocasion === k ? ' on' : ''}${ab ? '' : ' cerrada'}" data-k="${k}" ${ab ? '' : 'disabled'}><i>${o.icono}</i><b>${o.nombre}</b><small>${o.sub}</small>${temporada(k) ? `<span class="cierre">${ab ? 'Pedidos hasta el ' + fechaLarga(o.cierre) : 'Pedidos cerrados'}</span>` : ''}</button>`;
   }).join('');
-  const f = FIESTAS[st.fiesta];
-  document.getElementById('franjas').innerHTML = f ? f.entregas.map((e, i) => `<button type="button" class="fr${st.entrega === i ? ' on' : ''}" data-i="${i}">🚚 ${fechaLarga(e.fecha)} · ${e.franja}</button>`).join('') : '';
-  document.getElementById('faq-cierre').textContent = Object.values(FIESTAS).map(f => f.nombre + ': hasta el ' + fechaLarga(f.cierre)).join(' · ') + ', o hasta completar los cupos de cada fecha.';
+  const temp = ks.filter(temporada).map(k => OCASIONES[k].nombre);
+  if (temp.length) document.getElementById('hero-k').textContent = '✦ Cajas Celestia · ' + temp.join(' y ') + ' con cupos limitados';
+  document.getElementById('faq-cierre').textContent = 'Con al menos ' + ANTICIPACION_HORAS + ' horas de anticipación, porque cocino el día anterior a la entrega.' +
+    (ks.filter(temporada).length ? ' Para las fiestas: ' + ks.filter(temporada).map(k => OCASIONES[k].nombre + ' hasta el ' + fechaLarga(OCASIONES[k].cierre)).join(' y ') + ', o hasta completar los cupos.' : '');
 }
-document.getElementById('fiestas').addEventListener('click', e => { const b = e.target.closest('.fz'); if (!b || b.disabled) return; st.fiesta = b.dataset.k; st.entrega = null; guardar(); pintarFiestas(); pintarRes(); track('fiestas_fiesta', { fiesta: st.fiesta }); });
-document.getElementById('franjas').addEventListener('click', e => { const b = e.target.closest('.fr'); if (!b) return; st.entrega = +b.dataset.i; guardar(); pintarFiestas(); pintarRes(); });
+function pintarCuando() {
+  const C = document.getElementById('cuando'), o = OCASIONES[st.ocasion];
+  if (!o) { C.innerHTML = ''; return; }
+  const franjas = o.franjas || FRANJAS;
+  if (temporada(st.ocasion)) st.fecha = o.fecha;
+  let h = `<div class="paso" style="margin-bottom:10px">🚚 ¿Cuándo la recibís?</div>`;
+  if (temporada(st.ocasion)) h += `<p style="font-size:15px;margin-bottom:10px">Entrega el <b>${fechaLarga(o.fecha)}</b>, el día del evento.</p>`;
+  else {
+    const bloq = st.fecha && BLOQ.has(st.fecha), corta = st.fecha && st.fecha < primeraFecha();
+    h += `<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:6px"><input type="date" class="in" id="f-fecha" style="width:auto;margin:0" min="${primeraFecha()}" max="${ultimaFecha()}" value="${st.fecha || ''}">
+      <span style="font-size:13.5px;color:var(--mut)">${st.fecha && !bloq && !corta ? fechaLarga(st.fecha) : 'Desde el ' + fechaLarga(primeraFecha()) + ' (' + ANTICIPACION_HORAS + ' h de anticipación)'}</span></div>
+      ${bloq ? '<p class="cpmsg warn">Ese día no tengo cupo. Elegí otra fecha o escribime por WhatsApp.</p>' : corta ? '<p class="cpmsg warn">Necesito al menos ' + ANTICIPACION_HORAS + ' h para cocinarlo el día anterior.</p>' : ''}`;
+  }
+  h += `<div class="franjas">${franjas.map(f => `<button type="button" class="fr${st.franja === f ? ' on' : ''}" data-f="${f}">${f}</button>`).join('')}</div>`;
+  C.innerHTML = h;
+  const inp = document.getElementById('f-fecha'); if (inp) inp.addEventListener('change', () => { st.fecha = inp.value; guardar(); pintarCuando(); pintarRes(); });
+}
+document.getElementById('ocasiones').addEventListener('click', e => {
+  const b = e.target.closest('.fz'); if (!b || b.disabled) return;
+  const prev = st.ocasion; st.ocasion = b.dataset.k; if (prev !== st.ocasion) { st.franja = null; if (temporada(st.ocasion) || (prev && temporada(prev))) st.fecha = null; }
+  st.carrito = st.carrito.filter(x => { const c = CAJAS.find(y => y.id === x.id) || MERCADITO.find(y => y.id === x.id); return c && enCaja(c, st.ocasion); });
+  guardar(); pintarOcasiones(); pintarCuando(); pintarCatalogo(); pintarRes(); track('cajas_ocasion', { ocasion: st.ocasion });
+});
+document.getElementById('cuando').addEventListener('click', e => { const b = e.target.closest('.fr'); if (!b) return; st.franja = b.dataset.f; guardar(); pintarCuando(); pintarRes(); });
 
 /* ═════════ catálogo ═════════ */
-function cajaHTML(c, esCena) {
-  const opts = esCena ? c.personas.map(p => ({ label: p + ' personas', personas: p, precio: p * c.pp })) : c.opciones;
-  const sel = st.sel[c.id] != null ? st.sel[c.id] : 0; const o = opts[sel];
+function opciones(c) { return c.tipo === 'pp' ? c.personas.map(p => ({ label: p + ' personas', personas: p, precio: p * c.pp })) : c.opciones; }
+function cajaHTML(c) {
+  const opts = opciones(c), sel = st.sel[c.id] != null ? st.sel[c.id] : 0, o = opts[sel];
   return `<article class="caja" data-id="${c.id}">
     <div class="img" style="background-image:url('${U(c.img, 900, 506)}')"><span class="tag">${c.tag}</span></div>
     <div class="b"><h4>${c.nombre}</h4><p class="lead">${c.lead}</p>
       <ul class="menu">${c.menu.map(m => `<li><span>${m[0]}</span><div>${m[1]}</div></li>`).join('')}</ul>
       ${opts.length > 1 ? `<div class="opc">${opts.map((x, i) => `<button type="button" class="op${i === sel ? ' on' : ''}" data-op="${i}">${x.label}</button>`).join('')}</div>` : ''}
-      <div class="pie"><div class="precio"><b>${f$(o.precio)}</b><small>${esCena ? f$(c.pp) + ' por persona' : o.label}</small></div>
+      <div class="pie"><div class="precio"><b>${f$(o.precio)}</b><small>${c.tipo === 'pp' ? f$(c.pp) + ' por persona' : o.label}</small></div>
         <button type="button" class="btn add" data-add="${c.id}">Sumar al pedido</button></div>
     </div></article>`;
 }
 function pintarCatalogo() {
-  document.getElementById('cenas').innerHTML = CENAS.map(c => cajaHTML(c, true)).join('');
-  document.getElementById('extras').innerHTML = EXTRAS.map(c => cajaHTML(c, false)).join('');
-  document.getElementById('merc').innerHTML = MERCADITO.map(m => {
-    const it = st.carrito.find(x => x.id === m.id); const n = it ? it.cant : 0;
+  const oc = st.ocasion, lista = CAJAS.filter(c => !oc ? (c.ocasiones.some(k => !temporada(k)) || c.ocasiones.some(visible)) : enCaja(c, oc));
+  const grupos = [...new Set(lista.map(c => c.grupo))];
+  document.getElementById('catalogo').innerHTML = (oc ? '' : '<p class="sub" style="margin:0 0 6px">Elegí la ocasión arriba para ver las cajas pensadas para esa noche.</p>') +
+    grupos.map(g => `<div class="cat-h"><h3>${g}</h3></div><div class="cajas">${lista.filter(c => c.grupo === g).map(cajaHTML).join('')}</div>`).join('');
+  document.getElementById('merc').innerHTML = MERCADITO.filter(m => !oc ? true : enCaja(m, oc)).map(m => {
+    const it = st.carrito.find(x => x.id === m.id), n = it ? it.cant : 0;
     return `<div class="mi"><span class="ic">${m.ic}</span><b>${m.nombre}</b><small>${m.det}</small>
       <div class="row"><strong>${f$(m.precio)}</strong><span class="qty${n ? ' on' : ''}"><button type="button" data-m="${m.id}" data-d="-1" aria-label="Quitar">−</button><span>${n}</span><button type="button" data-m="${m.id}" data-d="1" aria-label="Sumar">+</button></span></div></div>`;
   }).join('');
 }
-function opcionDe(id) {
-  const c = CENAS.find(x => x.id === id); const sel = st.sel[id] || 0;
-  if (c) { const p = c.personas[sel]; return { variante: p + ' personas', personas: p, precio: p * c.pp, nombre: c.nombre }; }
-  const e = EXTRAS.find(x => x.id === id); const o = e.opciones[sel]; return { variante: o.label, personas: o.personas, precio: o.precio, nombre: e.nombre };
-}
 document.addEventListener('click', e => {
-  const op = e.target.closest('.op'); if (op) { const id = op.closest('.caja').dataset.id; st.sel[id] = +op.dataset.op; pintarCatalogo(); return; }
+  const op = e.target.closest('.op'); if (op) { st.sel[op.closest('.caja').dataset.id] = +op.dataset.op; pintarCatalogo(); return; }
   const add = e.target.closest('[data-add]'); if (add) {
-    const id = add.dataset.add, o = opcionDe(id); const key = id + '|' + o.variante;
-    const it = st.carrito.find(x => x.key === key); if (it) it.cant++; else st.carrito.push({ key, id, nombre: o.nombre, variante: o.variante, personas: o.personas, precio: o.precio, cant: 1 });
-    guardar(); pintarRes(); add.textContent = '✓ Sumado'; setTimeout(() => { add.textContent = 'Sumar al pedido'; }, 1400);
-    track('fiestas_agregar', { producto: id, variante: o.variante, value: o.precio, currency: 'ARS' }); return;
+    const c = CAJAS.find(x => x.id === add.dataset.add), o = opciones(c)[st.sel[c.id] || 0], key = c.id + '|' + o.label;
+    if (!st.ocasion) { const k = c.ocasiones.find(x => visible(x) && abierta(x) && !temporada(x)) || c.ocasiones.find(x => visible(x) && abierta(x)); if (k) { st.ocasion = k; pintarOcasiones(); pintarCuando(); } }
+    const it = st.carrito.find(x => x.key === key); if (it) it.cant++; else st.carrito.push({ key, id: c.id, nombre: c.nombre, variante: o.label, personas: o.personas, precio: o.precio, cant: 1 });
+    guardar(); pintarCatalogo(); pintarRes(); const b = document.querySelector('[data-add="' + c.id + '"]'); if (b) { b.textContent = '✓ Sumado'; setTimeout(() => { b.textContent = 'Sumar al pedido'; }, 1400); }
+    track('cajas_agregar', { producto: c.id, variante: o.label, value: o.precio, currency: 'ARS' }); return;
   }
   const q = e.target.closest('[data-m]'); if (q) {
     const m = MERCADITO.find(x => x.id === q.dataset.m), d = +q.dataset.d; let it = st.carrito.find(x => x.id === m.id);
@@ -347,34 +398,33 @@ function zonaCP(cp) {
   return { z: 'fuera', nombre: 'Fuera de zona', costo: 0 };
 }
 function totales() {
-  const sub = st.carrito.reduce((a, x) => a + x.precio * x.cant, 0);
-  const z = zonaCP(document.getElementById('f-cp').value);
+  const sub = st.carrito.reduce((a, x) => a + x.precio * x.cant, 0), z = zonaCP(document.getElementById('f-cp').value);
   const env = z && z.z !== 'fuera' ? z.costo : 0;
   return { sub, z, env, tot: sub + env, sena: Math.round((sub + env) * SENIA) };
 }
 function pintarCP() {
-  const z = zonaCP(document.getElementById('f-cp').value), m = document.getElementById('cpmsg');
-  if (!document.getElementById('f-cp').value.trim()) { m.textContent = ''; m.className = 'cpmsg'; }
+  const v = document.getElementById('f-cp').value.trim(), z = zonaCP(v), m = document.getElementById('cpmsg');
+  if (!v) { m.textContent = ''; m.className = 'cpmsg'; }
   else if (!z) { m.textContent = 'Revisá el código postal (por ejemplo 1425 o C1425).'; m.className = 'cpmsg warn'; }
   else if (z.z === 'fuera') { m.textContent = 'Estás fuera de la zona habitual: hacé el pedido igual y te escribo para cotizar el envío.'; m.className = 'cpmsg warn'; }
   else { m.textContent = '✓ ' + z.nombre + ' · envío ' + f$(z.costo); m.className = 'cpmsg ok'; }
 }
 
 /* ═════════ resumen ═════════ */
+const fechaOK = () => st.fecha && (temporada(st.ocasion) || (st.fecha >= primeraFecha() && !BLOQ.has(st.fecha)));
 function faltan() {
-  const v = id => document.getElementById(id).value.trim(); const out = [];
-  if (!st.fiesta) out.push('elegí la fiesta'); else if (st.entrega == null) out.push('elegí el día de entrega');
+  const v = id => document.getElementById(id).value.trim(), out = [];
+  if (!st.ocasion) out.push('elegí la ocasión'); else if (!fechaOK()) out.push('elegí la fecha'); else if (!st.franja) out.push('elegí la franja de entrega');
   if (!st.carrito.length) out.push('sumá al menos una caja');
   if (!zonaCP(v('f-cp'))) out.push('código postal'); if (v('f-dir').length < 5) out.push('dirección');
   if (v('f-nom').length < 3) out.push('nombre'); if (v('f-tel').replace(/\D/g, '').length < 8) out.push('WhatsApp');
   return out;
 }
 function pintarRes() {
-  const R = document.getElementById('res'), t = totales(), f = FIESTAS[st.fiesta], e = f && st.entrega != null ? f.entregas[st.entrega] : null;
-  const fal = faltan();
+  const R = document.getElementById('res'), t = totales(), o = OCASIONES[st.ocasion], fal = faltan();
   R.innerHTML = `<h3>Tu pedido</h3>
-    <div class="ent">${f ? f.icono + ' <b>' + f.nombre + '</b>' + (e ? ' · entrega ' + fechaLarga(e.fecha) + ', ' + e.franja : ' · <a href="#cajas" style="color:#E8C96A">elegí el día de entrega</a>') : '<a href="#cajas" style="color:#E8C96A">Elegí la fiesta y el día de entrega</a>'}</div>
-    ${st.carrito.length ? `<ul>${st.carrito.map((x, i) => `<li><span>${x.cant > 1 ? x.cant + ' × ' : ''}${x.nombre}<br><small style="opacity:.6">${x.variante}</small></span><span style="white-space:nowrap">${f$(x.precio * x.cant)}<button type="button" data-del="${i}" aria-label="Quitar">✕</button></span></li>`).join('')}</ul>` : '<p class="vacio">Todavía no sumaste nada. Elegí una cena, los bocados o algo del mercadito.</p>'}
+    <div class="ent">${o ? o.icono + ' <b>' + o.nombre + '</b>' + (fechaOK() ? ' · entrega ' + fechaLarga(st.fecha) + (st.franja ? ', ' + st.franja : '') : ' · <a href="#cajas" style="color:#E8C96A">elegí la fecha</a>') : '<a href="#cajas" style="color:#E8C96A">Elegí la ocasión y la fecha de entrega</a>'}</div>
+    ${st.carrito.length ? `<ul>${st.carrito.map((x, i) => `<li><span>${x.cant > 1 ? x.cant + ' × ' : ''}${x.nombre}<br><small style="opacity:.6">${x.variante}</small></span><span style="white-space:nowrap">${f$(x.precio * x.cant)}<button type="button" data-del="${i}" aria-label="Quitar">✕</button></span></li>`).join('')}</ul>` : '<p class="vacio">Todavía no sumaste nada. Elegí una caja o algo del mercadito.</p>'}
     <div class="ln"><span>Subtotal</span><span>${f$(t.sub)}</span></div>
     <div class="ln"><span>Envío${t.z && t.z.z !== 'fuera' ? ' · ' + t.z.nombre : ''}</span><span>${!t.z ? 'según tu CP' : t.z.z === 'fuera' ? 'a cotizar' : f$(t.env)}</span></div>
     <div class="tot"><span>Total</span><b>${f$(t.tot)}</b></div>
@@ -386,10 +436,7 @@ function pintarRes() {
   actualizarFlot();
   const b = document.getElementById('b-conf'); if (b) b.onclick = confirmar;
 }
-function actualizarFlot() {
-  const n = st.carrito.length, p = document.getElementById('pedido').getBoundingClientRect();
-  document.getElementById('flot').classList.toggle('on', n > 0 && p.top > innerHeight * .6);
-}
+function actualizarFlot() { const p = document.getElementById('pedido').getBoundingClientRect(); document.getElementById('flot').classList.toggle('on', st.carrito.length > 0 && p.top > innerHeight * .6); }
 addEventListener('scroll', actualizarFlot, { passive: true });
 ['f-cp', 'f-dir', 'f-nom', 'f-tel', 'f-mail', 'f-barrio'].forEach(id => document.getElementById(id).addEventListener('input', () => { if (id === 'f-cp') pintarCP(); pintarRes(); }));
 
@@ -397,15 +444,14 @@ addEventListener('scroll', actualizarFlot, { passive: true });
 async function confirmar() {
   if (faltan().length) return;
   const b = document.getElementById('b-conf'); b.disabled = true; b.textContent = 'Enviando…';
-  const v = id => document.getElementById(id).value.trim();
-  const f = FIESTAS[st.fiesta], e = f.entregas[st.entrega], t = totales();
-  const ref = 'FX-' + Date.now().toString(36).toUpperCase();
+  const v = id => document.getElementById(id).value.trim(), o = OCASIONES[st.ocasion], t = totales();
+  const ref = 'CJ-' + Date.now().toString(36).toUpperCase();
   const items = st.carrito.map(x => ({ id: x.id, nombre: x.nombre, variante: x.variante, personas: x.personas, cant: x.cant, precio: x.precio, subtotal: x.precio * x.cant }));
   const zona = t.z ? (t.z.z === 'fuera' ? 'Fuera de zona (cotizar envío)' : t.z.nombre + ' · ' + t.z.z.toUpperCase()) : '';
-  const row = { ref, fiesta: st.fiesta, entrega_fecha: e.fecha, entrega_franja: e.franja, items, subtotal: t.sub, envio: t.env, total: t.tot, senia_monto: t.sena,
+  const row = { ref, ocasion: st.ocasion, entrega_fecha: st.fecha, entrega_franja: st.franja, items, subtotal: t.sub, envio: t.env, total: t.tot, senia_monto: t.sena,
     cp: v('f-cp'), zona, nombre: v('f-nom'), tel: v('f-tel'), email: v('f-mail'), dir: v('f-dir') + (v('f-barrio') ? ', ' + v('f-barrio') : ''), notas: v('f-not'), estado: 'pendiente' };
   try {
-    const r = await fetch(SUPA.url + '/rest/v1/pedidos_fiestas', { method: 'POST', headers: { apikey: SUPA.key, Authorization: 'Bearer ' + SUPA.key, 'Content-Type': 'application/json', Prefer: 'return=minimal' }, body: JSON.stringify(row) });
+    const r = await fetch(SUPA.url + '/rest/v1/pedidos_cajas', { method: 'POST', headers: { apikey: SUPA.key, Authorization: 'Bearer ' + SUPA.key, 'Content-Type': 'application/json', Prefer: 'return=minimal' }, body: JSON.stringify(row) });
     if (!r.ok) throw new Error('HTTP ' + r.status);
   } catch (err) {
     b.disabled = false; b.textContent = 'Confirmar pedido';
@@ -413,27 +459,30 @@ async function confirmar() {
     return;
   }
   const personas = items.reduce((a, x) => a + (x.personas || 0) * x.cant, 0);
-  try { fetch('/api/notify', { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ref, tipo: 'fiestas', menu: 'Cajas de fiestas · ' + f.nombre + ' · ' + items.map(x => (x.cant > 1 ? x.cant + '× ' : '') + x.nombre + ' (' + x.variante + ')').join(' + '),
-    fecha: e.fecha, turno: 'Entrega ' + e.franja, personas: personas || '', dir: row.dir, zona, nombre: row.nombre, tel: row.tel, email: row.email, notas: row.notas, fuera_amba: t.z && t.z.z === 'fuera',
+  try { fetch('/api/notify', { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ref, tipo: 'cajas', menu: 'Cajas · ' + o.nombre + ' · ' + items.map(x => (x.cant > 1 ? x.cant + '× ' : '') + x.nombre + ' (' + x.variante + ')').join(' + '),
+    fecha: st.fecha, turno: 'Entrega ' + st.franja, personas: personas || '', dir: row.dir, zona, nombre: row.nombre, tel: row.tel, email: row.email, notas: row.notas, fuera_amba: t.z && t.z.z === 'fuera',
     honorario: t.sub, ingredientes: t.env, total: t.tot }) }); } catch (err) {}
-  track('reserva_completada', { servicio: 'fiestas', fiesta: st.fiesta, value: t.tot, currency: 'ARS' }); track('generate_lead', { value: t.tot, currency: 'ARS' });
-  const msg = 'Hola Daro! Hice el pedido ' + ref + ' de las fiestas (' + f.nombre + ', entrega ' + fechaLarga(e.fecha) + ' ' + e.franja + '). Te paso el comprobante de la seña de ' + f$(t.sena) + '.';
+  track('reserva_completada', { servicio: 'cajas', ocasion: st.ocasion, value: t.tot, currency: 'ARS' }); track('generate_lead', { value: t.tot, currency: 'ARS' });
+  const msg = 'Hola Daro! Hice el pedido ' + ref + ' de cajas (' + o.nombre + ', entrega ' + fechaLarga(st.fecha) + ' ' + st.franja + '). Te paso el comprobante de la seña de ' + f$(t.sena) + '.';
   const ok = document.getElementById('ok');
-  ok.innerHTML = `<div class="ic">✓</div><span class="k" style="color:#a08a5c">✦ Pedido recibido · ${ref}</span><h3>¡Tus fiestas ya tienen chef!</h3>
+  ok.innerHTML = `<div class="ic">✓</div><span class="k" style="color:#a08a5c">✦ Pedido recibido · ${ref}</span><h3>¡Tu ${o.nombre.toLowerCase()} ya tiene chef!</h3>
     <p>${items.map(x => (x.cant > 1 ? x.cant + ' × ' : '') + x.nombre + ' · ' + x.variante).join('<br>')}</p>
-    <p>Entrega: <b>${fechaLarga(e.fecha)}, ${e.franja}</b>${t.z && t.z.z === 'fuera' ? '<br>Te escribo para cotizar el envío antes de la seña.' : ''}</p>
-    <p>Para confirmarlo, transferí la seña de <b>${f$(t.sena)}</b> al alias <b>${ALIAS}</b> y mandame el comprobante por WhatsApp. El pedido queda reservado al acreditarse.</p>
+    <p>Entrega: <b>${fechaLarga(st.fecha)}, ${st.franja}</b>${t.z && t.z.z === 'fuera' ? '<br>Te escribo para cotizar el envío antes de la seña.' : ''}</p>
+    <p>Para confirmarlo, transferí la seña de <b>${f$(t.sena)}</b> al alias <b>${ALIAS}</b> y mandame el comprobante por WhatsApp. La fecha queda reservada al acreditarse.</p>
     <a class="wa" target="_blank" rel="noopener" href="https://wa.me/${WA}?text=${encodeURIComponent(msg)}">Enviar comprobante por WhatsApp</a>`;
   document.getElementById('pedido-box').style.display = 'none'; ok.style.display = 'block'; ok.scrollIntoView({ behavior: 'smooth', block: 'center' });
   st.carrito = []; guardar(); pintarCatalogo();
 }
 function resumenTexto(ref, r) {
-  return 'Hola Daro! Quiero hacer este pedido de fiestas (' + ref + '):\n' + r.items.map(x => '• ' + (x.cant > 1 ? x.cant + ' × ' : '') + x.nombre + ' (' + x.variante + ')').join('\n') +
+  return 'Hola Daro! Quiero hacer este pedido de cajas (' + ref + '):\n' + r.items.map(x => '• ' + (x.cant > 1 ? x.cant + ' × ' : '') + x.nombre + ' (' + x.variante + ')').join('\n') +
     '\nEntrega: ' + r.entrega_fecha + ' ' + r.entrega_franja + '\nDirección: ' + r.dir + ' (CP ' + r.cp + ')\nTotal: ' + f$(r.total) + '\n' + r.nombre + ' · ' + r.tel;
 }
 
-pintarFiestas(); pintarCatalogo(); pintarRes();
-track('fiestas_vista');
+/* ocasión por URL: /cajas?ocasion=navidad */
+try { const q = new URLSearchParams(location.search).get('ocasion'); if (q && OCASIONES[q] && visible(q) && abierta(q)) { if (st.ocasion !== q) { st.ocasion = q; st.fecha = null; st.franja = null; } } } catch (e) {}
+if (st.ocasion && (!OCASIONES[st.ocasion] || !visible(st.ocasion) || !abierta(st.ocasion))) st.ocasion = null;
+pintarOcasiones(); pintarCuando(); pintarCatalogo(); pintarRes();
+track('cajas_vista');
 </script>
 <script src="/js/analytics.js"></script>
 </body></html>

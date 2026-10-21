@@ -3,6 +3,11 @@
   "outputDirectory": ".",
   "redirects": [
     {
+      "source": "/fiestas",
+      "destination": "/cajas",
+      "permanent": false
+    },
+    {
       "source": "/mesa",
       "destination": "/?utm_source=qr&utm_medium=tarjeta&utm_campaign=mesa",
       "permanent": false
