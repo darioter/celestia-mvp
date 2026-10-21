@@ -16,6 +16,32 @@
    ],
    "datos": [
     "En las próximas notas vamos pieza por pieza: nigiri, sashimi, hosomaki, uramaki, temaki y gunkan. Y si preferís aprender con las manos en la masa, mirá nuestras clases y experiencias de cocina."
+   ],
+   "secciones": [
+    {
+     "h2": "1. El arroz (shari): elegirlo, lavarlo y cocinarlo",
+     "texto": "Primero se hace el gohan (arroz blanco cocido) y después se adereza."
+    },
+    {
+     "h2": "2. El aderezo (sushi-zu)",
+     "texto": "El zu es el aderezo que convierte el gohan en shari."
+    },
+    {
+     "h2": "3. El pescado: seguridad primero",
+     "texto": "El término \"sushi grade\" no es una norma oficial; lo que importa es la frescura, la cadena de frío y el congelado."
+    },
+    {
+     "h2": "4. El corte: un solo movimiento",
+     "texto": "El pescado para sushi no se serrucha: se corta con un cuchillo muy afilado y largo, en un solo movimiento tirando hacia vos desde el talón hasta la punta."
+    },
+    {
+     "h2": "5. El nori y el makisu",
+     "texto": "Lado brillante hacia afuera: el lado rugoso va hacia el arroz, porque el arroz se agarra mejor."
+    },
+    {
+     "h2": "6. Cuánto arroz por pieza",
+     "texto": "Nigiri · 15 a 20 g"
+    }
    ]
   },
   {
@@ -33,6 +59,40 @@
    ],
    "datos": [
     "Buena parte del \"wasabi\" que se sirve fuera de Japón es en realidad rábano picante con colorante verde. El wasabi real, rallado de la raíz, es más suave, aromático y pierde fuerza en pocos minutos."
+   ],
+   "secciones": [
+    {
+     "h2": "Mito: el wasabi se disuelve en la soja",
+     "texto": "Mayormente mito."
+    },
+    {
+     "h2": "Verdad: el nigiri se moja del lado del pescado",
+     "texto": "Verdad."
+    },
+    {
+     "h2": "Mito: hay que comerlo sí o sí con palitos",
+     "texto": "Mito."
+    },
+    {
+     "h2": "Verdad: se come de un bocado",
+     "texto": "Verdad."
+    },
+    {
+     "h2": "Mito: el jengibre se pone arriba del sushi",
+     "texto": "Mito."
+    },
+    {
+     "h2": "Verdad: hay un orden recomendado",
+     "texto": "Verdad, aunque flexible."
+    },
+    {
+     "h2": "Mito: el sushi es solo salmón con queso crema",
+     "texto": "Mito."
+    },
+    {
+     "h2": "Verdad: frotar los palitos es de mala educación",
+     "texto": "Verdad."
+    }
    ]
   },
   {
@@ -50,6 +110,32 @@
    ],
    "datos": [
     "Un buen pastelero escribe todo: gramos, temperaturas y tiempos. Si una receta te salió perfecta, anotá exactamente qué hiciste; si salió mal, también. Así se aprende más rápido que con cualquier libro."
+   ],
+   "secciones": [
+    {
+     "h2": "1. Pesar, no medir",
+     "texto": "La regla número uno."
+    },
+    {
+     "h2": "2. Qué hace cada ingrediente",
+     "texto": "Una receta es un equilibrio: los ingredientes que dan estructura tienen que compensar a los que tiernizan, y los que aportan humedad, a los que secan."
+    },
+    {
+     "h2": "3. La temperatura lo es todo",
+     "texto": "Fríos para masas quebradas y hojaldre: la manteca fría es la que da textura arenosa o capas."
+    },
+    {
+     "h2": "4. Las técnicas que se repiten en todo",
+     "texto": "Tamizar: airear los secos y sacar grumos."
+    },
+    {
+     "h2": "5. Las grandes familias",
+     "texto": "Casi toda la pastelería clásica sale de estas bases."
+    },
+    {
+     "h2": "6. Errores típicos y su causa",
+     "texto": "La masa de tarta quedó dura: se amasó de más y se activó el gluten."
+    }
    ]
   },
   {
@@ -69,6 +155,32 @@
    "datos": [
     "Un bife de chorizo puede ir jugoso porque las bacterias están en la superficie y el fuego las elimina. En la carne picada, en cambio, la superficie se mezcla con el interior: por eso la hamburguesa siempre va bien cocida, sobre todo para chicos.",
     "Cuando cocino en tu casa, estas reglas viajan conmigo: cadena de frío desde la compra hasta tu cocina, tablas y utensilios separados, mesadas desinfectadas antes y después. Es la parte que no se ve de una buena experiencia, y la más importante."
+   ],
+   "secciones": [
+    {
+     "h2": "Contaminado no es lo mismo que feo",
+     "texto": "Un alimento alterado se nota: cambia el color, el olor o la textura."
+    },
+    {
+     "h2": "Regla 1: limpiá",
+     "texto": "Lavate las manos con agua y jabón antes de empezar a cocinar, después de ir al baño y cada vez que toques carne cruda, huevos, basura, dinero, el celular o tu cara."
+    },
+    {
+     "h2": "Regla 2: separá",
+     "texto": "La contaminación cruzada es el error más común en cualquier cocina: las bacterias de un alimento crudo pasan a otro que ya está listo para comer."
+    },
+    {
+     "h2": "Regla 3: cociná bien",
+     "texto": "El calor es el arma más efectiva contra las bacterias, siempre que llegue al centro del alimento."
+    },
+    {
+     "h2": "Regla 4: enfriá rápido",
+     "texto": "Entre 5 °C y 60 °C está la zona de peligro: el rango donde las bacterias se multiplican más rápido."
+    },
+    {
+     "h2": "Errores de todos los días",
+     "texto": "Probar la salsa con la cuchara y volver a meterla en la olla."
+    }
    ]
   },
   {
@@ -86,6 +198,28 @@
    ],
    "datos": [
     "El bouquet garni es un atado de hierbas (perejil, tomillo y laurel, a veces con puerro o apio) que se cocina dentro de fondos y guisos y se retira al final. Da aroma sin dejar hojitas sueltas en el plato."
+   ],
+   "secciones": [
+    {
+     "h2": "Especias, hierbas y condimentos: no son lo mismo",
+     "texto": "En cocina se las ordena según la parte de la planta de la que salen:"
+    },
+    {
+     "h2": "Hierbas duras al principio, tiernas al final",
+     "texto": "Es la regla más útil de todas."
+    },
+    {
+     "h2": "Cómo sacarles todo el sabor",
+     "texto": "Comprá enteras cuando puedas y molé en el momento: la pimienta, el comino o la nuez moscada recién molidos tienen el doble de aroma."
+    },
+    {
+     "h2": "Con qué va cada una",
+     "texto": "Comino · Carnes, legumbres, empanadas, cocina árabe y mexicana"
+    },
+    {
+     "h2": "Cómo guardarlas",
+     "texto": "La luz, el calor y la humedad son sus enemigos."
+    }
    ]
   },
   {
@@ -103,6 +237,24 @@
    ],
    "datos": [
     "Si no la vas a cocinar en el día, dejá los nidos orear sobre una placa con semolín y congelalos así, separados. Después van directo del freezer al agua hirviendo."
+   ],
+   "secciones": [
+    {
+     "h2": "Las dos masas base",
+     "texto": "Harina 000 · 300 g"
+    },
+    {
+     "h2": "Paso a paso",
+     "texto": "La corona: harina (con la sal) en la mesada o en un bol, con un hueco en el centro."
+    },
+    {
+     "h2": "Tres cortes para empezar",
+     "texto": "Tagliolini: cortá la lámina en tramos de 30 cm, espolvoreá con semolín, enrollá desde los extremos hacia el centro y cortá tiras de 3 mm."
+    },
+    {
+     "h2": "La cocción",
+     "texto": "Mucha agua (alrededor de 1 litro cada 100 g de pasta), bien salada y en hervor fuerte."
+    }
    ]
   },
   {
@@ -120,6 +272,28 @@
    ],
    "datos": [
     "Los pescados de mar se conservan mejor que los de río. Y si vas a comer pescado crudo (sushi, ceviche), tiene que haber sido congelado correctamente antes. Lo explicamos en las reglas de oro de la manipulación de alimentos."
+   ],
+   "secciones": [
+    {
+     "h2": "Las señales de un pescado fresco",
+     "texto": "Los ojos: brillantes, transparentes y saltones."
+    },
+    {
+     "h2": "Redondos y planos",
+     "texto": "Según su forma, los pescados se dividen en dos grandes grupos, y eso define cuántos filetes salen de cada uno:"
+    },
+    {
+     "h2": "Magros, semigrasos y grasos",
+     "texto": "El contenido de grasa es lo que más importa a la hora de cocinarlo:"
+    },
+    {
+     "h2": "Los cortes que vas a ver",
+     "texto": "Filet: la pieza entera de un lado del pescado, sin espinas."
+    },
+    {
+     "h2": "El punto justo",
+     "texto": "El error más común con el pescado es pasarlo."
+    }
    ]
   },
   {
@@ -137,6 +311,24 @@
    ],
    "datos": [
     "Si la masa no crece, revisá tres cosas: que la levadura no esté vencida, que el agua no haya estado demasiado caliente (por encima de 40 °C la mata) y que el lugar no esté frío."
+   ],
+   "secciones": [
+    {
+     "h2": "Los 4 ingredientes y qué hace cada uno",
+     "texto": "Harina · Al mezclarse con agua y amasarse, sus proteínas forman el gluten: una red elástica que atrapa el gas y le da estructura al pan"
+    },
+    {
+     "h2": "La receta base: pan francés",
+     "texto": "Harina 0000 · 500 g"
+    },
+    {
+     "h2": "Las etapas",
+     "texto": "Mezcla: harina en un bol, la sal hacia los bordes y la levadura desgranada en el centro con el agua y la malta."
+    },
+    {
+     "h2": "Cómo saber si está listo",
+     "texto": "Tiene que tener un dorado parejo y profundo (el pan pálido es pan sin sabor) y, al golpearle la base con los nudillos, sonar hueco."
+    }
    ]
   },
   {
@@ -154,6 +346,28 @@
    ],
    "datos": [
     "Calculá alrededor de una copa por persona por hora de reunión, y agua siempre a mano. Y retirá las bandejas vacías y las servilletas usadas: una mesa prolija hace que todo se vea más rico."
+   ],
+   "secciones": [
+    {
+     "h2": "La regla del bocado",
+     "texto": "Un bocado de cóctel se come de pie, con una mano y en uno o dos mordiscos, sin cuchillo ni tenedor."
+    },
+    {
+     "h2": "Cuántos calcular",
+     "texto": "Recepción antes de una cena · 4 a 6"
+    },
+    {
+     "h2": "Cómo equilibrar la propuesta",
+     "texto": "Fríos y calientes: aproximadamente mitad y mitad."
+    },
+    {
+     "h2": "Ideas que funcionan siempre",
+     "texto": "Mini brochettes de mozzarella de búfala, tomate y aceitunas."
+    },
+    {
+     "h2": "El plan para no correr",
+     "texto": "El día antes: masas, rellenos, salsas, untables y todo lo que se pueda dejar en la heladera."
+    }
    ]
   },
   {
@@ -171,6 +385,20 @@
    ],
    "datos": [
     "La leche de tigre es el jugo que queda en el bol: limón, sal, ají, cebolla y los jugos del pescado. En Perú se sirve en vaso como aperitivo y tiene fama de levantar a cualquiera."
+   ],
+   "secciones": [
+    {
+     "h2": "Ingredientes (2 porciones)",
+     "texto": "Filet de pescado blanco y firme (lenguado, mero, lisa, palometa) · 2 filets"
+    },
+    {
+     "h2": "Paso a paso",
+     "texto": "El camote: pelalo y cocinalo entero en agua con sal, a fuego medio, sin que hierva a borbotones, hasta que esté tierno pero sin desarmarse."
+    },
+    {
+     "h2": "Los tres secretos",
+     "texto": "El limón, sin apretar: exprimí cada mitad solo hasta la mitad."
+    }
    ]
   },
   {
@@ -188,6 +416,24 @@
    ],
    "datos": [
     "En mis menús vas a ver algunas de estas palabras, pero siempre explicadas: la idea es que la carta te dé ganas de comer, no que te haga sentir que tenés que estudiar."
+   ],
+   "secciones": [
+    {
+     "h2": "En la tabla de cortar",
+     "texto": "Mise en place: literalmente, \"puesta en su lugar\"."
+    },
+    {
+     "h2": "En la olla y en el horno",
+     "texto": "Confit: cocinar lentamente sumergido en grasa a baja temperatura."
+    },
+    {
+     "h2": "En la salsera",
+     "texto": "Roux: mezcla de manteca y harina cocidas que se usa para espesar."
+    },
+    {
+     "h2": "En la carta",
+     "texto": "Amuse-bouche: un bocado de cortesía que manda la cocina antes del primer plato."
+    }
    ]
   },
   {
@@ -205,6 +451,28 @@
    ],
    "datos": [
     "Según el protocolo clásico, la comida empieza cuando el anfitrión despliega su servilleta y la apoya en su regazo. Si te levantás un momento, dejala sobre la silla o a la izquierda del plato; a la derecha significa que terminaste. Y nunca va arriba del plato."
+   ],
+   "secciones": [
+    {
+     "h2": "La regla de oro de los cubiertos",
+     "texto": "Se usan de afuera hacia adentro."
+    },
+    {
+     "h2": "Estilo inglés o francés",
+     "texto": "En Argentina se usa el estilo inglés: tenedores con los dientes hacia arriba y cucharas con la parte cóncava hacia arriba."
+    },
+    {
+     "h2": "Las copas",
+     "texto": "Van arriba a la derecha, sobre la punta de los cuchillos."
+    },
+    {
+     "h2": "La servilleta",
+     "texto": "De tela si podés, de buen tamaño (unos 50 × 50 cm) y en el tono del mantel."
+    },
+    {
+     "h2": "Pequeños gestos de servicio",
+     "texto": "El agua primero: es lo primero que se sirve cuando la gente se sienta."
+    }
    ]
   },
   {
@@ -222,6 +490,28 @@
    ],
    "datos": [
     "En las experiencias de 7 pasos el maridaje se piensa junto con el menú, plato por plato. Podés verlo en el menú degustación."
+   ],
+   "secciones": [
+    {
+     "h2": "Paso 1: la vista",
+     "texto": "Limpidez y brillo: un vino sano se ve limpio y brillante."
+    },
+    {
+     "h2": "Paso 2: la nariz",
+     "texto": "Es la fase más rica, y se hace en tiempos:"
+    },
+    {
+     "h2": "Paso 3: la boca",
+     "texto": "Un sorbo pequeño que recorra toda la boca."
+    },
+    {
+     "h2": "A qué temperatura se sirve",
+     "texto": "\"El tinto, a temperatura ambiente\" es un error clásico: por encima de 18 °C el alcohol tapa todos los aromas."
+    },
+    {
+     "h2": "Las reglas del maridaje",
+     "texto": "Por afinidad: buscar parecidos."
+    }
    ]
   },
   {
@@ -237,6 +527,52 @@
    "tips": [],
    "datos": [
     "Esta nota es informativa. Si tenés una condición de salud o necesitás un plan de alimentación, consultá con un profesional de la nutrición."
+   ],
+   "secciones": [
+    {
+     "h2": "1. \"El jugo de pomelo en ayunas quema grasa\"",
+     "texto": "Mito."
+    },
+    {
+     "h2": "2. \"Los productos light no engordan\"",
+     "texto": "Mito."
+    },
+    {
+     "h2": "3. \"La fruta de postre engorda más\"",
+     "texto": "Mito."
+    },
+    {
+     "h2": "4. \"Las galletitas de agua tienen menos calorías que el pan\"",
+     "texto": "Mito."
+    },
+    {
+     "h2": "5. \"La espinaca da fuerza\"",
+     "texto": "Mito (culpa de Popeye)."
+    },
+    {
+     "h2": "6. \"La miel engorda menos que el azúcar\"",
+     "texto": "Mito."
+    },
+    {
+     "h2": "7. \"Hay que elegir aceites sin colesterol\"",
+     "texto": "Marketing."
+    },
+    {
+     "h2": "8. \"Mezclar hidratos y proteínas engorda\"",
+     "texto": "Mito."
+    },
+    {
+     "h2": "9. \"Lo integral tiene menos calorías\"",
+     "texto": "Mito."
+    },
+    {
+     "h2": "10. \"Después de comer hay que esperar dos horas para meterse a la pileta\"",
+     "texto": "Mito."
+    },
+    {
+     "h2": "Lo que sí dicen las guías alimentarias",
+     "texto": "Las Guías Alimentarias para la Población Argentina resumen lo importante en mensajes simples:"
+    }
    ]
   },
   {
@@ -254,6 +590,24 @@
    ],
    "datos": [
     "En un servicio de chef privado la lógica es otra: no hay carta para elegir, sino un menú pensado para tu mesa. Así se arman las experiencias de Celestia."
+   ],
+   "secciones": [
+    {
+     "h2": "Dos preguntas para cada plato",
+     "texto": "¿Es popular?"
+    },
+    {
+     "h2": "Qué hace un restaurante con cada uno",
+     "texto": "Estrellas: no se tocan."
+    },
+    {
+     "h2": "Lo que el comensal puede leer entre líneas",
+     "texto": "El plato del recuadro o el que aparece primero en cada sección suele ser una estrella: lo que la casa quiere que pidas, y muchas veces lo que mejor hace."
+    },
+    {
+     "h2": "El costo de un plato",
+     "texto": "El food cost es el costo de los ingredientes de un plato."
+    }
    ]
   },
   {
@@ -272,6 +626,32 @@
    "datos": [
     "Los tiempos cambian según el tamaño del huevo y la olla. Probá una vez con tu cocina y anotá los minutos: a partir de ahí, sale igual siempre.",
     "Un dato de laboratorio que usamos en la cocina: la clara empieza a cuajar alrededor de los 62 °C y la yema recién espesa entre los 65 y los 70 °C. Por eso existe el \"huevo a 63 °C\": una cocción lenta y controlada en la que la yema queda untuosa, como una crema."
+   ],
+   "secciones": [
+    {
+     "h2": "La prueba del agua: ¿está fresco?",
+     "texto": "Con los días, el huevo pierde humedad a través de la cáscara y la cámara de aire de adentro crece."
+    },
+    {
+     "h2": "No todos los huevos sirven para todo",
+     "texto": "Muy frescos para poché y fritos: la clara es más firme y se mantiene junta alrededor de la yema."
+    },
+    {
+     "h2": "Minutos de hervor, sin adivinar",
+     "texto": "Huevo grande, recién salido de la heladera, que entra al agua ya hirviendo."
+    },
+    {
+     "h2": "¿Por qué la yema queda verde?",
+     "texto": "Ese anillo gris verdoso alrededor de la yema aparece por sobrecocción: el azufre de la clara reacciona con el hierro de la yema."
+    },
+    {
+     "h2": "Color de cáscara y de yema: lo que no te dicen",
+     "texto": "El color de la cáscara (blanca o marrón) depende de la raza de la gallina, no de la calidad del huevo."
+    },
+    {
+     "h2": "Cómo guardarlos",
+     "texto": "En la heladera, en su maple y en un estante, no en la puerta: ahí la temperatura sube cada vez que abrís."
+    }
    ]
   },
   {
@@ -289,6 +669,20 @@
    ],
    "datos": [
     "¿Querés ir más a fondo con el sellado, el arroser con manteca y el reposo? Está todo en la cápsula Ojo de bife: sellado, punto y reposo."
+   ],
+   "secciones": [
+    {
+     "h2": "El truco, paso a paso",
+     "texto": "Relajá la mano izquierda, con la palma hacia arriba."
+    },
+    {
+     "h2": "Por qué funciona (y cuándo falla)",
+     "texto": "Al calentarse, las proteínas de la carne se contraen, sueltan agua y la pieza se endurece."
+    },
+    {
+     "h2": "Los dos detalles que completan el punto",
+     "texto": "Sacalo un poco antes."
+    }
    ]
   },
   {
@@ -306,6 +700,24 @@
    ],
    "datos": [
     "Las condiciones de reserva y cancelación son las mismas que para cualquier experiencia: las podés leer completas en la política de cancelación."
+   ],
+   "secciones": [
+    {
+     "h2": "Tres formas de sumarlo a tus vacaciones",
+     "texto": "Una noche especial · Un cumpleaños, un aniversario o la última cena del viaje"
+    },
+    {
+     "h2": "Cómo se organiza",
+     "texto": "Escribime por WhatsApp con el lugar, las fechas, cuántos son y qué tienen ganas de comer."
+    },
+    {
+     "h2": "Lo que conviene revisar de la casa de alquiler",
+     "texto": "Que el horno funcione bien: muchas casas de veraneo tienen hornos que no llegan a temperatura."
+    },
+    {
+     "h2": "¿Cuánto cuesta?",
+     "texto": "Se toma como base el mismo valor que en Buenos Aires: una experiencia de 3 pasos arranca en $480.000 para dos personas y el chef semanal en $160.000 por jornada, con…"
+    }
    ]
   },
   {
@@ -323,6 +735,24 @@
    ],
    "datos": [
     "Las bebidas suelen quedar a cargo del anfitrión. Lo habitual es que el chef sugiera un maridaje para que elijas los vinos."
+   ],
+   "secciones": [
+    {
+     "h2": "Qué incluye el precio",
+     "texto": "El diseño del menú a medida, con tus gustos y restricciones."
+    },
+    {
+     "h2": "Valores de referencia en Celestia",
+     "texto": "Estos son los precios con todo incluido (servicio, asistentes e ingredientes) a octubre de 2026, de lunes a viernes al mediodía:"
+    },
+    {
+     "h2": "Qué hace variar el precio",
+     "texto": "Cantidad de pasos: una degustación de 7 pasos lleva más técnica, más tiempo y más producto que una cena de 3."
+    },
+    {
+     "h2": "¿Conviene frente a un restaurante?",
+     "texto": "Para dos personas, un restaurante de alta cocina con vino suele costar parecido."
+    }
    ]
   },
   {
@@ -338,7 +768,21 @@
    "tips": [
     "Hay un punto medio: para grupos de más de 12 personas podés armar un evento a medida con chef y staff de servicio, con estaciones o finger food cocinados en el lugar. Es catering con sabor de restaurante."
    ],
-   "datos": []
+   "datos": [],
+   "secciones": [
+    {
+     "h2": "La diferencia en una línea",
+     "texto": "El catering entrega la comida lista para servir; el chef privado termina cada plato en tu casa."
+    },
+    {
+     "h2": "Cuándo conviene un chef privado",
+     "texto": "Cenas íntimas, aniversarios o cumpleaños de pocos invitados."
+    },
+    {
+     "h2": "Cuándo conviene un catering",
+     "texto": "Eventos grandes donde la gente circula y come de pie."
+    }
+   ]
   },
   {
    "slug": "como-funciona-un-chef-semanal",
@@ -355,6 +799,20 @@
    ],
    "datos": [
     "La cocina hogareña alcanza: hornallas, horno, heladera con espacio y recipientes. Si faltan recipientes, lo coordinamos antes."
+   ],
+   "secciones": [
+    {
+     "h2": "Cómo es una semana",
+     "texto": "Armamos el menú por WhatsApp con tus gustos, rutinas y restricciones."
+    },
+    {
+     "h2": "2 o 5 comidas por día",
+     "texto": "2 comidas por día · Almuerzo y cena"
+    },
+    {
+     "h2": "¿Para quién es?",
+     "texto": "Familias con poco tiempo entre semana."
+    }
    ]
   },
   {
@@ -372,6 +830,20 @@
    ],
    "datos": [
     "Las medidas varían un poco según la escuela; lo importante es la lógica: cocción larga, corte grande; cocción corta, corte chico."
+   ],
+   "secciones": [
+    {
+     "h2": "Los cortes clásicos y para qué sirve cada uno",
+     "texto": "Brunoise · Cubos de 2 a 3 mm"
+    },
+    {
+     "h2": "La regla de oro: cocción larga, corte grande",
+     "texto": "Para un fondo que hierve horas, el mirepoix grande suelta sabor de a poco y no se deshace."
+    },
+    {
+     "h2": "Errores que delatan al cocinero apurado",
+     "texto": "Cortar en tamaños distintos: unos quedan crudos y otros pasados."
+    }
    ]
   },
   {
@@ -390,6 +862,20 @@
    ],
    "datos": [
     "Como referencia, unos 50 g de manteca y 50 g de harina espesan 1 litro de leche para una bechamel de consistencia media."
+   ],
+   "secciones": [
+    {
+     "h2": "El roux, el secreto de tres de las cinco",
+     "texto": "El roux es manteca y harina en igual peso, cocinadas juntas."
+    },
+    {
+     "h2": "La holandesa, la más delicada",
+     "texto": "No lleva harina: es una emulsión de yemas y manteca, como una mayonesa tibia."
+    },
+    {
+     "h2": "Cómo hacerte ver como chef con esto",
+     "texto": "Una bechamel con un poco de queso rallado al final ya es una Mornay: ideal para gratinar."
+    }
    ]
   },
   {
@@ -406,7 +892,25 @@
     "El arroser: en el último minuto bajá el fuego, sumá una cucharada de manteca, un diente de ajo aplastado y una rama de tomillo, inclinás la sartén y lo bañás con la manteca espumosa usando una cuchara. Es el gesto que más sabor suma en menos tiempo.",
     "Cortá en contra de la fibra, en láminas, y terminá con sal en escamas recién al servir: el crocante de la sal sobre la carne tibia es pura terminación de chef."
    ],
-   "datos": []
+   "datos": [],
+   "secciones": [
+    {
+     "h2": "Antes del fuego",
+     "texto": "Sacalo de la heladera 30 a 40 minutos antes: si entra helado, se pasa por fuera antes de llegar al punto por dentro."
+    },
+    {
+     "h2": "El sellado",
+     "texto": "Sartén de hierro o plancha bien caliente, con un hilo de aceite neutro."
+    },
+    {
+     "h2": "El punto, con termómetro",
+     "texto": "El tacto engaña; el termómetro no."
+    },
+    {
+     "h2": "El reposo, el paso que todos saltean",
+     "texto": "Dejalo descansar 5 a 8 minutos sobre una rejilla o tabla, sin tapar con fuerza."
+    }
+   ]
   },
   {
    "slug": "emplatar-como-chef",
@@ -423,6 +927,16 @@
    ],
    "datos": [
     "En un menú por pasos, cada plato se piensa como una composición: el orden, el color y el ritmo de toda la cena importan tanto como cada plato por separado."
+   ],
+   "secciones": [
+    {
+     "h2": "La salsa, con cuchara",
+     "texto": "Una cucharada de salsa en el plato, y con el dorso de la cuchara arrastrás en un solo movimiento: la clásica lágrima."
+    },
+    {
+     "h2": "La terminación",
+     "texto": "Un hilo de buen aceite de oliva o de aceite de hierbas."
+    }
    ]
   },
   {
@@ -441,6 +955,24 @@
    ],
    "datos": [
     "La manteca tiene que estar fría y la salsa caliente pero sin hervir: si hierve después de montarla, la emulsión se rompe y la manteca se separa."
+   ],
+   "secciones": [
+    {
+     "h2": "Desglasar: el sabor está pegado en la sartén",
+     "texto": "Después de sellar una carne quedan restos dorados en el fondo de la sartén."
+    },
+    {
+     "h2": "Reducir hasta “napar”",
+     "texto": "Dejá hervir suave hasta que el líquido se reduzca y tome cuerpo."
+    },
+    {
+     "h2": "Montar con manteca: el toque final",
+     "texto": "Fuera del fuego, sumá unos cubos de manteca bien fría y movés la sartén en círculos (o batís suave) hasta que se integren."
+    },
+    {
+     "h2": "Glaseado de vegetales",
+     "texto": "Zanahorias, cebollitas o nabos con agua hasta la mitad, una cucharada de manteca, una pizca de azúcar y sal."
+    }
    ]
   },
   {
@@ -458,6 +990,20 @@
    ],
    "datos": [
     "Las versiones más famosas de restaurante llevan muchísima más manteca: hasta casi la mitad del peso de las papas. Con 100 a 150 g por kilo tenés un puré de lujo, sin exagerar."
+   ],
+   "secciones": [
+    {
+     "h2": "Ingredientes (4 porciones)",
+     "texto": "1 kg de papas harinosas (papa negra, Spunta)"
+    },
+    {
+     "h2": "Paso a paso",
+     "texto": "Agua fría y con sal."
+    },
+    {
+     "h2": "Para servirlo como chef",
+     "texto": "Una cucharada generosa en el centro del plato, y con el dorso de la cuchara hacés una curva que deje un surco."
+    }
    ]
   }
  ]

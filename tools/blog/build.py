@@ -286,6 +286,22 @@ def franja_landing():
 def sitemap():
     import sys as _s; _s.path.insert(0, os.path.join(ROOT, 'tools')); import sitemap as _sm; _sm.generar()
 
+def secciones(cuerpo, limpio):
+    """Para los reels: cada h2 con una frase corta que lo resume."""
+    out = []
+    for k, b in enumerate(cuerpo):
+        if b[0] != 'h2': continue
+        txt = ''
+        for nb in cuerpo[k + 1:k + 3]:
+            if nb[0] == 'p': txt = limpio(nb[1]); break
+            if nb[0] in ('ul', 'ol') and nb[1]: txt = limpio(nb[1][0]); break
+            if nb[0] in ('tip', 'dato'): txt = limpio(nb[1]); break
+            if nb[0] == 'tabla' and nb[2]: txt = ' · '.join(limpio(c) for c in nb[2][0][:2]); break
+        frase = re.split(r'(?<=[.!?])\s+', txt)[0] if txt else ''
+        if len(frase) > 170: frase = frase[:167].rsplit(' ', 1)[0] + '…'
+        out.append({'h2': limpio(b[1]), 'texto': frase})
+    return out
+
 def base_historias():
     """Base de contenido para el generador de historias de Instagram (admin-historias.html)."""
     limpio = lambda t: re.sub(r'\s+', ' ', html.unescape(re.sub(r'<[^>]+>', '', t))).strip()
@@ -297,6 +313,7 @@ def base_historias():
             'img': U(a['img'], 1080, 1920), 'img_sq': U(a['img'], 800, 800), 'foto': a['foto'], 'url': f'{SITE}/blog/{a["slug"]}',
             'tips': [limpio(b[1]) for b in es['cuerpo'] if b[0] == 'tip'],
             'datos': [limpio(b[1]) for b in es['cuerpo'] if b[0] == 'dato'],
+            'secciones': secciones(es['cuerpo'], limpio),
         })
     p = os.path.join(ROOT, 'data', 'historias-base.json'); os.makedirs(os.path.dirname(p), exist_ok=True)
     open(p, 'w', encoding='utf-8').write(json.dumps({'notas': notas}, ensure_ascii=False, indent=1))

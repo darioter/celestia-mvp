@@ -71,6 +71,25 @@ textarea.inp{resize:vertical;min-height:64px;line-height:1.4}
 input[type=range]{width:100%;accent-color:var(--gold)}
 .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--navy3);border:1px solid var(--gold);color:var(--cream);padding:11px 22px;border-radius:999px;font-size:13px;opacity:0;transition:opacity .25s;z-index:99;pointer-events:none}
 .toast.on{opacity:1}
+.modos{display:flex;gap:4px;background:rgba(255,255,255,.05);border-radius:999px;padding:4px;margin-left:10px}
+.modo{background:none;border:0;color:var(--mut);border-radius:999px;padding:7px 14px;font-size:13px;font-weight:500}
+.modo.on{background:var(--gold);color:var(--navy);font-weight:600}
+.reel{display:grid;grid-template-columns:380px 1fr;gap:28px;align-items:start}
+.r-play{position:sticky;top:90px}
+.r-cv{position:relative;width:100%;aspect-ratio:9/16;border-radius:16px;overflow:hidden;background:#000;border:1px solid var(--line)}
+.r-cv canvas{width:100%;height:100%;display:block}
+.r-rec{position:absolute;top:12px;left:12px;background:#b3261e;color:#fff;font-size:12px;font-weight:600;padding:5px 11px;border-radius:999px;display:none}
+.r-ctrl{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 10px}
+.r-lab{display:block;font-size:13px;color:var(--mut);margin-bottom:4px}
+.r-list{display:flex;flex-direction:column;gap:10px}
+.rf{display:grid;grid-template-columns:72px 1fr auto;gap:12px;background:var(--navy3);border:1px solid var(--line);border-radius:14px;padding:10px;align-items:start}
+.rf canvas{width:72px;height:128px;border-radius:8px;background:#000;cursor:pointer}
+.rf .inp{margin-bottom:5px;font-size:13px;padding:8px 10px}
+.rf textarea.inp{min-height:52px}
+.rf .tipo{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold2);margin-bottom:5px}
+.rf .acc{display:flex;flex-direction:column;gap:5px}
+.rf .acc button{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--cream);border-radius:8px;padding:5px 8px;font-size:12px}
+@media(max-width:1100px){.reel{grid-template-columns:1fr}.r-play{position:static;max-width:380px}}
 @media(max-width:900px){.wrap{grid-template-columns:1fr}.side{position:static;max-height:none;border-right:0;border-bottom:1px solid var(--line)}}
 </style>
 </head>
@@ -89,11 +108,12 @@ input[type=range]{width:100%;accent-color:var(--gold)}
 
 <div id="app">
   <div class="top">
-    <h1>📸 Historias de Instagram</h1>
+    <h1>Instagram</h1>
+    <div class="modos"><button class="modo on" data-m="hist">📸 Historias</button><button class="modo" data-m="reel">🎬 Reels</button></div>
     <span class="sp"></span>
     <a class="back" href="/admin">← Volver al admin</a>
   </div>
-  <div class="wrap">
+  <div class="wrap" id="modo-hist">
     <aside class="side">
       <div class="tabs" id="tabs">
         <button class="tab on" data-t="fotos">📷 Mis fotos</button>
@@ -120,6 +140,36 @@ input[type=range]{width:100%;accent-color:var(--gold)}
     </main>
   </div>
 </div>
+<div class="wrap" id="modo-reel" style="display:none">
+    <aside class="side">
+      <p class="hint" style="margin-top:2px"><b style="color:var(--cream)">1. Elegí un tema</b><br>El reel se arma solo con la nota: portada, las ideas principales, un tip y el cierre.</p>
+      <div class="items" id="r-notas"></div>
+      <p class="hint" style="margin-top:18px"><b style="color:var(--cream)">2. Sumá tus fotos (opcional)</b><br>Se reparten en orden entre las placas. Si subís 10, cada placa lleva una tuya.</p>
+      <label class="drop" id="r-drop"><b>Subí las fotos del reel</b>Arrastralas en el orden en que van.<input type="file" id="r-fotos" accept="image/*" multiple hidden></label>
+      <button class="btn sec sm" onclick="reelDesdeFotos()" style="width:100%">Armar reel solo con mis fotos</button>
+    </aside>
+    <main class="main">
+      <div class="reel">
+        <div class="r-play">
+          <div class="r-cv"><canvas id="r-cv" width="1080" height="1920"></canvas><div class="r-rec" id="r-rec">● Grabando…</div></div>
+          <div class="r-ctrl">
+            <button class="btn" id="r-btn-play" onclick="reelPlay()">▶ Reproducir</button>
+            <button class="btn" onclick="reelGrabar()">🎬 Generar video</button>
+            <button class="btn sec" onclick="reelPlacas()">⬇ Placas (ZIP)</button>
+          </div>
+          <label class="r-lab">Segundos por placa: <b id="r-seg-v">3</b></label>
+          <input type="range" min="2" max="6" step=".5" value="3" id="r-seg" oninput="REEL.seg=+this.value;document.getElementById('r-seg-v').textContent=this.value;reelInfo()">
+          <p class="hint" id="r-info"></p>
+          <p class="hint">El video sale en 1080×1920, sin música: la sumás en Instagram al publicarlo. Si preferís armarlo vos, bajá las placas y cargalas en el editor de reels.</p>
+        </div>
+        <div class="r-frames">
+          <div class="bar"><b style="font-family:'DM Serif Display',serif;font-weight:400;font-size:22px">Placas del reel</b><span class="cnt" id="r-cnt"></span><span style="flex:1"></span><button class="btn sec sm" onclick="reelAgregar()">+ Placa</button><button class="btn sec sm" onclick="REEL.frames=[];reelRender()">Vaciar</button></div>
+          <div id="r-list" class="r-list"></div>
+          <div id="r-empty" class="empty"><b>Elegí un tema a la izquierda</b>o subí tus fotos para armar un reel solo con ellas.</div>
+        </div>
+      </div>
+    </main>
+  </div>
 <div class="toast" id="toast"></div>
 <input type="file" id="f-cambiar" accept="image/*" hidden>
 
@@ -552,6 +602,223 @@ async function descargarTodas() {
   zip.file('links-para-stickers.txt', links.join('\n'));
   bajar(await zip.generateAsync({ type: 'blob' }), 'celestia-historias-' + iso(new Date()) + '.zip');
   toast(fallas.length ? 'Listo. No se pudieron exportar: ' + fallas.join(', ') : 'ZIP descargado');
+}
+
+/* ═════════════════ REELS ═════════════════ */
+const REEL = { frames: [], seg: 3, fotos: [], playing: false, raf: 0, nota: null };
+document.querySelectorAll('.modo').forEach(b => b.onclick = () => {
+  document.querySelectorAll('.modo').forEach(x => x.classList.toggle('on', x === b));
+  const reel = b.dataset.m === 'reel';
+  document.getElementById('modo-hist').style.display = reel ? 'none' : 'grid';
+  document.getElementById('modo-reel').style.display = reel ? 'grid' : 'none';
+  if (reel) { reelPanel(); reelRender(); }
+});
+function reelPanel() {
+  document.getElementById('r-notas').innerHTML = BASE.notas.map((n, i) =>
+    `<button class="it${USADOS['reel:' + n.slug] ? ' usado' : ''}" onclick="reelDesdeNota(${i})"><img src="${esc(n.img_sq)}" alt="" loading="lazy"><div><b>${esc(n.titulo)}</b><span>${esc(n.icono + ' ' + n.cat)} · ${(n.secciones || []).length + 3} placas</span></div></button>`).join('');
+  const inp = document.getElementById('r-fotos'), d = document.getElementById('r-drop');
+  inp.onchange = () => { reelSubir(inp.files); inp.value = ''; };
+  d.ondragover = e => { e.preventDefault(); d.classList.add('over'); };
+  d.ondragleave = () => d.classList.remove('over');
+  d.ondrop = e => { e.preventDefault(); d.classList.remove('over'); reelSubir(e.dataTransfer.files); };
+}
+function reelSubir(list) {
+  const arr = [...list].filter(f => /^image\//.test(f.type)); if (!arr.length) return;
+  arr.forEach(f => REEL.fotos.push(URL.createObjectURL(f)));
+  if (REEL.frames.length) { reelRepartirFotos(); reelRender(); }
+  toast(REEL.fotos.length + ' fotos para el reel');
+}
+function reelRepartirFotos() {
+  if (!REEL.fotos.length) return;
+  let k = 0; REEL.frames.forEach(f => { if (f.tipo !== 'texto' || REEL.fotos.length >= REEL.frames.length) { if (k < REEL.fotos.length) { f.img = REEL.fotos[k++]; if (f.tipo === 'texto') f.tipo = 'foto'; } } });
+}
+function reelDesdeNota(i) {
+  const n = BASE.notas[i]; REEL.nota = n; marcarUsado('reel:' + n.slug);
+  const fr = [];
+  fr.push({ tipo: 'portada', kicker: n.icono + ' ' + n.cat, titulo: n.titulo, texto: '', img: n.img });
+  fr.push({ tipo: 'texto', kicker: 'En esta nota', titulo: n.bajada, texto: '', img: null });
+  (n.secciones || []).slice(0, 6).forEach((s, k) => fr.push({ tipo: k % 2 ? 'texto' : 'foto', kicker: String(k + 1).padStart(2, '0'), titulo: s.h2, texto: s.texto, img: k % 2 ? null : n.img }));
+  if (n.tips[0]) fr.push({ tipo: 'texto', kicker: '💡 Tip de chef', titulo: n.tips[0], texto: '', img: null });
+  fr.push({ tipo: 'cierre', kicker: 'Leé la nota completa', titulo: 'chefprivado.ar/blog', texto: 'Y si querés vivirlo en tu casa, reservá tu fecha sin costo', img: null });
+  REEL.frames = fr.map((f, k) => Object.assign({ foco: 50, dir: k % 2 }, f));
+  reelRepartirFotos(); reelRender(); reelDibujarEn(0); toast('Reel armado: ' + REEL.frames.length + ' placas');
+}
+function reelDesdeFotos() {
+  if (!REEL.fotos.length) { toast('Primero subí las fotos'); document.getElementById('r-fotos').click(); return; }
+  const fr = REEL.fotos.map((u, k) => {
+    const f = FRASES[k % FRASES.length];
+    return { tipo: k === 0 ? 'portada' : 'foto', kicker: k === 0 ? 'Celestia · Chef privado' : f[0], titulo: k === 0 ? 'Una noche de chef en casa' : f[1], texto: '', img: u };
+  });
+  fr.push({ tipo: 'cierre', kicker: 'Reservá tu fecha sin costo', titulo: 'chefprivado.ar', texto: 'Cenas de 3 y 7 pasos en tu casa, con servicio completo', img: null });
+  REEL.frames = fr.map((f, k) => Object.assign({ foco: 50, dir: k % 2 }, f)); REEL.nota = null;
+  reelRender(); reelDibujarEn(0); toast('Reel armado con ' + REEL.fotos.length + ' fotos');
+}
+function reelAgregar() { REEL.frames.splice(Math.max(REEL.frames.length - 1, 0), 0, { tipo: 'texto', kicker: '', titulo: 'Nuevo texto', texto: '', img: null, foco: 50, dir: REEL.frames.length % 2 }); reelRender(); }
+const TIPOS_R = { portada: 'Portada', foto: 'Foto + texto', texto: 'Solo texto', cierre: 'Cierre' };
+function reelInfo() {
+  const n = REEL.frames.length, t = n * REEL.seg;
+  document.getElementById('r-info').textContent = n ? `${n} placas · ${Math.round(t)} segundos de video` : '';
+  document.getElementById('r-cnt').textContent = n ? n + ' placas' : '';
+}
+function reelRender() {
+  const L = document.getElementById('r-list');
+  document.getElementById('r-empty').style.display = REEL.frames.length ? 'none' : 'block';
+  L.innerHTML = REEL.frames.map((f, i) => `
+    <div class="rf">
+      <canvas width="270" height="480" id="rt-${i}" onclick="reelDibujarEn(${i})" title="Ver en el reproductor"></canvas>
+      <div>
+        <div class="tipo">${i + 1} · <select class="inp" style="display:inline-block;width:auto;padding:3px 6px;font-size:11px;margin:0" onchange="rset(${i},'tipo',this.value)">${Object.entries(TIPOS_R).map(([k, v]) => `<option value="${k}" ${f.tipo === k ? 'selected' : ''}>${v}</option>`).join('')}</select></div>
+        <input class="inp" value="${esc(f.kicker)}" placeholder="Volanta" oninput="rset(${i},'kicker',this.value)">
+        <textarea class="inp" placeholder="Texto principal" oninput="rset(${i},'titulo',this.value)">${esc(f.titulo)}</textarea>
+        <input class="inp" value="${esc(f.texto)}" placeholder="Texto chico (opcional)" oninput="rset(${i},'texto',this.value)">
+      </div>
+      <div class="acc">
+        <button onclick="reelFoto(${i})">${f.img ? '🖼 Cambiar' : '🖼 Foto'}</button>
+        ${f.img ? `<button onclick="rset(${i},'img',null);reelRender()">Sin foto</button>` : ''}
+        <button onclick="reelMover(${i},-1)">↑</button><button onclick="reelMover(${i},1)">↓</button>
+        <button onclick="REEL.frames.splice(${i},1);reelRender()">✕</button>
+      </div>
+    </div>`).join('');
+  reelInfo();
+  REEL.frames.forEach((f, i) => reelMini(i));
+}
+const _rdeb = {};
+function rset(i, k, v) { REEL.frames[i][k] = v; clearTimeout(_rdeb[i]); _rdeb[i] = setTimeout(() => { reelMini(i); reelDibujarEn(i); }, 80); }
+function reelMover(i, d) { const j = i + d; if (j < 0 || j >= REEL.frames.length) return; [REEL.frames[i], REEL.frames[j]] = [REEL.frames[j], REEL.frames[i]]; reelRender(); }
+let _rfIdx = -1;
+function reelFoto(i) { _rfIdx = i; const inp = document.getElementById('f-cambiar'); inp.dataset.reel = '1'; inp.click(); }
+document.getElementById('f-cambiar').addEventListener('change', e => {
+  if (e.target.dataset.reel !== '1') return; e.target.dataset.reel = '';
+  const f = e.target.files[0]; if (!f || _rfIdx < 0) return;
+  const fr = REEL.frames[_rfIdx]; fr.img = URL.createObjectURL(f); if (fr.tipo === 'texto' || fr.tipo === 'cierre') fr.tipo = 'foto';
+  e.target.value = ''; reelRender(); reelDibujarEn(_rfIdx);
+}, true);
+
+/* dibujo de una placa en el instante p (0→1) con el texto apareciendo a (0→1) */
+const ease = t => t < 0 ? 0 : t > 1 ? 1 : 1 - Math.pow(1 - t, 3);
+function reelFrame(x, f, p, a, img, logo, iso_) {
+  x.save();
+  if (f.tipo === 'texto' || f.tipo === 'cierre' || !img) {
+    fondoNavy(x, 7 + (f.dir ? 13 : 0));
+    // estrellas que se desplazan suave
+    x.globalAlpha = .5; estrellasMov(x, p, f.dir); x.globalAlpha = 1;
+  } else {
+    const z = f.dir ? 1.16 - .12 * p : 1.04 + .12 * p;
+    cover(x, img, 0, 0, W, H, f.foco + (f.dir ? -8 + 16 * p : 8 - 16 * p), z);
+    let g = x.createLinearGradient(0, H * .38, 0, H); g.addColorStop(0, 'rgba(13,27,42,0)'); g.addColorStop(.5, 'rgba(13,27,42,.8)'); g.addColorStop(1, 'rgba(13,27,42,.96)');
+    x.fillStyle = g; x.fillRect(0, H * .38, W, H * .62);
+    g = x.createLinearGradient(0, 0, 0, 380); g.addColorStop(0, 'rgba(13,27,42,.55)'); g.addColorStop(1, 'rgba(13,27,42,0)'); x.fillStyle = g; x.fillRect(0, 0, W, 380);
+  }
+  const ta = ease(a), dy = (1 - ta) * 60;
+  x.globalAlpha = ta; x.translate(0, dy);
+  if (f.tipo === 'portada') {
+    logoTop(x, logo);
+    let y = 1080;
+    y = bloque(x, f.kicker, { font: '600 {s}px "DM Sans"', size: 34, maxW: W - 180, maxLines: 1, y, color: C.gold2, align: 'center', upper: true, spacing: 5 });
+    bloque(x, f.titulo, { font: '400 {s}px "DM Serif Display"', size: 100, min: 64, maxW: W - 160, maxLines: 4, y: y + 30, color: C.cream, align: 'center', lh: 1.12 });
+  } else if (f.tipo === 'foto' && img) {
+    let y = 1120;
+    if (f.kicker) y = bloque(x, f.kicker, { font: '600 {s}px "DM Sans"', size: 34, maxW: W - 180, maxLines: 1, y, color: C.gold2, align: 'center', upper: true, spacing: 5 });
+    y = bloque(x, f.titulo, { font: '400 {s}px "DM Serif Display"', size: 84, min: 54, maxW: W - 170, maxLines: 3, y: y + 26, color: C.cream, align: 'center' });
+    bloque(x, f.texto, { font: '400 {s}px "DM Sans"', size: 40, min: 32, maxW: W - 200, maxLines: 4, y: y + 30, color: 'rgba(250,246,239,.85)', align: 'center', lh: 1.35 });
+  } else if (f.tipo === 'cierre') {
+    if (iso_) { const w = 300, hh = w * iso_.height / iso_.width; x.drawImage(iso_, (W - w) / 2, 420, w, hh); }
+    let y = 860;
+    y = bloque(x, f.kicker, { font: '600 {s}px "DM Sans"', size: 36, maxW: W - 180, maxLines: 2, y, color: C.gold2, align: 'center', upper: true, spacing: 5 });
+    y = bloque(x, f.titulo, { font: '400 {s}px "DM Serif Display"', size: 96, min: 60, maxW: W - 160, maxLines: 2, y: y + 30, color: C.cream, align: 'center' });
+    bloque(x, f.texto, { font: '400 {s}px "DM Sans"', size: 42, maxW: W - 220, maxLines: 3, y: y + 40, color: 'rgba(250,246,239,.8)', align: 'center', lh: 1.35 });
+    logoTop(x, null);
+  } else {
+    let y = 640;
+    if (f.kicker) {
+      const esNum = /^\d+$/.test(f.kicker);
+      y = bloque(x, f.kicker, esNum ? { font: '400 {s}px "DM Serif Display"', size: 150, maxW: W - 180, maxLines: 1, y: y - 80, color: C.gold, align: 'center' }
+                                    : { font: '600 {s}px "DM Sans"', size: 36, maxW: W - 180, maxLines: 1, y, color: C.gold2, align: 'center', upper: true, spacing: 5 });
+      x.fillStyle = C.gold; x.fillRect(W / 2 - 45, y + 40, 90, 4); y += 60;
+    }
+    y = bloque(x, f.titulo, { font: '400 {s}px "DM Serif Display"', size: 80, min: 50, maxW: W - 170, maxLines: 7, y: y + 20, color: C.cream, align: 'center', lh: 1.2 });
+    bloque(x, f.texto, { font: '400 {s}px "DM Sans"', size: 42, min: 32, maxW: W - 200, maxLines: 6, y: y + 40, color: 'rgba(250,246,239,.82)', align: 'center', lh: 1.38 });
+  }
+  x.restore();
+  if (f.tipo !== 'portada') { x.font = '500 28px "DM Sans"'; x.textAlign = 'center'; x.fillStyle = 'rgba(250,246,239,.55)'; if ('letterSpacing' in x) x.letterSpacing = '4px'; x.fillText('CELESTIA · CHEFPRIVADO.AR', W / 2, 1660); if ('letterSpacing' in x) x.letterSpacing = '0px'; }
+}
+function estrellasMov(x, p, dir) {
+  let r = 99; const rnd = () => (r = (r * 9301 + 49297) % 233280) / 233280;
+  for (let k = 0; k < 60; k++) { const bx = rnd() * W, by = rnd() * H, s = 1 + rnd() * 2.5, v = 30 + rnd() * 90;
+    x.globalAlpha = (.25 + rnd() * .5) * (.6 + .4 * Math.sin((p * 6 + k) * 1.3));
+    x.fillStyle = rnd() > .7 ? C.gold2 : '#fff'; x.beginPath(); x.arc(bx + (dir ? -1 : 1) * v * p, by - v * p * .4, s, 0, 7); x.fill(); }
+  x.globalAlpha = 1;
+}
+async function reelImgs() { const out = await Promise.all(REEL.frames.map(f => cargarImg(f.img))); return { imgs: out, logo: await LOGO, iso_: await ISO }; }
+/* dibuja el reel completo en el tiempo t (segundos) */
+function reelEn(x, t, R) {
+  const seg = REEL.seg, fade = .45, n = REEL.frames.length;
+  let i = Math.min(n - 1, Math.floor(t / seg)); const lt = t - i * seg;
+  x.globalAlpha = 1; x.clearRect(0, 0, W, H);
+  if (i > 0 && lt < fade) {
+    reelFrame(x, REEL.frames[i - 1], 1, 1, R.imgs[i - 1], R.logo, R.iso_);
+    x.globalAlpha = lt / fade;
+    const c2 = reelEn._buf || (reelEn._buf = Object.assign(document.createElement('canvas'), { width: W, height: H }));
+    const y = c2.getContext('2d'); y.clearRect(0, 0, W, H);
+    reelFrame(y, REEL.frames[i], lt / seg, (lt - .15) / .6, R.imgs[i], R.logo, R.iso_);
+    x.drawImage(c2, 0, 0); x.globalAlpha = 1;
+  } else reelFrame(x, REEL.frames[i], lt / seg, (lt - .15) / .6, R.imgs[i], R.logo, R.iso_);
+}
+async function reelMini(i) {
+  const cv = document.getElementById('rt-' + i); const f = REEL.frames[i]; if (!cv || !f) return;
+  const big = Object.assign(document.createElement('canvas'), { width: W, height: H });
+  const [img, logo, iso_] = await Promise.all([cargarImg(f.img), LOGO, ISO]);
+  reelFrame(big.getContext('2d'), f, .5, 1, img, logo, iso_);
+  const x = cv.getContext('2d'); x.clearRect(0, 0, cv.width, cv.height); x.drawImage(big, 0, 0, cv.width, cv.height);
+}
+async function reelDibujarEn(i) {
+  if (!REEL.frames.length || REEL.playing) return;
+  const R = await reelImgs(); reelEn(document.getElementById('r-cv').getContext('2d'), i * REEL.seg + REEL.seg * .6, R);
+}
+async function reelPlay() {
+  const b = document.getElementById('r-btn-play');
+  if (REEL.playing) { REEL.playing = false; cancelAnimationFrame(REEL.raf); b.textContent = '▶ Reproducir'; return; }
+  if (!REEL.frames.length) { toast('Primero armá el reel'); return; }
+  const R = await reelImgs(); const x = document.getElementById('r-cv').getContext('2d');
+  const total = REEL.frames.length * REEL.seg; const t0 = performance.now();
+  REEL.playing = true; b.textContent = '⏸ Pausar';
+  const loop = () => { if (!REEL.playing) return; const t = (performance.now() - t0) / 1000; if (t >= total) { REEL.playing = false; b.textContent = '▶ Reproducir'; return; } reelEn(x, t, R); REEL.raf = requestAnimationFrame(loop); };
+  loop();
+}
+function reelTipoVideo() {
+  const c = ['video/mp4;codecs=avc1.42E01E', 'video/mp4;codecs=avc1', 'video/mp4', 'video/webm;codecs=vp9', 'video/webm'];
+  return c.find(t => window.MediaRecorder && MediaRecorder.isTypeSupported(t)) || '';
+}
+async function reelGrabar() {
+  if (!REEL.frames.length) { toast('Primero armá el reel'); return; }
+  if (!window.MediaRecorder) { toast('Este navegador no puede grabar video: usá Chrome o bajá las placas'); return; }
+  if (REEL.playing) reelPlay();
+  const tipo = reelTipoVideo(); const ext = tipo.includes('mp4') ? 'mp4' : 'webm';
+  const cv = document.getElementById('r-cv'), x = cv.getContext('2d');
+  let R; try { R = await reelImgs(); } catch (e) { toast('No se pudieron cargar las fotos'); return; }
+  const stream = cv.captureStream(30); const rec = new MediaRecorder(stream, { mimeType: tipo, videoBitsPerSecond: 10000000 });
+  const partes = []; rec.ondataavailable = e => e.data.size && partes.push(e.data);
+  const total = REEL.frames.length * REEL.seg + .4;
+  const fin = new Promise(res => rec.onstop = res);
+  document.getElementById('r-rec').style.display = 'block'; REEL.playing = true;
+  try { reelEn(x, 0, R); } catch (e) {}
+  rec.start(250); const t0 = performance.now();
+  await new Promise(res => { const loop = () => { const t = (performance.now() - t0) / 1000; reelEn(x, Math.min(t, total - .41), R); if (t >= total) return res(); requestAnimationFrame(loop); }; loop(); });
+  rec.stop(); await fin; REEL.playing = false; document.getElementById('r-rec').style.display = 'none';
+  const nombre = 'celestia-reel-' + (REEL.nota ? REEL.nota.slug.slice(0, 40) : 'fotos') + '.' + ext;
+  bajar(new Blob(partes, { type: tipo.split(';')[0] || 'video/webm' }), nombre);
+  toast(ext === 'mp4' ? 'Video listo (MP4)' : 'Video listo (WEBM): si Instagram no lo acepta, actualizá Chrome o usá las placas');
+}
+async function reelPlacas() {
+  if (!REEL.frames.length) { toast('Primero armá el reel'); return; }
+  toast('Preparando placas…'); const R = await reelImgs(); const zip = new JSZip();
+  const cv = Object.assign(document.createElement('canvas'), { width: W, height: H }); const x = cv.getContext('2d'); const fallas = [];
+  for (let i = 0; i < REEL.frames.length; i++) {
+    x.clearRect(0, 0, W, H); reelFrame(x, REEL.frames[i], .5, 1, R.imgs[i], R.logo, R.iso_);
+    try { zip.file('reel-placa-' + String(i + 1).padStart(2, '0') + '.png', await new Promise((res, rej) => cv.toBlob(b => b ? res(b) : rej(), 'image/png'))); } catch (e) { fallas.push(i + 1); }
+  }
+  bajar(await zip.generateAsync({ type: 'blob' }), 'celestia-reel-placas.zip');
+  toast(fallas.length ? 'Listo. Sin exportar: ' + fallas.join(', ') : 'Placas descargadas');
 }
 </script>
 </body>
