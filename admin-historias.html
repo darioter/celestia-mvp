@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Celestia · Historias de Instagram</title>
+<link rel="icon" href="/favicom.jpg">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+:root{--navy:#0D1B2A;--navy2:#13263a;--navy3:#1A2E42;--gold:#C9A84C;--gold2:#E8C96A;--cream:#FAF6EF;--mut:rgba(250,246,239,.55);--line:rgba(201,168,76,.18)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--navy);color:var(--cream);font-family:'DM Sans',sans-serif;min-height:100vh}
+button{font-family:inherit;cursor:pointer}
+a{color:var(--gold)}
+#login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.lbox{background:var(--navy3);border:1px solid var(--line);border-radius:18px;padding:34px;width:100%;max-width:360px;text-align:center}
+.lbox h1{font-family:'DM Serif Display',serif;font-weight:400;font-size:28px;margin-bottom:4px}
+.lbox p{color:var(--mut);font-size:13px;margin-bottom:20px}
+.inp{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:var(--cream);border-radius:10px;padding:11px 13px;font:14px 'DM Sans',sans-serif;margin-bottom:10px}
+.inp:focus{outline:none;border-color:var(--gold)}
+textarea.inp{resize:vertical;min-height:64px;line-height:1.4}
+.btn{background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--navy);border:0;border-radius:999px;padding:11px 20px;font-weight:600;font-size:14px}
+.btn.sec{background:transparent;color:var(--cream);border:1px solid rgba(250,246,239,.25)}
+.btn.sm{padding:7px 13px;font-size:12.5px}
+.err{color:#ff8a8a;font-size:13px;margin-top:8px;display:none}
+#app{display:none}
+.top{display:flex;align-items:center;gap:14px;padding:16px 24px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(13,27,42,.96);backdrop-filter:blur(8px);z-index:20;flex-wrap:wrap}
+.top h1{font-family:'DM Serif Display',serif;font-weight:400;font-size:24px}
+.top .sp{flex:1}
+.top a.back{font-size:13px;color:var(--mut);text-decoration:none}
+.wrap{display:grid;grid-template-columns:380px 1fr;gap:0;min-height:calc(100vh - 70px)}
+.side{border-right:1px solid var(--line);padding:18px;overflow:auto;max-height:calc(100vh - 70px);position:sticky;top:70px}
+.main{padding:22px 24px 60px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.tab{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:var(--cream);border-radius:999px;padding:7px 12px;font-size:12.5px}
+.tab.on{background:var(--gold);color:var(--navy);border-color:var(--gold);font-weight:600}
+.hint{font-size:12.5px;color:var(--mut);line-height:1.5;margin-bottom:12px}
+.drop{border:1.5px dashed rgba(201,168,76,.45);border-radius:14px;padding:22px 14px;text-align:center;color:var(--mut);font-size:13px;cursor:pointer;margin-bottom:12px;transition:background .2s}
+.drop.over,.drop:hover{background:rgba(201,168,76,.08)}
+.drop b{display:block;color:var(--gold);font-size:15px;margin-bottom:4px}
+.items{display:flex;flex-direction:column;gap:8px}
+.it{display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:8px;cursor:pointer;text-align:left;color:var(--cream);transition:border-color .15s,background .15s}
+.it:hover{border-color:var(--gold);background:rgba(201,168,76,.07)}
+.it img{width:52px;height:52px;border-radius:8px;object-fit:cover;flex:none;background:var(--navy3)}
+.it .ic{width:52px;height:52px;border-radius:8px;flex:none;display:flex;align-items:center;justify-content:center;font-size:22px;background:var(--navy3)}
+.it div{font-size:12.5px;line-height:1.35;min-width:0}
+.it div b{display:block;font-weight:600;font-size:13px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.it div span{color:var(--mut);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.it.usado{opacity:.55}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
+.bar .cnt{color:var(--mut);font-size:13px}
+.empty{border:1px dashed var(--line);border-radius:18px;padding:50px 20px;text-align:center;color:var(--mut);font-size:14px;line-height:1.6}
+.empty b{display:block;font-family:'DM Serif Display',serif;font-weight:400;font-size:24px;color:var(--cream);margin-bottom:6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.card{background:var(--navy3);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+.card .pv{position:relative;background:#000;aspect-ratio:9/16}
+.card canvas{width:100%;height:100%;display:block}
+.card .num{position:absolute;top:10px;left:10px;background:rgba(13,27,42,.85);color:var(--gold);font-size:12px;font-weight:600;border-radius:999px;padding:4px 10px}
+.card .dia{position:absolute;top:10px;right:10px;background:rgba(13,27,42,.85);color:var(--cream);font-size:12px;border-radius:999px;padding:4px 10px}
+.card .ed{padding:14px;display:flex;flex-direction:column;gap:2px}
+.card label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin:4px 0 4px}
+.card .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.card select.inp{padding:8px 10px;margin-bottom:6px}
+.card .inp{margin-bottom:6px;font-size:13px;padding:9px 11px}
+.link{display:flex;gap:6px;align-items:center;background:rgba(201,168,76,.08);border:1px solid var(--line);border-radius:10px;padding:7px 9px;font-size:12px;margin-top:4px}
+.link span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--gold2)}
+.link button{background:none;border:0;color:var(--cream);font-size:12px;text-decoration:underline}
+input[type=range]{width:100%;accent-color:var(--gold)}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--navy3);border:1px solid var(--gold);color:var(--cream);padding:11px 22px;border-radius:999px;font-size:13px;opacity:0;transition:opacity .25s;z-index:99;pointer-events:none}
+.toast.on{opacity:1}
+@media(max-width:900px){.wrap{grid-template-columns:1fr}.side{position:static;max-height:none;border-right:0;border-bottom:1px solid var(--line)}}
+</style>
+</head>
+<body>
+
+<div id="login">
+  <div class="lbox">
+    <h1>Historias IG</h1>
+    <p>Celestia · Panel de administración</p>
+    <input type="email" class="inp" id="l-email" placeholder="Email">
+    <input type="password" class="inp" id="l-pwd" placeholder="Contraseña" onkeydown="if(event.key==='Enter')login()">
+    <button class="btn" style="width:100%" onclick="login()">Ingresar</button>
+    <div class="err" id="l-err">No se pudo ingresar</div>
+  </div>
+</div>
+
+<div id="app">
+  <div class="top">
+    <h1>📸 Historias de Instagram</h1>
+    <span class="sp"></span>
+    <a class="back" href="/admin">← Volver al admin</a>
+  </div>
+  <div class="wrap">
+    <aside class="side">
+      <div class="tabs" id="tabs">
+        <button class="tab on" data-t="fotos">📷 Mis fotos</button>
+        <button class="tab" data-t="notas">📰 Notas</button>
+        <button class="tab" data-t="tips">💡 Tips</button>
+        <button class="tab" data-t="datos">✨ ¿Sabías que?</button>
+        <button class="tab" data-t="platos">🍽️ Platos</button>
+        <button class="tab" data-t="resenas">⭐ Reseñas</button>
+        <button class="tab" data-t="agenda">📅 Agenda</button>
+      </div>
+      <div id="panel"></div>
+    </aside>
+    <main class="main">
+      <div class="bar">
+        <button class="btn" onclick="armarSemana()">✨ Armar semana automática</button>
+        <button class="btn sec" onclick="descargarTodas()">⬇ Descargar todas (ZIP)</button>
+        <button class="btn sec" onclick="limpiar()">Vaciar</button>
+        <span class="cnt" id="cnt"></span>
+      </div>
+      <div id="grid" class="grid"></div>
+      <div id="empty" class="empty"><b>Tu mesa de historias está vacía</b>
+        Tocá <strong>✨ Armar semana automática</strong> para generar 7 historias desde la base (notas, tips, platos, reseñas y agenda),<br>
+        o subí tus fotos en <strong>📷 Mis fotos</strong> y cada una se convierte en una placa.</div>
+    </main>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<input type="file" id="f-cambiar" accept="image/*" hidden>
+
+<script>
+const SUPA_URL = 'https://qolpnuscpmzqeacshfvu.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvbHBudXNjcG16cWVhY3NoZnZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NjQ3OTQsImV4cCI6MjA5MTM0MDc5NH0.BJOz5Gwkeb1NqID_gkGKD5YlymifMtOwaf8iQMaBCx8';
+const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+const W = 1080, H = 1920;
+const C = { navy:'#0D1B2A', navy2:'#13263a', gold:'#C9A84C', gold2:'#E8C96A', cream:'#FAF6EF', ink:'#1A1A2E' };
+const PLANTILLAS = {
+  foto:   'Foto + título',
+  nota:   'Nota del blog',
+  tip:    'Tip de chef',
+  dato:   '¿Sabías que?',
+  plato:  'Plato',
+  resena: 'Reseña',
+  agenda: 'Fechas disponibles'
+};
+const FRASES = [
+  ['Detrás de escena', 'Así se prepara una cena en tu casa'],
+  ['Mise en place', 'Todo listo antes de que llegue el primer invitado'],
+  ['Hoy en la cocina', 'Cocinado en tu casa, servido como en un restaurante'],
+  ['Del mercado a tu mesa', 'Producto fresco, elegido el mismo día'],
+  ['Así llega a tu mesa', 'Cada plato, terminado en el momento'],
+  ['Experiencia Celestia', 'Vos disfrutás, yo me ocupo de todo'],
+];
+const DIAS = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
+
+let BASE = { notas: [] }, PLATOS = [], RESENAS = [], OCUPADAS = new Set();
+let historias = [], fotos = [], tabActual = 'fotos';
+const imgCache = {};
+let USADOS = {};
+try { USADOS = JSON.parse(localStorage.getItem('cel_hist_usados') || '{}'); } catch (e) {}
+const marcarUsado = (k) => { USADOS[k] = Date.now(); try { localStorage.setItem('cel_hist_usados', JSON.stringify(USADOS)); } catch (e) {} };
+
+/* ───────── sesión ───────── */
+async function login() {
+  const email = document.getElementById('l-email').value.trim(), password = document.getElementById('l-pwd').value;
+  const { error } = await supa.auth.signInWithPassword({ email, password });
+  if (error) { document.getElementById('l-err').style.display = 'block'; return; }
+  entrar();
+}
+async function entrar() {
+  document.getElementById('login').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  await Promise.all([
+    document.fonts.load('400 80px "DM Serif Display"'), document.fonts.load('italic 400 80px "DM Serif Display"'),
+    document.fonts.load('400 40px "DM Sans"'), document.fonts.load('500 40px "DM Sans"'), document.fonts.load('600 40px "DM Sans"'),
+    cargarBase()
+  ]);
+  renderPanel(); renderGrid();
+}
+supa.auth.getSession().then(({ data }) => { if (data && data.session) entrar(); });
+
+/* ───────── base de contenido ───────── */
+async function cargarBase() {
+  try { BASE = await (await fetch('/data/historias-base.json', { cache: 'no-store' })).json(); } catch (e) { BASE = { notas: [] }; }
+  const hoy = new Date(); const desde = iso(hoy); const hasta = iso(new Date(hoy.getFullYear(), hoy.getMonth() + 2, 0));
+  const [p, r, rv, b] = await Promise.all([
+    supa.from('platos_catalogo').select('id,titulo,descripcion,imagen_url,cocina,activo').order('titulo'),
+    supa.from('resenas').select('id,nombre,zona,texto,estrellas,activo').order('orden'),
+    supa.from('reservas').select('fecha,estado').gte('fecha', desde).lte('fecha', hasta),
+    supa.from('bloqueos').select('fecha').gte('fecha', desde).lte('fecha', hasta)
+  ]);
+  PLATOS = (p.data || []).filter(x => x.activo !== false && x.imagen_url);
+  RESENAS = (r.data || []).filter(x => x.activo !== false && x.texto);
+  OCUPADAS = new Set();
+  (rv.data || []).forEach(x => { if (!/cancel/i.test(x.estado || '')) OCUPADAS.add(String(x.fecha).slice(0, 10)); });
+  (b.data || []).forEach(x => OCUPADAS.add(String(x.fecha).slice(0, 10)));
+}
+const iso = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+const tips = () => BASE.notas.flatMap(n => n.tips.map((t, i) => ({ k: 'tip:' + n.slug + ':' + i, texto: t, nota: n })));
+const datos = () => BASE.notas.flatMap(n => n.datos.map((t, i) => ({ k: 'dato:' + n.slug + ':' + i, texto: t, nota: n })));
+
+/* ───────── panel izquierdo ───────── */
+document.getElementById('tabs').addEventListener('click', e => {
+  const b = e.target.closest('.tab'); if (!b) return;
+  tabActual = b.dataset.t; document.querySelectorAll('.tab').forEach(x => x.classList.toggle('on', x === b)); renderPanel();
+});
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+function item(k, img, titulo, sub, onclick, icono) {
+  return `<button class="it${USADOS[k] ? ' usado' : ''}" onclick="${onclick}">${img ? `<img src="${esc(img)}" alt="" loading="lazy">` : `<span class="ic">${icono || '✦'}</span>`}<div><b>${esc(titulo)}</b><span>${esc(sub)}</span></div></button>`;
+}
+function renderPanel() {
+  const P = document.getElementById('panel'); let h = '';
+  if (tabActual === 'fotos') {
+    h = `<label class="drop" id="drop"><b>Subí tus fotos</b>Arrastralas acá o tocá para elegir. Cada foto se convierte en una historia con la plantilla y un texto de la base.<input type="file" id="f-fotos" accept="image/*" multiple hidden></label>
+      <p class="hint">Las fotos quedan solo en este navegador mientras trabajás; no se suben a ningún servidor.</p>
+      <div class="items">${fotos.map((f, i) => `<button class="it" onclick="agregarFoto(${i})"><img src="${f.url}" alt=""><div><b>Foto ${i + 1}</b><span>Tocá para sumar otra historia con esta foto</span></div></button>`).join('')}</div>`;
+  } else if (tabActual === 'notas') {
+    h = `<p class="hint">Una historia por nota, con el link para el sticker.</p><div class="items">` + BASE.notas.map((n, i) => item('nota:' + n.slug, n.img_sq, n.titulo, n.icono + ' ' + n.cat, `agregar(desdeNota(${i}))`)).join('') + '</div>';
+  } else if (tabActual === 'tips') {
+    h = `<p class="hint">Tips sacados de las notas del blog.</p><div class="items">` + tips().map((t, i) => item(t.k, null, t.nota.titulo, t.texto, `agregar(desdeTip(${i}))`, '💡')).join('') + '</div>';
+  } else if (tabActual === 'datos') {
+    h = `<div class="items">` + datos().map((t, i) => item(t.k, null, t.nota.titulo, t.texto, `agregar(desdeDato(${i}))`, '✨')).join('') + '</div>';
+  } else if (tabActual === 'platos') {
+    h = `<p class="hint">${PLATOS.length} platos del catálogo.</p><div class="items">` + PLATOS.map((p, i) => item('plato:' + p.id, p.imagen_url, p.titulo, p.cocina || p.descripcion || '', `agregar(desdePlato(${i}))`)).join('') + '</div>';
+  } else if (tabActual === 'resenas') {
+    h = RESENAS.length ? `<div class="items">` + RESENAS.map((r, i) => item('resena:' + r.id, null, r.nombre + (r.zona ? ' · ' + r.zona : ''), r.texto, `agregar(desdeResena(${i}))`, '⭐')).join('') + '</div>'
+      : `<p class="hint">No hay reseñas cargadas. Sumalas desde Admin → Reseñas.</p>`;
+  } else if (tabActual === 'agenda') {
+    const m = mesesAgenda();
+    h = `<p class="hint">Calendario con las fechas libres (sin reservas ni bloqueos).</p><div class="items">` + m.map((x, i) => item('agenda:' + x.clave, null, 'Fechas disponibles · ' + x.nombre, x.libres + ' fechas libres de viernes a domingo', `agregar(desdeAgenda(${i}))`, '📅')).join('') + '</div>';
+  }
+  P.innerHTML = h;
+  const inp = document.getElementById('f-fotos');
+  if (inp) {
+    inp.onchange = () => subirFotos(inp.files);
+    const d = document.getElementById('drop');
+    d.ondragover = e => { e.preventDefault(); d.classList.add('over'); };
+    d.ondragleave = () => d.classList.remove('over');
+    d.ondrop = e => { e.preventDefault(); d.classList.remove('over'); subirFotos(e.dataTransfer.files); };
+  }
+}
+
+/* ───────── creadores de historias desde la base ───────── */
+let _fr = 0;
+function desdeFoto(f) { const fr = FRASES[_fr++ % FRASES.length]; return { tpl: 'foto', img: f.url, kicker: fr[0], titulo: fr[1], texto: '', link: 'https://chefprivado.ar' }; }
+function desdeNota(i) { const n = BASE.notas[i]; marcarUsado('nota:' + n.slug); return { tpl: 'nota', img: n.img, kicker: 'Nueva nota · ' + n.cat, titulo: n.titulo, texto: n.bajada, link: n.url + '?utm_source=instagram&utm_medium=historia' }; }
+function desdeTip(i) { const t = tips()[i]; marcarUsado(t.k); return { tpl: 'tip', img: t.nota.img_sq, kicker: 'Tip de chef', titulo: '', texto: t.texto, firma: t.nota.titulo, link: t.nota.url + '?utm_source=instagram&utm_medium=historia' }; }
+function desdeDato(i) { const t = datos()[i]; marcarUsado(t.k); return { tpl: 'dato', img: null, kicker: '¿Sabías que?', titulo: '', texto: t.texto, firma: t.nota.titulo, link: t.nota.url + '?utm_source=instagram&utm_medium=historia' }; }
+function desdePlato(i) { const p = PLATOS[i]; marcarUsado('plato:' + p.id); return { tpl: 'plato', img: p.imagen_url, kicker: p.cocina ? 'Cocina ' + p.cocina.toLowerCase() : 'De mi cocina', titulo: p.titulo, texto: 'Uno de los platos que podés sumar a tu menú', link: 'https://chefprivado.ar/?utm_source=instagram&utm_medium=historia#bl-explorar' }; }
+function desdeResena(i) { const r = RESENAS[i]; marcarUsado('resena:' + r.id); return { tpl: 'resena', img: null, kicker: 'Lo que dicen', titulo: r.nombre + (r.zona ? ' · ' + r.zona : ''), texto: r.texto, estrellas: r.estrellas || 5, link: 'https://chefprivado.ar/resena' }; }
+function desdeAgenda(i) { const m = mesesAgenda()[i]; marcarUsado('agenda:' + m.clave); return { tpl: 'agenda', img: null, kicker: 'Fechas disponibles', titulo: m.nombre, texto: 'Reservá tu fecha sin costo', anio: m.anio, mes: m.mes, link: 'https://chefprivado.ar/?utm_source=instagram&utm_medium=historia' }; }
+
+function mesesAgenda() {
+  const hoy = new Date(), out = [];
+  for (let k = 0; k < 2; k++) {
+    const d = new Date(hoy.getFullYear(), hoy.getMonth() + k, 1);
+    const fin = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate(); let libres = 0;
+    for (let n = 1; n <= fin; n++) { const x = new Date(d.getFullYear(), d.getMonth(), n); if (x >= new Date(hoy.toDateString()) && [0, 5, 6].includes(x.getDay()) && !OCUPADAS.has(iso(x))) libres++; }
+    const nombre = d.toLocaleDateString('es-AR', { month: 'long' });
+    out.push({ clave: d.getFullYear() + '-' + (d.getMonth() + 1), nombre: nombre.charAt(0).toUpperCase() + nombre.slice(1), anio: d.getFullYear(), mes: d.getMonth(), libres });
+  }
+  return out;
+}
+
+function agregar(h) { historias.push(Object.assign({ foco: 50, zoom: 1 }, h)); renderGrid(); renderPanel(); toast('Historia agregada'); setTimeout(() => { const c = document.querySelectorAll('.card'); c[c.length - 1] && c[c.length - 1].scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 60); }
+function agregarFoto(i) { agregar(desdeFoto(fotos[i])); }
+function subirFotos(list) {
+  const arr = [...list].filter(f => /^image\//.test(f.type)); if (!arr.length) return;
+  arr.forEach(f => { const url = URL.createObjectURL(f); fotos.push({ url, nombre: f.name }); historias.push(Object.assign({ foco: 50, zoom: 1 }, desdeFoto({ url }))); });
+  renderPanel(); renderGrid(); toast(arr.length + (arr.length === 1 ? ' historia creada' : ' historias creadas'));
+}
+
+/* elige el menos usado */
+function elegir(lista, clave) {
+  if (!lista.length) return -1;
+  let best = -1, bestT = Infinity;
+  lista.forEach((x, i) => { const t = USADOS[clave(x)] || 0; if (t < bestT || (t === bestT && Math.random() < .3)) { best = i; bestT = t; } });
+  return best;
+}
+function armarSemana() {
+  const plan = [];
+  const T = tips(), D = datos();
+  const it = elegir(T, x => x.k); if (it >= 0) plan.push(desdeTip(it));
+  const ino = elegir(BASE.notas, x => 'nota:' + x.slug); if (ino >= 0) plan.push(desdeNota(ino));
+  const ip = elegir(PLATOS, x => 'plato:' + x.id); if (ip >= 0) plan.push(desdePlato(ip));
+  plan.push(desdeAgenda(0));
+  const ir = elegir(RESENAS, x => 'resena:' + x.id); if (ir >= 0) plan.push(desdeResena(ir));
+  else { const ip2 = elegir(PLATOS, x => 'plato:' + x.id); if (ip2 >= 0) plan.push(desdePlato(ip2)); }
+  if (fotos.length) plan.push(desdeFoto(fotos[Math.floor(Math.random() * fotos.length)]));
+  else { const it2 = elegir(T, x => x.k); if (it2 >= 0) plan.push(desdeTip(it2)); }
+  const id = elegir(D, x => x.k); if (id >= 0) plan.push(desdeDato(id));
+  plan.forEach((h, i) => historias.push(Object.assign({ foco: 50, zoom: 1, dia: DIAS[i % 7] }, h)));
+  renderGrid(); renderPanel(); toast('Semana armada: ' + plan.length + ' historias');
+}
+function limpiar() { if (historias.length && !confirmar()) return; historias = []; renderGrid(); }
+function confirmar() { return window.confirm('¿Vaciar todas las historias de la mesa?'); }
+
+/* ───────── grilla de edición ───────── */
+function renderGrid() {
+  const G = document.getElementById('grid');
+  document.getElementById('empty').style.display = historias.length ? 'none' : 'block';
+  document.getElementById('cnt').textContent = historias.length ? historias.length + (historias.length === 1 ? ' historia' : ' historias') : '';
+  G.innerHTML = historias.map((h, i) => `
+    <div class="card" data-i="${i}">
+      <div class="pv"><canvas width="${W}" height="${H}" id="cv-${i}"></canvas><span class="num">${i + 1}</span>${h.dia ? `<span class="dia">${h.dia}</span>` : ''}</div>
+      <div class="ed">
+        <label>Plantilla</label>
+        <select class="inp" onchange="set(${i},'tpl',this.value)">${Object.entries(PLANTILLAS).map(([k, v]) => `<option value="${k}" ${h.tpl === k ? 'selected' : ''}>${v}</option>`).join('')}</select>
+        <label>Volanta</label><input class="inp" value="${esc(h.kicker)}" oninput="set(${i},'kicker',this.value)">
+        <label>Título</label><input class="inp" value="${esc(h.titulo)}" oninput="set(${i},'titulo',this.value)">
+        <label>Texto</label><textarea class="inp" oninput="set(${i},'texto',this.value)">${esc(h.texto)}</textarea>
+        ${h.img ? `<label>Encuadre de la foto</label><input type="range" min="0" max="100" value="${h.foco}" oninput="set(${i},'foco',+this.value)">
+        <label>Zoom</label><input type="range" min="100" max="200" value="${Math.round(h.zoom * 100)}" oninput="set(${i},'zoom',this.value/100)">` : ''}
+        <label>Link para el sticker</label>
+        <div class="link"><span>${esc(h.link || '')}</span><button onclick="copiar(${i})">Copiar</button></div>
+        <div class="row">
+          <button class="btn sm" onclick="descargar(${i})">⬇ PNG</button>
+          <button class="btn sec sm" onclick="cambiarFoto(${i})">${h.img ? 'Cambiar foto' : 'Sumar foto'}</button>
+          <button class="btn sec sm" onclick="mover(${i},-1)">↑</button>
+          <button class="btn sec sm" onclick="mover(${i},1)">↓</button>
+          <button class="btn sec sm" onclick="quitar(${i})">✕</button>
+        </div>
+      </div>
+    </div>`).join('');
+  historias.forEach((h, i) => dibujar(i));
+}
+const _deb = {};
+function set(i, k, v) { historias[i][k] = v; clearTimeout(_deb[i]); _deb[i] = setTimeout(() => dibujar(i), 60); if (k === 'tpl') setTimeout(renderGrid, 0); }
+function mover(i, d) { const j = i + d; if (j < 0 || j >= historias.length) return; [historias[i], historias[j]] = [historias[j], historias[i]]; renderGrid(); }
+function quitar(i) { historias.splice(i, 1); renderGrid(); }
+let _cambiarIdx = -1;
+function cambiarFoto(i) { _cambiarIdx = i; document.getElementById('f-cambiar').click(); }
+document.getElementById('f-cambiar').onchange = e => {
+  const f = e.target.files[0]; if (!f || _cambiarIdx < 0) return;
+  const url = URL.createObjectURL(f); fotos.push({ url, nombre: f.name });
+  historias[_cambiarIdx].img = url; e.target.value = ''; renderGrid();
+};
+function copiar(i) { const t = historias[i].link || ''; (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => toast('Link copiado'), () => toast(t)); }
+function toast(t) { const el = document.getElementById('toast'); el.textContent = t; el.classList.add('on'); clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('on'), 1800); }
+
+/* ───────── render en canvas ───────── */
+function cargarImg(src) {
+  if (!src) return Promise.resolve(null);
+  if (imgCache[src]) return imgCache[src];
+  imgCache[src] = new Promise(res => {
+    const im = new Image();
+    if (!/^blob:|^data:/.test(src) && !src.startsWith(location.origin) && !src.startsWith('/')) im.crossOrigin = 'anonymous';
+    im.onload = () => res(im);
+    im.onerror = () => {
+      if (im.crossOrigin && !src.includes('images.weserv.nl')) {     // reintento vía proxy de imágenes con CORS
+        const alt = new Image(); alt.crossOrigin = 'anonymous';
+        alt.onload = () => res(alt); alt.onerror = () => res(null);
+        alt.src = 'https://images.weserv.nl/?url=' + encodeURIComponent(src.replace(/^https?:\/\//, '')) + '&w=1400';
+      } else res(null);
+    };
+    im.src = src;
+  });
+  return imgCache[src];
+}
+const LOGO = cargarImg('/img/ig-logo.png'), ISO = cargarImg('/img/ig-iso.png');
+
+async function dibujar(i) {
+  const h = historias[i]; const cv = document.getElementById('cv-' + i); if (!h || !cv) return;
+  await render(cv, h);
+}
+async function render(cv, h) {
+  const x = cv.getContext('2d');
+  const [img, logo, iso_] = await Promise.all([cargarImg(h.img), LOGO, ISO]);
+  x.clearRect(0, 0, W, H); x.textBaseline = 'alphabetic';
+  (TPL[h.tpl] || TPL.foto)(x, h, img, logo, iso_);
+}
+
+function cover(x, img, dx, dy, dw, dh, foco = 50, zoom = 1) {
+  const r = Math.max(dw / img.width, dh / img.height) * zoom;
+  const sw = dw / r, sh = dh / r;
+  const sx = (img.width - sw) / 2, sy = (img.height - sh) * (foco / 100);
+  x.drawImage(img, sx, Math.max(0, sy), sw, sh, dx, dy, dw, dh);
+}
+function lineas(x, txt, maxW) {
+  const out = [];
+  String(txt || '').split('\n').forEach(par => {
+    let l = '';
+    par.split(/\s+/).filter(Boolean).forEach(w => { const t = l ? l + ' ' + w : w; if (x.measureText(t).width > maxW && l) { out.push(l); l = w; } else l = t; });
+    if (l) out.push(l);
+  });
+  return out;
+}
+/* escribe un bloque ajustando tamaño para que entre en maxLines; devuelve la y final */
+function bloque(x, txt, { font, size, min = size * .6, maxW, maxLines, y, color, lh = 1.18, align = 'left', cx = 90, ancho = W - 180, upper = false, spacing = 0 }) {
+  if (!txt) return y;
+  let s = size, ls;
+  txt = upper ? String(txt).toUpperCase() : txt;
+  do { x.font = font.replace('{s}', s); ls = lineas(x, txt, maxW); if (ls.length <= maxLines || s <= min) break; s -= 2; } while (true);
+  if (ls.length > maxLines) { ls = ls.slice(0, maxLines); ls[maxLines - 1] = ls[maxLines - 1].replace(/[\s,.;:]*\S*$/, '') + '…'; }
+  x.fillStyle = color; x.textAlign = align;
+  if ('letterSpacing' in x) x.letterSpacing = spacing + 'px';
+  const px = align === 'center' ? cx + ancho / 2 : cx;
+  ls.forEach((l, k) => x.fillText(l, px, y + s + k * s * lh));
+  if ('letterSpacing' in x) x.letterSpacing = '0px';
+  return y + s + (ls.length - 1) * s * lh;
+}
+function estrellas(x, cx, cy, n = 120, cantidad = 160, seed = 7) {
+  let r = seed; const rnd = () => (r = (r * 9301 + 49297) % 233280) / 233280;
+  for (let k = 0; k < cantidad; k++) { x.globalAlpha = .15 + rnd() * .5; x.fillStyle = rnd() > .8 ? C.gold2 : '#fff'; x.beginPath(); x.arc(rnd() * W, rnd() * H, .8 + rnd() * 2.2, 0, 7); x.fill(); }
+  x.globalAlpha = 1;
+}
+function fondoNavy(x, seed) {
+  const g = x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#13263a'); g.addColorStop(1, C.navy);
+  x.fillStyle = g; x.fillRect(0, 0, W, H); estrellas(x, 0, 0, 0, 170, seed);
+}
+function pie(x, logo, oscuro = true) {
+  if (logo) { const w = 330, hh = w * logo.height / logo.width; x.drawImage(logo, (W - w) / 2, 1585, w, hh); }
+  x.font = '500 30px "DM Sans"'; x.textAlign = 'center'; x.fillStyle = oscuro ? 'rgba(250,246,239,.75)' : 'rgba(13,27,42,.7)';
+  if ('letterSpacing' in x) x.letterSpacing = '4px';
+  x.fillText('CHEFPRIVADO.AR', W / 2, 1585 + 130); if ('letterSpacing' in x) x.letterSpacing = '0px';
+}
+function pastilla(x, txt, y, { bg = C.gold, fg = C.navy } = {}) {
+  x.font = '600 38px "DM Sans"'; const w = x.measureText(txt).width + 90, hh = 92, px = (W - w) / 2;
+  const g = x.createLinearGradient(px, 0, px + w, 0); g.addColorStop(0, C.gold); g.addColorStop(1, C.gold2);
+  x.fillStyle = bg === C.gold ? g : bg; x.beginPath(); x.roundRect(px, y, w, hh, hh / 2); x.fill();
+  x.fillStyle = fg; x.textAlign = 'center'; x.fillText(txt, W / 2, y + 59);
+}
+function sinFoto(x, msg) { x.fillStyle = C.navy2; x.fillRect(0, 0, W, H); x.fillStyle = 'rgba(250,246,239,.4)'; x.font = '500 40px "DM Sans"'; x.textAlign = 'center'; x.fillText(msg || 'Sumá una foto', W / 2, 700); }
+
+const TPL = {
+  foto(x, h, img, logo) {
+    if (img) cover(x, img, 0, 0, W, H, h.foco, h.zoom); else sinFoto(x);
+    let g = x.createLinearGradient(0, 0, 0, 420); g.addColorStop(0, 'rgba(13,27,42,.65)'); g.addColorStop(1, 'rgba(13,27,42,0)'); x.fillStyle = g; x.fillRect(0, 0, W, 420);
+    g = x.createLinearGradient(0, H * .45, 0, H); g.addColorStop(0, 'rgba(13,27,42,0)'); g.addColorStop(.45, 'rgba(13,27,42,.82)'); g.addColorStop(1, 'rgba(13,27,42,.97)'); x.fillStyle = g; x.fillRect(0, H * .45, W, H * .55);
+    if (logo) { const w = 270, hh = w * logo.height / logo.width; x.drawImage(logo, (W - w) / 2, 250, w, hh); }
+    let y = 1080;
+    y = bloque(x, '✦ ' + (h.kicker || ''), { font: '600 {s}px "DM Sans"', size: 32, maxW: W - 180, maxLines: 1, y, color: C.gold2, align: 'center', upper: true, spacing: 5 });
+    y = bloque(x, h.titulo, { font: '400 {s}px "DM Serif Display"', size: 92, maxW: W - 180, maxLines: 3, y: y + 30, color: C.cream, align: 'center' });
+    bloque(x, h.texto, { font: '400 {s}px "DM Sans"', size: 40, maxW: W - 220, maxLines: 3, y: y + 30, color: 'rgba(250,246,239,.82)', align: 'center', lh: 1.35 });
+    x.font = '500 30px "DM Sans"'; x.textAlign = 'center'; x.fillStyle = 'rgba(250,246,239,.7)'; if ('letterSpacing' in x) x.letterSpacing = '4px'; x.fillText('CHEFPRIVADO.AR', W / 2, 1660); if ('letterSpacing' in x) x.letterSpacing = '0px';
+  },
+  plato(x, h, img, logo) {
+    x.fillStyle = C.navy; x.fillRect(0, 0, W, H); estrellas(x, 0, 0, 0, 90, 3);
+    if (logo) { const w = 270, hh = w * logo.height / logo.width; x.drawImage(logo, (W - w) / 2, 250, w, hh); }
+    const px = 110, py = 420, pw = W - 220, ph = 820;
+    x.save(); x.beginPath(); x.roundRect(px, py, pw, ph, 40); x.clip();
+    if (img) cover(x, img, px, py, pw, ph, h.foco, h.zoom); else { x.fillStyle = C.navy2; x.fillRect(px, py, pw, ph); }
+    x.restore();
+    x.strokeStyle = 'rgba(201,168,76,.55)'; x.lineWidth = 3; x.beginPath(); x.roundRect(px - 18, py - 18, pw + 36, ph + 36, 52); x.stroke();
+    let y = 1290;
+    y = bloque(x, h.kicker, { font: '600 {s}px "DM Sans"', size: 30, maxW: W - 180, maxLines: 1, y, color: C.gold2, align: 'center', upper: true, spacing: 5 });
+    y = bloque(x, h.titulo, { font: '400 {s}px "DM Serif Display"', size: 80, maxW: W - 200, maxLines: 2, y: y + 22, color: C.cream, align: 'center' });
+    bloque(x, h.texto, { font: '400 {s}px "DM Sans"', size: 36, maxW: W - 240, maxLines: 2, y: y + 22, color: 'rgba(250,246,239,.72)', align: 'center', lh: 1.35 });
+    x.font = '500 30px "DM Sans"'; x.textAlign = 'center'; x.fillStyle = 'rgba(250,246,239,.6)'; if ('letterSpacing' in x) x.letterSpacing = '4px'; x.fillText('CHEFPRIVADO.AR', W / 2, 1660); if ('letterSpacing' in x) x.letterSpacing = '0px';
+  },
+  nota(x, h, img, logo) {
+    x.fillStyle = C.navy; x.fillRect(0, 0, W, H);
+    if (img) cover(x, img, 0, 0, W, 1120, h.foco, h.zoom); else { x.fillStyle = C.navy2; x.fillRect(0, 0, W, 1120); }
+    let g = x.createLinearGradient(0, 760, 0, 1130); g.addColorStop(0, 'rgba(13,27,42,0)'); g.addColorStop(1, C.navy); x.fillStyle = g; x.fillRect(0, 760, W, 370);
+    g = x.createLinearGradient(0, 0, 0, 380); g.addColorStop(0, 'rgba(13,27,42,.6)'); g.addColorStop(1, 'rgba(13,27,42,0)'); x.fillStyle = g; x.fillRect(0, 0, W, 380);
+    if (logo) { const w = 270, hh = w * logo.height / logo.width; x.drawImage(logo, (W - w) / 2, 250, w, hh); }
+    let y = 1010;
+    x.fillStyle = C.gold; x.fillRect(90, y + 12, 70, 4);
+    y = bloque(x, h.kicker, { font: '600 {s}px "DM Sans"', size: 30, maxW: W - 280, maxLines: 1, y: y - 10, color: C.gold2, cx: 180, upper: true, spacing: 4 });
+    y = bloque(x, h.titulo, { font: '400 {s}px "DM Serif Display"', size: 82, maxW: W - 180, maxLines: 4, y: y + 34, color: C.cream });
+    bloque(x, h.texto, { font: '400 {s}px "DM Sans"', size: 36, maxW: W - 180, maxLines: 3, y: y + 28, color: 'rgba(250,246,239,.72)', lh: 1.38 });
+    pastilla(x, 'Leé la nota completa ↗', 1560);
+  },
+  tip(x, h, img, logo, iso_) {
+    x.fillStyle = C.cream; x.fillRect(0, 0, W, H);
+    x.fillStyle = C.navy; x.fillRect(0, 0, W, 520);
+    x.save(); x.beginPath(); x.rect(0, 0, W, 520); x.clip(); estrellas(x, 0, 0, 0, 60, 11); x.restore();
+    if (logo) { const w = 270, hh = w * logo.height / logo.width; x.drawImage(logo, (W - w) / 2, 250, w, hh); }
+    if (img) { x.save(); x.beginPath(); x.arc(W / 2, 520, 130, 0, 7); x.clip(); cover(x, img, W / 2 - 130, 390, 260, 260, h.foco, h.zoom); x.restore(); x.strokeStyle = C.gold; x.lineWidth = 8; x.beginPath(); x.arc(W / 2, 520, 134, 0, 7); x.stroke(); }
+    let y = 700;
+    y = bloque(x, '💡 ' + (h.kicker || 'Tip de chef'), { font: '600 {s}px "DM Sans"', size: 34, maxW: W - 180, maxLines: 1, y, color: '#a08a5c', align: 'center', upper: true, spacing: 6 });
+    x.fillStyle = C.gold; x.font = '400 200px "DM Serif Display"'; x.textAlign = 'center'; x.fillText('“', W / 2, y + 190);
+    y = bloque(x, h.titulo, { font: '400 {s}px "DM Serif Display"', size: 64, maxW: W - 200, maxLines: 2, y: y + 160, color: C.navy, align: 'center' });
+    bloque(x, h.texto, { font: '400 {s}px "DM Serif Display"', size: 70, min: 40, maxW: W - 200, maxLines: 9, y: y + (h.titulo ? 30 : 10), color: C.navy, align: 'center', lh: 1.25 });
+    if (h.firma) bloque(x, 'De la nota: ' + h.firma, { font: 'italic 400 {s}px "DM Serif Display"', size: 32, maxW: W - 240, maxLines: 2, y: 1500, color: '#7a6a4a', align: 'center', lh: 1.3 });
+    x.font = '500 30px "DM Sans"'; x.textAlign = 'center'; x.fillStyle = 'rgba(13,27,42,.6)'; if ('letterSpacing' in x) x.letterSpacing = '4px'; x.fillText('CHEFPRIVADO.AR/BLOG', W / 2, 1660); if ('letterSpacing' in x) x.letterSpacing = '0px';
+  },
+  dato(x, h, img, logo) {
+    fondoNavy(x, 21);
+    if (logo) { const w = 270, hh = w * logo.height / logo.width; x.drawImage(logo, (W - w) / 2, 250, w, hh); }
+    let y = 560;
+    y = bloque(x, '✨ ' + (h.kicker || '¿Sabías que?'), { font: '400 {s}px "DM Serif Display"', size: 96, maxW: W - 180, maxLines: 2, y, color: C.gold2, align: 'center' });
+    x.fillStyle = C.gold; x.fillRect(W / 2 - 50, y + 50, 100, 4);
+    y = bloque(x, h.titulo, { font: '400 {s}px "DM Serif Display"', size: 60, maxW: W - 200, maxLines: 2, y: y + 90, color: C.cream, align: 'center' });
+    bloque(x, h.texto, { font: '400 {s}px "DM Sans"', size: 56, min: 34, maxW: W - 200, maxLines: 11, y: y + (h.titulo ? 40 : 40), color: 'rgba(250,246,239,.9)', align: 'center', lh: 1.4 });
+    if (h.firma) bloque(x, 'Más en la nota: ' + h.firma, { font: 'italic 400 {s}px "DM Serif Display"', size: 32, maxW: W - 240, maxLines: 2, y: 1500, color: 'rgba(232,201,106,.85)', align: 'center', lh: 1.3 });
+    x.font = '500 30px "DM Sans"'; x.textAlign = 'center'; x.fillStyle = 'rgba(250,246,239,.6)'; if ('letterSpacing' in x) x.letterSpacing = '4px'; x.fillText('CHEFPRIVADO.AR/BLOG', W / 2, 1660); if ('letterSpacing' in x) x.letterSpacing = '0px';
+  },
+  resena(x, h, img, logo) {
+    fondoNavy(x, 33);
+    if (img) { x.globalAlpha = .22; cover(x, img, 0, 0, W, H, h.foco, h.zoom); x.globalAlpha = 1; }
+    if (logo) { const w = 270, hh = w * logo.height / logo.width; x.drawImage(logo, (W - w) / 2, 250, w, hh); }
+    let y = 560;
+    y = bloque(x, h.kicker || 'Lo que dicen', { font: '600 {s}px "DM Sans"', size: 32, maxW: W - 180, maxLines: 1, y, color: C.gold2, align: 'center', upper: true, spacing: 6 });
+    const n = Math.max(1, Math.min(5, +h.estrellas || 5));
+    x.font = '400 84px "DM Sans"'; x.fillStyle = C.gold2; x.textAlign = 'center'; x.fillText('★'.repeat(n), W / 2, y + 120);
+    y = bloque(x, '“' + (h.texto || '') + '”', { font: 'italic 400 {s}px "DM Serif Display"', size: 72, min: 40, maxW: W - 200, maxLines: 10, y: y + 170, color: C.cream, align: 'center', lh: 1.28 });
+    bloque(x, '— ' + (h.titulo || ''), { font: '500 {s}px "DM Sans"', size: 36, maxW: W - 200, maxLines: 1, y: y + 50, color: 'rgba(250,246,239,.75)', align: 'center' });
+    pastilla(x, 'Gracias por elegir Celestia', 1560, { bg: 'rgba(201,168,76,.16)', fg: C.gold2 });
+  },
+  agenda(x, h, img, logo) {
+    fondoNavy(x, 45);
+    if (logo) { const w = 270, hh = w * logo.height / logo.width; x.drawImage(logo, (W - w) / 2, 250, w, hh); }
+    let y = 470;
+    y = bloque(x, h.kicker || 'Fechas disponibles', { font: '600 {s}px "DM Sans"', size: 32, maxW: W - 180, maxLines: 1, y, color: C.gold2, align: 'center', upper: true, spacing: 6 });
+    y = bloque(x, h.titulo, { font: '400 {s}px "DM Serif Display"', size: 120, maxW: W - 180, maxLines: 1, y: y + 20, color: C.cream, align: 'center' });
+    const hoy = new Date(); const anio = h.anio != null ? h.anio : hoy.getFullYear(), mes = h.mes != null ? h.mes : hoy.getMonth();
+    const primero = new Date(anio, mes, 1), dias = new Date(anio, mes + 1, 0).getDate();
+    const off = (primero.getDay() + 6) % 7, cw = 124, ch = 112, gx = (W - cw * 7) / 2; let gy = y + 80;
+    x.font = '600 28px "DM Sans"'; x.textAlign = 'center';
+    ['L', 'M', 'M', 'J', 'V', 'S', 'D'].forEach((d, k) => { x.fillStyle = k >= 4 ? C.gold2 : 'rgba(250,246,239,.5)'; x.fillText(d, gx + cw * k + cw / 2, gy + 30); });
+    gy += 60;
+    const h0 = new Date(hoy.toDateString());
+    for (let n = 1; n <= dias; n++) {
+      const pos = off + n - 1, c = pos % 7, r = Math.floor(pos / 7), d = new Date(anio, mes, n);
+      const cx = gx + cw * c + cw / 2, cy = gy + ch * r + ch / 2;
+      const pasado = d < h0, ocupada = OCUPADAS.has(iso(d)), finde = [0, 5, 6].includes(d.getDay());
+      const libre = !pasado && !ocupada;
+      if (libre && finde) { x.fillStyle = C.gold; x.beginPath(); x.arc(cx, cy, 46, 0, 7); x.fill(); x.fillStyle = C.navy; x.font = '600 40px "DM Sans"'; }
+      else if (libre) { x.strokeStyle = 'rgba(201,168,76,.6)'; x.lineWidth = 2.5; x.beginPath(); x.arc(cx, cy, 44, 0, 7); x.stroke(); x.fillStyle = C.cream; x.font = '500 38px "DM Sans"'; }
+      else { x.fillStyle = 'rgba(250,246,239,.22)'; x.font = '400 36px "DM Sans"'; }
+      x.textAlign = 'center'; x.fillText(String(n), cx, cy + 13);
+      if (ocupada && !pasado) { x.strokeStyle = 'rgba(250,246,239,.3)'; x.lineWidth = 3; x.beginPath(); x.moveTo(cx - 24, cy + 24); x.lineTo(cx + 24, cy - 24); x.stroke(); }
+    }
+    const filas = Math.ceil((off + dias) / 7); y = gy + ch * filas + 30;
+    x.font = '400 28px "DM Sans"'; x.textAlign = 'center'; x.fillStyle = 'rgba(250,246,239,.65)';
+    x.fillText('●  Libre de viernes a domingo      ○  Libre entre semana', W / 2, y + 10);
+    bloque(x, h.texto || 'Reservá tu fecha sin costo', { font: '400 {s}px "DM Serif Display"', size: 62, maxW: W - 200, maxLines: 2, y: Math.max(y + 50, 1330), color: C.cream, align: 'center' });
+    pastilla(x, 'Reservá en chefprivado.ar', 1560);
+  }
+};
+
+/* ───────── exportar ───────── */
+function aBlob(h) {
+  const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+  return render(cv, h).then(() => new Promise((res, rej) => { try { cv.toBlob(b => b ? res(b) : rej(new Error('vacío')), 'image/png'); } catch (e) { rej(e); } }));
+}
+function nombreArchivo(h, i) { return 'celestia-historia-' + String(i + 1).padStart(2, '0') + '-' + (h.dia ? h.dia.toLowerCase() + '-' : '') + h.tpl + '.png'; }
+async function descargar(i) {
+  try { const b = await aBlob(historias[i]); bajar(b, nombreArchivo(historias[i], i)); }
+  catch (e) { toast('Esta foto no permite exportar: cambiala por una propia'); }
+}
+function bajar(blob, nombre) { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = nombre; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
+async function descargarTodas() {
+  if (!historias.length) { toast('No hay historias para descargar'); return; }
+  toast('Preparando ZIP…'); const zip = new JSZip(); const fallas = [];
+  const links = [];
+  for (let i = 0; i < historias.length; i++) {
+    try { zip.file(nombreArchivo(historias[i], i), await aBlob(historias[i])); } catch (e) { fallas.push(i + 1); }
+    links.push((i + 1) + '. ' + (historias[i].dia ? historias[i].dia + ' · ' : '') + PLANTILLAS[historias[i].tpl] + ' — ' + (historias[i].link || ''));
+  }
+  zip.file('links-para-stickers.txt', links.join('\n'));
+  bajar(await zip.generateAsync({ type: 'blob' }), 'celestia-historias-' + iso(new Date()) + '.zip');
+  toast(fallas.length ? 'Listo. No se pudieron exportar: ' + fallas.join(', ') : 'ZIP descargado');
+}
+</script>
+</body>
+</html>

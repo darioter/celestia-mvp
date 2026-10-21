@@ -1,0 +1,464 @@
+{
+ "notas": [
+  {
+   "slug": "tecnicas-basicas-de-sushi",
+   "cat": "Sushi",
+   "icono": "🍣",
+   "titulo": "Técnicas básicas de sushi: lo que tenés que dominar antes de la primera pieza",
+   "bajada": "El sushi no es pescado crudo: es arroz bien hecho. Arroz, vinagre, pescado seguro, corte, nori y makisu explicados por un chef, para que te salga en casa.",
+   "img": "https://images.unsplash.com/photo-1562158147-f8d6fbcd76f8?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1562158147-f8d6fbcd76f8?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Luigi Pozzoli",
+   "url": "https://www.chefprivado.ar/blog/tecnicas-basicas-de-sushi",
+   "tips": [
+    "Para reservarlo, tapalo siempre: primero una tela apenas húmeda o papel absorbente en contacto con el arroz, y encima papel film. Así no se reseca. El shari se trabaja tibio, nunca frío de heladera, porque se endurece y pierde sabor.",
+    "Pasá un paño húmedo por la hoja entre corte y corte, sobre todo al cortar rolls: el arroz se pega y arruina la siguiente pieza. Si querés profundizar en cuchillos y filo, mirá nuestras notas de cortes y técnica."
+   ],
+   "datos": [
+    "En las próximas notas vamos pieza por pieza: nigiri, sashimi, hosomaki, uramaki, temaki y gunkan. Y si preferís aprender con las manos en la masa, mirá nuestras clases y experiencias de cocina."
+   ]
+  },
+  {
+   "slug": "mitos-y-verdades-de-como-se-come-el-sushi",
+   "cat": "Sushi",
+   "icono": "🍣",
+   "titulo": "Mitos y verdades de cómo se come el sushi",
+   "bajada": "¿Wasabi en la soja? ¿Palitos o mano? ¿El jengibre va arriba de la pieza? Lo que hace la mayoría, lo que se hace en Japón y lo que importa de verdad.",
+   "img": "https://images.unsplash.com/photo-1678312547088-33da9d64702f?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1678312547088-33da9d64702f?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "frogses production",
+   "url": "https://www.chefprivado.ar/blog/mitos-y-verdades-de-como-se-come-el-sushi",
+   "tips": [
+    "La soja se sirve de a poco: mejor llenar el platito varias veces que dejarlo lleno y desperdiciar. Y si el chef ya pintó la pieza con salsa (nikiri), no hace falta mojarla."
+   ],
+   "datos": [
+    "Buena parte del \"wasabi\" que se sirve fuera de Japón es en realidad rábano picante con colorante verde. El wasabi real, rallado de la raíz, es más suave, aromático y pierde fuerza en pocos minutos."
+   ]
+  },
+  {
+   "slug": "abc-de-la-pasteleria-tecnicas-basicas",
+   "cat": "Pastelería",
+   "icono": "🧁",
+   "titulo": "El ABC de la pastelería: técnicas básicas para que todo te salga",
+   "bajada": "La pastelería no perdona la improvisación, pero tampoco es magia. Pesar, temperaturas, qué hace cada ingrediente y las grandes familias de masas y cremas que sostienen cualquier receta.",
+   "img": "https://images.unsplash.com/photo-1549590143-d5855148a9d5?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1549590143-d5855148a9d5?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Mae Mu",
+   "url": "https://www.chefprivado.ar/blog/abc-de-la-pasteleria-tecnicas-basicas",
+   "tips": [
+    "Hacé el mise en place antes de empezar: todo pesado y tamizado, moldes enmantecados y enharinados, y horno precalentado. En pastelería no hay tiempo para buscar ingredientes a mitad de un batido."
+   ],
+   "datos": [
+    "Un buen pastelero escribe todo: gramos, temperaturas y tiempos. Si una receta te salió perfecta, anotá exactamente qué hiciste; si salió mal, también. Así se aprende más rápido que con cualquier libro."
+   ]
+  },
+  {
+   "slug": "manipulacion-de-alimentos-reglas-de-oro",
+   "cat": "Cocina segura",
+   "icono": "🧼",
+   "titulo": "Manipulación de alimentos: las 4 reglas de oro que usan los cocineros (y deberías copiar en casa)",
+   "bajada": "Limpiar, separar, cocinar y enfriar. La zona de peligro de temperatura, la contaminación cruzada y los errores de todos los días que hacen que una comida rica te caiga mal.",
+   "img": "https://images.unsplash.com/photo-1578338244251-6258f907691b?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1578338244251-6258f907691b?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Louis Hansel",
+   "url": "https://www.chefprivado.ar/blog/manipulacion-de-alimentos-reglas-de-oro",
+   "tips": [
+    "Para desinfectar frutas y verduras que vas a comer crudas: 5 a 10 gotas de lavandina apta para uso alimentario por litro de agua, 15 minutos de remojo y enjuague con agua potable. Y nunca mezcles lavandina con detergente: libera gases tóxicos.",
+    "La heladera no mata las bacterias: solo las frena. El freezer tampoco las mata: las detiene. Cuando el alimento vuelve a la temperatura ambiente, se reactivan. Por eso el frío conserva, pero no arregla un alimento que ya estaba mal."
+   ],
+   "datos": [
+    "Un bife de chorizo puede ir jugoso porque las bacterias están en la superficie y el fuego las elimina. En la carne picada, en cambio, la superficie se mezcla con el interior: por eso la hamburguesa siempre va bien cocida, sobre todo para chicos.",
+    "Cuando cocino en tu casa, estas reglas viajan conmigo: cadena de frío desde la compra hasta tu cocina, tablas y utensilios separados, mesadas desinfectadas antes y después. Es la parte que no se ve de una buena experiencia, y la más importante."
+   ]
+  },
+  {
+   "slug": "especias-y-hierbas-guia-para-usarlas",
+   "cat": "La despensa",
+   "icono": "🧺",
+   "titulo": "Especias y hierbas: la guía para usarlas como un cocinero",
+   "bajada": "De dónde sale cada una, cuándo se agregan, cuáles van al principio y cuáles al final, y cómo guardarlas para que no pierdan el aroma.",
+   "img": "https://images.unsplash.com/photo-1716816211590-c15a328a5ff0?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1716816211590-c15a328a5ff0?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Anju Ravindranath",
+   "url": "https://www.chefprivado.ar/blog/especias-y-hierbas-guia-para-usarlas",
+   "tips": [
+    "Si reemplazás hierba fresca por seca, usá un tercio de la cantidad: la seca está más concentrada. Y la seca, agregala antes, para que se hidrate."
+   ],
+   "datos": [
+    "El bouquet garni es un atado de hierbas (perejil, tomillo y laurel, a veces con puerro o apio) que se cocina dentro de fondos y guisos y se retira al final. Da aroma sin dejar hojitas sueltas en el plato."
+   ]
+  },
+  {
+   "slug": "pasta-fresca-casera-al-huevo-y-a-la-yema",
+   "cat": "Pasta fresca",
+   "icono": "🍝",
+   "titulo": "Pasta fresca casera: masa al huevo y a la yema, paso a paso",
+   "bajada": "Las dos masas base de la pasta fresca, sus proporciones, cómo amasarlas, estirarlas y cortarlas en tagliolini, pappardelle y moñitos.",
+   "img": "https://images.unsplash.com/photo-1771360873707-f435ef9732ea?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1771360873707-f435ef9732ea?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Ahmet Safa Türkyılmaz",
+   "url": "https://www.chefprivado.ar/blog/pasta-fresca-casera-al-huevo-y-a-la-yema",
+   "tips": [
+    "El semolín es tu mejor amigo: espolvoreado sobre la masa cortada evita que se pegue mucho mejor que la harina, y no se disuelve en el agua de cocción."
+   ],
+   "datos": [
+    "Si no la vas a cocinar en el día, dejá los nidos orear sobre una placa con semolín y congelalos así, separados. Después van directo del freezer al agua hirviendo."
+   ]
+  },
+  {
+   "slug": "como-elegir-pescado-fresco",
+   "cat": "Del mar",
+   "icono": "🐟",
+   "titulo": "Cómo elegir pescado fresco (y entender qué estás comprando)",
+   "bajada": "Las señales de frescura, la diferencia entre pescados redondos y planos, magros y grasos, y qué cocción le va a cada uno.",
+   "img": "https://images.unsplash.com/photo-1611214774777-3d997a9d0e35?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1611214774777-3d997a9d0e35?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Tapan Kumar Choudhury",
+   "url": "https://www.chefprivado.ar/blog/como-elegir-pescado-fresco",
+   "tips": [
+    "No te guíes por una sola señal: mirá el pescado en conjunto. El congelado pierde parte de estas características aunque esté perfecto, así que con él fijate más en la carne y el olor."
+   ],
+   "datos": [
+    "Los pescados de mar se conservan mejor que los de río. Y si vas a comer pescado crudo (sushi, ceviche), tiene que haber sido congelado correctamente antes. Lo explicamos en las reglas de oro de la manipulación de alimentos."
+   ]
+  },
+  {
+   "slug": "pan-casero-ingredientes-y-etapas",
+   "cat": "Panadería en casa",
+   "icono": "🥖",
+   "titulo": "Pan casero: los 4 ingredientes y las etapas para que salga como de panadería",
+   "bajada": "Harina, agua, sal y levadura. Qué hace cada uno, la receta del pan francés y los pasos que separan un pan denso de uno con corteza crocante y miga aireada.",
+   "img": "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Wesual Click",
+   "url": "https://www.chefprivado.ar/blog/pan-casero-ingredientes-y-etapas",
+   "tips": [
+    "El secreto de la corteza crocante es el vapor. En casa, poné una asadera vacía en el piso del horno mientras precalienta y, al meter el pan, echale un vaso de agua o un puñado de hielo. Cerrá rápido la puerta."
+   ],
+   "datos": [
+    "Si la masa no crece, revisá tres cosas: que la levadura no esté vencida, que el agua no haya estado demasiado caliente (por encima de 40 °C la mata) y que el lugar no esté frío."
+   ]
+  },
+  {
+   "slug": "como-armar-un-coctel-en-casa-bocados",
+   "cat": "Para recibir",
+   "icono": "🥂",
+   "titulo": "Cómo armar un cóctel en casa: cuántos bocados por persona y cómo combinarlos",
+   "bajada": "La regla del bocado, cuánto calcular según el tipo de reunión, cómo equilibrar fríos y calientes y qué dejar listo antes de que toque el timbre.",
+   "img": "https://images.unsplash.com/photo-1771154136172-0633db70b7dc?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1771154136172-0633db70b7dc?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Haim Charbit",
+   "url": "https://www.chefprivado.ar/blog/como-armar-un-coctel-en-casa-bocados",
+   "tips": [
+    "Mejor pocas variedades en buena cantidad que muchas variedades de a una: con 5 o 6 bocados distintos alcanza para un cóctel completo, y te asegurás de que todos prueben todo."
+   ],
+   "datos": [
+    "Calculá alrededor de una copa por persona por hora de reunión, y agua siempre a mano. Y retirá las bandejas vacías y las servilletas usadas: una mesa prolija hace que todo se vea más rico."
+   ]
+  },
+  {
+   "slug": "ceviche-peruano-receta-y-secretos",
+   "cat": "Sabores de Latinoamérica",
+   "icono": "🌎",
+   "titulo": "Ceviche peruano: la receta y los secretos para que no quede amargo",
+   "bajada": "Qué pescado usar, cómo exprimir el limón, por qué se lava la cebolla y qué es la leche de tigre. Con camote y maíz cancha, como en Lima.",
+   "img": "https://images.unsplash.com/photo-1535399831218-d5bd36d1a6b3?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1535399831218-d5bd36d1a6b3?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Pirata Studio Film",
+   "url": "https://www.chefprivado.ar/blog/ceviche-peruano-receta-y-secretos",
+   "tips": [
+    "Un aviso importante: el limón no cocina el pescado en términos de seguridad, solo cambia su textura. No elimina parásitos. Por eso el pescado tiene que ser fresquísimo y, para comerlo crudo, haber sido congelado correctamente antes. Lo explicamos en manipulación de alimentos."
+   ],
+   "datos": [
+    "La leche de tigre es el jugo que queda en el bol: limón, sal, ají, cebolla y los jugos del pescado. En Perú se sirve en vaso como aperitivo y tiene fama de levantar a cualquiera."
+   ]
+  },
+  {
+   "slug": "diccionario-de-cocina-francesa",
+   "cat": "Vuelta al mundo",
+   "icono": "🌍",
+   "titulo": "Diccionario de cocina francesa: 15 palabras que vas a ver en cualquier carta",
+   "bajada": "Brunoise, confit, velouté, à la minute, papillote. La cocina profesional habla francés: esto es lo que significa cada término.",
+   "img": "https://images.unsplash.com/photo-1580654842920-37b786f32bfc?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1580654842920-37b786f32bfc?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Camille Brodard",
+   "url": "https://www.chefprivado.ar/blog/diccionario-de-cocina-francesa",
+   "tips": [
+    "Si ves du jour en una carta (como en soupe du jour), significa \"del día\": lo que el cocinero decidió preparar con lo que consiguió esa mañana. Suele ser lo más fresco de la carta."
+   ],
+   "datos": [
+    "En mis menús vas a ver algunas de estas palabras, pero siempre explicadas: la idea es que la carta te dé ganas de comer, no que te haga sentir que tenés que estudiar."
+   ]
+  },
+  {
+   "slug": "como-poner-la-mesa-como-en-un-restaurante",
+   "cat": "El arte de la mesa",
+   "icono": "🕯️",
+   "titulo": "Cómo poner la mesa como en un restaurante (sin volverte loco)",
+   "bajada": "Dónde va cada cubierto, cuántas copas poner, qué hacer con la servilleta y los pequeños gestos de servicio que cambian una cena en casa.",
+   "img": "https://images.unsplash.com/photo-1522413452208-996ff3f3e740?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1522413452208-996ff3f3e740?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Jordan Arnold",
+   "url": "https://www.chefprivado.ar/blog/como-poner-la-mesa-como-en-un-restaurante",
+   "tips": [
+    "Solo poné los cubiertos que se van a usar. Una mesa con seis cubiertos para un menú de dos pasos se ve confusa, no elegante."
+   ],
+   "datos": [
+    "Según el protocolo clásico, la comida empieza cuando el anfitrión despliega su servilleta y la apoya en su regazo. Si te levantás un momento, dejala sobre la silla o a la izquierda del plato; a la derecha significa que terminaste. Y nunca va arriba del plato."
+   ]
+  },
+  {
+   "slug": "como-catar-un-vino-y-maridar",
+   "cat": "Copa y maridaje",
+   "icono": "🍷",
+   "titulo": "Cómo catar un vino en 3 pasos (y qué servir con cada plato)",
+   "bajada": "Vista, nariz y boca: cómo se cata, a qué temperatura va cada vino y las reglas de maridaje que usan los sommeliers, sin vueltas.",
+   "img": "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Kym Ellis",
+   "url": "https://www.chefprivado.ar/blog/como-catar-un-vino-y-maridar",
+   "tips": [
+    "Algunos alimentos son difíciles para cualquier vino: las hojas verdes crudas, las vinagretas muy ácidas, los helados, el chocolate, los alcauciles y los huevos. Con ellos, mejor un vino simple o directamente agua."
+   ],
+   "datos": [
+    "En las experiencias de 7 pasos el maridaje se piensa junto con el menú, plato por plato. Podés verlo en el menú degustación."
+   ]
+  },
+  {
+   "slug": "mitos-de-la-alimentacion",
+   "cat": "Comer bien",
+   "icono": "🥗",
+   "titulo": "Mitos de la alimentación: 10 frases que escuchás siempre (y qué hay de cierto)",
+   "bajada": "La espinaca que da fuerza, la fruta de postre que engorda, la miel más sana que el azúcar. Lo que dice la nutrición sobre los mitos de siempre.",
+   "img": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Anna Pelzer",
+   "url": "https://www.chefprivado.ar/blog/mitos-de-la-alimentacion",
+   "tips": [],
+   "datos": [
+    "Esta nota es informativa. Si tenés una condición de salud o necesitás un plan de alimentación, consultá con un profesional de la nutrición."
+   ]
+  },
+  {
+   "slug": "ingenieria-de-menu-como-se-arma-una-carta",
+   "cat": "La trastienda",
+   "icono": "📊",
+   "titulo": "Ingeniería de menú: por qué la carta de un restaurante está armada así",
+   "bajada": "Estrellas, caballitos de batalla, rompecabezas y perros. Cómo los restaurantes clasifican sus platos y qué hacen con cada uno (y qué te conviene saber como comensal).",
+   "img": "https://images.unsplash.com/photo-1761515397001-c8e82879c4c0?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1761515397001-c8e82879c4c0?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Allen Y",
+   "url": "https://www.chefprivado.ar/blog/ingenieria-de-menu-como-se-arma-una-carta",
+   "tips": [
+    "Si cocinás en casa para muchos (un cumpleaños, una reunión grande), el mismo razonamiento sirve: elegí un plato estrella que sea rico, rinda y no dependa de un ingrediente carísimo, y destacá ese."
+   ],
+   "datos": [
+    "En un servicio de chef privado la lógica es otra: no hay carta para elegir, sino un menú pensado para tu mesa. Así se arman las experiencias de Celestia."
+   ]
+  },
+  {
+   "slug": "lo-que-no-sabes-del-huevo",
+   "cat": "Básicos de cocina",
+   "icono": "🥚",
+   "titulo": "Lo que no sabés del huevo (y cambia cómo lo cocinás)",
+   "bajada": "Cómo saber si está fresco, qué huevo conviene para cada preparación, los minutos exactos de hervor y por qué a veces la yema queda verde.",
+   "img": "https://images.unsplash.com/photo-1617611647086-bccca8c2cf84?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1617611647086-bccca8c2cf84?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Mustafa Bashari",
+   "url": "https://www.chefprivado.ar/blog/lo-que-no-sabes-del-huevo",
+   "tips": [
+    "El truco del poché perfecto: antes de echarlo al agua, pasá el huevo por un colador fino. La parte más líquida de la clara se escurre y queda solo la firme, que se cierra prolija alrededor de la yema. Agua apenas temblando, nunca a borbotones, y un chorrito de vinagre."
+   ],
+   "datos": [
+    "Los tiempos cambian según el tamaño del huevo y la olla. Probá una vez con tu cocina y anotá los minutos: a partir de ahí, sale igual siempre.",
+    "Un dato de laboratorio que usamos en la cocina: la clara empieza a cuajar alrededor de los 62 °C y la yema recién espesa entre los 65 y los 70 °C. Por eso existe el \"huevo a 63 °C\": una cocción lenta y controlada en la que la yema queda untuosa, como una crema."
+   ]
+  },
+  {
+   "slug": "punto-de-la-carne-sin-cortarla-truco-de-la-mano",
+   "cat": "Carnes",
+   "icono": "🥩",
+   "titulo": "Cómo saber el punto de la carne sin cortarla: el truco de la mano",
+   "bajada": "El método que se usa en las cocinas para tocar un bife y saber si está jugoso, a punto o cocido, sin abrirlo ni perder sus jugos.",
+   "img": "https://images.unsplash.com/photo-1608877907149-a206d75ba011?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1608877907149-a206d75ba011?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "menglong",
+   "url": "https://www.chefprivado.ar/blog/punto-de-la-carne-sin-cortarla-truco-de-la-mano",
+   "tips": [
+    "Tocá siempre el centro del bife, no los bordes, que se cocinan antes. Y hacelo con la punta del dedo o con el dorso de la pinza, apretando apenas: no hace falta hundirlo."
+   ],
+   "datos": [
+    "¿Querés ir más a fondo con el sellado, el arroser con manteca y el reposo? Está todo en la cápsula Ojo de bife: sellado, punto y reposo."
+   ]
+  },
+  {
+   "slug": "chef-privado-en-vacaciones",
+   "cat": "Chef privado",
+   "icono": "🍽️",
+   "titulo": "Chef privado en vacaciones: cómo funciona en tu casa de veraneo",
+   "bajada": "Alquilaste una casa en la costa, en las sierras o una quinta con amigos. Qué opciones hay, cómo se organiza y qué conviene resolver antes de viajar.",
+   "img": "https://images.unsplash.com/photo-1763479142464-2fc1249206df?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1763479142464-2fc1249206df?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Shoham Avisrur",
+   "url": "https://www.chefprivado.ar/blog/chef-privado-en-vacaciones",
+   "tips": [
+    "En temporada alta (diciembre, enero y los fines de semana largos) las fechas se ocupan rápido. Si ya sabés dónde y cuándo vas a estar, reservá con tiempo: confirmar es lo primero; el menú lo terminamos de ajustar después."
+   ],
+   "datos": [
+    "Las condiciones de reserva y cancelación son las mismas que para cualquier experiencia: las podés leer completas en la política de cancelación."
+   ]
+  },
+  {
+   "slug": "cuanto-cuesta-un-chef-privado-en-buenos-aires",
+   "cat": "Chef privado",
+   "icono": "🍽️",
+   "titulo": "¿Cuánto cuesta un chef privado en Buenos Aires?",
+   "bajada": "Qué incluye el precio, qué lo hace variar y valores de referencia para una cena de 3 o 7 pasos en tu casa.",
+   "img": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Jay Wennington",
+   "url": "https://www.chefprivado.ar/blog/cuanto-cuesta-un-chef-privado-en-buenos-aires",
+   "tips": [
+    "Si querés cuidar el presupuesto sin resignar la experiencia, elegí un menú de 3 pasos un día de semana y pedí que el principal sea el plato estrella. Es la forma más eficiente de tener una cena de restaurante en casa."
+   ],
+   "datos": [
+    "Las bebidas suelen quedar a cargo del anfitrión. Lo habitual es que el chef sugiera un maridaje para que elijas los vinos."
+   ]
+  },
+  {
+   "slug": "chef-privado-o-catering",
+   "cat": "Chef privado",
+   "icono": "🍽️",
+   "titulo": "Chef privado o catering: cuál conviene para tu evento",
+   "bajada": "Las dos opciones resuelven la comida, pero no son lo mismo. Diferencias en experiencia, cantidad de invitados y presupuesto.",
+   "img": "https://images.unsplash.com/photo-1555244162-803834f70033?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1555244162-803834f70033?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Saile Ilyas",
+   "url": "https://www.chefprivado.ar/blog/chef-privado-o-catering",
+   "tips": [
+    "Hay un punto medio: para grupos de más de 12 personas podés armar un evento a medida con chef y staff de servicio, con estaciones o finger food cocinados en el lugar. Es catering con sabor de restaurante."
+   ],
+   "datos": []
+  },
+  {
+   "slug": "como-funciona-un-chef-semanal",
+   "cat": "Chef privado",
+   "icono": "🍽️",
+   "titulo": "Cómo funciona un chef semanal (y si te conviene)",
+   "bajada": "Una o dos jornadas de cocina en tu casa y la semana resuelta. Qué incluye, cuántas horas lleva y cuánto cuesta.",
+   "img": "https://images.unsplash.com/photo-1543353071-873f17a7a088?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1543353071-873f17a7a088?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Ella Olsson",
+   "url": "https://www.chefprivado.ar/blog/como-funciona-un-chef-semanal",
+   "tips": [
+    "Pedí que al menos una preparación por jornada sea \"base\": un guiso, una salsa o legumbres que rindan para combinar con distintas guarniciones. Es el truco para que la semana no se sienta repetida."
+   ],
+   "datos": [
+    "La cocina hogareña alcanza: hornallas, horno, heladera con espacio y recipientes. Si faltan recipientes, lo coordinamos antes."
+   ]
+  },
+  {
+   "slug": "cortes-de-cuchillo-y-coccion",
+   "cat": "Cortes y técnica",
+   "icono": "🔪",
+   "titulo": "Cortes de cuchillo: cómo el corte define la cocción",
+   "bajada": "Brunoise, juliana, mirepoix… no es un capricho de escuela: el tamaño del corte decide cuánto tarda, cuánto sabor suelta y cómo se ve el plato.",
+   "img": "https://images.unsplash.com/photo-1492739159057-7d1896b3c63f?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1492739159057-7d1896b3c63f?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Caroline Attwood",
+   "url": "https://www.chefprivado.ar/blog/cortes-de-cuchillo-y-coccion",
+   "tips": [
+    "Uniformidad antes que velocidad. Si todos los cubos miden lo mismo, todos se cocinan al mismo tiempo. Cortá primero en láminas parejas, después en bastones y recién ahí en cubos: así salen iguales sin esfuerzo."
+   ],
+   "datos": [
+    "Las medidas varían un poco según la escuela; lo importante es la lógica: cocción larga, corte grande; cocción corta, corte chico."
+   ]
+  },
+  {
+   "slug": "las-5-salsas-madre",
+   "cat": "Fondos y salsas",
+   "icono": "🥄",
+   "titulo": "Las 5 salsas madre: la base de casi todas las salsas",
+   "bajada": "Dominá cinco salsas y tenés la llave de cientos de variantes. Así las ordenó la cocina francesa y así se siguen enseñando en las escuelas.",
+   "img": "https://images.unsplash.com/photo-1625631976982-c6df1654a6ea?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1625631976982-c6df1654a6ea?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Vitor Monthay",
+   "url": "https://www.chefprivado.ar/blog/las-5-salsas-madre",
+   "tips": [
+    "Contraste de temperaturas: roux caliente con líquido frío, o roux frío con líquido caliente. Nunca los dos calientes: es la forma más segura de que no se formen grumos. Batí con batidor, no con cuchara.",
+    "Si la holandesa se corta, no la tires: en otro bol poné una yema o una cucharada de agua tibia y volvé a incorporar la salsa cortada de a poco, batiendo. Se recupera."
+   ],
+   "datos": [
+    "Como referencia, unos 50 g de manteca y 50 g de harina espesan 1 litro de leche para una bechamel de consistencia media."
+   ]
+  },
+  {
+   "slug": "ojo-de-bife-sellado-punto-reposo",
+   "cat": "Carnes",
+   "icono": "🥩",
+   "titulo": "Ojo de bife: sellado, punto y reposo",
+   "bajada": "Tres decisiones separan un bife común de uno de restaurante: cómo lo sellás, cuándo lo sacás y cuánto lo dejás descansar.",
+   "img": "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "José Ignacio Pompé",
+   "url": "https://www.chefprivado.ar/blog/ojo-de-bife-sellado-punto-reposo",
+   "tips": [
+    "El arroser: en el último minuto bajá el fuego, sumá una cucharada de manteca, un diente de ajo aplastado y una rama de tomillo, inclinás la sartén y lo bañás con la manteca espumosa usando una cuchara. Es el gesto que más sabor suma en menos tiempo.",
+    "Cortá en contra de la fibra, en láminas, y terminá con sal en escamas recién al servir: el crocante de la sal sobre la carne tibia es pura terminación de chef."
+   ],
+   "datos": []
+  },
+  {
+   "slug": "emplatar-como-chef",
+   "cat": "Emplatado",
+   "icono": "✨",
+   "titulo": "Emplatar como en un menú de 7 pasos",
+   "bajada": "La comida entra primero por los ojos. Con cinco reglas simples, un plato casero se ve de restaurante.",
+   "img": "https://images.unsplash.com/photo-1759277513461-41fde7d24083?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1759277513461-41fde7d24083?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Madeline Liu",
+   "url": "https://www.chefprivado.ar/blog/emplatar-como-chef",
+   "tips": [
+    "Tené a mano una servilleta apenas húmeda y una pinza. Antes de servir, repasá el borde del plato: una gota de salsa o una miga en el borde es lo que separa un plato casero de uno de chef."
+   ],
+   "datos": [
+    "En un menú por pasos, cada plato se piensa como una composición: el orden, el color y el ritmo de toda la cena importan tanto como cada plato por separado."
+   ]
+  },
+  {
+   "slug": "reducciones-y-glaseados",
+   "cat": "Fondos y salsas",
+   "icono": "🥄",
+   "titulo": "Reducciones y glaseados: el brillo de restaurante",
+   "bajada": "Ese brillo espejado de las salsas de restaurante no es magia: es reducción, paciencia y manteca fría al final.",
+   "img": "https://images.unsplash.com/photo-1499126167718-c87f5c1387e8?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1499126167718-c87f5c1387e8?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Caroline Attwood",
+   "url": "https://www.chefprivado.ar/blog/reducciones-y-glaseados",
+   "tips": [
+    "Salá siempre al final. Al reducir, el agua se evapora pero la sal se queda: si salás al principio, al terminar la salsa puede quedar salada de más.",
+    "Pasá la salsa por un colador fino antes de servir. Es un paso de diez segundos que la deja lisa y profesional."
+   ],
+   "datos": [
+    "La manteca tiene que estar fría y la salsa caliente pero sin hervir: si hierve después de montarla, la emulsión se rompe y la manteca se separa."
+   ]
+  },
+  {
+   "slug": "pure-de-papas-de-restaurante",
+   "cat": "Recetas con toque de chef",
+   "icono": "🍳",
+   "titulo": "Puré de papas de restaurante",
+   "bajada": "El acompañamiento más simple es también el que más delata la técnica. Cinco claves para un puré liso, sedoso y con sabor.",
+   "img": "https://images.unsplash.com/photo-1585508659081-04a1788941c1?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1585508659081-04a1788941c1?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Anna Stampfli",
+   "url": "https://www.chefprivado.ar/blog/pure-de-papas-de-restaurante",
+   "tips": [
+    "Infusioná la leche: calentala con una hoja de laurel y un diente de ajo aplastado, dejá reposar 10 minutos y colá. Usá pimienta blanca en vez de negra para que no se vean puntitos: es un detalle muy de restaurante."
+   ],
+   "datos": [
+    "Las versiones más famosas de restaurante llevan muchísima más manteca: hasta casi la mitad del peso de las papas. Con 100 a 150 g por kilo tenés un puré de lujo, sin exagerar."
+   ]
+  }
+ ]
+}

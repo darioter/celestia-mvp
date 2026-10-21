@@ -286,7 +286,22 @@ def franja_landing():
 def sitemap():
     import sys as _s; _s.path.insert(0, os.path.join(ROOT, 'tools')); import sitemap as _sm; _sm.generar()
 
+def base_historias():
+    """Base de contenido para el generador de historias de Instagram (admin-historias.html)."""
+    limpio = lambda t: re.sub(r'\s+', ' ', html.unescape(re.sub(r'<[^>]+>', '', t))).strip()
+    notas = []
+    for a in sorted(ARTICULOS, key=lambda x: x['fecha'], reverse=True):
+        es = a['es']; c = CATS[a['cat']]
+        notas.append({
+            'slug': a['slug'], 'cat': c['es'], 'icono': c['icono'], 'titulo': es['titulo'], 'bajada': es['bajada'],
+            'img': U(a['img'], 1080, 1920), 'img_sq': U(a['img'], 800, 800), 'foto': a['foto'], 'url': f'{SITE}/blog/{a["slug"]}',
+            'tips': [limpio(b[1]) for b in es['cuerpo'] if b[0] == 'tip'],
+            'datos': [limpio(b[1]) for b in es['cuerpo'] if b[0] == 'dato'],
+        })
+    p = os.path.join(ROOT, 'data', 'historias-base.json'); os.makedirs(os.path.dirname(p), exist_ok=True)
+    open(p, 'w', encoding='utf-8').write(json.dumps({'notas': notas}, ensure_ascii=False, indent=1))
+
 if __name__ == '__main__':
     for a in ARTICULOS: articulo(a)
-    indice(); franja_landing(); sitemap()
+    indice(); franja_landing(); sitemap(); base_historias()
     print('ok', len(ARTICULOS), 'cápsulas')
