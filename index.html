@@ -1830,8 +1830,8 @@ body.beta-mode > [id*="section"],
  #bl-hcal .cc-d{aspect-ratio:auto;height:36px;min-height:0;font-size:13.5px}
  #bl-hcal .cc-ft{margin-top:9px}#bl-hcal .cc-go{padding:10px 14px;font-size:13px}#bl-hcal .cc-leg{display:none}
  #beta-landing .bl-hero{height:max(100svh,780px)!important}
- #beta-landing .bl-hero .bl-hero-cnt{padding-bottom:262px!important}
- #beta-landing .bl-hero .bl-hs-c{padding-bottom:262px!important}
+ #beta-landing .bl-hero .bl-hero-cnt{padding-bottom:calc(var(--hcal-h,210px) + 80px)!important}
+ #beta-landing .bl-hero .bl-hs-c{padding-bottom:calc(var(--hcal-h,210px) + 80px)!important}
  #beta-landing .bl-hero .bl-hx-row{display:none!important}
  #beta-landing .bl-hero-cnt .bl-btns,#beta-landing .bl-hero-cnt .bl-risk-note{display:none!important}
  body.bl-en-hero #bl-wa-float{opacity:0!important;pointer-events:none!important;transition:opacity .25s}
@@ -1908,6 +1908,8 @@ function Cal(root,opt){
 var hbox=document.getElementById('bl-hcal'),mq=window.matchMedia('(min-width:901px)');
 if(hbox&&hero){hero.appendChild(hbox);
  var hc=Cal(hbox,{mode:'2sem',ev:'hero_cal',onTouch:stopHero});hc.render(true);
+ function medir(){hero.style.setProperty('--hcal-h',Math.ceil(hbox.getBoundingClientRect().height)+'px');}
+ medir();if('ResizeObserver' in window)new ResizeObserver(medir).observe(hbox);window.addEventListener('resize',medir);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(medir);
  if('IntersectionObserver' in window)new IntersectionObserver(function(e){document.body.classList.toggle('bl-en-hero',e[0].isIntersecting);},{rootMargin:'0px 0px -35% 0px'}).observe(hero);
 }
 /* flotante */
