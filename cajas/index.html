@@ -139,6 +139,31 @@ section{padding:70px 0}
 .cred{font-size:11.5px;color:#9a9a9a;text-align:center;margin-top:30px}
 @media(max-width:900px){.cajas{grid-template-columns:1fr}.merc{grid-template-columns:1fr 1fr}.pasos3{grid-template-columns:1fr 1fr}.pedido{grid-template-columns:1fr}.res{position:static}}
 @media(max-width:600px){.hdr{padding:0 16px}.hdr nav a:not(.cta){display:none}.wrap{padding:0 16px}.hero-in{padding:0 16px 44px}.hero{min-height:520px}.fiestas{grid-template-columns:1fr}.merc{grid-template-columns:1fr}.pasos3{grid-template-columns:1fr}.two{grid-template-columns:1fr}section{padding:54px 0}.menu li span{width:78px}}
+
+/* Ocasiones: todas del mismo tamaño */
+.fiestas.oc{grid-template-columns:repeat(var(--n,5),1fr);grid-auto-rows:1fr;gap:12px}
+@media(max-width:900px){.fiestas.oc{grid-template-columns:repeat(3,1fr)}}
+.fiestas.oc .fz{display:flex;flex-direction:column;align-items:flex-start;min-height:150px;padding:18px 18px 16px}
+.fiestas.oc .fz i{position:static;font-size:30px;line-height:1;margin-bottom:10px}
+.fiestas.oc .fz b{font-size:22px;line-height:1.15}
+.fiestas.oc .fz small{min-height:0;margin-top:4px;line-height:1.35}
+.fiestas.oc .fz .cierre{margin-top:auto;padding-top:3px}
+.fiestas.oc .fz.on{background:#fffaf0}
+/* Mercadito */
+.merc{grid-template-columns:repeat(auto-fill,minmax(230px,1fr));grid-auto-rows:1fr;gap:14px}
+.mi{position:relative;display:grid;grid-template-rows:auto auto 1fr auto;gap:0;padding:18px 18px 16px;border-radius:18px;background:linear-gradient(180deg,#fff 0%,#fffdf8 100%);border:1px solid var(--crd);transition:border-color .2s,box-shadow .2s,transform .2s;min-height:208px}
+.mi:hover{border-color:rgba(201,168,76,.6);box-shadow:0 14px 30px rgba(13,27,42,.08);transform:translateY(-2px)}
+.mi.en{border-color:var(--gd);box-shadow:0 0 0 3px rgba(201,168,76,.16)}
+.mi .ic{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;background:radial-gradient(circle at 35% 30%,#fff7e3,#f1e3bf);border:1px solid rgba(201,168,76,.35);margin-bottom:12px}
+.mi b{font-family:'DM Serif Display',serif;font-weight:400;font-size:19px;line-height:1.2;color:var(--nv);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.4em}
+.mi small{color:var(--mut);font-size:12.5px;line-height:1.4;margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mi .row{margin-top:0;padding-top:12px;border-top:1px dashed var(--crd);align-self:end}
+.mi .row strong{font-family:'DM Serif Display',serif;font-weight:400;font-size:22px;color:var(--nv)}
+.mi .qty button{width:34px;height:34px}
+.mi .qty.on{background:var(--nv);border-color:var(--nv)}
+.mi .qty.on button,.mi .qty.on span{color:var(--gdl)}
+.mi .badge{position:absolute;top:14px;right:14px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;background:#f3ead6;color:#7a6224;border-radius:999px;padding:3px 9px}
+@media(max-width:600px){.merc{grid-template-columns:1fr 1fr;gap:10px}.mi{padding:14px 12px 12px;min-height:196px}.mi .ic{width:44px;height:44px;font-size:22px;margin-bottom:10px}.mi b{font-size:16.5px}.mi .row{flex-direction:column;align-items:flex-start;gap:8px}.mi .row strong{font-size:19px}.mi .qty{width:100%;justify-content:space-between}.fiestas.oc{grid-template-columns:1fr 1fr;grid-auto-rows:auto}.fiestas.oc.impar .fz:last-child{grid-column:1/-1;min-height:0}.fiestas.oc .fz{min-height:138px;padding:14px}.fiestas.oc .fz b{font-size:18px}.fiestas.oc .fz small{font-size:12.5px}}
 </style>
 </head><body data-no-tr>
 <header class="hdr"><a href="/" aria-label="Celestia Chef Privado"><img src="/img/img-d316320d6b.webp" alt="Celestia Chef Privado"></a>
@@ -312,9 +337,10 @@ fetch(SUPA.url + '/rest/v1/bloqueos?select=fecha', { headers: { apikey: SUPA.key
 /* ═════════ ocasión y fecha ═════════ */
 function pintarOcasiones() {
   const ks = Object.keys(OCASIONES).filter(visible);
-  document.getElementById('ocasiones').innerHTML = ks.map(k => {
+  const G = document.getElementById('ocasiones'); G.style.setProperty('--n', ks.length); G.classList.toggle('impar', ks.length % 2 === 1);
+  G.innerHTML = ks.map(k => {
     const o = OCASIONES[k], ab = abierta(k);
-    return `<button type="button" class="fz${st.ocasion === k ? ' on' : ''}${ab ? '' : ' cerrada'}" data-k="${k}" ${ab ? '' : 'disabled'}><i>${o.icono}</i><b>${o.nombre}</b><small>${o.sub}</small>${temporada(k) ? `<span class="cierre">${ab ? 'Pedidos hasta el ' + fechaLarga(o.cierre) : 'Pedidos cerrados'}</span>` : ''}</button>`;
+    return `<button type="button" class="fz${st.ocasion === k ? ' on' : ''}${ab ? '' : ' cerrada'}" data-k="${k}" ${ab ? '' : 'disabled'}><i>${o.icono}</i><b>${o.nombre}</b><small>${o.sub}</small>${temporada(k) ? `<span class="cierre">${ab ? 'Pedidos hasta el ' + o.cierre.slice(8, 10) + '/' + o.cierre.slice(5, 7) : 'Pedidos cerrados'}</span>` : ''}</button>`;
   }).join('');
   const temp = ks.filter(temporada).map(k => OCASIONES[k].nombre);
   if (temp.length) document.getElementById('hero-k').textContent = '✦ Cajas Celestia · ' + temp.join(' y ') + ' con cupos limitados';
@@ -366,7 +392,7 @@ function pintarCatalogo() {
     grupos.map(g => `<div class="cat-h"><h3>${g}</h3></div><div class="cajas">${lista.filter(c => c.grupo === g).map(cajaHTML).join('')}</div>`).join('');
   document.getElementById('merc').innerHTML = MERCADITO.filter(m => !oc ? true : enCaja(m, oc)).map(m => {
     const it = st.carrito.find(x => x.id === m.id), n = it ? it.cant : 0;
-    return `<div class="mi"><span class="ic">${m.ic}</span><b>${m.nombre}</b><small>${m.det}</small>
+    return `<div class="mi${n ? ' en' : ''}">${m.ocasiones ? '<span class="badge">Fiestas</span>' : ''}<span class="ic">${m.ic}</span><b>${m.nombre}</b><small>${m.det}</small>
       <div class="row"><strong>${f$(m.precio)}</strong><span class="qty${n ? ' on' : ''}"><button type="button" data-m="${m.id}" data-d="-1" aria-label="Quitar">−</button><span>${n}</span><button type="button" data-m="${m.id}" data-d="1" aria-label="Sumar">+</button></span></div></div>`;
   }).join('');
 }
