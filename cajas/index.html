@@ -358,6 +358,22 @@ section{padding:70px 0}
 .cart-btn b{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;border-radius:999px;background:var(--gd);color:var(--nv);font-size:11.5px;display:none;align-items:center;justify-content:center;padding:0 5px}
 .cart-btn.bump{animation:pop .5s ease}
 .hdr{gap:0}.hdr nav{margin-left:auto}
+.burger{display:none;width:44px;height:44px;border-radius:50%;border:1px solid rgba(232,201,106,.5);background:rgba(250,246,239,.06);cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:4px;margin-left:10px;order:3}
+.burger i{display:block;width:18px;height:2px;border-radius:2px;background:var(--cr);transition:transform .25s,opacity .2s}
+.burger[aria-expanded="true"] i:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.burger[aria-expanded="true"] i:nth-child(2){opacity:0}
+.burger[aria-expanded="true"] i:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+@media(max-width:960px){
+  .hdr{padding:0 16px}
+  .hdr .cart-btn{margin-left:auto}
+  .burger{display:flex}
+  .mis-ped{display:none}
+  .hdr nav{position:absolute;top:64px;left:0;right:0;margin:0;flex-direction:column;align-items:stretch;gap:0;background:rgba(13,27,42,.98);border-bottom:1px solid rgba(201,168,76,.3);box-shadow:0 18px 40px rgba(0,0,0,.35);padding:8px 16px 18px;display:none}
+  .hdr.abierto nav{display:flex;animation:navIn .22s ease}
+  .hdr nav a,.hdr nav a:not(.cta){display:block;font-size:16px;padding:13px 4px;border-bottom:1px solid rgba(250,246,239,.08);color:var(--cr)}
+  .hdr nav a.cta{margin-top:14px;text-align:center;border:0;padding:13px 16px}
+}
+@keyframes navIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 .dr-ov{position:fixed;inset:0;background:rgba(13,27,42,.5);opacity:0;pointer-events:none;transition:opacity .3s;z-index:60}
 .dr-ov.on{opacity:1;pointer-events:auto}
 .drawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,100%);background:var(--cr);z-index:61;transform:translateX(105%);transition:transform .38s cubic-bezier(.2,.7,.2,1);display:flex;flex-direction:column;box-shadow:-20px 0 50px rgba(13,27,42,.25)}
@@ -432,8 +448,8 @@ section{padding:70px 0}
 </style>
 </head><body data-no-tr>
 <header class="hdr"><a href="/" aria-label="Celestia Chef Privado"><img src="/img/img-d316320d6b.webp" alt="Celestia Chef Privado"></a>
-<nav><a href="#cajas">Cajas</a><a href="#mercadito">Mercadito</a><a href="#como">Cómo llega</a><a href="#regenerar">Cómo regenerar</a><a href="#faq">Preguntas</a><a class="cta" href="#pedido">Hacer mi pedido</a></nav>
-<a class="mis-ped" id="mis-ped" href="/cajas/pedido/" hidden>Mis pedidos</a><button type="button" class="cart-btn" id="cart-btn" aria-label="Ver carrito"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6 5 3H2"/><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/></svg><b id="cart-n">0</b></button></header>
+<nav id="hdr-nav"><a href="#cajas">Cajas</a><a href="#mercadito">Mercadito</a><a href="#como">Cómo llega</a><a href="#regenerar">Cómo regenerar</a><a href="#faq">Preguntas</a><a class="cta" href="#pedido">Hacer mi pedido</a></nav>
+<a class="mis-ped" id="mis-ped" href="/cajas/pedido/" hidden>Mis pedidos</a><button type="button" class="burger" id="burger" aria-label="Menú" aria-expanded="false" aria-controls="hdr-nav"><i></i><i></i><i></i></button><button type="button" class="cart-btn" id="cart-btn" aria-label="Ver carrito"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6 5 3H2"/><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/></svg><b id="cart-n">0</b></button></header>
 <div class="dr-ov" id="dr-ov"></div>
 <aside class="drawer" id="drawer" aria-label="Carrito" aria-hidden="true">
   <div class="dr-h"><div><span class="cc-k" style="color:#a08a5c">Tu carrito</span><b id="dr-tit">Cajas Celestia</b></div><button type="button" class="dr-x" id="dr-x" aria-label="Cerrar">✕</button></div>
@@ -1058,7 +1074,17 @@ if (st.ocasion && (!OCASIONES[st.ocasion] || !visible(st.ocasion) || !abierta(st
 normalizar();
 pintarOcasiones(); pintarCuando(); pintarCatalogo(); pintarRes(); revelar(); misPedidos();
 track('cajas_vista');
-function misPedidos() { let n = 0; try { n = JSON.parse(localStorage.getItem('cel_cajas_pedidos') || '[]').length; } catch (e) {} document.getElementById('mis-ped').hidden = !n; }
+(function () {
+  const h = document.querySelector('.hdr'), b = document.getElementById('burger'), n = document.getElementById('hdr-nav');
+  const set = o => { h.classList.toggle('abierto', o); b.setAttribute('aria-expanded', o ? 'true' : 'false'); };
+  b.addEventListener('click', e => { e.stopPropagation(); set(!h.classList.contains('abierto')); });
+  n.addEventListener('click', e => { if (e.target.closest('a')) set(false); });
+  document.addEventListener('click', e => { if (h.classList.contains('abierto') && !h.contains(e.target)) set(false); });
+  addEventListener('keydown', e => { if (e.key === 'Escape') set(false); });
+  addEventListener('resize', () => { if (innerWidth > 960) set(false); });
+})();
+function misPedidos() { let n = 0; try { n = JSON.parse(localStorage.getItem('cel_cajas_pedidos') || '[]').length; } catch (e) {} document.getElementById('mis-ped').hidden = !n;
+  let a = document.getElementById('mis-ped-m'); if (n && !a) { a = document.createElement('a'); a.id = 'mis-ped-m'; a.href = '/cajas/pedido/'; a.textContent = 'Mis pedidos'; document.getElementById('hdr-nav').insertBefore(a, document.querySelector('#hdr-nav .cta')); } if (a) a.hidden = !n; }
 /* Carrito recuperado: /cajas/?c=<id> (link del mensaje de recuperación) · cupón por URL: ?cupon=CODIGO */
 (async function () {
   const q = new URLSearchParams(location.search), c = q.get('c'), cup = q.get('cupon');
