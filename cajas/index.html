@@ -565,7 +565,7 @@ const OCASIONES = {
   anio_nuevo: { nombre: 'Año Nuevo',      img: 'photo-1608416026650-66b4e0c0c301', icono: '🥂', sub: 'Fin de año · 31 de diciembre', fecha: '2026-12-31', cierre: '2026-12-28', franjas: ['9 a 13 h', '13 a 17 h'] },
   romantica:  { nombre: 'Cena romántica', img: 'photo-1529521001454-2cf987c34008', icono: '❤️', sub: 'Aniversario, San Valentín o porque sí' },
   cumple:     { nombre: 'Cumpleaños',     img: 'photo-1588195538326-c5b1e9f80a1b', icono: '🎂', sub: 'Festejá en casa sin cocinar' },
-  merienda:   { nombre: 'Merienda con amigas', img: 'photo-1778695940266-af5c9eda6126', icono: '☕', sub: 'Una tarde de pastelería en casa', franjas: ['10 a 13 h', '13 a 16 h'] },
+  merienda:   { nombre: 'Merienda', img: 'photo-1778695940266-af5c9eda6126', icono: '☕', sub: 'Estilo pâtisserie, en tu casa', franjas: ['10 a 13 h', '13 a 16 h'] },
   amigos:     { nombre: 'Cena con amigos', img: 'photo-1528605248644-14dd04022da1', icono: '🍽️', sub: 'Cualquier ocasión especial' }
 };
 const SENIA = 0.5;
@@ -604,7 +604,7 @@ const CAJAS = [
   { id: 'mesa-dulce', grupo: 'Postres', nombre: 'Mesa dulce navideña', tag: 'Todo casero', img: 'photo-1636394849426-39501364873c', tipo: 'fijo', opciones: [{ label: 'Para 8 a 10', personas: 10, precio: 79000 }],
     ocasiones: ['navidad', 'anio_nuevo'], lead: 'Lo dulce de la sobremesa, hecho a mano.',
     menu: [['Incluye', 'Pan dulce de autor (1 kg) · Budín de limón y amapola · Turrón de almendras y miel · Garrapiñada · 6 alfajores de maicena · 12 trufas de chocolate']] },
-  { id: 'merienda', grupo: 'Meriendas', nombre: 'Merienda de amigas', tag: 'Estilo pâtisserie', img: 'photo-1532509334149-d2130d74253c', tipo: 'pp', pp: 21000, personas: [4, 6, 8, 10],
+  { id: 'merienda', grupo: 'Meriendas', nombre: 'Merienda estilo pâtisserie', tag: 'Para compartir', img: 'photo-1532509334149-d2130d74253c', tipo: 'pp', pp: 21000, personas: [4, 6, 8, 10],
     ocasiones: ['merienda', 'cumple'], lead: 'Una tarde de pastelería francesa en casa: salado, dulce y todo listo para poner la mesa.',
     menu: [['Salado', 'Mini croissants de jamón crudo y brie · Scones de queso con manteca de hierbas · Tartaletas de calabaza asada y queso de cabra · Sándwiches de brioche con salmón ahumado'],
            ['Dulce', 'Cuadrados de lemon pie · Mini cheesecakes de frutos rojos · Alfajores de maicena · Budín de limón y amapola · Cookies con chips de chocolate'],
@@ -1066,7 +1066,7 @@ const REGENERAR = [
     [H, 'Mini empanadas', 'Sobre placa.', '200 °C · 10 min'],
     [H, 'Langostinos crocantes', 'Sobre rejilla o placa, para que no pierdan el crocante. Alioli aparte.', '200 °C · 8 min'],
     [F, 'Picada', 'Sacala 20 minutos antes.', 'Ambiente'] ] },
-  { k: 'merienda', n: 'Merienda de amigas', it: [
+  { k: 'merienda', n: 'Merienda estilo pâtisserie', it: [
     [H, 'Mini croissants y scones', 'Unos minutos, para que vuelvan a estar crocantes y tibios.', '180 °C · 4-5 min'],
     [A, 'Tartaletas y sándwiches', 'Sacalos 15 minutos antes y acomodalos en fuente.', 'Ambiente'],
     [F, 'Lemon pie y cheesecakes', 'En la heladera hasta el momento de servir.', 'Frío'],
