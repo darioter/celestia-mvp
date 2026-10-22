@@ -615,18 +615,17 @@ const CAJAS = [
     ocasiones: ['cumple', 'merienda'], lead: 'Elegís el sabor en las notas del pedido.',
     menu: [['Sabores', 'Chajá (merengue, durazno y dulce de leche) · Selva negra · Rogel · Lemon pie']] }
 ];
-/* Lo salado de cena no se ofrece en la merienda */
-const CENAS = ['navidad', 'anio_nuevo', 'romantica', 'cumple', 'amigos'];
+/* El mercadito se ofrece completo en todas las ocasiones. 'ocasiones' solo marca con la etiqueta "Fiestas" lo navideño. */
 const MERCADITO = [
   { id: 'm-vitel', img: 'photo-1529694157872-4e0c0f3b238b', ic: '🥩', nombre: 'Vitel toné', det: 'Para 6 personas', precio: 42000, ocasiones: ['navidad', 'anio_nuevo'] },
-  { id: 'm-pionono', img: 'photo-1676300187437-f09c6397a959', ic: '🥖', nombre: 'Pionono salado', det: 'Jamón crudo, rúcula y queso · 8 porciones', precio: 26000, ocasiones: CENAS },
-  { id: 'm-lomo', img: 'photo-1504973960431-1c467e159aa4', ic: '🍷', nombre: 'Lomo al Malbec', det: '1 kg, con chimichurri', precio: 72000, ocasiones: CENAS },
-  { id: 'm-matambre', img: 'photo-1629213911949-471e4063a566', ic: '🥩', nombre: 'Matambre arrollado', det: '1 kg, laminado', precio: 38000, ocasiones: CENAS },
-  { id: 'm-langostinos', img: 'photo-1691201659377-978b28daa417', ic: '🦐', nombre: 'Langostinos con mayo de lima', det: '500 g', precio: 48000, ocasiones: CENAS },
-  { id: 'm-burrata', img: 'photo-1649400454485-b8ad827f929d', ic: '🧀', nombre: 'Burratas con tomates confitados', det: '2 unidades con pesto', precio: 22000, ocasiones: CENAS },
-  { id: 'm-empanadas', img: 'photo-1624128082323-beb6b8b508db', ic: '🥟', nombre: 'Empanadas de carne cortada a cuchillo', det: '12 unidades, para hornear', precio: 28000, ocasiones: CENAS },
-  { id: 'm-rusa', img: 'photo-1593895648796-9139c6bee45c', ic: '🥗', nombre: 'Ensalada rusa de chef', det: '1 kg', precio: 16000, ocasiones: CENAS },
-  { id: 'm-papas', img: 'photo-1633959639799-6d3f66e05710', ic: '🥔', nombre: 'Papas confitadas al romero', det: '1 kg, para regenerar', precio: 18000, ocasiones: CENAS },
+  { id: 'm-pionono', img: 'photo-1676300187437-f09c6397a959', ic: '🥖', nombre: 'Pionono salado', det: 'Jamón crudo, rúcula y queso · 8 porciones', precio: 26000 },
+  { id: 'm-lomo', img: 'photo-1504973960431-1c467e159aa4', ic: '🍷', nombre: 'Lomo al Malbec', det: '1 kg, con chimichurri', precio: 72000 },
+  { id: 'm-matambre', img: 'photo-1629213911949-471e4063a566', ic: '🥩', nombre: 'Matambre arrollado', det: '1 kg, laminado', precio: 38000 },
+  { id: 'm-langostinos', img: 'photo-1691201659377-978b28daa417', ic: '🦐', nombre: 'Langostinos con mayo de lima', det: '500 g', precio: 48000 },
+  { id: 'm-burrata', img: 'photo-1649400454485-b8ad827f929d', ic: '🧀', nombre: 'Burratas con tomates confitados', det: '2 unidades con pesto', precio: 22000 },
+  { id: 'm-empanadas', img: 'photo-1624128082323-beb6b8b508db', ic: '🥟', nombre: 'Empanadas de carne cortada a cuchillo', det: '12 unidades, para hornear', precio: 28000 },
+  { id: 'm-rusa', img: 'photo-1593895648796-9139c6bee45c', ic: '🥗', nombre: 'Ensalada rusa de chef', det: '1 kg', precio: 16000 },
+  { id: 'm-papas', img: 'photo-1633959639799-6d3f66e05710', ic: '🥔', nombre: 'Papas confitadas al romero', det: '1 kg, para regenerar', precio: 18000 },
   { id: 'm-pavlova', img: 'photo-1624300603538-1207400f4116', ic: '🍓', nombre: 'Pavlova de frutos rojos', det: '8 porciones', precio: 36000 },
   { id: 'm-tiramisu', img: 'photo-1702744998351-090b3ee4e976', ic: '☕', nombre: 'Tiramisú', det: '8 porciones', precio: 34000 },
   { id: 'm-pandulce', img: 'photo-1762304887845-0eef96543910', ic: '🍞', nombre: 'Pan dulce de autor', det: '1 kg', precio: 29000, ocasiones: ['navidad', 'anio_nuevo'] },
@@ -758,7 +757,7 @@ document.getElementById('cuando').addEventListener('click', e => {
 document.getElementById('ocasiones').addEventListener('click', e => {
   const b = e.target.closest('.fz'); if (!b || b.disabled) return;
   const prev = st.ocasion; st.ocasion = b.dataset.k; if (prev !== st.ocasion) { st.franja = null; calMes = null; document.getElementById('cuando').dataset.mes = ''; if (temporada(st.ocasion) || (prev && temporada(prev))) st.fecha = null; }
-  st.carrito = st.carrito.filter(x => { const c = CAJAS.find(y => y.id === x.id) || MERCADITO.find(y => y.id === x.id); return c && enCaja(c, st.ocasion); });
+  st.carrito = st.carrito.filter(x => { const c = CAJAS.find(y => y.id === x.id); return c ? enCaja(c, st.ocasion) : MERCADITO.some(y => y.id === x.id); });
   guardar(); pintarOcasiones(); pintarCuando(); pintarCatalogo(); pintarRes(); track('cajas_ocasion', { ocasion: st.ocasion });
 });
 
@@ -781,7 +780,7 @@ function pintarCatalogo() {
   const grupos = [...new Set(lista.map(c => c.grupo))];
   document.getElementById('catalogo').innerHTML = (oc ? '' : '<p class="sub" style="margin:0 0 6px">Elegí la ocasión arriba para ver las cajas pensadas para esa noche.</p>') +
     grupos.map(g => `<div class="cat-h"><h3>${g}</h3></div><div class="cajas">${lista.filter(c => c.grupo === g).map(cajaHTML).join('')}</div>`).join('');
-  document.getElementById('merc').innerHTML = MERCADITO.filter(m => !oc ? true : enCaja(m, oc)).map(m => {
+  document.getElementById('merc').innerHTML = MERCADITO.map(m => {
     const it = st.carrito.find(x => x.id === m.id), n = it ? it.cant : 0;
     return `<div class="mi${n ? ' en' : ''}">
       <div class="ph"><img src="${U(m.img, 600, 480)}" alt="${m.nombre}" loading="lazy">
@@ -965,7 +964,7 @@ function fotoDe(x) {
 }
 /* "¿Algún antojo de último momento?": lo del mercadito que todavía no está en el carrito, de lo más chico a lo más grande */
 function antojos(cls) {
-  const sug = MERCADITO.filter(m => (st.ocasion ? enCaja(m, st.ocasion) : !(m.ocasiones && m.ocasiones.every(k => OCASIONES[k] && OCASIONES[k].fecha))) && !st.carrito.some(x => x.id === m.id)).sort((a, b) => a.precio - b.precio).slice(0, 8);
+  const sug = MERCADITO.filter(m => !st.carrito.some(x => x.id === m.id)).sort((a, b) => a.precio - b.precio).slice(0, 8);
   if (!sug.length) return '';
   return `<div class="ant ${cls || ''}"><b>¿Algún antojo de último momento?</b><small>Sumalo a tu caja con un toque.</small><div class="ant-r">${sug.map(m => `<div class="ant-c"><img src="${U(m.img, 320, 220)}" alt="" loading="lazy"><div><b>${m.nombre}</b><small>${m.det}</small></div><button type="button" data-m="${m.id}" data-d="1" aria-label="Agregar ${m.nombre}">${f$(m.precio)} +</button></div>`).join('')}</div></div>`;
 }
