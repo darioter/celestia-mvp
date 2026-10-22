@@ -3214,7 +3214,7 @@ function renderFiestas() {
     const col = { pendiente: '#E2A33E', sena_cobrada: '#5DBF87', en_produccion: '#8EC5E8', entregado: 'rgba(250,246,239,.4)', cancelado: '#c46a6a' }[p.estado] || '#fff';
     return `<div class="caso-card" style="border-left:3px solid ${col};">
       <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:baseline;justify-content:space-between;">
-        <div><b style="font-size:16px;">${escapeHtmlCaso(p.nombre)}</b> <span style="color:rgba(250,246,239,.5);font-size:12px;">${escapeHtmlCaso(p.ref)} · ${({ navidad: '🎄 Navidad', anio_nuevo: '🥂 Año Nuevo', romantica: '❤️ Cena romántica', cumple: '🎂 Cumpleaños', amigos: '🍽️ Cena con amigos' })[p.ocasion] || escapeHtmlCaso(p.ocasion || '')}</span></div>
+        <div><b style="font-size:16px;">${escapeHtmlCaso(p.nombre)}</b> <span style="color:rgba(250,246,239,.5);font-size:12px;">${escapeHtmlCaso(p.ref)} · ${({ navidad: '🎄 Navidad', anio_nuevo: '🥂 Año Nuevo', romantica: '❤️ Cena romántica', cumple: '🎂 Cumpleaños', merienda: '☕ Merienda con amigas', amigos: '🍽️ Cena con amigos' })[p.ocasion] || escapeHtmlCaso(p.ocasion || '')}</span></div>
         <div style="color:var(--gold);font-weight:600;">🚚 ${fxFecha(p.entrega_fecha)} · ${escapeHtmlCaso(p.entrega_franja || '')}</div>
       </div>
       <div style="font-size:13px;color:rgba(250,246,239,.75);margin:8px 0;">📍 ${escapeHtmlCaso(p.dir || '')} · CP ${escapeHtmlCaso(p.cp || '')} · ${escapeHtmlCaso(p.zona || '')}${p.email ? ' · ' + escapeHtmlCaso(p.email) : ''}</div>
@@ -3231,7 +3231,7 @@ function renderFiestas() {
 /* ───────── Carritos (abandonos y recuperación) ───────── */
 let todosCarritos = [], cxFiltro = 'recuperar';
 const CX_ABANDONO_MS = 2 * 3600e3;
-const OC_NOM = { navidad: '🎄 Navidad', anio_nuevo: '🥂 Año Nuevo', romantica: '❤️ Cena romántica', cumple: '🎂 Cumpleaños', amigos: '🍽️ Cena con amigos' };
+const OC_NOM = { navidad: '🎄 Navidad', anio_nuevo: '🥂 Año Nuevo', romantica: '❤️ Cena romántica', cumple: '🎂 Cumpleaños', merienda: '☕ Merienda con amigas', amigos: '🍽️ Cena con amigos' };
 document.querySelector('#seccion-fiestas .fx-tabs').addEventListener('click', e => {
   const b = e.target.closest('.fx-tab'); if (!b) return;
   document.querySelectorAll('#seccion-fiestas .fx-tabs .fx-tab').forEach(x => x.classList.toggle('on', x === b));
