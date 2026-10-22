@@ -258,6 +258,33 @@ section{padding:70px 0}
 @keyframes rgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @media(max-width:900px){.rg-tips{grid-template-columns:1fr 1fr}.rg-list{grid-template-columns:1fr}}
 @media(max-width:600px){.rg-it{grid-template-columns:42px 1fr;padding:11px 12px}.rg-it .t{width:42px;height:42px}.rg-it em{grid-column:2;justify-self:start}}
+
+/* Hero más compacto */
+.hx-in{grid-template-columns:1.25fr .9fr}
+.hx-vis{aspect-ratio:4/5;max-width:420px;justify-self:center;width:100%}
+/* Mercadito v3 */
+.merc{grid-template-columns:repeat(auto-fill,minmax(210px,1fr));grid-auto-rows:auto;gap:16px}
+.mi{display:flex;flex-direction:column;padding:0;min-height:0;border-radius:20px;overflow:hidden;background:#fff;border:1px solid var(--crd)}
+.mi .ph{position:relative;aspect-ratio:1/1;margin:0;overflow:hidden;background:var(--nv)}
+.mi .ph img{width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.mi:hover .ph img{transform:scale(1.08)}
+.mi .ph::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,27,42,0) 40%,rgba(13,27,42,.88) 100%)}
+.mi .tx{position:absolute;left:0;right:0;bottom:0;padding:14px 14px 12px;z-index:1}
+.mi .tx b{display:block;font-family:'DM Serif Display',serif;font-weight:400;font-size:21px;line-height:1.12;color:#fff;margin:0;min-height:0;-webkit-line-clamp:2}
+.mi .tx small{display:block;color:rgba(250,246,239,.78);font-size:12.5px;margin:3px 0 0}
+.mi .pr{position:absolute;top:12px;left:12px;z-index:1;background:rgba(250,246,239,.95);color:var(--nv);font-weight:600;font-size:14px;border-radius:999px;padding:5px 11px;box-shadow:0 4px 12px rgba(0,0,0,.15)}
+.mi .badge{z-index:1;top:12px;right:12px;background:rgba(201,168,76,.95);color:var(--nv)}
+.mi-add{margin:12px;border:1.5px solid var(--gd);background:#fff;color:var(--nv);border-radius:999px;padding:10px 14px;font:600 14px 'DM Sans',sans-serif;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background .2s,color .2s}
+.mi-add span{width:24px;height:24px;border-radius:50%;background:var(--gd);color:var(--nv);display:inline-flex;align-items:center;justify-content:center;font-size:17px;line-height:1}
+.mi-add:hover{background:var(--gd)}
+.mi-add:hover span{background:var(--nv);color:var(--gdl)}
+.mi .qty.on{margin:12px;display:flex;justify-content:space-between;align-items:center;background:var(--nv);border:0;border-radius:999px;width:auto}
+.mi .qty.on button{width:40px;height:40px;color:var(--gdl);font-size:20px}
+.mi .qty.on span{font-size:13.5px;color:var(--cr);font-weight:500;animation:pop .35s ease}
+.mi.en{border-color:var(--gd);box-shadow:0 0 0 3px rgba(201,168,76,.18)}
+.mi b,.mi small,.mi .row{margin-left:0;margin-right:0}
+@media(max-width:900px){.hx-vis{max-width:340px;aspect-ratio:4/4.4}}
+@media(max-width:600px){.merc{grid-template-columns:1fr 1fr;gap:10px}.mi .tx{padding:10px}.mi .tx b{font-size:16.5px}.mi .tx small{font-size:11.5px}.mi .pr{font-size:12.5px;padding:4px 9px;top:8px;left:8px}.mi .badge{top:8px;right:8px;font-size:9.5px}.mi-add,.mi .qty.on{margin:8px}.mi-add{padding:8px 10px;font-size:13px}.mi .qty.on span{font-size:12px}.mi .qty.on button{width:34px;height:34px}}
 </style>
 </head><body data-no-tr>
 <header class="hdr"><a href="/" aria-label="Celestia Chef Privado"><img src="/img/img-d316320d6b.webp" alt="Celestia Chef Privado"></a>
@@ -274,10 +301,9 @@ section{padding:70px 0}
   <div class="hx-vis" aria-hidden="true">
     <div class="hx-glow"></div>
     <div class="hx-sl on" style="background-image:url('/img/cajas/caja-cerrada.webp')"><span>Cajas Celestia</span></div>
-    <div class="hx-sl" style="background-image:url('/img/cajas/celestia.webp')"><span>Cena Celestia</span></div>
-    <div class="hx-sl" style="background-image:url('/img/cajas/tradicion.webp')"><span>Cena Tradición</span></div>
-    <div class="hx-sl" style="background-image:url('/img/cajas/bocados.webp')"><span>Bocados y picada</span></div>
-    <div class="hx-sl" style="background-image:url('/img/cajas/dulce.webp')"><span>Mesa dulce</span></div>
+    <div class="hx-sl" style="background-image:url('https://images.unsplash.com/photo-1581954548122-4dff8989c0f7?w=900&h=1100&fit=crop&q=72&auto=format')"><span>Cena con amigos</span></div>
+    <div class="hx-sl" style="background-image:url('https://images.unsplash.com/photo-1578496780896-7081cc23c111?w=900&h=1100&fit=crop&q=72&auto=format')"><span>En familia</span></div>
+    <div class="hx-sl" style="background-image:url('https://images.unsplash.com/photo-1576867757603-05b134ebc379?w=900&h=1100&fit=crop&q=72&auto=format')"><span>Para compartir</span></div>
     <div class="hx-dots"></div>
     <div class="hx-badge b1">🍽️ Listo para servir</div><div class="hx-badge b2">🚚 Llega el día del evento</div>
   </div>
@@ -300,7 +326,7 @@ section{padding:70px 0}
   <span class="k">✦ Cómo llega a tu casa</span>
   <h2 class="sh">Un banquete en caja, <em>listo para servir</em></h2>
   <p class="sub">No es comida al vacío ni congelada: se elabora para tu evento con producto fresco, se enfría rápido y se envasa en recipientes aptos para horno o para servir. Llega el mismo día del evento, lo guardás en la heladera y lo regenerás en minutos.</p>
-  <div class="como-g"><div class="como-img rv"><img src="/img/cajas/caja-abierta.webp" alt="Caja Celestia abierta con los recipientes" loading="lazy"></div>
+  <div class="como-g"><div class="como-img rv"><img src="https://images.unsplash.com/photo-1592417817038-d13fd7342605?w=800&h=1000&fit=crop&q=72&auto=format" alt="Mesa servida para compartir" loading="lazy"></div>
   <div class="pasos3">
     <div class="p3"><i>🗓️</i><b>Pedís con tiempo</b><p>Con al menos 48 horas de anticipación (las fiestas tienen fecha de cierre). Reservás con una seña del 50%.</p></div>
     <div class="p3"><i>👨‍🍳</i><b>Elaboro tu caja</b><p>Con producto fresco, comprado para tu pedido. Cada preparación se enfría rápido para conservar textura y sabor.</p></div>
@@ -356,7 +382,7 @@ section{padding:70px 0}
     <details><summary>¿Puedo cambiar o cancelar el pedido?</summary><p>Podés cambiar el menú o la cantidad de personas hasta 72 horas antes de la entrega. La seña confirma tu fecha y no es reembolsable, porque la mercadería se compra para tu pedido.</p></details>
     <details><summary>¿Y si prefiero que cocines en mi casa?</summary><p>También se puede: mirá las <a href="/">experiencias de chef privado</a>, con el servicio completo en tu mesa.</p></details>
   </div>
-  <p class="cred">Fotos de las cajas y del mercadito: imágenes ilustrativas. Fotos de referencia: Zoe, Myriam Zilles, Tomáš Vydržal, American Heritage Chocolate, Priscilla Du Preez, krakenimages, Hailey Tong, Kelsey Chance, We The Creators, blackieshoot · Unsplash</p>
+  <p class="cred">Imagen de la caja: ilustrativa. Fotos de referencia: Zoe, Myriam Zilles, Tomáš Vydržal, American Heritage Chocolate, Priscilla Du Preez, Sebastian Coman, National Cancer Institute, Spencer Davis, Luisa Brimble, krakenimages, Hailey Tong, Kelsey Chance, We The Creators, blackieshoot, José Ignacio Pompé, Orkun Orcan, Jason Leung, Wesual Click, sheri silver, Paras Kapoor, Anton, Egidijus Bielskis, Markus Winkler, Deborah Rainford, Serghey Savchuk, Lee Milo, Vered Caspi, Brett Jordan · Unsplash</p>
 </div></section>
 
 <div class="flot" id="flot"><span id="flot-t"></span><a class="btn" href="#pedido">Ver pedido</a></div>
@@ -415,20 +441,20 @@ const CAJAS = [
     menu: [['Sabores', 'Chajá (merengue, durazno y dulce de leche) · Selva negra · Rogel · Lemon pie']] }
 ];
 const MERCADITO = [
-  { id: 'm-vitel', img: '/img/cajas/m/vitel.webp', ic: '🥩', nombre: 'Vitel toné', det: 'Para 6 personas', precio: 46000, ocasiones: ['navidad', 'anio_nuevo'] },
-  { id: 'm-pionono', img: '/img/cajas/m/pionono.webp', ic: '🥖', nombre: 'Pionono salado', det: 'Jamón crudo, rúcula y queso · 8 porciones', precio: 28000 },
-  { id: 'm-lomo', img: '/img/cajas/m/lomo.webp', ic: '🍷', nombre: 'Lomo al Malbec', det: '1 kg, con chimichurri', precio: 78000 },
-  { id: 'm-matambre', img: '/img/cajas/m/matambre.webp', ic: '🥩', nombre: 'Matambre arrollado', det: '1 kg, laminado', precio: 42000 },
-  { id: 'm-langostinos', img: '/img/cajas/m/langostinos.webp', ic: '🦐', nombre: 'Langostinos con mayo de lima', det: '500 g', precio: 54000 },
-  { id: 'm-burrata', img: '/img/cajas/m/burrata.webp', ic: '🧀', nombre: 'Burratas con tomates confitados', det: '2 unidades con pesto', precio: 24000 },
-  { id: 'm-empanadas', img: '/img/cajas/m/empanadas.webp', ic: '🥟', nombre: 'Empanadas de carne cortada a cuchillo', det: '12 unidades, para hornear', precio: 30000 },
-  { id: 'm-rusa', img: '/img/cajas/m/rusa.webp', ic: '🥗', nombre: 'Ensalada rusa de chef', det: '1 kg', precio: 16000 },
-  { id: 'm-papas', img: '/img/cajas/m/papas.webp', ic: '🥔', nombre: 'Papas confitadas al romero', det: '1 kg, para regenerar', precio: 18000 },
-  { id: 'm-pavlova', img: '/img/cajas/m/pavlova.webp', ic: '🍓', nombre: 'Pavlova de frutos rojos', det: '8 porciones', precio: 42000 },
-  { id: 'm-tiramisu', img: '/img/cajas/m/tiramisu.webp', ic: '☕', nombre: 'Tiramisú', det: '8 porciones', precio: 38000 },
-  { id: 'm-pandulce', img: '/img/cajas/m/pandulce.webp', ic: '🍞', nombre: 'Pan dulce de autor', det: '1 kg', precio: 32000, ocasiones: ['navidad', 'anio_nuevo'] },
-  { id: 'm-turron', img: '/img/cajas/m/turron.webp', ic: '🍯', nombre: 'Turrón de almendras y miel', det: '300 g', precio: 15000, ocasiones: ['navidad', 'anio_nuevo'] },
-  { id: 'm-garrapinada', img: '/img/cajas/m/garrapinada.webp', ic: '🥜', nombre: 'Garrapiñada', det: '250 g', precio: 8000, ocasiones: ['navidad', 'anio_nuevo'] }
+  { id: 'm-vitel', img: 'photo-1529694157872-4e0c0f3b238b', ic: '🥩', nombre: 'Vitel toné', det: 'Para 6 personas', precio: 46000, ocasiones: ['navidad', 'anio_nuevo'] },
+  { id: 'm-pionono', img: 'photo-1676300187437-f09c6397a959', ic: '🥖', nombre: 'Pionono salado', det: 'Jamón crudo, rúcula y queso · 8 porciones', precio: 28000 },
+  { id: 'm-lomo', img: 'photo-1504973960431-1c467e159aa4', ic: '🍷', nombre: 'Lomo al Malbec', det: '1 kg, con chimichurri', precio: 78000 },
+  { id: 'm-matambre', img: 'photo-1547050605-2f268cd5daf0', ic: '🥩', nombre: 'Matambre arrollado', det: '1 kg, laminado', precio: 42000 },
+  { id: 'm-langostinos', img: 'photo-1691201659377-978b28daa417', ic: '🦐', nombre: 'Langostinos con mayo de lima', det: '500 g', precio: 54000 },
+  { id: 'm-burrata', img: 'photo-1649400454485-b8ad827f929d', ic: '🧀', nombre: 'Burratas con tomates confitados', det: '2 unidades con pesto', precio: 24000 },
+  { id: 'm-empanadas', img: 'photo-1624128082323-beb6b8b508db', ic: '🥟', nombre: 'Empanadas de carne cortada a cuchillo', det: '12 unidades, para hornear', precio: 30000 },
+  { id: 'm-rusa', img: 'photo-1593895648796-9139c6bee45c', ic: '🥗', nombre: 'Ensalada rusa de chef', det: '1 kg', precio: 16000 },
+  { id: 'm-papas', img: 'photo-1633959639799-6d3f66e05710', ic: '🥔', nombre: 'Papas confitadas al romero', det: '1 kg, para regenerar', precio: 18000 },
+  { id: 'm-pavlova', img: 'photo-1624300603538-1207400f4116', ic: '🍓', nombre: 'Pavlova de frutos rojos', det: '8 porciones', precio: 42000 },
+  { id: 'm-tiramisu', img: 'photo-1702744998351-090b3ee4e976', ic: '☕', nombre: 'Tiramisú', det: '8 porciones', precio: 38000 },
+  { id: 'm-pandulce', img: 'photo-1762304887845-0eef96543910', ic: '🍞', nombre: 'Pan dulce de autor', det: '1 kg', precio: 32000, ocasiones: ['navidad', 'anio_nuevo'] },
+  { id: 'm-turron', img: 'photo-1589210191580-09ec1d559aa0', ic: '🍯', nombre: 'Turrón de almendras y miel', det: '300 g', precio: 15000, ocasiones: ['navidad', 'anio_nuevo'] },
+  { id: 'm-garrapinada', img: 'photo-1648473546534-a1941a4ae9a3', ic: '🥜', nombre: 'Garrapiñada', det: '250 g', precio: 8000, ocasiones: ['navidad', 'anio_nuevo'] }
 ];
 /* Envío por código postal (parte numérica). Zona 1: CABA · Zona 2: GBA cercano · Zona 3: GBA más lejos */
 const ENVIO = { z1: 12000, z2: 16000, z3: 22000 };
@@ -516,8 +542,13 @@ function pintarCatalogo() {
     grupos.map(g => `<div class="cat-h"><h3>${g}</h3></div><div class="cajas">${lista.filter(c => c.grupo === g).map(cajaHTML).join('')}</div>`).join('');
   document.getElementById('merc').innerHTML = MERCADITO.filter(m => !oc ? true : enCaja(m, oc)).map(m => {
     const it = st.carrito.find(x => x.id === m.id), n = it ? it.cant : 0;
-    return `<div class="mi${n ? ' en' : ''}">${m.ocasiones ? '<span class="badge">Fiestas</span>' : ''}<span class="ph"><img src="${m.img}" alt="${m.nombre}" loading="lazy"></span><b>${m.nombre}</b><small>${m.det}</small>
-      <div class="row"><strong>${f$(m.precio)}</strong><span class="qty${n ? ' on' : ''}"><button type="button" data-m="${m.id}" data-d="-1" aria-label="Quitar">−</button><span>${n}</span><button type="button" data-m="${m.id}" data-d="1" aria-label="Sumar">+</button></span></div></div>`;
+    return `<div class="mi${n ? ' en' : ''}">
+      <div class="ph"><img src="${U(m.img, 600, 480)}" alt="${m.nombre}" loading="lazy">
+        <span class="pr">${f$(m.precio)}</span>${m.ocasiones ? '<span class="badge">Fiestas</span>' : ''}
+        <div class="tx"><b>${m.nombre}</b><small>${m.det}</small></div></div>
+      ${n ? `<div class="qty on"><button type="button" data-m="${m.id}" data-d="-1" aria-label="Quitar">−</button><span>${n} en tu pedido</span><button type="button" data-m="${m.id}" data-d="1" aria-label="Sumar">+</button></div>`
+          : `<button type="button" class="mi-add" data-m="${m.id}" data-d="1">Agregar <span>+</span></button>`}
+    </div>`;
   }).join('');
 }
 document.addEventListener('click', e => {
