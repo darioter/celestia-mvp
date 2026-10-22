@@ -131,6 +131,7 @@ section{padding:70px 0}
 .faq details[open] summary::after{content:'–'}
 .faq p{color:var(--mut);margin-top:8px;font-size:15px}
 .flot{position:fixed;left:50%;bottom:18px;transform:translateX(-50%) translateY(120px);z-index:40;background:var(--nv);color:var(--cr);border-radius:999px;padding:10px 12px 10px 20px;display:flex;align-items:center;gap:14px;box-shadow:0 12px 30px rgba(13,27,42,.35);transition:transform .3s;font-size:14px}
+.flot:not(.on){visibility:hidden;transition:transform .3s,visibility 0s .3s}
 .flot.on{transform:translateX(-50%) translateY(0)}
 .flot b{color:var(--gdl)}
 .flot .btn{padding:9px 16px;font-size:13.5px}
@@ -235,10 +236,32 @@ section{padding:70px 0}
 .mi b,.mi small,.mi .row{margin-left:16px;margin-right:16px}
 .mi .badge{z-index:2;top:10px;right:10px}
 @media(max-width:600px){.fiestas.oc .fz{min-height:170px;padding:14px}.fiestas.oc .fz b{font-size:19px}.fiestas.oc.impar .fz:last-child{min-height:150px}.mi{padding:0 0 12px}.mi b,.mi small,.mi .row{margin-left:12px;margin-right:12px}}
+
+/* Cómo regenerar */
+#regenerar{background:#fff}
+.rg-tips{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:26px 0 30px}
+.rg-tips div{background:var(--cr);border:1px solid var(--crd);border-radius:16px;padding:16px}
+.rg-tips i{font-style:normal;font-size:24px}
+.rg-tips b{display:block;color:var(--nv);margin:6px 0 2px;font-size:15px}
+.rg-tips span{color:var(--mut);font-size:13.5px;line-height:1.45}
+.rg-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.rg-tab{border:1.5px solid var(--crd);background:#fff;border-radius:999px;padding:9px 16px;font:500 14px 'DM Sans',sans-serif;color:var(--tx);cursor:pointer;transition:all .2s}
+.rg-tab:hover{border-color:var(--gd)}
+.rg-tab.on{background:var(--nv);border-color:var(--nv);color:var(--gdl)}
+.rg-list{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rg-it{display:grid;grid-template-columns:48px 1fr auto;gap:12px;align-items:center;background:var(--cr);border:1px solid var(--crd);border-radius:14px;padding:12px 14px;animation:rgIn .35s ease both}
+.rg-it .t{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.rg-it .t.frio{background:#e6f0f7}.rg-it .t.horno{background:#fbe6d4}.rg-it .t.armar{background:#f3ead6}
+.rg-it b{display:block;color:var(--nv);font-size:15px}
+.rg-it span{color:var(--mut);font-size:13.5px;line-height:1.4}
+.rg-it em{font-style:normal;font-weight:600;font-size:12.5px;white-space:nowrap;border-radius:999px;padding:5px 10px;background:#fff;border:1px solid var(--crd);color:var(--nv)}
+@keyframes rgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(max-width:900px){.rg-tips{grid-template-columns:1fr 1fr}.rg-list{grid-template-columns:1fr}}
+@media(max-width:600px){.rg-it{grid-template-columns:42px 1fr;padding:11px 12px}.rg-it .t{width:42px;height:42px}.rg-it em{grid-column:2;justify-self:start}}
 </style>
 </head><body data-no-tr>
 <header class="hdr"><a href="/" aria-label="Celestia Chef Privado"><img src="/img/img-d316320d6b.webp" alt="Celestia Chef Privado"></a>
-<nav><a href="#cajas">Cajas</a><a href="#mercadito">Mercadito</a><a href="#como">Cómo llega</a><a href="#faq">Preguntas</a><a class="cta" href="#pedido">Hacer mi pedido</a></nav></header>
+<nav><a href="#cajas">Cajas</a><a href="#mercadito">Mercadito</a><a href="#como">Cómo llega</a><a href="#regenerar">Cómo regenerar</a><a href="#faq">Preguntas</a><a class="cta" href="#pedido">Hacer mi pedido</a></nav></header>
 
 <section class="hero hx"><div class="hx-in">
   <div class="hx-tx">
@@ -286,6 +309,20 @@ section{padding:70px 0}
   </div></div>
 </div></section>
 
+<section id="regenerar"><div class="wrap">
+  <span class="k" style="color:#a08a5c">✦ Cómo regenerar tu caja</span>
+  <h2 class="sh">Del horno a la mesa <em>en minutos</em></h2>
+  <p class="sub">Cada caja trae esta guía impresa. Los tiempos son aproximados: cada horno es distinto, así que mirá el punto antes de servir.</p>
+  <div class="rg-tips">
+    <div><i>🔥</i><b>Precalentá a 180 °C</b><span>Unos 10 minutos antes de empezar.</span></div>
+    <div><i>❄️</i><b>Lo frío, 20 minutos afuera</b><span>Entradas, ensaladas y quesos ganan sabor a temperatura ambiente.</span></div>
+    <div><i>🍽️</i><b>Directo al horno</b><span>Los recipientes son aptos para horno: sacá la tapa y listo.</span></div>
+    <div><i>⏱️</i><b>Mismo día</b><span>Guardá todo en la heladera apenas llega y consumilo ese día.</span></div>
+  </div>
+  <div class="rg-tabs" id="rg-tabs"></div>
+  <div class="rg-list" id="rg-list"></div>
+</div></section>
+
 <section id="pedido"><div class="wrap">
   <div class="paso"><b>3</b> Tus datos y la entrega</div>
   <h2 class="sh">Hacé tu <em>pedido</em></h2>
@@ -311,6 +348,7 @@ section{padding:70px 0}
   <div class="faq">
     <details><summary>¿Con cuánta anticipación tengo que pedir?</summary><p id="faq-cierre"></p></details>
     <details><summary>¿Cómo llega la comida?</summary><p>Elaborada para tu evento con producto fresco, enfriada rápido y envasada en recipientes aptos para horno o para servir. No es al vacío ni congelada: está pensada para regenerar en tu horno o servir fría, según cada plato, y queda como recién hecha.</p></details>
+    <details><summary>¿Cómo se regenera?</summary><p>Precalentás el horno a 180 °C, sacás las tapas y calentás solo lo que va caliente, entre 8 y 20 minutos según el plato. Lo frío lo sacás de la heladera 20 minutos antes. Tenés la guía de cada caja más arriba, en <a href="#regenerar">Cómo regenerar tu caja</a>, y además viene impresa.</p></details>
     <details><summary>¿Cuánto dura en la heladera?</summary><p>Está pensada para consumir el mismo día del evento. Guardala en la heladera apenas la recibís y sacá lo que va frío 20 minutos antes de servir.</p></details>
     <details><summary>¿Cómo se paga?</summary><p>Con una seña del 50% por transferencia para confirmar el pedido. El resto lo abonás al recibirlo, por transferencia o en efectivo.</p></details>
     <details><summary>¿A qué zonas llegan?</summary><p>CABA y GBA. El costo de envío depende de tu código postal y lo ves antes de confirmar. Si estás fuera de la zona, hacé igual el pedido y te escribo para ver si llego y cuánto cuesta.</p></details>
@@ -609,6 +647,56 @@ function revelar() {
   document.querySelectorAll('.como-img.rv').forEach(el => _io ? _io.observe(el) : el.classList.add('vis'));
 }
 function bump() { const f = document.getElementById('flot'); f.classList.remove('bump'); void f.offsetWidth; f.classList.add('bump'); }
+
+/* ═════════ cómo regenerar ═════════ */
+const F = 'frio', H = 'horno', A = 'armar';
+const ICO = { frio: '❄️', horno: '🔥', armar: '🥄' };
+const REGENERAR = [
+  { k: 'cena-tradicion', n: 'Cena Tradición', it: [
+    [F, 'Vitel toné', 'Sacalo 20 minutos antes y napá con la salsa al servir.', 'Frío'],
+    [F, 'Pionono salado', 'Cortá en porciones con cuchillo húmedo.', 'Frío'],
+    [F, 'Matambre arrollado', 'Viene laminado: acomodalo en fuente.', 'Frío'],
+    [H, 'Pollo relleno', 'Tapado con papel aluminio. También va frío.', '180 °C · 12-15 min'],
+    [F, 'Ensalada rusa y hojas verdes', 'Aliñá las hojas al momento con el aderezo que viene aparte.', 'Frío'],
+    [F, 'Tiramisú', 'En la heladera hasta el momento de servir.', 'Frío'] ] },
+  { k: 'cena-celestia', n: 'Cena Celestia', it: [
+    [A, 'Burrata con tomates confitados', 'Sacala 20 minutos antes. Aceite de oliva, sal y pimienta al servir.', 'Ambiente'],
+    [F, 'Langostinos', 'La mayonesa de lima viene aparte: sumala al servir.', 'Frío'],
+    [H, 'Lomo al Malbec', 'Solo para entibiar y mantener el punto. Chimichurri al final.', '180 °C · 8 min'],
+    [H, 'Bondiola braseada', 'Tapada con su jugo; destapá los últimos 5 minutos.', '180 °C · 20 min'],
+    [H, 'Papas confitadas', 'Sin tapa, hasta que doren.', '200 °C · 15 min'],
+    [A, 'Pavlova', 'Armala al momento: crema sobre el merengue y frutos rojos arriba.', 'Armar'] ] },
+  { k: 'cena-casera', n: 'Cena de la casa', it: [
+    [H, 'Empanadas', 'Sobre placa, hasta que estén doradas.', '200 °C · 12-15 min'],
+    [F, 'Tabla de quesos y fiambres', 'Sacala 20 minutos antes.', 'Ambiente'],
+    [H, 'Ossobuco braseado', 'Tapado, con su salsa. También en olla a fuego bajo.', '180 °C · 25 min'],
+    [H, 'Pollo al limón', 'Con su jugo, sin tapa los últimos minutos.', '180 °C · 15-20 min'],
+    [H, 'Puré y vegetales', 'Puré en olla con un chorrito de leche, revolviendo; vegetales al horno.', '200 °C · 10 min'],
+    [F, 'Tiramisú', 'En la heladera hasta servir.', 'Frío'] ] },
+  { k: 'romantica', n: 'Cena romántica', it: [
+    [A, 'Burrata y langostinos', 'Sacalos 20 minutos antes; aceite de oliva y la mayonesa de lima al servir.', 'Ambiente'],
+    [H, 'Lomo al Malbec', 'Solo para entibiar. Servilo laminado con el jugo.', '180 °C · 8 min'],
+    [H, 'Papas confitadas', 'Sin tapa, hasta que doren.', '200 °C · 15 min'],
+    [H, 'Volcán de chocolate', 'Directo de la heladera al horno: el centro queda líquido. Servir enseguida.', '200 °C · 8-9 min'] ] },
+  { k: 'bocados', n: 'Bocados y picada', it: [
+    [A, 'Bruschettas', 'La base y el topping vienen aparte: armalas al momento para que estén crocantes.', 'Armar'],
+    [F, 'Tartaletas, brochettes y rolls', 'Listos para servir.', 'Frío'],
+    [H, 'Mini empanadas', 'Sobre placa.', '200 °C · 10 min'],
+    [H, 'Langostinos crocantes', 'Sobre rejilla o placa, para que no pierdan el crocante. Alioli aparte.', '200 °C · 8 min'],
+    [F, 'Picada', 'Sacala 20 minutos antes.', 'Ambiente'] ] },
+  { k: 'postres', n: 'Postres y mesa dulce', it: [
+    [F, 'Pavlova, tiramisú y torta', 'En la heladera hasta servir. La torta, 15 minutos afuera antes de cortar.', 'Frío'],
+    [A, 'Pan dulce, budín y turrón', 'A temperatura ambiente, bien tapados.', 'Ambiente'],
+    [F, 'Trufas y alfajores', 'En lugar fresco; las trufas, en la heladera.', 'Frío'] ] }
+];
+let rgSel = 0;
+function pintarRegenerar() {
+  document.getElementById('rg-tabs').innerHTML = REGENERAR.map((r, i) => `<button type="button" class="rg-tab${i === rgSel ? ' on' : ''}" data-i="${i}">${r.n}</button>`).join('');
+  document.getElementById('rg-list').innerHTML = REGENERAR[rgSel].it.map(([t, n, d, e], i) =>
+    `<div class="rg-it" style="animation-delay:${i * .05}s"><span class="t ${t}">${ICO[t]}</span><div><b>${n}</b><span>${d}</span></div><em>${e}</em></div>`).join('');
+}
+document.getElementById('rg-tabs').addEventListener('click', e => { const b = e.target.closest('.rg-tab'); if (!b) return; rgSel = +b.dataset.i; pintarRegenerar(); });
+pintarRegenerar();
 /* ocasión por URL: /cajas?ocasion=navidad */
 try { const q = new URLSearchParams(location.search).get('ocasion'); if (q && OCASIONES[q] && visible(q) && abierta(q)) { if (st.ocasion !== q) { st.ocasion = q; st.fecha = null; st.franja = null; } } } catch (e) {}
 if (st.ocasion && (!OCASIONES[st.ocasion] || !visible(st.ocasion) || !abierta(st.ocasion))) st.ocasion = null;
