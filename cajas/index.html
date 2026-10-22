@@ -395,6 +395,7 @@ section{padding:70px 0}
 .dr-eg .eg{margin:0}
 .res .eg{background:rgba(250,246,239,.07);border-radius:12px;padding:10px 12px;margin:0 0 10px}
 .ln.dsc span:last-child{color:#6cc495;font-weight:600}
+.eg.min i s{background:linear-gradient(90deg,#c98a4c,#e8b46a)}
 .dr-f .ln.dsc span:last-child{color:var(--verde)}
 .ln .gr{color:#6cc495;font-weight:600}.dr-f .ln .gr{color:var(--verde)}
 .cup{display:flex;gap:8px;margin:12px 0 4px}
@@ -522,6 +523,7 @@ section{padding:70px 0}
 <section id="faq" style="padding-top:20px"><div class="wrap">
   <h2 class="sh">Preguntas <em>frecuentes</em></h2>
   <div class="faq">
+    <details><summary>¿Hay una compra mínima?</summary><p>Sí, de $70.000 en productos (sin contar el envío). Y desde $250.000 el envío es gratis en CABA y GBA.</p></details>
     <details><summary>¿Con cuánta anticipación tengo que pedir?</summary><p id="faq-cierre"></p></details>
     <details><summary>¿Cómo llega la comida?</summary><p>Elaborada para tu evento con producto fresco, enfriada rápido y envasada en recipientes aptos para horno o para servir. No es al vacío ni congelada: está pensada para regenerar en tu horno o servir fría, según cada plato, y queda como recién hecha.</p></details>
     <details><summary>¿Cómo se regenera?</summary><p>Precalentás el horno a 180 °C, sacás las tapas y calentás solo lo que va caliente, entre 8 y 20 minutos según el plato. Lo frío lo sacás de la heladera 20 minutos antes. Tenés la guía de cada caja más arriba, en <a href="#regenerar">Cómo regenerar tu caja</a>, y además viene impresa.</p></details>
@@ -610,6 +612,8 @@ const MERCADITO = [
 const ENVIO = { z1: 12000, z2: 16000, z3: 22000 };
 /* Envío gratis desde este monto (subtotal con descuento), en CABA y GBA */
 const ENVIO_GRATIS_DESDE = 250000;
+/* Compra mínima (subtotal de productos con el descuento aplicado, sin envío) */
+const COMPRA_MINIMA = 70000;
 const Z2 = [[1602, 1609], [1636, 1659], [1672, 1688], [1700, 1759], [1800, 1879]];
 const Z3 = [[1600, 1899], [1900, 1999]];
 const WA = '5491160410607', ALIAS = 'daro.chef';
@@ -799,6 +803,7 @@ function totales() {
 }
 function barraEnvio(t) {
   if (!t.sub) return '';
+  if (t.base < COMPRA_MINIMA) { const pm = Math.max(4, t.base / COMPRA_MINIMA * 100); return `<div class="eg min"><span>🧺 La compra mínima es de <b>${f$(COMPRA_MINIMA)}</b>: te faltan <b>${f$(COMPRA_MINIMA - t.base)}</b></span><i><s style="width:${pm}%"></s></i></div>`; }
   const falta = ENVIO_GRATIS_DESDE - t.base, pct = Math.max(4, Math.min(100, t.base / ENVIO_GRATIS_DESDE * 100));
   return `<div class="eg${falta <= 0 ? ' ok' : ''}"><span>${falta <= 0 ? '🎉 ¡Tenés <b>envío gratis</b>!' : '🚚 Te faltan <b>' + f$(falta) + '</b> para tener <b>envío gratis</b>'}</span><i><s style="width:${pct}%"></s></i></div>`;
 }
@@ -833,6 +838,7 @@ function faltan() {
   const v = id => document.getElementById(id).value.trim(), out = [];
   if (!st.ocasion) out.push('elegí la ocasión'); else if (!fechaOK()) out.push('elegí la fecha'); else if (!st.franja) out.push('elegí la franja de entrega');
   if (!st.carrito.length) out.push('sumá al menos una caja');
+  else { const b = totales().base; if (b < COMPRA_MINIMA) out.push('la compra mínima es de ' + f$(COMPRA_MINIMA) + ' (te faltan ' + f$(COMPRA_MINIMA - b) + ')'); }
   if (!zonaCP(v('f-cp'))) out.push('código postal'); if (v('f-dir').length < 5) out.push('dirección');
   if (v('f-nom').length < 3) out.push('nombre'); if (v('f-tel').replace(/\D/g, '').length < 8) out.push('WhatsApp');
   return out;
@@ -958,7 +964,7 @@ function pintarCarrito() {
     <div class="ln"><span>Envío</span><span>${envioTxt(t).replace('según tu CP', 'según tu código postal')}</span></div>
     <div class="tot"><span>Total</span><b>${f$(t.tot)}</b></div>
     <small class="dr-sena">Reservás con el 50%: ${f$(t.sena)} · el resto al recibir</small>
-    <a class="btn" href="#pedido" data-cerrar>Finalizar pedido →</a>
+    ${t.base < COMPRA_MINIMA ? `<button type="button" class="btn" disabled style="opacity:.5;cursor:not-allowed">Compra mínima ${f$(COMPRA_MINIMA)}</button>` : `<a class="btn" href="#pedido" data-cerrar>Finalizar pedido →</a>`}
     <button type="button" class="btn sec" data-cerrar>Seguir comprando</button>` : '';
 }
 document.getElementById('cart-btn').addEventListener('click', abrirCarrito);
