@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Seguí tu pedido · Cajas Celestia</title>
+<meta name="description" content="Consultá el estado de tu pedido de Cajas Celestia.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="/favicom.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--nv:#0D1B2A;--gd:#C9A84C;--gdl:#E8C96A;--cr:#FAF6EF;--crd:#EDE6D8;--tx:#2a2a3a;--mut:#6b6b6b;--verde:#2F5D46}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--cr);color:var(--tx);font-family:'DM Sans',sans-serif;line-height:1.55;min-height:100vh}
+a{color:inherit}
+.hdr{background:var(--nv);display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:64px}
+.hdr img{height:30px}
+.hdr a.v{color:rgba(250,246,239,.75);font-size:14px;text-decoration:none}
+.wrap{max-width:720px;margin:0 auto;padding:44px 20px 70px}
+.k{display:inline-block;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#a08a5c;margin-bottom:10px}
+h1{font-family:'DM Serif Display',serif;font-weight:400;font-size:clamp(32px,6vw,46px);line-height:1.08;color:var(--nv)}
+h1 em{color:var(--gd)}
+.sub{color:var(--mut);margin:10px 0 26px}
+.card{background:#fff;border:1px solid var(--crd);border-radius:22px;padding:24px;box-shadow:0 18px 40px rgba(13,27,42,.06)}
+form.card{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}
+label{font-size:12px;color:var(--mut);display:flex;flex-direction:column;gap:6px}
+input{border:1px solid var(--crd);border-radius:12px;padding:12px 14px;font:500 15px 'DM Sans',sans-serif;background:var(--cr);color:var(--nv);width:100%}
+input:focus{outline:2px solid var(--gd);outline-offset:1px}
+.btn{display:inline-flex;align-items:center;justify-content:center;border:0;cursor:pointer;background:linear-gradient(135deg,var(--gd),var(--gdl));color:var(--nv);font:600 15px 'DM Sans',sans-serif;padding:13px 22px;border-radius:999px;text-decoration:none}
+.err{color:#a04a3a;font-size:14px;margin-top:12px;min-height:1px}
+.mis{margin-top:22px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px;color:var(--mut)}
+.mis button{border:1px solid var(--crd);background:#fff;border-radius:999px;padding:7px 14px;font:600 13px 'DM Sans',sans-serif;color:var(--nv);cursor:pointer}
+#res{margin-top:26px}
+.top{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:baseline}
+.top h2{font-family:'DM Serif Display',serif;font-weight:400;font-size:28px;color:var(--nv)}
+.top span{color:var(--mut);font-size:13px}
+.ent{margin:14px 0 22px;background:var(--nv);color:var(--cr);border-radius:16px;padding:14px 18px;display:flex;gap:14px;align-items:center}
+.ent i{font-style:normal;font-size:26px}.ent b{display:block;color:var(--gdl);font-size:17px}.ent small{opacity:.75}
+.tl{list-style:none;position:relative;margin:4px 0 24px}
+.tl li{position:relative;padding:0 0 20px 40px}
+.tl li:before{content:'';position:absolute;left:13px;top:26px;bottom:-2px;width:2px;background:var(--crd)}
+.tl li:last-child:before{display:none}
+.tl li.ok:before{background:var(--gd)}
+.tl .d{position:absolute;left:0;top:0;width:28px;height:28px;border-radius:50%;border:2px solid var(--crd);background:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff}
+.tl li.ok .d{background:var(--gd);border-color:var(--gd)}
+.tl li.ya .d{border-color:var(--gd);box-shadow:0 0 0 5px rgba(201,168,76,.18);animation:pu 1.8s infinite}
+@keyframes pu{50%{box-shadow:0 0 0 9px rgba(201,168,76,.05)}}
+.tl b{display:block;color:var(--nv)}.tl small{color:var(--mut);font-size:13px}
+.tl li:not(.ok):not(.ya) b{color:#9a9a9a}
+.items{border-top:1px dashed var(--crd);padding-top:14px}
+.items div{display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:5px 0}
+.items .t{border-top:1px solid var(--crd);margin-top:8px;padding-top:10px;font-weight:600;color:var(--nv)}
+.items .t b{font-family:'DM Serif Display',serif;font-weight:400;font-size:24px}
+.cancel{background:#fbeeee;border:1px solid #e8c4c4;border-radius:14px;padding:14px 16px;color:#7a3434;margin-bottom:18px}
+.wa{display:inline-flex;margin-top:18px;background:#25D366;color:#fff;border-radius:999px;padding:12px 20px;font-weight:600;text-decoration:none;font-size:14px}
+.otra{display:inline-block;margin:18px 0 0 14px;font-size:14px;color:#8a7136;font-weight:600}
+@media(max-width:600px){form.card{grid-template-columns:1fr}.btn{width:100%}.wrap{padding-top:30px}}
+</style>
+</head><body>
+<header class="hdr"><a href="/" aria-label="Celestia Chef Privado"><img src="/img/img-d316320d6b.webp" alt="Celestia Chef Privado"></a><a class="v" href="/cajas">← Volver a Cajas</a></header>
+<main class="wrap">
+  <span class="k">✦ Cajas Celestia</span>
+  <h1>Seguí tu <em>pedido</em></h1>
+  <p class="sub">Ingresá el código del pedido (empieza con CJ-) y los últimos 4 números de tu WhatsApp.</p>
+  <form class="card" id="fm" autocomplete="off">
+    <label>Código del pedido<input id="ref" placeholder="CJ-XXXXXXX" required maxlength="20"></label>
+    <label>Últimos 4 de tu WhatsApp<input id="tel" inputmode="numeric" placeholder="1234" required maxlength="4" pattern="[0-9]{4}"></label>
+    <button class="btn" type="submit">Ver estado</button>
+  </form>
+  <div class="err" id="err"></div>
+  <div class="mis" id="mis" hidden></div>
+  <div id="res"></div>
+</main>
+<script>
+const SUPA = { url: 'https://qolpnuscpmzqeacshfvu.supabase.co', key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvbHBudXNjcG16cWVhY3NoZnZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NjQ3OTQsImV4cCI6MjA5MTM0MDc5NH0.BJOz5Gwkeb1NqID_gkGKD5YlymifMtOwaf8iQMaBCx8' };
+const WA = '5491160410607', ALIAS = 'daro.chef';
+const OC = { navidad: ['🎄', 'Navidad'], anio_nuevo: ['🥂', 'Año Nuevo'], romantica: ['❤️', 'Cena romántica'], cumple: ['🎂', 'Cumpleaños'], amigos: ['🍽️', 'Cena con amigos'] };
+const PASOS = [
+  ['pendiente', 'Pedido recibido', 'Lo recibimos con todos tus datos.'],
+  ['sena_cobrada', 'Seña acreditada', 'Tu fecha quedó reservada.'],
+  ['en_produccion', 'En la cocina', 'Estamos comprando y cocinando para tu caja.'],
+  ['entregado', 'Entregado', '¡Que lo disfruten!']
+];
+const f$ = n => '$' + Math.round(n || 0).toLocaleString('es-AR');
+const esc = v => String(v ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+const fechaLarga = f => { const t = new Date(String(f).slice(0, 10) + 'T12:00:00').toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' }); return t.charAt(0).toUpperCase() + t.slice(1); };
+let mios = []; try { mios = JSON.parse(localStorage.getItem('cel_cajas_pedidos') || '[]'); } catch (e) {}
+if (mios.length) {
+  const M = document.getElementById('mis'); M.hidden = false;
+  M.innerHTML = '<span>Tus pedidos en este celular:</span>' + mios.map((p, i) => `<button type="button" data-i="${i}">${esc(p.ref)}${OC[p.ocasion] ? ' ' + OC[p.ocasion][0] : ''}</button>`).join('');
+  M.addEventListener('click', e => { const b = e.target.closest('[data-i]'); if (!b) return; const p = mios[+b.dataset.i]; document.getElementById('ref').value = p.ref; document.getElementById('tel').value = p.tel; buscar(); });
+}
+async function buscar() {
+  const ref = document.getElementById('ref').value.trim().toUpperCase(), tel = document.getElementById('tel').value.replace(/\D/g, '');
+  const E = document.getElementById('err'), R = document.getElementById('res'); E.textContent = '';
+  if (!/^CJ-[A-Z0-9]{4,}$/.test(ref) || tel.length !== 4) { E.textContent = 'Revisá el código (CJ-…) y los 4 números.'; return; }
+  R.innerHTML = '<div class="card">Buscando tu pedido…</div>';
+  try {
+    const r = await fetch(SUPA.url + '/rest/v1/rpc/seguimiento_pedido_cajas', { method: 'POST', headers: { apikey: SUPA.key, Authorization: 'Bearer ' + SUPA.key, 'Content-Type': 'application/json' }, body: JSON.stringify({ p_ref: ref, p_tel: tel }) });
+    const p = r.ok ? await r.json() : null;
+    if (!p) { R.innerHTML = ''; E.textContent = 'No encontramos un pedido con esos datos. Si lo hiciste hace instantes, probá en un minuto o escribime por WhatsApp.'; return; }
+    pintar(p); history.replaceState(null, '', '?ref=' + encodeURIComponent(ref));
+  } catch (e) { R.innerHTML = ''; E.textContent = 'No pudimos consultar ahora. Probá de nuevo en un rato.'; }
+}
+function pintar(p) {
+  const o = OC[p.ocasion] || ['📦', 'Cajas Celestia'], idx = PASOS.findIndex(x => x[0] === p.estado), cancel = p.estado === 'cancelado';
+  const msg = 'Hola Daro! Te escribo por mi pedido ' + p.ref + ' de cajas.';
+  document.getElementById('res').innerHTML = `<div class="card">
+    <div class="top"><h2>Hola${p.nombre ? ', ' + esc(p.nombre) : ''} 👋</h2><span>${esc(p.ref)} · pedido el ${new Date(p.created_at).toLocaleDateString('es-AR')}</span></div>
+    <div class="ent"><i>${o[0]}</i><div><b>${o[1]} · ${fechaLarga(p.entrega_fecha)}</b><small>Entrega ${esc(p.entrega_franja || '')}${p.zona ? ' · ' + esc(p.zona) : ''}</small></div></div>
+    ${cancel ? '<div class="cancel">Este pedido está cancelado. Si es un error, escribime y lo vemos.</div>' : `<ul class="tl">${PASOS.map((x, i) => `<li class="${i <= idx ? 'ok' : i === idx + 1 ? 'ya' : ''}"><span class="d">${i <= idx ? '✓' : ''}</span><b>${x[1]}</b><small>${i === 1 && idx === 0 ? 'Transferí la seña de <b>' + f$(p.senia_monto) + '</b> al alias <b>' + ALIAS + '</b> y mandame el comprobante.' : x[2]}</small></li>`).join('')}</ul>`}
+    <div class="items">${(p.items || []).map(it => `<div><span>${it.cant > 1 ? it.cant + ' × ' : ''}${esc(it.nombre)} <small style="color:var(--mut)">· ${esc(it.variante)}</small></span><span>${f$(it.subtotal || it.precio * it.cant)}</span></div>`).join('')}
+      ${p.descuento ? `<div><span>Descuento</span><span style="color:var(--verde)">−${f$(p.descuento)}</span></div>` : ''}
+      <div><span>Envío</span><span>${p.envio ? f$(p.envio) : '<span style="color:var(--verde)">Gratis</span>'}</span></div>
+      <div class="t"><span>Total</span><b>${f$(p.total)}</b></div>
+      <div style="color:var(--mut);font-size:13px">Seña ${f$(p.senia_monto)} · el resto al recibir</div></div>
+    <a class="wa" target="_blank" rel="noopener" href="https://wa.me/${WA}?text=${encodeURIComponent(msg)}">💬 Escribime por WhatsApp</a><a class="otra" href="/cajas">Hacer otro pedido →</a>
+  </div>`;
+}
+document.getElementById('fm').addEventListener('submit', e => { e.preventDefault(); buscar(); });
+const q = new URLSearchParams(location.search).get('ref');
+if (q) { document.getElementById('ref').value = q.toUpperCase(); const m = mios.find(x => x.ref === q.toUpperCase()); if (m) { document.getElementById('tel').value = m.tel; buscar(); } else document.getElementById('tel').focus(); }
+</script>
+<script src="/js/analytics.js"></script>
+</body></html>

@@ -186,6 +186,17 @@
     transition: all 0.15s;
     letter-spacing: 0.04em;
   }
+  .fx-tabs{display:flex;gap:8px;margin:0 0 20px;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:12px}
+  .fx-tab{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:rgba(250,246,239,.7);border-radius:999px;padding:7px 15px;font:500 13px 'DM Sans',sans-serif;cursor:pointer}
+  .fx-tab.on{background:var(--gold);border-color:var(--gold);color:#0D1B2A;font-weight:600}
+  #cx-badge{display:inline-block;min-width:18px;padding:0 5px;border-radius:9px;background:#c46a6a;color:#fff;font-size:11px;line-height:18px;text-align:center}
+  #cx-badge:empty{display:none}
+  .cx-bar{display:grid;grid-template-columns:170px 1fr 70px;gap:12px;align-items:center;font-size:13px;margin:6px 0}
+  .cx-bar i{display:block;height:12px;border-radius:8px;background:rgba(255,255,255,.06);overflow:hidden}
+  .cx-bar i s{display:block;height:100%;background:linear-gradient(90deg,#C9A84C,#E8C96A);border-radius:8px}
+  .cx-btn{font-size:12px;padding:6px 13px;border-radius:20px;text-decoration:none;cursor:pointer;border:1px solid rgba(255,255,255,.18);background:none;color:rgba(250,246,239,.8);font-family:inherit}
+  .cx-btn.wa{color:#5DBF87;background:rgba(45,122,79,0.08);border-color:rgba(45,122,79,0.3)}
+  .cx-btn.ml{color:#8EC5E8;border-color:rgba(142,197,232,.3)}
   .filter-btn.active {
     background: rgba(201,168,76,0.15);
     border-color: var(--gold);
@@ -1221,9 +1232,29 @@
         <select class="bloqueo-input" id="fx-filtro" onchange="renderFiestas()" style="width:auto;"><option value="">Todas las entregas</option></select>
         <label style="font-size:12px;color:rgba(250,246,239,.6);display:flex;gap:6px;align-items:center;"><input type="checkbox" id="fx-cancel" onchange="renderFiestas()"> Ver cancelados</label>
       </div>
+      <div class="fx-tabs"><button type="button" class="fx-tab on" data-t="pedidos">📦 Pedidos</button><button type="button" class="fx-tab" data-t="carritos">🛒 Carritos <span id="cx-badge"></span></button></div>
+      <div id="fx-pedidos">
       <div id="fx-resumen" class="pagos-resumen" style="grid-template-columns:repeat(4,1fr);margin-bottom:22px;"></div>
       <div id="fx-prod" style="margin-bottom:26px;"></div>
       <div id="fx-lista" style="display:flex;flex-direction:column;gap:14px;"><div class="loading">Cargando...</div></div>
+      </div>
+      <div id="fx-carritos" style="display:none;">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px;">
+          <select class="bloqueo-input" id="cx-dias" onchange="cargarCarritos()" style="width:auto;"><option value="7">Últimos 7 días</option><option value="30" selected>Últimos 30 días</option><option value="90">Últimos 90 días</option></select>
+          <input class="bloqueo-input" id="cx-cupon" placeholder="Cupón de regalo (opcional)" style="width:220px;" title="Se suma al link del mensaje y queda aplicado al abrirlo. Tiene que existir en Cupones.">
+          <span style="font-size:12px;color:rgba(250,246,239,.45);">Un carrito cuenta como abandonado si no se tocó en 2 horas.</span>
+        </div>
+        <div id="cx-resumen" class="pagos-resumen" style="grid-template-columns:repeat(5,1fr);margin-bottom:18px;"></div>
+        <div id="cx-embudo" style="margin-bottom:22px;"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;" id="cx-filtros">
+          <button type="button" class="fx-tab on" data-f="recuperar">Para recuperar</button>
+          <button type="button" class="fx-tab" data-f="sin">Sin datos de contacto</button>
+          <button type="button" class="fx-tab" data-f="activos">Armando ahora</button>
+          <button type="button" class="fx-tab" data-f="convertido">Convertidos</button>
+          <button type="button" class="fx-tab" data-f="descartado">Descartados</button>
+        </div>
+        <div id="cx-lista" style="display:flex;flex-direction:column;gap:12px;"></div>
+      </div>
     </div>
 
     <div id="seccion-banners" style="display:none;">
@@ -1985,7 +2016,7 @@ function verSeccion(seccion, btn) {
   if (seccion === 'semanal') cargarSemanal();
   if (seccion === 'casos') cargarCasos();
   if (seccion === 'resenas') cargarResenas();
-  if (seccion === 'fiestas') cargarFiestas();
+  if (seccion === 'fiestas') { cargarFiestas(); cargarCarritos(); }
   if (seccion === 'platos') cargarPlatosCatalogo();
   if (seccion === 'ingredientes') cargarIngredientes();
   if (seccion === 'cupones') cargarCupones();
@@ -3190,12 +3221,110 @@ function renderFiestas() {
       <div style="font-size:13.5px;margin:6px 0 8px;">${(p.items || []).map(it => `• ${it.cant > 1 ? it.cant + ' × ' : ''}${escapeHtmlCaso(it.nombre)} <span style="color:rgba(250,246,239,.5)">(${escapeHtmlCaso(it.variante)})</span> — ${fxMoney(it.subtotal)}`).join('<br>')}</div>
       ${p.notas ? `<div style="font-size:13px;background:rgba(201,168,76,.08);border-radius:8px;padding:8px 10px;margin-bottom:8px;">📝 ${escapeHtmlCaso(p.notas)}</div>` : ''}
       <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:13px;">
-        <span>Total <b>${fxMoney(p.total)}</b> (envío ${fxMoney(p.envio)}) · Seña <b>${fxMoney(p.senia_monto)}</b></span>
+        <span>Total <b>${fxMoney(p.total)}</b> (envío ${p.envio ? fxMoney(p.envio) : 'gratis'}${p.descuento ? ' · cupón ' + escapeHtmlCaso(p.cupon || '') + ' −' + fxMoney(p.descuento) : ''}) · Seña <b>${fxMoney(p.senia_monto)}</b></span>
         <span style="flex:1"></span>
         ${wa ? `<a href="https://wa.me/${wa}" target="_blank" style="font-size:12px;color:#5DBF87;background:rgba(45,122,79,0.08);border:1px solid rgba(45,122,79,0.25);padding:6px 14px;border-radius:20px;text-decoration:none;">WA ${escapeHtmlCaso(p.tel)}</a>` : ''}
         <select class="bloqueo-input" style="width:auto;padding:6px 10px;" onchange="estadoFiesta('${p.id}',this.value)">${Object.entries(FX_ESTADOS).map(([k, l]) => `<option value="${k}" ${p.estado === k ? 'selected' : ''}>${l}</option>`).join('')}</select>
       </div></div>`;
   }).join('');
+}
+/* ───────── Carritos (abandonos y recuperación) ───────── */
+let todosCarritos = [], cxFiltro = 'recuperar';
+const CX_ABANDONO_MS = 2 * 3600e3;
+const OC_NOM = { navidad: '🎄 Navidad', anio_nuevo: '🥂 Año Nuevo', romantica: '❤️ Cena romántica', cumple: '🎂 Cumpleaños', amigos: '🍽️ Cena con amigos' };
+document.querySelector('#seccion-fiestas .fx-tabs').addEventListener('click', e => {
+  const b = e.target.closest('.fx-tab'); if (!b) return;
+  document.querySelectorAll('#seccion-fiestas .fx-tabs .fx-tab').forEach(x => x.classList.toggle('on', x === b));
+  document.getElementById('fx-pedidos').style.display = b.dataset.t === 'pedidos' ? '' : 'none';
+  document.getElementById('fx-carritos').style.display = b.dataset.t === 'carritos' ? '' : 'none';
+  if (b.dataset.t === 'carritos') cargarCarritos();
+});
+document.getElementById('cx-filtros').addEventListener('click', e => {
+  const b = e.target.closest('.fx-tab'); if (!b) return; cxFiltro = b.dataset.f;
+  document.querySelectorAll('#cx-filtros .fx-tab').forEach(x => x.classList.toggle('on', x === b)); renderCarritos();
+});
+const cxHace = t => { const m = Math.round((Date.now() - new Date(t)) / 60000); return m < 60 ? 'hace ' + m + ' min' : m < 1440 ? 'hace ' + Math.round(m / 60) + ' h' : 'hace ' + Math.round(m / 1440) + ' d'; };
+const cxAband = c => (c.estado === 'abierto' || c.estado === 'contactado') && c.n_items > 0 && Date.now() - new Date(c.updated_at) > CX_ABANDONO_MS;
+async function cargarCarritos() {
+  const L = document.getElementById('cx-lista'); L.innerHTML = '<div class="loading">Cargando...</div>';
+  const desde = new Date(Date.now() - (+document.getElementById('cx-dias').value) * 864e5).toISOString();
+  const { data, error } = await supa.from('carritos_cajas').select('*').gte('updated_at', desde).order('updated_at', { ascending: false }).limit(500);
+  if (error) { L.innerHTML = '<div class="loading">Error al cargar: ' + escapeHtmlCaso(error.message) + '. ¿Corriste el SQL actualizado de supabase/cajas.sql?</div>'; return; }
+  todosCarritos = data || []; renderCarritos();
+}
+function renderCarritos() {
+  const C = todosCarritos.filter(c => c.n_items > 0 || c.estado === 'convertido');
+  const datos = C.filter(c => c.etapa === 'datos' || c.estado === 'convertido'), conv = C.filter(c => c.estado === 'convertido');
+  const recup = C.filter(c => cxAband(c) && c.etapa === 'datos'), recuperados = conv.filter(c => c.recuperado);
+  const tasa = C.length ? Math.round(conv.length / C.length * 100) : 0;
+  document.getElementById('cx-badge').textContent = recup.filter(c => c.estado === 'abierto').length || '';
+  document.getElementById('cx-resumen').innerHTML = [
+    ['Carritos', C.length, 'armados en el período'],
+    ['Dejaron sus datos', datos.length, C.length ? Math.round(datos.length / C.length * 100) + '% de los carritos' : '—'],
+    ['Compraron', conv.length, tasa + '% de conversión'],
+    ['Para recuperar', fxMoney(recup.reduce((a, c) => a + (c.subtotal || 0), 0)), recup.length + ' carritos con contacto'],
+    ['Recuperados', recuperados.length, fxMoney(recuperados.reduce((a, c) => a + (c.subtotal || 0), 0)) + ' vendidos']
+  ].map(([l, v, s]) => `<div class="resumen-card"><div class="resumen-label">${l}</div><div class="resumen-valor">${v}</div><div class="resumen-sub">${s}</div></div>`).join('');
+  const top = {}; C.filter(c => c.estado !== 'convertido').forEach(c => (c.items || []).forEach(it => { top[it.nombre] = (top[it.nombre] || 0) + (it.cant || 1); }));
+  const topL = Object.entries(top).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  const bar = (l, n) => `<div class="cx-bar"><span>${l}</span><i><s style="width:${C.length ? Math.max(2, n / C.length * 100) : 0}%"></s></i><b style="text-align:right">${n}</b></div>`;
+  document.getElementById('cx-embudo').innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;">
+    <div class="caso-card" style="padding:16px 18px;"><div style="font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:rgba(250,246,239,.5);margin-bottom:8px;">Embudo</div>
+      ${bar('🛒 Armaron un carrito', C.length)}${bar('✍️ Dejaron sus datos', datos.length)}${bar('✅ Hicieron el pedido', conv.length)}</div>
+    <div class="caso-card" style="padding:16px 18px;"><div style="font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:rgba(250,246,239,.5);margin-bottom:8px;">Lo que más quedó en carritos sin comprar</div>
+      ${topL.length ? topL.map(([k, n]) => `<div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.06);"><span>${escapeHtmlCaso(k)}</span><b>× ${n}</b></div>`).join('') : '<div style="font-size:13px;color:rgba(250,246,239,.5)">Todavía nada.</div>'}</div></div>`;
+  const F = { recuperar: c => cxAband(c) && c.etapa === 'datos', sin: c => cxAband(c) && c.etapa !== 'datos', activos: c => (c.estado === 'abierto' || c.estado === 'contactado') && c.n_items > 0 && !cxAband(c), convertido: c => c.estado === 'convertido', descartado: c => c.estado === 'descartado' };
+  const lista = C.filter(F[cxFiltro]); const L = document.getElementById('cx-lista');
+  if (!lista.length) { L.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🛒</div>No hay carritos en esta vista</div>'; return; }
+  L.innerHTML = lista.map(c => {
+    const tel = String(c.tel || '').replace(/\D/g, ''); const wa = tel ? (tel.startsWith('54') ? tel : '549' + tel.replace(/^0/, '').replace(/^15/, '')) : '';
+    const col = { abierto: '#E2A33E', contactado: '#8EC5E8', convertido: '#5DBF87', descartado: 'rgba(250,246,239,.3)' }[c.estado];
+    return `<div class="caso-card" style="border-left:3px solid ${col};">
+      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:baseline;justify-content:space-between;">
+        <div><b style="font-size:15px;">${escapeHtmlCaso(c.nombre || 'Sin nombre')}</b> <span style="color:rgba(250,246,239,.5);font-size:12px;">${cxHace(c.updated_at)} · ${escapeHtmlCaso(c.origen || '')}${c.estado === 'contactado' ? ' · contactado ' + c.recordatorios + '×' : ''}${c.recuperado ? ' · volvió por el link' : ''}${c.ref_pedido ? ' · pedido ' + escapeHtmlCaso(c.ref_pedido) : ''}</span></div>
+        <div style="color:var(--gold);font-weight:600;">${fxMoney(c.subtotal)}</div></div>
+      <div style="font-size:13px;color:rgba(250,246,239,.7);margin:6px 0;">${c.ocasion ? (OC_NOM[c.ocasion] || escapeHtmlCaso(c.ocasion)) : ''}${c.entrega_fecha ? ' · entrega ' + fxFecha(c.entrega_fecha) : ''}${c.tel ? ' · 📱 ' + escapeHtmlCaso(c.tel) : ''}${c.email ? ' · ✉️ ' + escapeHtmlCaso(c.email) : ''}${c.cp ? ' · CP ' + escapeHtmlCaso(c.cp) : ''}</div>
+      <div style="font-size:13.5px;margin:4px 0 10px;">${(c.items || []).map(it => `• ${it.cant > 1 ? it.cant + ' × ' : ''}${escapeHtmlCaso(it.nombre)} <span style="color:rgba(250,246,239,.5)">(${escapeHtmlCaso(it.variante)})</span>`).join('<br>')}</div>
+      ${c.estado !== 'convertido' ? `<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        ${wa ? `<button type="button" class="cx-btn wa" onclick="cxWhatsApp('${c.id}')">💬 Recuperar por WhatsApp</button>` : ''}
+        ${c.email ? `<button type="button" class="cx-btn ml" onclick="cxMail('${c.id}',this)">✉️ Mandar mail</button>` : ''}
+        <button type="button" class="cx-btn" onclick="navigator.clipboard.writeText(cxLink('${c.id}')).then(()=>this.textContent='✓ Copiado')">🔗 Copiar link</button>
+        <span style="flex:1"></span>
+        ${c.estado === 'descartado' ? `<button type="button" class="cx-btn" onclick="cxEstado('${c.id}','abierto')">Reabrir</button>` : `<button type="button" class="cx-btn" onclick="cxEstado('${c.id}','descartado')">Descartar</button>`}
+      </div>` : ''}</div>`;
+  }).join('');
+}
+function cxLink(id) {
+  const cup = document.getElementById('cx-cupon').value.trim().toUpperCase().replace(/[^A-Z0-9_-]/g, '');
+  return 'https://www.chefprivado.ar/cajas/?c=' + id + (cup ? '&cupon=' + cup : '') + '&utm_source=whatsapp&utm_medium=recupero&utm_campaign=carrito';
+}
+async function cxMarcarContactado(c) {
+  const upd = { estado: 'contactado', recordatorios: (c.recordatorios || 0) + 1, ultimo_recordatorio: new Date().toISOString() };
+  const { error } = await supa.from('carritos_cajas').update(upd).eq('id', c.id); if (!error) Object.assign(c, upd); renderCarritos();
+}
+function cxWhatsApp(id) {
+  const c = todosCarritos.find(x => x.id === id); if (!c) return;
+  const tel = String(c.tel || '').replace(/\D/g, ''), wa = tel.startsWith('54') ? tel : '549' + tel.replace(/^0/, '').replace(/^15/, '');
+  const cup = document.getElementById('cx-cupon').value.trim().toUpperCase();
+  const nom = String(c.nombre || '').split(' ')[0];
+  const txt = `Hola${nom ? ' ' + nom : ''}! Soy Daro, de Celestia 👋 Vi que armaste un pedido de Cajas (${(c.items || []).map(it => (it.cant > 1 ? it.cant + '× ' : '') + it.nombre).join(', ')}) y quedó sin terminar. Te lo guardé tal cual, lo completás desde acá: ${cxLink(id)}` + (cup ? `\nY te dejé el cupón ${cup} ya aplicado 🎁` : '') + `\n¿Te ayudo con la fecha o el menú?`;
+  window.open('https://wa.me/' + wa + '?text=' + encodeURIComponent(txt), '_blank');
+  cxMarcarContactado(c);
+}
+async function cxMail(id, btn) {
+  btn.disabled = true; btn.textContent = 'Enviando…';
+  try {
+    const { data } = await supa.auth.getSession();
+    const r = await fetch('/api/recuperar-carrito', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + (data.session && data.session.access_token) }, body: JSON.stringify({ id, cupon: document.getElementById('cx-cupon').value }) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok || !j.ok) throw new Error(j.error || 'HTTP ' + r.status);
+    btn.textContent = '✓ Enviado'; const c = todosCarritos.find(x => x.id === id); if (c) { c.estado = 'contactado'; c.recordatorios = (c.recordatorios || 0) + 1; } setTimeout(renderCarritos, 1200);
+  } catch (e) { btn.disabled = false; btn.textContent = '✉️ Mandar mail'; alert('No se pudo mandar el mail: ' + e.message); }
+}
+async function cxEstado(id, estado) {
+  const { error } = await supa.from('carritos_cajas').update({ estado }).eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  const c = todosCarritos.find(x => x.id === id); if (c) c.estado = estado; renderCarritos();
 }
 async function estadoFiesta(id, estado) {
   const { error } = await supa.from('pedidos_cajas').update({ estado }).eq('id', id);
