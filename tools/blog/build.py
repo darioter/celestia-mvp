@@ -42,6 +42,8 @@ def bloques(cuerpo, lang):
         elif t == 'dato': h.append(f'<aside class="cp-dato"><span class="cp-dato-k">ⓘ {dato}</span><p>{b[1]}</p></aside>')
     return '\n'.join(h)
 
+TTS_JS = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tts.js'), encoding='utf-8').read()
+
 def bi(es, en, tag='span'):
     return f'<{tag} class="b-es">{es}</{tag}><{tag} class="b-en" lang="en">{en}</{tag}>'
 
@@ -82,8 +84,32 @@ html.cel-pre body{visibility:hidden}
 .cp-card small{display:block;margin-top:12px;font-size:11.5px;color:#a08a5c;letter-spacing:.04em}
 .cp-card.hide{display:none}
 /* artículo */
-.cp-hero{position:relative;min-height:440px;display:flex;align-items:flex-end;background:#1a2e42 center/cover no-repeat;color:var(--cr)}
+.cp-hero{position:relative;min-height:440px;display:flex;align-items:flex-end;padding-top:76px;background:#1a2e42 center/cover no-repeat;color:var(--cr)}
 .cp-hero::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,rgba(13,27,42,.25),rgba(13,27,42,.92))}
+.cp-tts{max-width:720px;margin:26px auto 0;padding:0 22px;position:relative;z-index:30}
+.cp-tts>div{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#fff;border:1px solid var(--crd);border-radius:18px;padding:10px 12px;box-shadow:0 10px 26px rgba(13,27,42,.06)}
+.cp-tts.sonando{position:sticky;top:74px}
+.cp-tts.sonando>div{border-color:var(--gd);box-shadow:0 14px 30px rgba(13,27,42,.16)}
+.tts-play{display:inline-flex;align-items:center;gap:9px;border:0;border-radius:999px;background:var(--nv);color:var(--cr);font:600 15px 'DM Sans',sans-serif;padding:11px 18px 11px 14px;cursor:pointer;min-height:44px}
+.tts-play i{width:26px;height:26px;border-radius:50%;background:var(--gdl);color:var(--nv);display:inline-flex;align-items:center;justify-content:center;font-style:normal;font-size:12px}
+.tts-play small{opacity:.65;font-weight:400;font-size:13px}
+.tts-b{min-width:44px;min-height:44px;border-radius:999px;border:1px solid var(--crd);background:#fff;color:var(--nv);font:600 14px 'DM Sans',sans-serif;cursor:pointer;padding:0 12px}
+.tts-b[aria-pressed=true]{background:var(--nv);color:var(--gdl);border-color:var(--nv)}
+.tts-sep{flex:1}
+.tts-lbl{font-size:12px;color:var(--mut)}
+.tts-on{background:rgba(232,201,106,.25)!important;box-shadow:0 0 0 8px rgba(232,201,106,.25);border-radius:6px;transition:background .3s}
+.cp-body{zoom:var(--cpz,1)}
+.cp-tts button:focus-visible,.cp-volver:focus-visible,.cp-fin a:focus-visible{outline:3px solid var(--gd);outline-offset:2px}
+@media(max-width:640px){.cp-tts{padding:0 14px}.tts-sep{display:none}.tts-play{flex:1 1 100%;justify-content:center}}
+.cp-volver{position:absolute;top:18px;left:max(18px,calc((100% - 760px)/2 + 22px));z-index:2;display:inline-flex;align-items:center;gap:8px;background:rgba(13,27,42,.6);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(232,201,106,.55);color:var(--cr);text-decoration:none;font:600 14px 'DM Sans',sans-serif;padding:10px 16px 10px 13px;border-radius:999px;transition:background .2s}
+.cp-volver:hover{background:rgba(13,27,42,.85)}
+.cp-volver b{color:var(--gdl);font-size:17px;line-height:1}
+.cp-fin{max-width:720px;margin:30px auto 0;padding:0 22px;display:flex;gap:10px;flex-wrap:wrap}
+.cp-fin a{flex:1 1 220px;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;font:600 15px 'DM Sans',sans-serif;padding:14px 18px;border-radius:999px;border:1px solid var(--nv);color:var(--nv)}
+.cp-fin a.pri{background:var(--nv);color:var(--gdl)}
+.cp-flot{position:fixed;left:16px;bottom:18px;z-index:40;display:inline-flex;align-items:center;gap:7px;background:var(--nv);color:var(--cr);text-decoration:none;font:600 13.5px 'DM Sans',sans-serif;padding:11px 16px 11px 13px;border-radius:999px;box-shadow:0 10px 26px rgba(13,27,42,.35);border:1px solid rgba(232,201,106,.5);opacity:0;transform:translateY(12px);pointer-events:none;transition:opacity .25s,transform .25s}
+.cp-flot.on{opacity:1;transform:none;pointer-events:auto}
+.cp-flot b{color:var(--gdl);font-size:16px;line-height:1}
 .cp-hero-in{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:0 22px 46px;width:100%}
 .cp-hero h1{font-family:'DM Serif Display',serif;font-weight:400;font-size:44px;line-height:1.12;margin:12px 0 14px}
 .cp-hero p.cp-baj{font-size:17px;color:rgba(250,246,239,.82);max-width:640px}
@@ -179,7 +205,7 @@ HEAD = '''<!doctype html>
 '''
 FOOT = '''<footer class="cp-ftr"><a href="/">chefprivado.ar</a>·<a href="/blog">{caps}</a>·<a href="https://www.instagram.com/celestiachefprivado/" target="_blank" rel="noopener">Instagram</a><div style="margin-top:8px">Celestia · Chef Privado · Buenos Aires © 2026</div></footer>
 <script src="/js/i18n.js"></script><script src="/js/analytics.js"></script>
-<script>document.querySelectorAll('.cp-t[data-cat]').forEach(function(t){{t.addEventListener('click',function(){{var c=document.querySelector('.cp-chip[data-cat="'+t.getAttribute('data-cat')+'"]');if(c){{c.click();document.querySelector('.cp-chips').scrollIntoView({{behavior:'smooth',block:'start'}});}}}});}});document.querySelectorAll('.cp-chip').forEach(function(c){{c.addEventListener('click',function(){{var k=c.getAttribute('data-cat');document.querySelectorAll('.cp-chip').forEach(function(x){{x.classList.toggle('on',x===c);}});document.querySelectorAll('.cp-grid .cp-card').forEach(function(a){{a.classList.toggle('hide',k!=='todas'&&a.getAttribute('data-cat')!==k);}});}});}});</script>
+<script>document.querySelectorAll('.cp-t[data-cat]').forEach(function(t){{t.addEventListener('click',function(){{var c=document.querySelector('.cp-chip[data-cat="'+t.getAttribute('data-cat')+'"]');if(c){{c.click();document.querySelector('.cp-chips').scrollIntoView({{behavior:'smooth',block:'start'}});}}}});}});document.querySelectorAll('.cp-chip').forEach(function(c){{c.addEventListener('click',function(){{var k=c.getAttribute('data-cat');document.querySelectorAll('.cp-chip').forEach(function(x){{x.classList.toggle('on',x===c);}});document.querySelectorAll('.cp-grid .cp-card').forEach(function(a){{a.classList.toggle('hide',k!=='todas'&&a.getAttribute('data-cat')!==k);}});}});}});(function(){{var h=decodeURIComponent(location.hash.slice(1)),c=h&&document.querySelector('.cp-chip[data-cat="'+h+'"]');if(c){{c.click();setTimeout(function(){{document.querySelector('.cp-chips').scrollIntoView({{block:'start'}});}},60);}}}})();</script>
 <script>(function(){{var b=document.querySelector('.cp-int');if(!b)return;var slug=b.getAttribute('data-slug'),en=document.documentElement.classList.contains('lang-en'),k='cel_voto_'+slug,m=b.querySelector('.cp-vmsg');
 function t(es,e){{return document.documentElement.classList.contains('lang-en')?e:es;}}
 function tr(ev,p){{try{{window.celTrack&&celTrack(ev,p);}}catch(e){{}}}}
@@ -221,18 +247,31 @@ def articulo(a):
     otros = [x for x in ARTICULOS if x['slug'] != a['slug']][:3]
     h = HEAD.format(title=html.escape(es['titulo'] + ' · Blog Celestia'), title_en=html.escape(en['titulo'] + ' · Celestia Blog'),
                     desc=html.escape(es['bajada']), url=url, ogtype='article', ogimg=U(a['img'], 1200, 630), css=CSS, ld=ld, **NAV)
-    h += (f'<section class="cp-hero" style="background-image:url(\'{U(a["img"],1800,900)}\')"><div class="cp-hero-in">'
+    h += (f'<section class="cp-hero" style="background-image:url(\'{U(a["img"],1800,900)}\')"><a class="cp-volver" href="/blog"><b>←</b>{bi("Todas las notas","All notes")}</a><div class="cp-hero-in">'
           f'<a class="cp-k" href="/blog" style="text-decoration:none">✦ {bi("Blog","Blog")} · {c["icono"]} {bi(c["es"], c["en"])}</a>'
           f'<h1>{bi(es["titulo"], en["titulo"])}</h1><p class="cp-baj">{bi(es["bajada"], en["bajada"])}</p>'
           f'<div class="cp-meta"><img src="/img/daro-avatar.webp" alt="Daro Castello"><span>{bi("Por Daro Castello","By Daro Castello")}</span>'
           f'<span>{bi(fecha(a["fecha"],"es"), fecha(a["fecha"],"en"))}</span><span>{bi(str(minutos(es["cuerpo"]))+" min de lectura", str(minutos(en["cuerpo"]))+" min read")}</span></div></div></section>')
+    mn_es, mn_en = str(minutos(es["cuerpo"])) + ' min', str(minutos(en["cuerpo"])) + ' min'
+    h += (f'<section class="cp-tts" id="cp-tts" data-min="{mn_es}" data-min-en="{mn_en}" aria-label="Escuchar la nota y tamaño de letra"><div>'
+          f'<button type="button" class="tts-play" id="tts-play" aria-pressed="false"><i aria-hidden="true">▶</i>{bi("Escuchar la nota","Listen to this note")} <small>{mn_es}</small></button>'
+          f'<button type="button" class="tts-b" id="tts-stop" hidden aria-label="Detener lectura">■</button>'
+          f'<button type="button" class="tts-b" id="tts-vel" aria-label="Velocidad de lectura">1×</button>'
+          f'<span class="tts-sep"></span><span class="tts-lbl">{bi("Letra","Text")}</span>'
+          f'<button type="button" class="tts-b" data-fs="-1" aria-label="Achicar la letra">A−</button>'
+          f'<button type="button" class="tts-b" data-fs="1" aria-label="Agrandar la letra" style="font-size:17px">A+</button>'
+          '</div></section>')
     h += f'<article class="cp-body"><div class="b-es">{bloques(es["cuerpo"],"es")}</div><div class="b-en" lang="en">{bloques(en["cuerpo"],"en")}</div></article>'
+    h += (f'<nav class="cp-fin" aria-label="Volver"><a class="pri" href="/blog">← {bi("Volver a todas las notas","Back to all notes")}</a>'
+          f'<a href="/blog#{a["cat"]}">{c["icono"]} {bi("Más de " + c["es"], "More " + c["en"])}</a></nav>')
+    h += f'<a class="cp-flot" id="cp-flot" href="/blog"><b>←</b>{bi("Blog","Blog")}</a><script>(function(){{var f=document.getElementById("cp-flot");addEventListener("scroll",function(){{var e=document.querySelector(".cp-fin");f.classList.toggle("on",scrollY>520&&(!e||e.getBoundingClientRect().top>innerHeight));}},{{passive:true}});}})();</script>'
     h += '<section class="cp-int" data-slug="' + a['slug'] + '"><div><h3>' + bi('¿Te sirvió esta nota?', 'Was this note useful?') + '</h3>' + '<div class="cp-vot"><button type="button" class="cp-vb" data-v="up" aria-label="Me sirvió"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v11H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3zm0 0 4-8a3 3 0 0 1 3 3v4h5.5a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 18.1 21H7"/></svg>' + bi('Sí, me sirvió','Yes') + '</button>' + '<button type="button" class="cp-vb" data-v="down" aria-label="No me sirvió"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="transform:scaleY(-1)"><path d="M7 10v11H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3zm0 0 4-8a3 3 0 0 1 3 3v4h5.5a2 2 0 0 1 2 2.3l-1.4 8A2 2 0 0 1 18.1 21H7"/></svg>' + bi('No tanto','Not really') + '</button></div>' + '<p class="cp-vmsg" aria-live="polite"></p>' + '<div class="cp-shr"><p>' + bi('¿Conocés a alguien que cocine? Recomendale esta nota', 'Know someone who cooks? Share this note') + '</p><div class="cp-shb">' + '<button type="button" class="cp-sb nat" data-s="nativo" hidden><svg viewBox="0 0 24 24"><path d="M18 16a3 3 0 0 0-2.4 1.2l-6.7-3.4a3 3 0 0 0 0-1.6l6.7-3.4A3 3 0 1 0 15 7l-6.7 3.4a3 3 0 1 0 0 3.2L15 17a3 3 0 1 0 3-1z"/></svg><span>' + bi('Compartir','Share') + '</span></button>' + '<button type="button" class="cp-sb wa" data-s="whatsapp" aria-label="WhatsApp"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-3.9-4.7-4.1-.1-.2-1.1-1.5-1.1-2.8s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.4.6-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.7-.1l1.9.9c.3.1.5.2.5.3.1.2.1.7-.1 1.3z"/></svg><span>WhatsApp</span></button>' + '<button type="button" class="cp-sb fb" data-s="facebook" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M14 8V6c0-.9.6-1 1-1h3V1h-4c-4 0-5 3-5 5v2H6v4h3v11h5V12h3.6l.4-4z"/></svg><span>Facebook</span></button>' + '<button type="button" class="cp-sb x" data-s="x" aria-label="X"><svg viewBox="0 0 24 24"><path d="M18.2 2h3.4l-7.4 8.5L23 22h-6.8l-5.3-7-6.1 7H1.4l7.9-9L1 2h7l4.8 6.4zm-1.2 18h1.9L7.1 4H5.1z"/></svg><span>X</span></button>' + '<button type="button" class="cp-sb cp" data-s="copiar" aria-label="Copiar link"><svg viewBox="0 0 24 24"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11z"/></svg><span>' + bi('Copiar link','Copy link') + '</span></button>' + '</div></div></div></section>'
     h += ('<section class="cp-ctab"><div><h3>' + bi('¿Querés que lo cocine en tu casa?', 'Want me to cook it at your home?') + '</h3><p>' +
           bi('Menús de 3 o 7 pasos, terminados en tu casa y con servicio completo en CABA y GBA.', '3- or 7-course menus, finished at your home with full service in Buenos Aires.') +
           '</p><a class="cp-btn" href="/">' + bi('Reservar una experiencia →', 'Book an experience →') + '</a></div></section>')
     h += f'<p class="cp-cred">{bi("Foto de referencia", "Reference photo")}: {a["foto"]} · <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a></p>'
     h += '<section class="cp-rel"><h3>' + bi('Seguí leyendo', 'Keep reading') + '</h3><div class="cp-grid">' + ''.join(card(x) for x in otros) + '</div></section>'
+    h += TTS_JS
     h += FOOT.format(caps=bi('Blog', 'Blog'))
     escribir(f'blog/{a["slug"]}/index.html', h)
 
