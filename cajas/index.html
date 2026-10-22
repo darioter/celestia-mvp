@@ -17,9 +17,9 @@ a{color:inherit}
 img{max-width:100%;display:block}
 .hdr{position:sticky;top:0;z-index:30;background:rgba(13,27,42,.96);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:64px}
 .hdr img{height:30px;width:auto}
-.hdr nav{display:flex;gap:18px;align-items:center}
-.hdr nav a{color:rgba(250,246,239,.75);text-decoration:none;font-size:14px}
-.hdr .cta{background:linear-gradient(135deg,var(--gd),var(--gdl));color:var(--nv)!important;font-weight:600;padding:9px 16px;border-radius:999px}
+.hdr nav{display:flex;gap:14px;align-items:center}
+.hdr nav a{color:rgba(250,246,239,.72);text-decoration:none;font-size:13px;font-weight:500;transition:color .2s}.hdr nav a:not(.cta):hover{color:var(--gdl)}
+.hdr .cta{background:linear-gradient(135deg,var(--gdl),var(--gd));color:var(--nv)!important;font-weight:700;padding:9px 18px;border-radius:999px;box-shadow:0 3px 12px rgba(201,168,76,.4)}
 .hero{position:relative;min-height:560px;display:flex;align-items:flex-end;color:var(--cr);background:var(--nv)}
 .hero::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,27,42,.35) 0%,rgba(13,27,42,.55) 45%,rgba(13,27,42,.95) 100%)}
 .hero-in{position:relative;max-width:1080px;margin:0 auto;padding:0 28px 64px;width:100%}
@@ -358,19 +358,20 @@ section{padding:70px 0}
 .cart-btn b{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;border-radius:999px;background:var(--gd);color:var(--nv);font-size:11.5px;display:none;align-items:center;justify-content:center;padding:0 5px}
 .cart-btn.bump{animation:pop .5s ease}
 .hdr{gap:0}.hdr nav{margin-left:auto}
-.burger{display:none;width:44px;height:44px;border-radius:50%;border:1px solid rgba(232,201,106,.5);background:rgba(250,246,239,.06);cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:4px;margin-left:10px;order:3}
+.burger{display:none;width:40px;height:40px;border-radius:10px;border:1px solid rgba(201,168,76,.35);background:none;cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:4px;margin-left:10px;order:3}
 .burger i{display:block;width:18px;height:2px;border-radius:2px;background:var(--cr);transition:transform .25s,opacity .2s}
 .burger[aria-expanded="true"] i:nth-child(1){transform:translateY(6px) rotate(45deg)}
 .burger[aria-expanded="true"] i:nth-child(2){opacity:0}
 .burger[aria-expanded="true"] i:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
-@media(max-width:960px){
+@media(max-width:1100px){
   .hdr{padding:0 16px}
   .hdr .cart-btn{margin-left:auto}
   .burger{display:flex}
   .mis-ped{display:none}
   .hdr nav{position:absolute;top:64px;left:0;right:0;margin:0;flex-direction:column;align-items:stretch;gap:0;background:rgba(13,27,42,.98);border-bottom:1px solid rgba(201,168,76,.3);box-shadow:0 18px 40px rgba(0,0,0,.35);padding:8px 16px 18px;display:none}
   .hdr.abierto nav{display:flex;animation:navIn .22s ease}
-  .hdr nav a,.hdr nav a:not(.cta){display:block;font-size:16px;padding:13px 4px;border-bottom:1px solid rgba(250,246,239,.08);color:var(--cr)}
+  .hdr nav a,.hdr nav a:not(.cta){display:block;font:400 20px 'DM Serif Display',serif;padding:14px 4px;border-bottom:1px solid rgba(250,246,239,.08);color:var(--cr)}
+  .hdr nav a.cta{font:700 15px 'DM Sans',sans-serif}
   .hdr nav a.cta{margin-top:14px;text-align:center;border:0;padding:13px 16px}
 }
 @keyframes navIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
@@ -1098,7 +1099,7 @@ track('cajas_vista');
   n.addEventListener('click', e => { if (e.target.closest('a')) set(false); });
   document.addEventListener('click', e => { if (h.classList.contains('abierto') && !h.contains(e.target)) set(false); });
   addEventListener('keydown', e => { if (e.key === 'Escape') set(false); });
-  addEventListener('resize', () => { if (innerWidth > 960) set(false); });
+  addEventListener('resize', () => { if (innerWidth > 1100) set(false); });
 })();
 function misPedidos() { let n = 0; try { n = JSON.parse(localStorage.getItem('cel_cajas_pedidos') || '[]').length; } catch (e) {} document.getElementById('mis-ped').hidden = !n;
   let a = document.getElementById('mis-ped-m'); if (n && !a) { a = document.createElement('a'); a.id = 'mis-ped-m'; a.href = '/cajas/pedido/'; a.textContent = 'Mis pedidos'; document.getElementById('hdr-nav').insertBefore(a, document.querySelector('#hdr-nav .cta')); } if (a) a.hidden = !n; }
