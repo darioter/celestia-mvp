@@ -310,10 +310,102 @@ section{padding:70px 0}
   .hero.hxf .hero-chips{display:none}
 }
 @media(prefers-reduced-motion:reduce){.hxf-img img{animation:none}}
+
+/* Calendario estilo Celestia */
+.cc{--g:#C9A84C;--gl:#E8C96B;font-family:'DM Sans',sans-serif;color:#FAF6EF}
+.cc-top{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-bottom:12px}
+.cc-k{display:block;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gdl);margin-bottom:3px}
+.cc-mo{display:block;font-family:'DM Serif Display',serif;font-weight:400;font-size:26px;line-height:1.1;overflow:hidden}
+.cc-mo span{display:inline-block;animation:ccMo .45s cubic-bezier(.16,.84,.44,1)}
+.cc-nav{display:flex;gap:6px}
+.cc-nav button{width:36px;height:36px;border-radius:50%;border:1px solid rgba(201,168,76,.5);background:rgba(250,246,239,.06);color:#FAF6EF;font-size:18px;line-height:1;cursor:pointer;transition:background .2s,transform .2s}
+.cc-nav button:hover:not([disabled]){background:rgba(201,168,76,.25);transform:scale(1.08)}
+.cc-nav button[disabled]{opacity:.3;cursor:default}
+.cc-dn,.cc-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;text-align:center}
+.cc-dn span{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:rgba(250,246,239,.55);padding:2px 0 6px}
+.cc-dn span:nth-child(n+5){color:rgba(232,201,107,.85)}
+.cc-d{position:relative;height:42px;border:0;border-radius:11px;background:rgba(250,246,239,.08);color:#FAF6EF;font:500 14.5px 'DM Sans',sans-serif;cursor:pointer;opacity:0;animation:ccIn .4s cubic-bezier(.16,.84,.44,1) forwards;animation-delay:calc(var(--i)*12ms);transition:background .18s,transform .18s}
+.cc-d:hover:not([disabled]){background:rgba(201,168,76,.3);transform:translateY(-2px)}
+.cc-d.we::after{content:'';position:absolute;left:50%;bottom:5px;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:var(--gl)}
+.cc-d.hoy{box-shadow:inset 0 0 0 1px rgba(250,246,239,.45)}
+.cc-d[disabled]{background:none;color:rgba(250,246,239,.22);cursor:default}
+.cc-d.oc{text-decoration:line-through;color:rgba(250,246,239,.32)}
+.cc-d.vac{visibility:hidden;animation:none}
+.cc-d.on{background:linear-gradient(135deg,var(--g),var(--gl));color:var(--nv);font-weight:700;transform:scale(1.06);animation:ccIn .4s forwards,ccPulse 1.8s ease-out .4s infinite}
+.cc-d.on::after{background:var(--nv)}
+.cc-leg{display:flex;justify-content:space-between;gap:8px;margin-top:12px;font-size:11px;color:rgba(250,246,239,.55)}
+.cc-leg i{font-style:normal;color:var(--gl)}
+.cc-still .cc-d{animation:none!important;opacity:1!important}
+.cc-still .cc-d.on{animation:ccPulse 1.8s ease-out infinite!important}
+.cc-still .cc-mo span{animation:none}
+@keyframes ccIn{from{opacity:0;transform:translateY(8px) scale(.92)}to{opacity:1;transform:none}}
+@keyframes ccMo{from{opacity:0;transform:translateY(60%)}to{opacity:1;transform:none}}
+@keyframes ccPulse{0%{box-shadow:0 0 0 0 rgba(232,201,107,.65)}70%{box-shadow:0 0 0 10px rgba(232,201,107,0)}100%{box-shadow:0 0 0 0 rgba(232,201,107,0)}}
+.cal-wrap{display:grid;grid-template-columns:minmax(0,440px) 1fr;gap:22px;align-items:stretch}
+.cal-card{background:linear-gradient(160deg,#16293d,var(--nv));border:1px solid rgba(201,168,76,.45);border-radius:22px;padding:20px 20px 16px;box-shadow:0 20px 44px rgba(13,27,42,.22)}
+.cal-side{display:flex;flex-direction:column;gap:14px;justify-content:center}
+.cal-sel{background:#fff;border:1px solid var(--crd);border-radius:18px;padding:16px 18px}
+.cal-sel b{display:block;font-family:'DM Serif Display',serif;font-weight:400;font-size:24px;color:var(--nv);line-height:1.2}
+.cal-sel small{display:block;color:var(--mut);font-size:14px;margin-top:2px}
+.cal-fr{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cal-fr .fr{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 10px;border-radius:14px;font-size:15px;font-weight:600;transition:all .2s}
+.cal-fr .fr:hover{border-color:var(--gd)}
+.cal-fr .fr.on{background:var(--nv);border-color:var(--nv);color:var(--gdl)}
+.cal-nota{font-size:13px;color:var(--mut)}
+/* Carrito */
+.cart-btn{position:relative;margin-left:14px;width:44px;height:44px;border-radius:50%;border:1px solid rgba(232,201,106,.5);background:rgba(250,246,239,.06);color:var(--cr);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.cart-btn:hover{background:rgba(201,168,76,.25)}
+.cart-btn svg{width:21px;height:21px}
+.cart-btn b{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;border-radius:999px;background:var(--gd);color:var(--nv);font-size:11.5px;display:none;align-items:center;justify-content:center;padding:0 5px}
+.cart-btn.bump{animation:pop .5s ease}
+.hdr{gap:0}.hdr nav{margin-left:auto}
+.dr-ov{position:fixed;inset:0;background:rgba(13,27,42,.5);opacity:0;pointer-events:none;transition:opacity .3s;z-index:60}
+.dr-ov.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,100%);background:var(--cr);z-index:61;transform:translateX(105%);transition:transform .38s cubic-bezier(.2,.7,.2,1);display:flex;flex-direction:column;box-shadow:-20px 0 50px rgba(13,27,42,.25)}
+.drawer.on{transform:none}
+.dr-h{display:flex;align-items:center;justify-content:space-between;padding:20px 22px 14px;border-bottom:1px solid var(--crd)}
+.dr-h b{font-family:'DM Serif Display',serif;font-weight:400;font-size:26px;color:var(--nv)}
+.dr-x{width:38px;height:38px;border-radius:50%;border:1px solid var(--crd);background:#fff;cursor:pointer;font-size:15px;color:var(--nv)}
+.dr-ent{display:flex;align-items:center;gap:12px;margin:14px 22px 4px;background:#fff;border:1px solid var(--crd);border-radius:14px;padding:11px 14px;font-size:13.5px}
+.dr-ent>span{font-size:22px}.dr-ent div{flex:1}.dr-ent b{display:block;color:var(--nv)}.dr-ent small{color:var(--mut)}
+.dr-ent a{color:#8a7136;font-weight:600;font-size:13px}
+.dr-list{flex:1;overflow:auto;padding:8px 22px}
+.dr-it{display:grid;grid-template-columns:68px 1fr auto;gap:12px;align-items:start;padding:14px 0;border-bottom:1px dashed var(--crd);animation:rgIn .3s ease both}
+.dr-it img{width:68px;height:68px;border-radius:12px;object-fit:cover;background:var(--nv)}
+.dr-in b{display:block;color:var(--nv);font-size:15px;line-height:1.25}
+.dr-in small{color:var(--mut);font-size:12.5px}
+.dr-it strong{font-family:'DM Serif Display',serif;font-weight:400;font-size:18px;color:var(--nv);white-space:nowrap}
+.dr-q{display:flex;align-items:center;gap:6px;margin-top:8px}
+.dr-q button{width:28px;height:28px;border-radius:50%;border:1px solid var(--crd);background:#fff;cursor:pointer;font-size:15px;color:var(--nv)}
+.dr-q span{min-width:20px;text-align:center;font-weight:600}
+.dr-q .dr-del{width:auto;border:0;background:none;color:#a06060;font-size:12.5px;text-decoration:underline;margin-left:6px;border-radius:0}
+.dr-vacio{text-align:center;padding:50px 10px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.dr-vacio span{font-size:44px}.dr-vacio b{color:var(--nv);font-size:17px}.dr-vacio small{color:var(--mut);margin-bottom:12px}
+.dr-f{padding:16px 22px 22px;border-top:1px solid var(--crd);background:#fff}
+.dr-f .ln{display:flex;justify-content:space-between;font-size:14px;color:var(--mut);padding:3px 0}
+.dr-f .tot{display:flex;justify-content:space-between;align-items:baseline;margin-top:6px;padding-top:8px;border-top:1px solid var(--crd)}
+.dr-f .tot b{font-family:'DM Serif Display',serif;font-weight:400;font-size:28px;color:var(--nv)}
+.dr-sena{display:block;color:var(--mut);font-size:12.5px;margin:2px 0 12px}
+.dr-f .btn{width:100%;margin-top:8px}
+.toast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%) translateY(20px);z-index:70;background:var(--nv);color:var(--cr);border-radius:999px;padding:8px 8px 8px 18px;display:flex;align-items:center;gap:12px;font-size:14px;box-shadow:0 14px 30px rgba(13,27,42,.35);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;max-width:calc(100% - 32px)}
+.toast.on{opacity:1;transform:translateX(-50%);pointer-events:auto}
+.toast span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.toast button{flex:none;border:0;border-radius:999px;background:var(--gd);color:var(--nv);font:600 13px 'DM Sans',sans-serif;padding:8px 14px;cursor:pointer}
+@media(max-width:900px){.cal-wrap{grid-template-columns:1fr}.cal-card{max-width:520px}}
+@media(max-width:600px){.flot{display:none}.toast{bottom:18px}.cart-btn{margin-left:10px;width:40px;height:40px}.cal-card{padding:16px 14px 14px}.cc-d{height:40px}.cc-mo{font-size:22px}.cal-sel b{font-size:21px}}
 </style>
 </head><body data-no-tr>
 <header class="hdr"><a href="/" aria-label="Celestia Chef Privado"><img src="/img/img-d316320d6b.webp" alt="Celestia Chef Privado"></a>
-<nav><a href="#cajas">Cajas</a><a href="#mercadito">Mercadito</a><a href="#como">Cómo llega</a><a href="#regenerar">Cómo regenerar</a><a href="#faq">Preguntas</a><a class="cta" href="#pedido">Hacer mi pedido</a></nav></header>
+<nav><a href="#cajas">Cajas</a><a href="#mercadito">Mercadito</a><a href="#como">Cómo llega</a><a href="#regenerar">Cómo regenerar</a><a href="#faq">Preguntas</a><a class="cta" href="#pedido">Hacer mi pedido</a></nav>
+<button type="button" class="cart-btn" id="cart-btn" aria-label="Ver carrito"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6 5 3H2"/><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/></svg><b id="cart-n">0</b></button></header>
+<div class="dr-ov" id="dr-ov"></div>
+<aside class="drawer" id="drawer" aria-label="Carrito" aria-hidden="true">
+  <div class="dr-h"><div><span class="cc-k" style="color:#a08a5c">Tu carrito</span><b id="dr-tit">Cajas Celestia</b></div><button type="button" class="dr-x" id="dr-x" aria-label="Cerrar">✕</button></div>
+  <div class="dr-ent" id="dr-ent"></div>
+  <div class="dr-list" id="dr-list"></div>
+  <div class="dr-f" id="dr-f"></div>
+</aside>
+<div class="toast" id="toast"></div>
 
 <section class="hero hx hxf">
   <div class="hxf-bg" aria-hidden="true"></div>
@@ -406,7 +498,7 @@ section{padding:70px 0}
   <p class="cred">Imagen de la caja: ilustrativa. Fotos de referencia: Zoe, Myriam Zilles, Tomáš Vydržal, American Heritage Chocolate, Priscilla Du Preez, Stefan Vladimirov, Luisa Brimble, krakenimages, Hailey Tong, Kelsey Chance, We The Creators, blackieshoot, José Ignacio Pompé, Orkun Orcan, Jason Leung, Tatyana Vega, sheri silver, Paras Kapoor, Anton, Egidijus Bielskis, Markus Winkler, Deborah Rainford, Serghey Savchuk, Lee Milo, Vered Caspi, Brett Jordan · Unsplash</p>
 </div></section>
 
-<div class="flot" id="flot"><span id="flot-t"></span><a class="btn" href="#pedido">Ver pedido</a></div>
+<div class="flot" id="flot"><span id="flot-t"></span><button type="button" class="btn" id="flot-b">🛒 Ver carrito</button></div>
 <footer class="ftr"><a href="/">chefprivado.ar</a>·<a href="/blog">Blog</a>·<a href="/terminos">Términos</a>·<a href="https://www.instagram.com/celestiachefprivado/" target="_blank" rel="noopener">Instagram</a><div style="margin-top:8px">Celestia · Chef Privado · Buenos Aires © 2026</div></footer>
 
 <script>
@@ -517,30 +609,60 @@ function pintarOcasiones() {
   document.getElementById('faq-cierre').textContent = 'Con al menos ' + ANTICIPACION_HORAS + ' horas de anticipación, así tu caja se elabora con producto fresco comprado para tu pedido.' +
     (ks.filter(temporada).length ? ' Para las fiestas: ' + ks.filter(temporada).map(k => OCASIONES[k].nombre + ' hasta el ' + fechaLarga(OCASIONES[k].cierre)).join(' y ') + ', o hasta completar los cupos.' : '');
 }
+let calMes = null;
+const MESES_DN = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
+function diaEstado(f) {
+  const o = OCASIONES[st.ocasion];
+  if (temporada(st.ocasion)) return f === o.fecha ? 'ok' : 'no';
+  if (f < primeraFecha() || f > ultimaFecha()) return 'no';
+  if (BLOQ.has(f)) return 'oc';
+  return 'ok';
+}
 function pintarCuando() {
   const C = document.getElementById('cuando'), o = OCASIONES[st.ocasion];
   if (!o) { C.innerHTML = ''; return; }
   const franjas = o.franjas || FRANJAS;
   if (temporada(st.ocasion)) st.fecha = o.fecha;
-  let h = `<div class="paso" style="margin-bottom:10px">🚚 ¿Cuándo la recibís?</div>`;
-  if (temporada(st.ocasion)) h += `<p style="font-size:15px;margin-bottom:10px">Entrega el <b>${fechaLarga(o.fecha)}</b>, el día del evento.</p>`;
-  else {
-    const bloq = st.fecha && BLOQ.has(st.fecha), corta = st.fecha && st.fecha < primeraFecha();
-    h += `<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:6px"><input type="date" class="in" id="f-fecha" style="width:auto;margin:0" min="${primeraFecha()}" max="${ultimaFecha()}" value="${st.fecha || ''}">
-      <span style="font-size:13.5px;color:var(--mut)">${st.fecha && !bloq && !corta ? fechaLarga(st.fecha) : 'Desde el ' + fechaLarga(primeraFecha()) + ' (' + ANTICIPACION_HORAS + ' h de anticipación)'}</span></div>
-      ${bloq ? '<p class="cpmsg warn">Ese día no tengo cupo. Elegí otra fecha o escribime por WhatsApp.</p>' : corta ? '<p class="cpmsg warn">Necesito al menos ' + ANTICIPACION_HORAS + ' h de anticipación para elaborar tu caja.</p>' : ''}`;
+  const base = st.fecha || (temporada(st.ocasion) ? o.fecha : primeraFecha());
+  if (!calMes) calMes = base.slice(0, 7);
+  if (temporada(st.ocasion)) calMes = o.fecha.slice(0, 7);
+  const [y, m] = calMes.split('-').map(Number), d0 = new Date(y, m - 1, 1), dias = new Date(y, m, 0).getDate(), off = (d0.getDay() + 6) % 7;
+  const minMes = primeraFecha().slice(0, 7), maxMes = ultimaFecha().slice(0, 7), hoyIso = iso(new Date());
+  let cel = ''; for (let k = 0; k < off; k++) cel += '<span class="cc-d vac"></span>';
+  for (let n = 1; n <= dias; n++) {
+    const f = calMes + '-' + String(n).padStart(2, '0'), es = diaEstado(f), dw = new Date(y, m - 1, n).getDay();
+    const cls = ['cc-d', [0, 5, 6].includes(dw) && es === 'ok' ? 'we' : '', f === hoyIso ? 'hoy' : '', es === 'oc' ? 'oc' : '', st.fecha === f ? 'on' : ''].filter(Boolean).join(' ');
+    cel += `<button type="button" class="${cls}" style="--i:${n}" data-f="${f}" ${es === 'ok' ? '' : 'disabled'}>${n}</button>`;
   }
-  h += `<div class="franjas">${franjas.map(f => `<button type="button" class="fr${st.franja === f ? ' on' : ''}" data-f="${f}">${f}</button>`).join('')}</div>`;
-  C.innerHTML = h;
-  const inp = document.getElementById('f-fecha'); if (inp) inp.addEventListener('change', () => { st.fecha = inp.value; guardar(); pintarCuando(); pintarRes(); });
+  const cap = t => t.charAt(0).toUpperCase() + t.slice(1);
+  const mesTxt = cap(d0.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' }));
+  const selTxt = st.fecha ? cap(fechaLarga(st.fecha)) : 'Elegí un día';
+  C.innerHTML = `<div class="paso" style="margin-bottom:12px">🚚 ¿Cuándo la recibís?</div>
+  <div class="cal-wrap"><div class="cc cal-card${C.dataset.mes === calMes ? ' cc-still' : ''}">
+    <div class="cc-top"><div><span class="cc-k">${temporada(st.ocasion) ? o.icono + ' ' + o.nombre + ' · entrega el día del evento' : 'Entrega a domicilio · ' + ANTICIPACION_HORAS + ' h de anticipación'}</span><span class="cc-mo"><span>${mesTxt}</span></span></div>
+      <div class="cc-nav"><button type="button" data-nav="-1" aria-label="Mes anterior" ${temporada(st.ocasion) || calMes <= minMes ? 'disabled' : ''}>‹</button><button type="button" data-nav="1" aria-label="Mes siguiente" ${temporada(st.ocasion) || calMes >= maxMes ? 'disabled' : ''}>›</button></div></div>
+    <div class="cc-dn">${MESES_DN.map(x => `<span>${x}</span>`).join('')}</div>
+    <div class="cc-grid">${cel}</div>
+    <div class="cc-leg"><span><i>●</i> Viernes a domingo</span><span><s>15</s> Sin cupo</span></div>
+  </div>
+  <div class="cal-side">
+    <div class="cal-sel"><span class="cc-k" style="color:#a08a5c">Tu entrega</span><b>${selTxt}</b>${st.franja ? `<small>${st.franja}</small>` : '<small>Elegí la franja horaria</small>'}</div>
+    <div class="cal-fr">${franjas.map(f => `<button type="button" class="fr${st.franja === f ? ' on' : ''}" data-fr="${f}"><span>🕒</span>${f}</button>`).join('')}</div>
+    <p class="cal-nota">La caja llega fría y lista para la heladera. Si necesitás otra franja, contámelo en las notas del pedido.</p>
+  </div></div>`;
+  C.dataset.mes = calMes;
 }
+document.getElementById('cuando').addEventListener('click', e => {
+  const d = e.target.closest('.cc-d[data-f]'); if (d && !d.disabled) { st.fecha = d.dataset.f; guardar(); pintarCuando(); pintarRes(); return; }
+  const nv = e.target.closest('[data-nav]'); if (nv && !nv.disabled) { const [y, m] = calMes.split('-').map(Number); const t = new Date(y, m - 1 + (+nv.dataset.nav), 1); calMes = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0'); document.getElementById('cuando').dataset.mes = ''; pintarCuando(); return; }
+  const f = e.target.closest('[data-fr]'); if (f) { st.franja = f.dataset.fr; guardar(); pintarCuando(); pintarRes(); }
+});
 document.getElementById('ocasiones').addEventListener('click', e => {
   const b = e.target.closest('.fz'); if (!b || b.disabled) return;
-  const prev = st.ocasion; st.ocasion = b.dataset.k; if (prev !== st.ocasion) { st.franja = null; if (temporada(st.ocasion) || (prev && temporada(prev))) st.fecha = null; }
+  const prev = st.ocasion; st.ocasion = b.dataset.k; if (prev !== st.ocasion) { st.franja = null; calMes = null; document.getElementById('cuando').dataset.mes = ''; if (temporada(st.ocasion) || (prev && temporada(prev))) st.fecha = null; }
   st.carrito = st.carrito.filter(x => { const c = CAJAS.find(y => y.id === x.id) || MERCADITO.find(y => y.id === x.id); return c && enCaja(c, st.ocasion); });
   guardar(); pintarOcasiones(); pintarCuando(); pintarCatalogo(); pintarRes(); track('cajas_ocasion', { ocasion: st.ocasion });
 });
-document.getElementById('cuando').addEventListener('click', e => { const b = e.target.closest('.fr'); if (!b) return; st.franja = b.dataset.f; guardar(); pintarCuando(); pintarRes(); });
 
 /* ═════════ catálogo ═════════ */
 function opciones(c) { return c.tipo === 'pp' ? c.personas.map(p => ({ label: p + ' personas', personas: p, precio: p * c.pp })) : c.opciones; }
@@ -552,7 +674,7 @@ function cajaHTML(c) {
       <ul class="menu">${c.menu.map(m => `<li><span>${m[0]}</span><div>${m[1]}</div></li>`).join('')}</ul>
       ${opts.length > 1 ? `<div class="opc">${opts.map((x, i) => `<button type="button" class="op${i === sel ? ' on' : ''}" data-op="${i}">${x.label}</button>`).join('')}</div>` : ''}
       <div class="pie"><div class="precio"><b>${f$(o.precio)}</b><small>${c.tipo === 'pp' ? f$(c.pp) + ' por persona' : o.label}</small></div>
-        <button type="button" class="btn add" data-add="${c.id}">Sumar al pedido</button></div>
+        <button type="button" class="btn add" data-add="${c.id}">Agregar al carrito</button></div>
     </div></article>`;
 }
 function pintarCatalogo() {
@@ -578,14 +700,14 @@ document.addEventListener('click', e => {
     const c = CAJAS.find(x => x.id === add.dataset.add), o = opciones(c)[st.sel[c.id] || 0], key = c.id + '|' + o.label;
     if (!st.ocasion) { const k = c.ocasiones.find(x => visible(x) && abierta(x) && !temporada(x)) || c.ocasiones.find(x => visible(x) && abierta(x)); if (k) { st.ocasion = k; pintarOcasiones(); pintarCuando(); } }
     const it = st.carrito.find(x => x.key === key); if (it) it.cant++; else st.carrito.push({ key, id: c.id, nombre: c.nombre, variante: o.label, personas: o.personas, precio: o.precio, cant: 1 });
-    guardar(); pintarCatalogo(); pintarRes(); const b = document.querySelector('[data-add="' + c.id + '"]'); if (b) { b.textContent = '✓ Sumado'; b.classList.add('ok'); setTimeout(() => { b.textContent = 'Sumar al pedido'; b.classList.remove('ok'); }, 1400); } bump();
+    guardar(); pintarCatalogo(); pintarRes(); const b = document.querySelector('[data-add="' + c.id + '"]'); if (b) { b.textContent = '✓ Agregado'; b.classList.add('ok'); setTimeout(() => { b.textContent = 'Agregar al carrito'; b.classList.remove('ok'); }, 1400); } bump(); avisar(c.nombre + ' · ' + o.label);
     track('cajas_agregar', { producto: c.id, variante: o.label, value: o.precio, currency: 'ARS' }); return;
   }
   const q = e.target.closest('[data-m]'); if (q) {
     const m = MERCADITO.find(x => x.id === q.dataset.m), d = +q.dataset.d; let it = st.carrito.find(x => x.id === m.id);
     if (!it && d > 0) { it = { key: m.id, id: m.id, nombre: m.nombre, variante: m.det, personas: 0, precio: m.precio, cant: 0 }; st.carrito.push(it); }
     if (it) { it.cant += d; if (it.cant <= 0) st.carrito = st.carrito.filter(x => x !== it); }
-    guardar(); pintarCatalogo(); pintarRes(); if (d > 0) bump(); return;
+    guardar(); pintarCatalogo(); pintarRes(); if (d > 0) { bump(); avisar(m.nombre); } return;
   }
   const del = e.target.closest('[data-del]'); if (del) { st.carrito.splice(+del.dataset.del, 1); guardar(); pintarCatalogo(); pintarRes(); }
 });
@@ -634,9 +756,10 @@ function pintarRes() {
     <button type="button" class="btn" id="b-conf" ${fal.length ? 'disabled' : ''}>Confirmar pedido</button>
     <div class="err" id="err">${fal.length && st.carrito.length ? 'Falta: ' + fal.join(', ') + '.' : ''}</div>`;
   const n = st.carrito.reduce((a, x) => a + x.cant, 0);
-  document.getElementById('flot-t').innerHTML = n ? `<b>${n}</b> ${n === 1 ? 'producto' : 'productos'} · ${f$(t.sub)}` : '';
+  document.getElementById('flot-t').innerHTML = n ? `<b>${n}</b> en el carrito · ${f$(t.sub)}` : '';
   actualizarFlot();
   const b = document.getElementById('b-conf'); if (b) b.onclick = confirmar;
+  pintarCarrito();
 }
 function actualizarFlot() { const p = document.getElementById('pedido').getBoundingClientRect(); document.getElementById('flot').classList.toggle('on', st.carrito.length > 0 && p.top > innerHeight * .6); }
 addEventListener('scroll', actualizarFlot, { passive: true });
@@ -681,6 +804,49 @@ function resumenTexto(ref, r) {
 }
 
 
+
+/* ═════════ carrito (drawer) ═════════ */
+function fotoDe(x) {
+  const c = CAJAS.find(y => y.id === x.id) || MERCADITO.find(y => y.id === x.id); const im = (c && c.img) || '';
+  return im.charAt(0) === '/' ? im : U(im, 160, 160);
+}
+function abrirCarrito() { pintarCarrito(); document.getElementById('drawer').classList.add('on'); document.getElementById('dr-ov').classList.add('on'); document.getElementById('drawer').setAttribute('aria-hidden', 'false'); document.body.style.overflow = 'hidden'; track('cajas_ver_carrito'); }
+function cerrarCarrito() { document.getElementById('drawer').classList.remove('on'); document.getElementById('dr-ov').classList.remove('on'); document.getElementById('drawer').setAttribute('aria-hidden', 'true'); document.body.style.overflow = ''; }
+function pintarCarrito() {
+  const t = totales(), o = OCASIONES[st.ocasion], n = st.carrito.reduce((a, x) => a + x.cant, 0);
+  const badge = document.getElementById('cart-n'); badge.textContent = n; badge.style.display = n ? 'flex' : 'none';
+  document.getElementById('dr-tit').textContent = n ? n + (n === 1 ? ' producto' : ' productos') : 'Está vacío';
+  document.getElementById('dr-ent').innerHTML = o ? `<span>${o.icono}</span><div><b>${o.nombre}</b><small>${st.fecha && fechaOK() ? 'Entrega ' + fechaLarga(st.fecha) + (st.franja ? ' · ' + st.franja : '') : 'Falta elegir la fecha de entrega'}</small></div><a href="#cajas" data-cerrar>Cambiar</a>` : `<span>📅</span><div><b>Elegí la ocasión</b><small>Así te muestro las fechas disponibles</small></div><a href="#cajas" data-cerrar>Elegir</a>`;
+  document.getElementById('dr-list').innerHTML = st.carrito.length ? st.carrito.map((x, i) => `
+    <div class="dr-it"><img src="${fotoDe(x)}" alt="">
+      <div class="dr-in"><b>${x.nombre}</b><small>${x.variante}</small>
+        <div class="dr-q"><button type="button" data-cq="${i}" data-d="-1" aria-label="Quitar uno">−</button><span>${x.cant}</span><button type="button" data-cq="${i}" data-d="1" aria-label="Sumar uno">+</button><button type="button" class="dr-del" data-del="${i}">Eliminar</button></div></div>
+      <strong>${f$(x.precio * x.cant)}</strong></div>`).join('') :
+    `<div class="dr-vacio"><span>🧺</span><b>Tu carrito está vacío</b><small>Sumá una caja o algo del mercadito.</small><a class="btn" href="#cajas" data-cerrar>Ver las cajas</a></div>`;
+  document.getElementById('dr-f').innerHTML = st.carrito.length ? `
+    <div class="ln"><span>Subtotal</span><span>${f$(t.sub)}</span></div>
+    <div class="ln"><span>Envío</span><span>${!t.z ? 'según tu código postal' : t.z.z === 'fuera' ? 'a cotizar' : f$(t.env)}</span></div>
+    <div class="tot"><span>Total</span><b>${f$(t.tot)}</b></div>
+    <small class="dr-sena">Reservás con el 50%: ${f$(t.sena)} · el resto al recibir</small>
+    <a class="btn" href="#pedido" data-cerrar>Finalizar pedido →</a>
+    <button type="button" class="btn sec" data-cerrar>Seguir comprando</button>` : '';
+}
+document.getElementById('cart-btn').addEventListener('click', abrirCarrito);
+document.getElementById('flot-b').addEventListener('click', abrirCarrito);
+document.getElementById('dr-x').addEventListener('click', cerrarCarrito);
+document.getElementById('dr-ov').addEventListener('click', cerrarCarrito);
+addEventListener('keydown', e => { if (e.key === 'Escape') cerrarCarrito(); });
+document.getElementById('drawer').addEventListener('click', e => {
+  if (e.target.closest('[data-cerrar]')) { cerrarCarrito(); return; }
+  const q = e.target.closest('[data-cq]'); if (q) { const x = st.carrito[+q.dataset.cq]; x.cant += +q.dataset.d; if (x.cant <= 0) st.carrito.splice(+q.dataset.cq, 1); guardar(); pintarCatalogo(); pintarRes(); return; }
+});
+let _tt;
+function avisar(txt) {
+  const el = document.getElementById('toast'); el.innerHTML = `<span>✓ ${txt}</span><button type="button" id="toast-v">Ver carrito</button>`;
+  el.classList.add('on'); document.getElementById('toast-v').onclick = () => { el.classList.remove('on'); abrirCarrito(); };
+  clearTimeout(_tt); _tt = setTimeout(() => el.classList.remove('on'), 3200);
+  const b = document.getElementById('cart-btn'); b.classList.remove('bump'); void b.offsetWidth; b.classList.add('bump');
+}
 /* ═════════ animaciones ═════════ */
 (function () {
   const sl = [...document.querySelectorAll('.hx-sl')], dots = document.querySelector('.hx-dots'); let i = 0, t;
