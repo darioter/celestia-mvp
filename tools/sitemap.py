@@ -9,6 +9,7 @@ def generar():
     hoy = datetime.date.today().isoformat()
     urls = [(SITE + '/', '1.0', 'weekly')]
     urls += [(f'{SITE}/{s}', '0.9', 'monthly') for s in SERVICIOS if os.path.exists(os.path.join(ROOT, s, 'index.html'))]
+    if os.path.exists(os.path.join(ROOT, 'cajas', 'index.html')): urls.append((SITE + '/cajas', '0.9', 'weekly'))
     if os.path.exists(os.path.join(ROOT, 'aprende', 'index.html')): urls.append((SITE + '/aprende', '0.8', 'monthly'))
     if os.path.exists(os.path.join(ROOT, 'blog', 'index.html')): urls.append((SITE + '/blog', '0.7', 'weekly'))
     for p in sorted(glob.glob(os.path.join(ROOT, 'blog', '*', 'index.html'))):
