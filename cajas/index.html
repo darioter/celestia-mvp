@@ -213,6 +213,28 @@ section{padding:70px 0}
 @media(max-width:900px){.hx-in{grid-template-columns:1fr;gap:40px;padding:44px 20px 64px}.hx-vis{order:-1}.como-g{grid-template-columns:1fr}.como-img{max-width:420px}}
 @media(max-width:600px){.hx-badge{font-size:12px;padding:7px 12px}.hx-badge.b1{left:6px}.hx-badge.b2{right:6px}.como-g .pasos3{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}.hx-sl.on,.hx-badge,.hx-glow,.hx-tx,.hx-vis{animation:none}}
+
+/* Ocasiones con foto */
+.fiestas.oc .fz{position:relative;overflow:hidden;min-height:210px;justify-content:flex-end;color:var(--cr);border:0;background:var(--nv);padding:18px;box-shadow:0 10px 26px rgba(13,27,42,.14)}
+.fiestas.oc .fz::before{content:'';position:absolute;inset:0;background:var(--bg) center/cover;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.fiestas.oc .fz::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,27,42,.05) 25%,rgba(13,27,42,.55) 55%,rgba(13,27,42,.94) 100%)}
+.fiestas.oc .fz>*{position:relative;z-index:1}
+.fiestas.oc .fz:hover::before{transform:scale(1.08)}
+.fiestas.oc .fz i{position:absolute;top:12px;left:12px;font-size:20px;width:40px;height:40px;border-radius:50%;background:rgba(250,246,239,.92);display:flex;align-items:center;justify-content:center;margin:0}
+.fiestas.oc .fz b{color:var(--cr);font-size:23px}
+.fiestas.oc .fz small{color:rgba(250,246,239,.82)}
+.fiestas.oc .fz .cierre{margin-top:8px;background:rgba(232,201,106,.95);color:var(--nv)}
+.fiestas.oc .fz.on{background:var(--nv);box-shadow:0 0 0 3px var(--gd),0 14px 30px rgba(13,27,42,.25)}
+.fiestas.oc .fz.on::after{background:linear-gradient(180deg,rgba(201,168,76,.12) 20%,rgba(13,27,42,.6) 55%,rgba(13,27,42,.95) 100%)}
+.fiestas.oc .fz.on i::after{content:'✓';position:absolute;right:-4px;bottom:-4px;width:18px;height:18px;border-radius:50%;background:var(--gd);color:var(--nv);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;font-style:normal}
+/* Mercadito con foto del plato */
+.mi{grid-template-rows:auto auto auto 1fr;padding:0 0 14px;overflow:hidden}
+.mi .ph{display:block;aspect-ratio:4/3;overflow:hidden;margin-bottom:12px;background:var(--nv)}
+.mi .ph img{width:100%;height:100%;object-fit:cover;transition:transform .7s cubic-bezier(.2,.7,.2,1)}
+.mi:hover .ph img{transform:scale(1.07)}
+.mi b,.mi small,.mi .row{margin-left:16px;margin-right:16px}
+.mi .badge{z-index:2;top:10px;right:10px}
+@media(max-width:600px){.fiestas.oc .fz{min-height:170px;padding:14px}.fiestas.oc .fz b{font-size:19px}.fiestas.oc.impar .fz:last-child{min-height:150px}.mi{padding:0 0 12px}.mi b,.mi small,.mi .row{margin-left:12px;margin-right:12px}}
 </style>
 </head><body data-no-tr>
 <header class="hdr"><a href="/" aria-label="Celestia Chef Privado"><img src="/img/img-d316320d6b.webp" alt="Celestia Chef Privado"></a>
@@ -296,7 +318,7 @@ section{padding:70px 0}
     <details><summary>¿Puedo cambiar o cancelar el pedido?</summary><p>Podés cambiar el menú o la cantidad de personas hasta 72 horas antes de la entrega. La seña confirma tu fecha y no es reembolsable, porque la mercadería se compra para tu pedido.</p></details>
     <details><summary>¿Y si prefiero que cocines en mi casa?</summary><p>También se puede: mirá las <a href="/">experiencias de chef privado</a>, con el servicio completo en tu mesa.</p></details>
   </div>
-  <p class="cred">Fotos de las cajas: imágenes ilustrativas. Otras fotos de referencia: Kelsey Chance, Tomáš Vydržal, American Heritage Chocolate · Unsplash</p>
+  <p class="cred">Fotos de las cajas y del mercadito: imágenes ilustrativas. Fotos de referencia: Zoe, Myriam Zilles, Tomáš Vydržal, American Heritage Chocolate, Priscilla Du Preez, krakenimages, Hailey Tong, Kelsey Chance, We The Creators, blackieshoot · Unsplash</p>
 </div></section>
 
 <div class="flot" id="flot"><span id="flot-t"></span><a class="btn" href="#pedido">Ver pedido</a></div>
@@ -307,23 +329,23 @@ section{padding:70px 0}
 const ANTICIPACION_HORAS = 48;           // pedidos comunes: mínimo 48 h antes de la entrega
 const FRANJAS = ['10 a 13 h', '16 a 19 h'];
 const OCASIONES = {
-  navidad:    { nombre: 'Navidad',        icono: '🎄', sub: 'Nochebuena · 24 de diciembre', fecha: '2026-12-24', cierre: '2026-12-21', franjas: ['9 a 13 h', '13 a 17 h'] },
-  anio_nuevo: { nombre: 'Año Nuevo',      icono: '🥂', sub: 'Fin de año · 31 de diciembre', fecha: '2026-12-31', cierre: '2026-12-28', franjas: ['9 a 13 h', '13 a 17 h'] },
-  romantica:  { nombre: 'Cena romántica', icono: '❤️', sub: 'Aniversario, San Valentín o porque sí' },
-  cumple:     { nombre: 'Cumpleaños',     icono: '🎂', sub: 'Festejá en casa sin cocinar' },
-  amigos:     { nombre: 'Cena con amigos', icono: '🍽️', sub: 'Cualquier ocasión especial' }
+  navidad:    { nombre: 'Navidad',        img: 'photo-1640331703778-9aac4d988e26', icono: '🎄', sub: 'Nochebuena · 24 de diciembre', fecha: '2026-12-24', cierre: '2026-12-21', franjas: ['9 a 13 h', '13 a 17 h'] },
+  anio_nuevo: { nombre: 'Año Nuevo',      img: 'photo-1608416026650-66b4e0c0c301', icono: '🥂', sub: 'Fin de año · 31 de diciembre', fecha: '2026-12-31', cierre: '2026-12-28', franjas: ['9 a 13 h', '13 a 17 h'] },
+  romantica:  { nombre: 'Cena romántica', img: 'photo-1529521001454-2cf987c34008', icono: '❤️', sub: 'Aniversario, San Valentín o porque sí' },
+  cumple:     { nombre: 'Cumpleaños',     img: 'photo-1588195538326-c5b1e9f80a1b', icono: '🎂', sub: 'Festejá en casa sin cocinar' },
+  amigos:     { nombre: 'Cena con amigos', img: 'photo-1528605248644-14dd04022da1', icono: '🍽️', sub: 'Cualquier ocasión especial' }
 };
 const SENIA = 0.5;
 /* Cajas: tipo 'pp' = precio por persona (elegís personas) · tipo 'fijo' = opciones con precio cerrado.
    ocasiones: en cuáles aparece. */
 const CAJAS = [
-  { id: 'cena-tradicion', grupo: 'Cenas completas', nombre: 'Cena Tradición', tag: 'Los clásicos de las fiestas', img: '/img/cajas/tradicion.webp', tipo: 'pp', pp: 48000, personas: [4, 6, 8, 10],
+  { id: 'cena-tradicion', grupo: 'Cenas completas', nombre: 'Cena Tradición', tag: 'Los clásicos de las fiestas', img: 'photo-1601118964938-228a89955311', tipo: 'pp', pp: 48000, personas: [4, 6, 8, 10],
     ocasiones: ['navidad', 'anio_nuevo'], lead: 'La mesa de las fiestas argentinas, hecha como en un restaurante.',
     menu: [['Entradas', 'Vitel toné de peceto con salsa atonnata casera · Pionono salado de jamón crudo, rúcula y queso crema'],
            ['Principal', 'Matambre de ternera arrollado con verduras y huevo · Pollo deshuesado relleno de verduras y hongos'],
            ['Guarnición', 'Ensalada rusa de chef con mayonesa casera · Hojas verdes, manzana verde y nueces'],
            ['Postre', 'Tiramisú']] },
-  { id: 'cena-celestia', grupo: 'Cenas completas', nombre: 'Cena Celestia', tag: 'La de autor', img: '/img/cajas/celestia.webp', tipo: 'pp', pp: 68000, personas: [4, 6, 8, 10],
+  { id: 'cena-celestia', grupo: 'Cenas completas', nombre: 'Cena Celestia', tag: 'La de autor', img: 'photo-1735190093468-e59af2d86382', tipo: 'pp', pp: 68000, personas: [4, 6, 8, 10],
     ocasiones: ['navidad', 'anio_nuevo', 'cumple', 'amigos'], lead: 'Para una noche distinta: producto premium y sabores de chef.',
     menu: [['Entradas', 'Burrata con tomates confitados, pesto y focaccia de romero · Langostinos con mayonesa de lima y palta'],
            ['Principal', 'Lomo al Malbec con chimichurri de hierbas · Bondiola braseada a la cerveza y miel'],
@@ -341,12 +363,12 @@ const CAJAS = [
            ['Principal', 'Lomo al Malbec con papas confitadas al romero'],
            ['Postre', 'Volcán de chocolate con frutos rojos'],
            ['Incluye', 'Guía para regenerar y emplatar, con sugerencia de vino']] },
-  { id: 'bocados', grupo: 'Para picar y brindar', nombre: 'Bocados y picada', tag: 'Para la previa y el brindis', img: '/img/cajas/bocados.webp', tipo: 'fijo',
+  { id: 'bocados', grupo: 'Para picar y brindar', nombre: 'Bocados y picada', tag: 'Para la previa y el brindis', img: 'photo-1678572823447-45fc146df43c', tipo: 'fijo',
     opciones: [{ label: '8 personas', personas: 8, precio: 240000 }, { label: '12 personas', personas: 12, precio: 345000 }, { label: '20 personas', personas: 20, precio: 540000 }],
     ocasiones: ['navidad', 'anio_nuevo', 'cumple', 'amigos'], lead: '8 bocados por persona en 6 variedades, más una tabla de quesos y fiambres.',
     menu: [['Bocados', 'Bruschettas de tomates confitados · Tartaletas de queso azul y pera · Mini empanadas de carne cortada a cuchillo · Langostinos crocantes con alioli · Brochettes caprese · Rolls de jamón crudo y rúcula'],
            ['Picada', 'Quesos, fiambres, frutos secos, panes y grisines caseros']] },
-  { id: 'mesa-dulce', grupo: 'Postres', nombre: 'Mesa dulce navideña', tag: 'Todo casero', img: '/img/cajas/dulce.webp', tipo: 'fijo', opciones: [{ label: 'Para 8 a 10', personas: 10, precio: 89000 }],
+  { id: 'mesa-dulce', grupo: 'Postres', nombre: 'Mesa dulce navideña', tag: 'Todo casero', img: 'photo-1636394849426-39501364873c', tipo: 'fijo', opciones: [{ label: 'Para 8 a 10', personas: 10, precio: 89000 }],
     ocasiones: ['navidad', 'anio_nuevo'], lead: 'Lo dulce de la sobremesa, hecho a mano.',
     menu: [['Incluye', 'Pan dulce de autor (1 kg) · Budín de limón y amapola · Turrón de almendras y miel · Garrapiñada · 6 alfajores de maicena · 12 trufas de chocolate']] },
   { id: 'torta', grupo: 'Postres', nombre: 'Torta de cumpleaños', tag: 'Con vela y cartel', img: 'photo-1588195538326-c5b1e9f80a1b', tipo: 'fijo',
@@ -355,20 +377,20 @@ const CAJAS = [
     menu: [['Sabores', 'Chajá (merengue, durazno y dulce de leche) · Selva negra · Rogel · Lemon pie']] }
 ];
 const MERCADITO = [
-  { id: 'm-vitel', ic: '🥩', nombre: 'Vitel toné', det: 'Para 6 personas', precio: 46000, ocasiones: ['navidad', 'anio_nuevo'] },
-  { id: 'm-pionono', ic: '🥖', nombre: 'Pionono salado', det: 'Jamón crudo, rúcula y queso · 8 porciones', precio: 28000 },
-  { id: 'm-lomo', ic: '🍷', nombre: 'Lomo al Malbec', det: '1 kg, con chimichurri', precio: 78000 },
-  { id: 'm-matambre', ic: '🥩', nombre: 'Matambre arrollado', det: '1 kg, laminado', precio: 42000 },
-  { id: 'm-langostinos', ic: '🦐', nombre: 'Langostinos con mayo de lima', det: '500 g', precio: 54000 },
-  { id: 'm-burrata', ic: '🧀', nombre: 'Burratas con tomates confitados', det: '2 unidades con pesto', precio: 24000 },
-  { id: 'm-empanadas', ic: '🥟', nombre: 'Empanadas de carne cortada a cuchillo', det: '12 unidades, para hornear', precio: 30000 },
-  { id: 'm-rusa', ic: '🥗', nombre: 'Ensalada rusa de chef', det: '1 kg', precio: 16000 },
-  { id: 'm-papas', ic: '🥔', nombre: 'Papas confitadas al romero', det: '1 kg, para regenerar', precio: 18000 },
-  { id: 'm-pavlova', ic: '🍓', nombre: 'Pavlova de frutos rojos', det: '8 porciones', precio: 42000 },
-  { id: 'm-tiramisu', ic: '☕', nombre: 'Tiramisú', det: '8 porciones', precio: 38000 },
-  { id: 'm-pandulce', ic: '🍞', nombre: 'Pan dulce de autor', det: '1 kg', precio: 32000, ocasiones: ['navidad', 'anio_nuevo'] },
-  { id: 'm-turron', ic: '🍯', nombre: 'Turrón de almendras y miel', det: '300 g', precio: 15000, ocasiones: ['navidad', 'anio_nuevo'] },
-  { id: 'm-garrapinada', ic: '🥜', nombre: 'Garrapiñada', det: '250 g', precio: 8000, ocasiones: ['navidad', 'anio_nuevo'] }
+  { id: 'm-vitel', img: '/img/cajas/m/vitel.webp', ic: '🥩', nombre: 'Vitel toné', det: 'Para 6 personas', precio: 46000, ocasiones: ['navidad', 'anio_nuevo'] },
+  { id: 'm-pionono', img: '/img/cajas/m/pionono.webp', ic: '🥖', nombre: 'Pionono salado', det: 'Jamón crudo, rúcula y queso · 8 porciones', precio: 28000 },
+  { id: 'm-lomo', img: '/img/cajas/m/lomo.webp', ic: '🍷', nombre: 'Lomo al Malbec', det: '1 kg, con chimichurri', precio: 78000 },
+  { id: 'm-matambre', img: '/img/cajas/m/matambre.webp', ic: '🥩', nombre: 'Matambre arrollado', det: '1 kg, laminado', precio: 42000 },
+  { id: 'm-langostinos', img: '/img/cajas/m/langostinos.webp', ic: '🦐', nombre: 'Langostinos con mayo de lima', det: '500 g', precio: 54000 },
+  { id: 'm-burrata', img: '/img/cajas/m/burrata.webp', ic: '🧀', nombre: 'Burratas con tomates confitados', det: '2 unidades con pesto', precio: 24000 },
+  { id: 'm-empanadas', img: '/img/cajas/m/empanadas.webp', ic: '🥟', nombre: 'Empanadas de carne cortada a cuchillo', det: '12 unidades, para hornear', precio: 30000 },
+  { id: 'm-rusa', img: '/img/cajas/m/rusa.webp', ic: '🥗', nombre: 'Ensalada rusa de chef', det: '1 kg', precio: 16000 },
+  { id: 'm-papas', img: '/img/cajas/m/papas.webp', ic: '🥔', nombre: 'Papas confitadas al romero', det: '1 kg, para regenerar', precio: 18000 },
+  { id: 'm-pavlova', img: '/img/cajas/m/pavlova.webp', ic: '🍓', nombre: 'Pavlova de frutos rojos', det: '8 porciones', precio: 42000 },
+  { id: 'm-tiramisu', img: '/img/cajas/m/tiramisu.webp', ic: '☕', nombre: 'Tiramisú', det: '8 porciones', precio: 38000 },
+  { id: 'm-pandulce', img: '/img/cajas/m/pandulce.webp', ic: '🍞', nombre: 'Pan dulce de autor', det: '1 kg', precio: 32000, ocasiones: ['navidad', 'anio_nuevo'] },
+  { id: 'm-turron', img: '/img/cajas/m/turron.webp', ic: '🍯', nombre: 'Turrón de almendras y miel', det: '300 g', precio: 15000, ocasiones: ['navidad', 'anio_nuevo'] },
+  { id: 'm-garrapinada', img: '/img/cajas/m/garrapinada.webp', ic: '🥜', nombre: 'Garrapiñada', det: '250 g', precio: 8000, ocasiones: ['navidad', 'anio_nuevo'] }
 ];
 /* Envío por código postal (parte numérica). Zona 1: CABA · Zona 2: GBA cercano · Zona 3: GBA más lejos */
 const ENVIO = { z1: 12000, z2: 16000, z3: 22000 };
@@ -403,7 +425,7 @@ function pintarOcasiones() {
   const G = document.getElementById('ocasiones'); G.style.setProperty('--n', ks.length); G.classList.toggle('impar', ks.length % 2 === 1);
   G.innerHTML = ks.map(k => {
     const o = OCASIONES[k], ab = abierta(k);
-    return `<button type="button" class="fz${st.ocasion === k ? ' on' : ''}${ab ? '' : ' cerrada'}" data-k="${k}" ${ab ? '' : 'disabled'}><i>${o.icono}</i><b>${o.nombre}</b><small>${o.sub}</small>${temporada(k) ? `<span class="cierre">${ab ? 'Pedidos hasta el ' + o.cierre.slice(8, 10) + '/' + o.cierre.slice(5, 7) : 'Pedidos cerrados'}</span>` : ''}</button>`;
+    return `<button type="button" class="fz${st.ocasion === k ? ' on' : ''}${ab ? '' : ' cerrada'}" data-k="${k}" ${ab ? '' : 'disabled'} style="--bg:url('${U(o.img, 600, 600)}')"><i>${o.icono}</i><b>${o.nombre}</b><small>${o.sub}</small>${temporada(k) ? `<span class="cierre">${ab ? 'Pedidos hasta el ' + o.cierre.slice(8, 10) + '/' + o.cierre.slice(5, 7) : 'Pedidos cerrados'}</span>` : ''}</button>`;
   }).join('');
   const temp = ks.filter(temporada).map(k => OCASIONES[k].nombre);
   if (temp.length) document.getElementById('hero-k').textContent = '✦ Cajas Celestia · ' + temp.join(' y ') + ' con cupos limitados';
@@ -456,7 +478,7 @@ function pintarCatalogo() {
     grupos.map(g => `<div class="cat-h"><h3>${g}</h3></div><div class="cajas">${lista.filter(c => c.grupo === g).map(cajaHTML).join('')}</div>`).join('');
   document.getElementById('merc').innerHTML = MERCADITO.filter(m => !oc ? true : enCaja(m, oc)).map(m => {
     const it = st.carrito.find(x => x.id === m.id), n = it ? it.cant : 0;
-    return `<div class="mi${n ? ' en' : ''}">${m.ocasiones ? '<span class="badge">Fiestas</span>' : ''}<span class="ic">${m.ic}</span><b>${m.nombre}</b><small>${m.det}</small>
+    return `<div class="mi${n ? ' en' : ''}">${m.ocasiones ? '<span class="badge">Fiestas</span>' : ''}<span class="ph"><img src="${m.img}" alt="${m.nombre}" loading="lazy"></span><b>${m.nombre}</b><small>${m.det}</small>
       <div class="row"><strong>${f$(m.precio)}</strong><span class="qty${n ? ' on' : ''}"><button type="button" data-m="${m.id}" data-d="-1" aria-label="Quitar">−</button><span>${n}</span><button type="button" data-m="${m.id}" data-d="1" aria-label="Sumar">+</button></span></div></div>`;
   }).join('');
 }
