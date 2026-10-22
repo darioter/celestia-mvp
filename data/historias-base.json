@@ -1,6 +1,127 @@
 {
  "notas": [
   {
+   "slug": "como-regenerar-comida-para-que-quede-como-recien-hecha",
+   "cat": "Cocina segura",
+   "icono": "🧼",
+   "titulo": "Cómo regenerar comida para que quede como recién hecha",
+   "bajada": "Recalentar no es lo mismo que regenerar. Temperaturas, tiempos y el método justo para cada cosa, para que lo que cocinaste ayer (o te llegó listo) se sirva como si saliera recién de la cocina.",
+   "img": "https://images.unsplash.com/photo-1584359246645-de78f6f10850?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1584359246645-de78f6f10850?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Louis Hansel",
+   "url": "https://www.chefprivado.ar/blog/como-regenerar-comida-para-que-quede-como-recien-hecha",
+   "tips": [
+    "Precalentá el horno siempre, entre 160 y 180 °C. Meter la fuente con el horno frío alarga el tiempo y seca la comida antes de que el centro se caliente."
+   ],
+   "datos": [
+    "Así funcionan nuestras Cajas Celestia: todo llega listo para la heladera, con una guía de tiempos y temperaturas para cada plato. Vos solo precalentás el horno y ponés la mesa."
+   ],
+   "secciones": [
+    {
+     "h2": "1. Antes de regenerar: la cadena de frío",
+     "texto": "Lo que se va a regenerar tiene que haber estado bien guardado."
+    },
+    {
+     "h2": "2. Lo que va caliente tiene que llegar bien caliente",
+     "texto": "Guisos, salsas, pollo, arroces y rellenos tienen que quedar bien calientes en el centro, no solo tibios por fuera."
+    },
+    {
+     "h2": "3. El método justo para cada cosa",
+     "texto": "Guisos, estofados, salsas · En olla a fuego bajo, tapado, con un chorrito de agua o caldo, revolviendo"
+    },
+    {
+     "h2": "4. Lo frío también se \"regenera\"",
+     "texto": "Quesos, burratas, fiambres, terrinas y muchos postres no se calientan, pero tampoco se sirven recién salidos de la heladera: el frío extremo apaga el sabor y endurece…"
+    },
+    {
+     "h2": "5. Microondas sí, pero bien",
+     "texto": "Tapá el plato (con otro plato o una tapa apta) para que el vapor ayude a calentar parejo."
+    },
+    {
+     "h2": "6. El orden de un servicio en casa",
+     "texto": "Precalentá el horno y sacá de la heladera lo que se sirve a temperatura ambiente."
+    }
+   ]
+  },
+  {
+   "slug": "masas-quebradas-sablee-brisee-y-sucree",
+   "cat": "Pastelería",
+   "icono": "🧁",
+   "titulo": "Masas quebradas: sablée, brisée y sucrée sin misterio",
+   "bajada": "La base de tartas, galletitas y tapas de alfajor. Qué las diferencia, las dos técnicas para hacerlas y las recetas de la escuela, con los errores que endurecen o cuartean una masa.",
+   "img": "https://images.unsplash.com/photo-1603779702309-ed36e656861b?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1603779702309-ed36e656861b?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Nathan Dumlao",
+   "url": "https://www.chefprivado.ar/blog/masas-quebradas-sablee-brisee-y-sucree",
+   "tips": [
+    "El paso final de las dos es el fresado: aplastar la masa con la palma contra la mesada para romper los grumos de manteca. Como máximo tres veces. Las masas quebradas se unen, no se amasan."
+   ],
+   "datos": [
+    "Las masas quebradas se conservan 5 a 7 días en heladera, crudas o cocidas, y unos 3 meses en el freezer, siempre bien envueltas. Se descongelan en la heladera. Conviene tener un bollo listo: una tarta improvisada sale en media hora."
+   ],
+   "secciones": [
+    {
+     "h2": "La regla que las ordena: cuánta manteca hay por cada 100 de harina",
+     "texto": "Las tres se arman con lo mismo (harina 0000, manteca, azúcar y huevo)."
+    },
+    {
+     "h2": "Las dos técnicas",
+     "texto": "Sableado (sablage)."
+    },
+    {
+     "h2": "Las recetas de la escuela",
+     "texto": "Sablée de vainilla (galletitas de corte): 170 g de harina 0000, 80 g de azúcar impalpable, 2 g de sal, 100 g de manteca fría, 2 yemas y esencia de vainilla."
+    },
+    {
+     "h2": "Del bollo a la tarta",
+     "texto": "Frío siempre: mínimo 1 hora de heladera antes de estirar, y si se ablanda mientras trabajás, vuelve al frío."
+    },
+    {
+     "h2": "Cocción a blanco",
+     "texto": "Si el relleno es húmedo o no se cocina, la base se hornea antes."
+    },
+    {
+     "h2": "Por qué salió mal",
+     "texto": "Quedó dura: se amasó de más y se desarrolló el gluten."
+    }
+   ]
+  },
+  {
+   "slug": "scones-de-queso-receta-de-escuela",
+   "cat": "Recetas con toque de chef",
+   "icono": "🍳",
+   "titulo": "Scones de queso: la receta de escuela para una merienda de pâtisserie",
+   "bajada": "Crocantes por fuera, tiernos y con mucho queso por dentro. La receta que aprendí en la escuela de cocina y los tres secretos para que suban y no queden secos.",
+   "img": "https://images.unsplash.com/photo-1592664712895-548d6734bc67?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1592664712895-548d6734bc67?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "David French",
+   "url": "https://www.chefprivado.ar/blog/scones-de-queso-receta-de-escuela",
+   "tips": [
+    "Cortá con un cuchillo bien filoso o un cortante enharinado, de un solo golpe y sin girar. Si aplastás o retorcés los bordes, los sellás y el scone sube torcido."
+   ],
+   "datos": [
+    "Se pueden congelar crudos, ya cortados, hasta un mes: se hornean directo del freezer, sumando 5 minutos. Ya horneados, se regeneran 4 o 5 minutos a 180 °C y vuelven a estar crocantes."
+   ],
+   "secciones": [
+    {
+     "h2": "Ingredientes (12 scones chicos)",
+     "texto": "Harina 0000 · 250 g"
+    },
+    {
+     "h2": "Paso a paso",
+     "texto": "Rallá el queso con el lado grueso del rallador."
+    },
+    {
+     "h2": "Los tres secretos",
+     "texto": "Todo frío: la manteca en trocitos fríos es la que, al derretirse en el horno, genera el vapor que los abre en capas."
+    },
+    {
+     "h2": "Variantes",
+     "texto": "Tomillo y queso: sumá las hojas picadas de 6 ramitas de tomillo a la masa."
+    }
+   ]
+  },
+  {
    "slug": "tecnicas-basicas-de-sushi",
    "cat": "Sushi",
    "icono": "🍣",
