@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>¿Qué comemos hoy? · Recetas de chef con lo que hay en tu heladera | Celestia</title>
+<meta name="description" content="Recetas estilo chef privado armadas con lo que hay en la heladera: principal, salsa, guarnición y postre, paso a paso.">
+<meta name="robots" content="noindex">
+<meta property="og:title" content="¿Qué comemos hoy? · Recetas de chef con lo que hay">
+<meta property="og:description" content="Contame qué tenés en la heladera y te armo un plato de chef, paso a paso.">
+<meta property="og:image" content="https://www.chefprivado.ar/img/cajas/hero-mesa.webp">
+<link rel="icon" href="/favicom.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--nv:#0D1B2A;--nv2:#13263a;--gd:#C9A84C;--gdl:#E8C96A;--cr:#FAF6EF;--crd:#EDE6D8;--tx:#2a2a3a;--mut:#6b6b6b}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--cr);color:var(--tx);font-family:'DM Sans',sans-serif;line-height:1.6}
+a{color:inherit}
+.hdr{background:var(--nv);height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;position:sticky;top:0;z-index:20;border-bottom:1px solid rgba(201,168,76,.18)}
+.hdr img{height:34px;display:block}
+.hdr .rv{background:linear-gradient(135deg,var(--gdl),var(--gd));color:var(--nv);font-weight:700;font-size:13px;padding:9px 16px;border-radius:999px;text-decoration:none}
+.hero{background:radial-gradient(120% 80% at 50% 0%,#1a2e42 0%,var(--nv) 70%);color:var(--cr);text-align:center;padding:46px 22px 54px;position:relative;overflow:hidden}
+.hero .k{display:inline-block;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--gdl);margin-bottom:16px}
+.hero blockquote{font-family:'DM Serif Display',serif;font-size:clamp(24px,5vw,34px);line-height:1.2;max-width:640px;margin:0 auto 6px;color:var(--cr)}
+.hero blockquote em{display:block;color:var(--gdl);font-style:italic}
+.hero .quien{font-size:13px;color:rgba(250,246,239,.6);margin-bottom:26px}
+.hero h1{font-family:'DM Serif Display',serif;font-weight:400;font-size:clamp(30px,6.5vw,48px);line-height:1.1;max-width:760px;margin:0 auto}
+.hero .sub{font-size:14px;color:rgba(250,246,239,.7);margin-top:12px}
+.wrap{max-width:760px;margin:0 auto;padding:0 20px}
+.hel{background:#fff;border:1px solid var(--crd);border-radius:22px;padding:22px;margin:-28px auto 26px;position:relative;box-shadow:0 18px 40px rgba(13,27,42,.08)}
+.hel h2,.sec h2{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#a08a5c;font-weight:600;margin-bottom:12px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips span{background:var(--cr);border:1px solid var(--crd);border-radius:999px;padding:7px 13px;font-size:14px}
+.hel small{display:block;margin-top:10px;color:var(--mut);font-style:italic}
+.sec{background:#fff;border:1px solid var(--crd);border-radius:22px;padding:24px 22px;margin-bottom:16px}
+.sec h3{font-family:'DM Serif Display',serif;font-weight:400;font-size:27px;color:var(--nv);line-height:1.15;margin-bottom:14px}
+.sec ol{list-style:none;counter-reset:n}
+.sec li{counter-increment:n;position:relative;padding:9px 0 9px 42px;border-bottom:1px dashed var(--crd);font-size:16px}
+.sec li:last-child{border-bottom:0}
+.sec li::before{content:counter(n);position:absolute;left:0;top:9px;width:28px;height:28px;border-radius:50%;background:var(--nv);color:var(--gdl);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
+.toque{background:var(--nv);color:var(--cr);border-radius:22px;padding:26px 24px;margin:22px 0 16px;text-align:center}
+.toque .q{font-family:'DM Serif Display',serif;font-size:60px;line-height:.6;color:var(--gd)}
+.toque p.t{font-family:'DM Serif Display',serif;font-style:italic;font-size:22px;color:var(--gdl);line-height:1.35;margin:10px 0 12px}
+.toque p.e{font-size:14.5px;color:rgba(250,246,239,.78)}
+.cta{border:1px solid var(--gd);border-radius:22px;padding:24px 22px;text-align:center;margin:22px 0 40px;background:linear-gradient(180deg,#fff,#fbf6ea)}
+.cta h3{font-family:'DM Serif Display',serif;font-weight:400;font-size:26px;color:var(--nv);margin-bottom:6px}
+.cta p{color:var(--mut);font-size:14.5px;margin-bottom:16px}
+.btns{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;font-weight:600;font-size:15px;padding:13px 20px;border-radius:999px;border:1px solid var(--nv);color:var(--nv)}
+.btn.pri{background:linear-gradient(135deg,var(--gdl),var(--gd));border-color:transparent}
+.lista h3{font-family:'DM Serif Display',serif;font-weight:400;font-size:22px;color:var(--nv);margin:22px 0 8px}
+.lista a{display:block;padding:10px 14px;background:#fff;border:1px solid var(--crd);border-radius:12px;margin-bottom:6px;text-decoration:none;font-size:15px}
+.lista a:hover{border-color:var(--gd)}
+.pie{text-align:center;font-size:12px;color:var(--mut);padding:0 0 40px}
+</style>
+</head><body>
+<header class="hdr"><a href="/" aria-label="Celestia Chef Privado"><img src="/img/img-d316320d6b.webp" alt="Celestia Chef Privado"></a><a class="rv" href="/?utm_source=instagram&utm_medium=historia&utm_campaign=que-comemos-hoy">Reservar →</a></header>
+<main id="app"></main>
+<p class="pie">Recetas de Daro Castello · <a href="/blog">Más técnicas de chef en el blog</a></p>
+<script src="/js/que-comemos-recetas.js"></script>
+<script>
+(function () {
+  const D = window.QCH_DATA, Q = new URLSearchParams(location.search), A = document.getElementById('app');
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const byId = (l, id) => id ? l.find(x => x.id === id) || null : null;
+  const PROTS = ['pollo', 'carne', 'picada', 'cerdo', 'pescado', 'salmon', 'langostinos', 'huevos', 'atun', 'legumbres'];
+  let pl = null;
+  try {
+    if (Q.get('x')) {
+      const j = JSON.parse(decodeURIComponent(escape(atob(Q.get('x').replace(/-/g, '+').replace(/_/g, '/')))));
+      pl = { nombre: j.nombre, principal: j.principal, salsa: j.salsa, guarnicion: j.guarnicion, postre: j.postre, toque: j.toque, emplatado: j.emplatado };
+    } else if (Q.get('p') || Q.get('d')) {
+      const p = byId(D.PRINC, Q.get('p')), s = byId(D.SALSAS, Q.get('s')), g = byId(D.GUARN, Q.get('g')), d = byId(D.POSTRES, Q.get('d'));
+      if (p || d) pl = { principal: p, salsa: s, guarnicion: g, postre: d,
+        nombre: p ? p.nombre + (s ? ', ' + s.nombre.charAt(0).toLowerCase() + s.nombre.slice(1) : '') + (g ? ' y ' + g.nombre.charAt(0).toLowerCase() + g.nombre.slice(1) : '') : d.nombre,
+        toque: p ? (D.TOQUES[p.tag] || D.TOQUES.vegetal) : D.TOQUE_DULCE };
+    }
+  } catch (e) { pl = null; }
+  const ing = (Q.get('i') || '').split(',').filter(k => D.INFO[k]);
+  const n = Q.get('n'), quien = Q.get('q') ? '@' + Q.get('q').replace(/^@/, '') : '';
+  const reservar = '/?utm_source=instagram&utm_medium=historia&utm_campaign=que-comemos-hoy';
+  const ig = 'https://www.instagram.com/celestiachefprivado/';
+  const cta = `<section class="cta"><h3>¿Te lo cocino yo?</h3><p>Una cena de chef en tu casa: diseño el menú, compro, cocino y sirvo. Vos solo ponés la mesa.</p>
+    <div class="btns"><a class="btn pri" href="${reservar}">Reservar mi fecha →</a><a class="btn" href="/cajas">Pedir una caja lista</a><a class="btn" href="${ig}" target="_blank" rel="noopener">Contame tu heladera en Instagram</a></div></section>`;
+
+  if (!pl) {
+    const grupos = {}; D.PRINC.forEach(p => { (grupos[p.prot] = grupos[p.prot] || []).push(p); });
+    document.title = '¿Qué comemos hoy? · Recetas de chef | Celestia';
+    A.innerHTML = `<section class="hero"><span class="k">✦ ¿Qué comemos hoy?</span><h1>Abrí la heladera.<br><em style="color:var(--gdl)">Yo te armo el plato.</em></h1><p class="sub">Cada semana armo recetas de chef con lo que me cuentan en Instagram. Acá están todas.</p></section>
+      <div class="wrap" style="padding-top:26px"><div class="lista">${Object.entries(grupos).map(([k, l]) => `<h3>${D.INFO[k] ? D.INFO[k].e + ' ' + esc(D.INFO[k].n) : esc(k)}</h3>${l.map(p => `<a href="?p=${p.id}">${esc(p.nombre)}</a>`).join('')}`).join('')}
+        <h3>🍰 Postres</h3>${D.POSTRES.map(d => `<a href="?d=${d.id}">${esc(d.nombre)}</a>`).join('')}</div>${cta}</div>`;
+    return;
+  }
+  document.title = pl.nombre + ' · ¿Qué comemos hoy? | Celestia';
+  const orden = pl.principal ? ing.slice().sort((a, b) => (PROTS.includes(b) ? 1 : 0) - (PROTS.includes(a) ? 1 : 0)) : ing;
+  const nom = orden.map(k => D.INFO[k].n.toLowerCase().replace(/ \(.*\)$/, ''));
+  const tres = nom.slice(0, 3), frase = nom.length ? 'Tengo ' + (nom.length > 3 ? tres.join(', ') + ' y algo más' : tres.length > 1 ? tres.slice(0, -1).join(', ') + ' y ' + tres[tres.length - 1] : tres[0]) + '.' : '';
+  const paso = (k, x) => x && x.pasos && x.pasos.length ? `<section class="sec"><h2>${esc(k)}</h2><h3>${esc(x.nombre)}</h3><ol>${x.pasos.map(t => `<li>${esc(t)}</li>`).join('')}</ol></section>` : '';
+  let k = 1;
+  A.innerHTML = `<section class="hero"><span class="k">✦ ¿Qué comemos hoy?${n ? ' · #' + esc(n) : ''}</span>
+      ${frase ? `<blockquote>“${esc(frase)}<em>${pl.principal ? '¿Qué le hago?' : '¿Qué postre hago?'}”</em></blockquote><p class="quien">${quien ? 'Me escribió ' + esc(quien) : 'Me escribieron en Instagram'}</p>` : ''}
+      <h1>${esc(pl.nombre)}${pl.principal && pl.postre ? ' <span style="color:var(--gdl)">+ ' + esc(pl.postre.nombre.toLowerCase()) + '</span>' : ''}</h1><p class="sub">Receta estilo chef privado, paso a paso</p></section>
+    <div class="wrap">
+      ${ing.length ? `<section class="hel"><h2>🧊 Lo que hay en la heladera</h2><div class="chips">${ing.map(k => `<span>${D.INFO[k].e} ${esc(D.INFO[k].n)}</span>`).join('')}</div><small>+ sal, pimienta y aceite</small></section>` : '<div style="height:26px"></div>'}
+      ${pl.principal ? paso('Paso ' + k++ + ' · ' + (pl.principal.corto || 'El principal'), pl.principal) : ''}
+      ${paso('Paso ' + (pl.salsa ? k++ : k) + ' · La salsa', pl.salsa)}
+      ${paso('Paso ' + (pl.guarnicion ? k++ : k) + ' · La guarnición', pl.guarnicion)}
+      ${paso(pl.principal ? 'Y de postre' : 'El postre', pl.postre)}
+      <section class="toque"><div class="q">“</div><p class="t">${esc(pl.toque || '')}</p><p class="e">${esc(pl.emplatado || (pl.principal ? D.EMPLATADO : 'Frío de heladera hasta el momento de servir, y algo crocante o fresco arriba para el contraste.'))}</p></section>
+      ${cta}
+    </div>`;
+  try { window.celTrack && celTrack('receta_heladera', { receta: Q.get('p') || Q.get('d') || 'ia' }); } catch (e) {}
+})();
+</script>
+<script src="/js/analytics.js"></script>
+</body></html>

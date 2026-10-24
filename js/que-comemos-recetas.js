@@ -154,5 +154,77 @@
     { id: 'cheesecake', nombre: 'Cheesecake en vaso', req: ['queso_crema', 'galletitas'], alt: ['frutillas', 'ddl', 'limon'], pasos: ['Galletitas molidas con manteca derretida en la base.', 'Queso crema con azúcar y crema batida.', 'Arriba frutillas, dulce de leche o ralladura de limón.'] },
     { id: 'manzanas-asadas', nombre: 'Manzanas asadas con miel', req: ['manzana'], alt: ['miel', 'azucar'], pasos: ['Manzanas sin centro, un corte alrededor.', 'Miel o azúcar, manteca y canela en el hueco.', 'Horno a 180 °C 35 minutos.'] }
   ];
-  window.QCH_DATA = { PRINC, POSTRES };
+  const ING = [
+    ['Lo principal: carnes, pescados y huevos', [['pollo', '🍗', 'Pollo'], ['carne', '🥩', 'Bife o nalga'], ['picada', '🍔', 'Carne picada'], ['cerdo', '🐖', 'Cerdo (bondiola o carré)'], ['pescado', '🐟', 'Pescado blanco'], ['salmon', '🍣', 'Salmón'], ['langostinos', '🦐', 'Langostinos'], ['huevos', '🥚', 'Huevos'], ['atun', '🥫', 'Atún en lata'], ['legumbres', '🫘', 'Garbanzos o lentejas']]],
+    ['Verduras y frutas', [['papa', '🥔', 'Papa'], ['batata', '🍠', 'Batata'], ['zapallo', '🎃', 'Zapallo'], ['cebolla', '🧅', 'Cebolla'], ['ajo', '🧄', 'Ajo'], ['tomate', '🍅', 'Tomate'], ['morron', '🫑', 'Morrón'], ['zucchini', '🥒', 'Zucchini'], ['berenjena', '🍆', 'Berenjena'], ['espinaca', '🥬', 'Espinaca o acelga'], ['hongos', '🍄', 'Hongos'], ['brocoli', '🥦', 'Brócoli'], ['zanahoria', '🥕', 'Zanahoria'], ['choclo', '🌽', 'Choclo'], ['palta', '🥑', 'Palta'], ['limon', '🍋', 'Limón'], ['verdeo', '🌱', 'Cebolla de verdeo'], ['hierbas', '🌿', 'Hierbas frescas']]],
+    ['Lácteos', [['manteca', '🧈', 'Manteca'], ['crema', '🥛', 'Crema'], ['queso', '🧀', 'Queso rallado'], ['cremoso', '🧀', 'Queso cremoso'], ['yogur', '🥣', 'Yogur natural'], ['leche', '🥛', 'Leche']]],
+    ['Despensa', [['arroz', '🍚', 'Arroz'], ['fideos', '🍝', 'Fideos'], ['pan', '🥖', 'Pan'], ['harina', '🌾', 'Harina'], ['vino', '🍷', 'Vino'], ['mostaza', '🟡', 'Mostaza'], ['miel', '🍯', 'Miel'], ['soja', '🥢', 'Salsa de soja'], ['tomate_lata', '🥫', 'Tomate en lata'], ['caldo', '🍲', 'Caldo'], ['frutos_secos', '🥜', 'Frutos secos'], ['aceitunas', '🫒', 'Aceitunas']]],
+    ['Para el postre', [['chocolate', '🍫', 'Chocolate'], ['ddl', '🥄', 'Dulce de leche'], ['azucar', '🍬', 'Azúcar'], ['banana', '🍌', 'Banana'], ['manzana', '🍎', 'Manzana'], ['frutillas', '🍓', 'Frutillas o frutos rojos'], ['galletitas', '🍪', 'Galletitas'], ['queso_crema', '🧁', 'Queso crema'], ['cafe', '☕', 'Café']]]
+  ];
+  const INFO = {}; ING.forEach(([, l]) => l.forEach(([k, e, n]) => { INFO[k] = { e, n }; }));
+
+  const SALSAS = [
+    { id: 'mostaza-miel', req: ['mostaza', 'miel'], va: ['pollo', 'cerdo', 'salmon'], nombre: 'Glaseado de mostaza y miel', pasos: ['Mezclá 2 cucharadas de mostaza con 1 de miel y un chorrito de agua.', 'Volcalo en la sartén caliente donde cocinaste, raspando el fondo.', 'Reducí 1 minuto hasta que brille y bañá el pollo, la carne o el pescado.'] },
+    { id: 'crema-hongos', req: ['crema', 'hongos'], va: ['pollo', 'carne', 'cerdo', 'pasta', 'arroz'], nombre: 'Salsa de crema y hongos', pasos: ['Salteá los hongos a fuego fuerte sin moverlos, hasta dorar.', 'Sumá ajo, sal y pimienta, y después la crema.', 'Reducí 3 a 4 minutos a fuego bajo hasta que nape la cuchara.'] },
+    { id: 'vino', req: ['vino', 'manteca'], va: ['carne', 'cerdo', 'pollo'], nombre: 'Reducción al vino', pasos: ['En la misma sartén de la carne, sumá cebolla o ajo picado 1 minuto.', 'Desglasá con medio vaso de vino y reducí a la mitad.', 'Fuera del fuego, una cucharada de manteca fría: liga y da brillo.'] },
+    { id: 'chimichurri', req: ['ajo', 'hierbas'], va: ['carne', 'cerdo', 'pollo', 'picada'], nombre: 'Chimichurri de hierbas frescas', pasos: ['Picá a cuchillo perejil y orégano frescos con ajo.', 'Sumá ají molido, sal, un chorrito de vinagre o limón y aceite.', 'Dejalo reposar 15 minutos: los sabores se integran.'] },
+    { id: 'criolla', req: ['cebolla', 'tomate', 'morron'], va: ['carne', 'cerdo', 'pollo', 'pescado', 'picada'], nombre: 'Salsa criolla', pasos: ['Cebolla, tomate sin semillas y morrón en cubos chiquitos y parejos.', 'Sal, aceite y un chorrito de vinagre o limón.', 'Mejor si descansa 20 minutos antes de servir.'] },
+    { id: 'beurre-limon', req: ['manteca', 'limon'], va: ['pescado', 'salmon', 'langostinos', 'pollo', 'pasta'], nombre: 'Manteca de limón', pasos: ['Reducí el jugo de medio limón en una ollita hasta la mitad.', 'Fuego mínimo y sumá manteca fría en cubos, batiendo, de a poco.', 'Sal y ralladura: tiene que quedar sedosa, sin hervir.'] },
+    { id: 'yogur', req: ['yogur', 'limon'], va: ['pollo', 'salmon', 'legumbres', 'cerdo', 'pescado', 'huevos'], nombre: 'Salsa de yogur y limón', pasos: ['Yogur natural con ralladura y unas gotas de limón.', 'Sal, pimienta, un hilo de oliva y hierbas o ajo rallado si hay.', 'Fría, bien a último momento.'] },
+    { id: 'teriyaki', req: ['soja', 'miel'], va: ['salmon', 'pollo', 'cerdo', 'langostinos'], nombre: 'Teriyaki casera', pasos: ['3 cucharadas de soja, 1 de miel, ajo rallado y un chorrito de agua.', 'Hervila 2 minutos hasta que espese y brille.', 'Pintá el pollo, la carne o el pescado al final de la cocción, en la sartén.'] },
+    { id: 'pomodoro', req: [], alt: ['tomate_lata', 'tomate'], va: ['pasta', 'picada', 'huevos', 'vegetal', 'pescado'], nombre: 'Pomodoro rápido', pasos: ['Ajo en aceite a fuego bajo hasta que perfume, sin dorar.', 'Sumá el tomate, sal y una pizca de azúcar si está ácido.', 'Cociná 15 minutos y terminá con albahaca u orégano.'] },
+    { id: 'crema-queso', req: ['crema', 'queso'], va: ['pasta', 'pollo', 'arroz'], nombre: 'Salsa de crema y queso', pasos: ['Calentá la crema sin que hierva fuerte.', 'Sumá el queso rallado fuera del fuego, revolviendo hasta fundir.', 'Pimienta recién molida y nuez moscada.'] },
+    { id: 'gremolata', req: ['hierbas', 'limon', 'ajo'], va: ['pescado', 'salmon', 'carne', 'cerdo', 'pollo', 'langostinos'], nombre: 'Gremolata', pasos: ['Picá muy fino perejil y ajo.', 'Sumá ralladura de limón (solo la parte amarilla).', 'Espolvoreala sobre el plato recién salido del fuego.'] },
+    { id: 'pesto', req: ['hierbas', 'queso', 'ajo'], va: ['pasta', 'pollo', 'huevos', 'vegetal'], nombre: 'Pesto casero', pasos: ['Albahaca, ajo, queso y frutos secos si tenés.', 'Procesá o picá a cuchillo sumando aceite en hilo.', 'Nunca al fuego: se suma a la pasta caliente fuera de la hornalla.'] },
+    { id: 'manteca-salvia', req: ['manteca', 'hierbas'], va: ['pasta', 'pescado', 'pollo', 'arroz'], nombre: 'Manteca de hierbas', pasos: ['Manteca a fuego medio hasta que espume.', 'Sumá las hierbas: chisporrotean y se vuelven crocantes.', 'Sal en escamas y al plato enseguida.'] },
+    { id: 'salsa-verdeo', req: ['verdeo', 'crema'], va: ['pollo', 'cerdo', 'pescado', 'pasta'], nombre: 'Crema de verdeo', pasos: ['Rehogá el verdeo en rodajas finas con un poco de manteca o aceite.', 'Sumá la crema, sal y pimienta.', 'Reducí 3 minutos hasta que espese.'] }
+  ];
+  const GUARN = [
+    { id: 'papas-rusticas', req: ['papa'], nombre: 'Papas rústicas al romero', pasos: ['Papas con cáscara en gajos, hervidas 5 minutos y bien secas.', 'Aceite, sal, ajo machacado y romero (o hierbas que tengas).', 'Horno fuerte, 220 °C, 30 minutos dándolas vuelta una vez.'] },
+    { id: 'pure', req: ['papa', 'manteca'], nombre: 'Puré de papas a la manteca', pasos: ['Papas en cubos parejos desde agua fría con sal, hasta que estén tiernas.', 'Escurrí, secá 1 minuto en la olla y pisá en caliente.', 'Manteca fría y leche o crema caliente, de a poco. Nuez moscada.'] },
+    { id: 'pure-batata', req: ['batata'], nombre: 'Puré de batata', pasos: ['Batata asada entera en el horno hasta que esté bien blanda (concentra el dulzor).', 'Pisala con manteca o aceite de oliva.', 'Sal, pimienta y una pizca de ralladura de limón o canela.'] },
+    { id: 'pure-zapallo', req: ['zapallo'], nombre: 'Puré de zapallo asado', pasos: ['Zapallo en cubos al horno con aceite y sal hasta caramelizar.', 'Pisalo con manteca o un chorrito de crema.', 'Terminá con queso rallado o nuez moscada.'] },
+    { id: 'asados', min2: ['zucchini', 'berenjena', 'morron', 'zanahoria', 'cebolla', 'zapallo', 'batata', 'brocoli'], nombre: 'Vegetales asados', pasos: ['Cortá todo en piezas del mismo tamaño para que se cocinen parejo.', 'Aceite, sal y una sola capa en la placa: si se amontonan, hierven.', 'Horno a 220 °C, 25 minutos, hasta que tengan bordes dorados.'] },
+    { id: 'espinaca-crema', req: ['espinaca', 'crema'], nombre: 'Espinaca a la crema', pasos: ['Blanqueá la espinaca 30 segundos y escurrila bien apretada.', 'Picala y sumala a la crema reducida con ajo.', 'Nuez moscada, sal y queso rallado si hay.'] },
+    { id: 'arroz-pilaf', req: ['arroz', 'cebolla'], nombre: 'Arroz pilaf', pasos: ['Rehogá cebolla picada y nacará el arroz 2 minutos en la misma olla.', 'Agua o caldo caliente: el doble de volumen que el arroz.', 'Tapá a fuego mínimo 15 minutos y reposá 5 sin destapar.'] },
+    { id: 'ensalada-palta', req: ['tomate', 'palta'], nombre: 'Ensalada de tomate y palta', pasos: ['Tomate en gajos y palta en cubos grandes.', 'Cebolla morada fina o verdeo si hay.', 'Limón, sal en escamas y aceite de oliva al momento.'] },
+    { id: 'brocoli', req: ['brocoli', 'ajo'], nombre: 'Brócoli salteado al ajo', pasos: ['Blanqueá los ramitos 2 minutos y cortá la cocción en agua fría.', 'Salteá con aceite y ajo laminado hasta que tome color.', 'Limón y sal al final.'] },
+    { id: 'choclo', req: ['choclo', 'crema'], nombre: 'Choclo cremoso', pasos: ['Rehogá cebolla y sumá los granos de choclo.', 'Agregá crema y cociná 5 minutos.', 'Procesá la mitad para que quede cremoso con textura.'] },
+    { id: 'hongos', req: ['hongos'], nombre: 'Hongos salteados', pasos: ['Sartén muy caliente y los hongos en una sola capa.', 'No los muevas hasta que doren; recién ahí la sal.', 'Ajo, perejil y una nuez de manteca al final.'] },
+    { id: 'zanahorias', req: ['zanahoria', 'miel'], nombre: 'Zanahorias glaseadas', pasos: ['Zanahorias en bastones con agua, manteca, miel y sal.', 'Cociná destapado hasta que el líquido se evapore.', 'Mové la sartén para que brillen glaseadas.'] },
+    { id: 'pan-ajo', req: ['pan', 'ajo'], nombre: 'Pan tostado al ajo', pasos: ['Rodajas de pan con aceite o manteca.', 'Tostalo en sartén o horno hasta que cruja.', 'Frotá un diente de ajo crudo por encima.'] },
+    { id: 'fideos-manteca', req: ['fideos', 'manteca', 'queso'], nombre: 'Fideos a la manteca y queso', pasos: ['Fideos al dente, guardando un poco de agua de cocción.', 'Manteca y queso con un chorrito de esa agua.', 'Revolvé fuera del fuego hasta que quede cremoso.'] },
+    { id: 'ensalada-verde', req: ['limon'], nombre: 'Ensalada fresca con vinagreta de limón', pasos: ['Hojas verdes o lo que tengas crudo, bien seco.', 'Vinagreta: 1 parte de limón, 3 de aceite, sal y mostaza si hay.', 'Aliñá recién al servir para que no se marchite.'] }
+  ];
+  const TOQUES = {
+    pollo: 'Antes de servir, unas gotas de limón y sal en escamas: levantan todo el plato.',
+    carne: 'Cortá la carne en contra de la fibra y servila en láminas: se ve de restaurante y es más tierna.',
+    picada: 'Sal recién al cocinar: si salás la carne picada antes, se pone dura.',
+    cerdo: 'El cerdo de hoy se come apenas rosado: más jugoso y seguro.',
+    pescado: 'Calentá los platos: el pescado se enfría muy rápido.',
+    salmon: 'Sal en escamas sobre la piel recién salida: cruje todavía más.',
+    langostinos: 'Pan tostado al lado: el aceite del ajillo es la mitad del plato.',
+    huevos: 'Sacalos del fuego un poquito antes: el calor residual termina la cocción.',
+    legumbres: 'Un chorrito de limón al final: despierta los sabores de las legumbres.',
+    arroz: 'El risotto se espera, no espera: servilo apenas sale.',
+    pasta: 'Nunca enjuagues la pasta: el almidón es lo que hace que la salsa se pegue.',
+    vegetal: 'Un hilo de oliva crudo al final y hojas frescas: color y aroma.'
+  };
+  const EMPLATADO = 'Platos calientes, el pollo, la carne o el pescado al centro, la guarnición al costado y la salsa por debajo o en un bowl aparte. Algo verde fresco arriba y listo.';
+
+  const TOQUE_DULCE = 'Servilo en vasitos o copas individuales: se ve de restaurante y se porciona solo.';
+  /* link público de la receta (para el sticker): /que-comemos-hoy/?p=…&s=…&g=…&d=…&i=…&n=…&q=…  ·  recetas de IA van completas en x= */
+  const b64 = o => btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  function recetaURL(pl) {
+    const u = new URLSearchParams();
+    const cat = (!pl.principal || pl.principal.id) && (!pl.salsa || pl.salsa.id) && (!pl.guarnicion || pl.guarnicion.id) && (!pl.postre || pl.postre.id);
+    if (cat) {
+      if (pl.principal) u.set('p', pl.principal.id); if (pl.salsa) u.set('s', pl.salsa.id); if (pl.guarnicion) u.set('g', pl.guarnicion.id); if (pl.postre) u.set('d', pl.postre.id);
+    } else u.set('x', b64({ nombre: pl.nombre, principal: pl.principal, salsa: pl.salsa, guarnicion: pl.guarnicion, postre: pl.postre, toque: pl.toque, emplatado: pl.emplatado }));
+    if (pl.ingredientes && pl.ingredientes.length) u.set('i', pl.ingredientes.join(','));
+    if (pl.n) u.set('n', pl.n); if (pl.quien) u.set('q', String(pl.quien).replace(/^@/, ''));
+    u.set('utm_source', 'instagram'); u.set('utm_medium', 'historia'); u.set('utm_campaign', 'que-comemos-hoy');
+    return 'https://chefprivado.ar/que-comemos-hoy/?' + u.toString();
+  }
+  window.QCH_DATA = { PRINC, POSTRES, ING, INFO, SALSAS, GUARN, TOQUES, EMPLATADO, TOQUE_DULCE, recetaURL };
 })();
