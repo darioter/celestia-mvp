@@ -125,6 +125,7 @@
     const protsSel = PROTS.filter(k => sel.has(k)).concat(['arroz', 'fideos', 'berenjena'].filter(k => sel.has(k)));
     return `<div class="qch-box">
         <div class="qch-g" style="margin-top:0">📮 Historia #1 · Caja de preguntas</div>
+        <div class="qch-top" style="margin:6px 0 8px"><span>Número de esta saga (sale como “#” en las placas)</span><input class="inp" type="number" min="1" value="${QCH.n}" style="width:70px;margin:0;padding:6px 8px" onchange="QCH.n=Math.max(1,parseInt(this.value)||1);qchGuardar();renderPanel()"><button class="btn sec sm" onclick="QCH.n=1;qchGuardar();renderPanel()">↺ 1</button></div>
         <p class="hint" style="margin-bottom:8px">Es la primera de la saga: le preguntás a tus seguidores qué tienen. Deja el lugar para el sticker de preguntas. Con lo que te respondan, armás la historia 2 (“Tengo…”) y la receta.</p>
         <select class="inp" onchange="QCH.preg=this.value;qchGuardar();renderPanel()">${Object.entries(PREG).map(([k, v]) => `<option value="${k}" ${QCH.preg === k ? 'selected' : ''}>${v.nom}</option>`).join('')}</select>
         <div class="link" style="margin:2px 0 8px"><span>Sticker: “${escQ(pregTxt(P_.sticker))}”</span><button onclick="qchCopiarSticker()">Copiar</button></div>
