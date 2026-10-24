@@ -117,6 +117,11 @@ input[type=range]{width:100%;accent-color:var(--gold)}
 .gal button img{width:100%;height:100%;object-fit:cover;display:block}
 .gal button:hover{border-color:var(--gold)}.gal button.on{border-color:var(--gold2)}
 .gal button i{position:absolute;top:4px;left:4px;background:var(--gold);color:var(--navy);font-style:normal;font-weight:700;font-size:12px;border-radius:999px;min-width:22px;height:22px;display:flex;align-items:center;justify-content:center}
+.sel-foto{position:fixed;inset:0;background:rgba(5,10,18,.75);z-index:90;display:none;align-items:center;justify-content:center;padding:20px}
+.sel-foto.on{display:flex}
+.sel-foto-c{background:var(--navy3);border:1px solid var(--line);border-radius:18px;padding:18px;width:min(860px,100%);max-height:86vh;overflow:auto}
+.sf-h{display:flex;gap:8px;align-items:center}.sf-h b{font-family:'DM Serif Display',serif;font-weight:400;font-size:22px}
+.sf-g{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
 .qch-c.on{background:var(--gold);border-color:var(--gold);color:var(--navy);font-weight:600}
 @media(max-width:1100px){.reel{grid-template-columns:1fr}.r-play{position:static;max-width:380px}}
 @media(max-width:900px){.wrap{grid-template-columns:1fr}.side{position:static;max-height:none;border-right:0;border-bottom:1px solid var(--line)}}
@@ -231,6 +236,7 @@ input[type=range]{width:100%;accent-color:var(--gold)}
     </main>
   </div>
 <div class="toast" id="toast"></div>
+<div class="sel-foto" id="sel-foto" onclick="if(event.target===this)cerrarElegir()"><div class="sel-foto-c" id="sel-foto-c"></div></div>
 <input type="file" id="f-cambiar" accept="image/*" hidden>
 
 <script>
@@ -451,7 +457,7 @@ function set(i, k, v) { historias[i][k] = v; clearTimeout(_deb[i]); _deb[i] = se
 function mover(i, d) { const j = i + d; if (j < 0 || j >= historias.length) return; [historias[i], historias[j]] = [historias[j], historias[i]]; renderGrid(); }
 function quitar(i) { historias.splice(i, 1); renderGrid(); }
 let _cambiarIdx = -1;
-function cambiarFoto(i) { _cambiarIdx = i; document.getElementById('f-cambiar').click(); }
+function cambiarFoto(i) { _cambiarIdx = i; if (GALERIA.length) return elegirFoto(src => { historias[i].img = src; renderGrid(); }, () => document.getElementById('f-cambiar').click()); document.getElementById('f-cambiar').click(); }
 document.getElementById('f-cambiar').onchange = e => {
   const f = e.target.files[0]; if (!f || _cambiarIdx < 0) return;
   const url = URL.createObjectURL(f); fotos.push({ url, nombre: f.name });
@@ -811,7 +817,21 @@ const _rdeb = {};
 function rset(i, k, v) { REEL.frames[i][k] = v; clearTimeout(_rdeb[i]); _rdeb[i] = setTimeout(() => { reelMini(i); reelDibujarEn(i); }, 80); }
 function reelMover(i, d) { const j = i + d; if (j < 0 || j >= REEL.frames.length) return; [REEL.frames[i], REEL.frames[j]] = [REEL.frames[j], REEL.frames[i]]; reelRender(); }
 let _rfIdx = -1;
-function reelFoto(i) { _rfIdx = i; const inp = document.getElementById('f-cambiar'); inp.dataset.reel = '1'; inp.click(); }
+function reelFoto(i) {
+  _rfIdx = i; const subir = () => { const inp = document.getElementById('f-cambiar'); inp.dataset.reel = '1'; inp.click(); };
+  if (!GALERIA.length) return subir();
+  elegirFoto(src => { const fr = REEL.frames[i]; fr.img = src; if (fr.tipo === 'texto' || fr.tipo === 'cierre') fr.tipo = 'foto'; reelRender(); reelDibujarEn(i); }, subir);
+}
+/* selector de foto: galería + subir desde el equipo */
+let _elegirOk = null, _elegirSubir = null, _elegirTag = 'todas';
+function elegirFoto(ok, subir) { _elegirOk = ok; _elegirSubir = subir; pintarElegir(); document.getElementById('sel-foto').classList.add('on'); }
+function cerrarElegir() { document.getElementById('sel-foto').classList.remove('on'); }
+function pintarElegir() {
+  const tags = ['todas', ...new Set(GALERIA.map(g => g.tag || 'general'))];
+  document.getElementById('sel-foto-c').innerHTML = `<div class="sf-h"><b>Elegí una foto</b><span style="flex:1"></span><button class="btn sm" onclick="cerrarElegir();_elegirSubir&&_elegirSubir()">⬆ Subir desde el equipo</button><button class="btn sec sm" onclick="cerrarElegir()">✕</button></div>
+    <div class="qch-chips" style="margin:10px 0">${tags.map(t => `<button class="qch-c${_elegirTag === t ? ' on' : ''}" onclick="_elegirTag='${t}';pintarElegir()">${t}</button>`).join('')}</div>
+    <div class="gal sf-g">${GALERIA.map((g, i) => [g, i]).filter(([g]) => _elegirTag === 'todas' || (g.tag || 'general') === _elegirTag).map(([g, i]) => `<button onclick="cerrarElegir();_elegirOk(GALERIA[${i}].src)"><img src="${g.src}" alt="" loading="lazy"></button>`).join('')}</div>`;
+}
 document.getElementById('f-cambiar').addEventListener('change', e => {
   if (e.target.dataset.reel !== '1') return; e.target.dataset.reel = '';
   const f = e.target.files[0]; if (!f || _rfIdx < 0) return;
