@@ -95,6 +95,53 @@ section.hero{padding:0}
 .cm-box .err{color:#f3a08f;font-size:13px}
 @media(max-width:960px){.cu-g{grid-template-columns:1fr}.prod-g{grid-template-columns:120px 1fr}}
 .cm-aviso{position:fixed;left:50%;top:76px;transform:translateX(-50%);z-index:120;background:#FAF6EF;color:#0D1B2A;border:1px solid #C9A84C;border-radius:14px;padding:12px 18px;font-size:14px;box-shadow:0 14px 34px rgba(0,0,0,.3);max-width:calc(100% - 32px)}.cm-aviso a{color:#8A6A20}
+/* secciones con estilo de la rueda */
+.lx{position:relative;overflow:hidden;color:var(--cr);background:radial-gradient(70% 60% at 85% 0%,rgba(232,201,106,.10),transparent 60%),radial-gradient(60% 60% at 0% 100%,rgba(42,82,120,.35),transparent 60%),linear-gradient(180deg,#0B1726,#0D1B2A)}
+.lx::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(232,201,106,.35) 1px,transparent 1.2px);background-size:46px 46px;opacity:.12;pointer-events:none;mask-image:linear-gradient(180deg,transparent,#000 30%,#000 70%,transparent)}
+.lx .wrap{position:relative}
+.lx h2{color:var(--cr)}.lx h2 em{color:var(--gdl)}.lx .sub{color:rgba(250,246,239,.7)}.lx .k{color:var(--gdl)}
+.lx .k::before{content:'';display:inline-block;width:26px;height:1px;background:var(--gd);vertical-align:middle;margin-right:10px}
+/* para quién */
+.pq-g{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:38px}
+.pq{position:relative;border-radius:22px;padding:26px 22px 22px;background:linear-gradient(160deg,rgba(255,255,255,.07),rgba(255,255,255,.02));border:1px solid rgba(201,168,76,.25);backdrop-filter:blur(6px);transition:transform .35s cubic-bezier(.2,.8,.2,1),border-color .35s,box-shadow .35s;display:flex;flex-direction:column;gap:10px}
+.pq:hover{transform:translateY(-6px);border-color:rgba(232,201,106,.7);box-shadow:0 22px 50px rgba(0,0,0,.45),0 0 0 1px rgba(232,201,106,.15),0 0 40px rgba(232,201,106,.12)}
+.pq-n{position:absolute;right:18px;top:12px;font-family:'DM Serif Display',serif;font-size:44px;line-height:1;color:rgba(232,201,106,.14)}
+.pq-ic{width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 38% 30%,#FFF1BF,#E8C96A 45%,#9C7A28);box-shadow:0 8px 22px rgba(201,168,76,.35),inset 0 -4px 8px rgba(0,0,0,.2)}
+.pq-ic svg{width:28px;height:28px;fill:none;stroke:#0D1B2A;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.pq b{font-family:'DM Serif Display',serif;font-weight:400;font-size:23px;line-height:1.15;margin-top:6px}
+.pq p{font-size:14.5px;color:rgba(250,246,239,.7);line-height:1.6}
+.pq a{margin-top:auto;padding-top:8px;color:var(--gdl);font-size:13px;font-weight:600;text-decoration:none}
+.pq a:hover{text-decoration:underline}
+/* cómo trabajamos */
+.tl{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:46px}
+.tl-line{position:absolute;left:12.5%;right:12.5%;top:36px;height:3px;background:rgba(201,168,76,.18);border-radius:3px}
+.tl-line i{position:absolute;inset:0 auto 0 0;width:0;background:linear-gradient(90deg,#9C7A28,#E8C96A,#FFF1BF);border-radius:3px;box-shadow:0 0 14px rgba(232,201,106,.6);transition:width 1.8s cubic-bezier(.2,.8,.2,1)}
+.tl-s{position:relative;text-align:center;padding:0 8px}
+.tl-b{position:relative;z-index:1;width:74px;height:74px;margin:0 auto 18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:32px;color:var(--gdl);background:radial-gradient(circle at 38% 28%,#2E5277,#173451 55%,#0B1826);border:2px solid rgba(232,201,106,.7);box-shadow:0 12px 26px rgba(0,0,0,.5),0 0 0 8px rgba(13,27,42,.9),0 0 30px rgba(232,201,106,.15);transition:.5s}
+.tl-s.on .tl-b{background:radial-gradient(circle at 38% 30%,#FFF1BF,#E8C96A 45%,#9C7A28);color:#0D1B2A;box-shadow:0 12px 26px rgba(0,0,0,.5),0 0 0 8px rgba(13,27,42,.9),0 0 36px rgba(232,201,106,.45)}
+.tl-s b{display:block;font-family:'DM Serif Display',serif;font-weight:400;font-size:22px;margin-bottom:6px}
+.tl-s p{font-size:14px;color:rgba(250,246,239,.7);line-height:1.6}
+.tl-s small{display:inline-block;margin-top:10px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gdl);border:1px solid rgba(201,168,76,.35);border-radius:999px;padding:4px 11px}
+/* guía */
+.gu{display:grid;grid-template-columns:1.15fr .85fr;gap:22px;margin-top:34px;align-items:stretch}
+.gu-card{display:grid;grid-template-columns:240px 1fr;gap:24px;padding:24px;border-radius:26px;text-decoration:none;color:var(--cr);background:linear-gradient(150deg,rgba(232,201,106,.14),rgba(255,255,255,.03) 45%);border:1px solid rgba(232,201,106,.45);box-shadow:0 30px 60px rgba(0,0,0,.4);transition:transform .35s,box-shadow .35s}
+.gu-card:hover{transform:translateY(-4px);box-shadow:0 36px 70px rgba(0,0,0,.5),0 0 50px rgba(232,201,106,.15)}
+.gu-img{position:relative;border-radius:18px;overflow:hidden;transform:perspective(800px) rotateY(-8deg) rotateX(3deg);box-shadow:18px 22px 40px rgba(0,0,0,.55);transition:transform .5s}
+.gu-card:hover .gu-img{transform:perspective(800px) rotateY(0) rotateX(0)}
+.gu-img img{width:100%;height:100%;object-fit:cover;aspect-ratio:3/4}
+.gu-img span{position:absolute;left:10px;top:10px;background:rgba(13,27,42,.85);color:var(--gdl);border:1px solid rgba(201,168,76,.45);border-radius:999px;padding:4px 10px;font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+.gu-b h3{font-family:'DM Serif Display',serif;font-weight:400;font-size:26px;line-height:1.18}
+.gu-pr{display:flex;align-items:center;gap:12px;margin:16px 0 6px}.gu-pr b{font-family:'DM Serif Display',serif;font-weight:400;font-size:46px;line-height:1;color:var(--gdl)}.gu-pr span{font-size:12px;line-height:1.4;color:rgba(250,246,239,.55);text-transform:uppercase;letter-spacing:.08em}
+.gu-b ul{list-style:none;margin:10px 0 20px}.gu-b li{padding:5px 0 5px 24px;position:relative;font-size:14.5px;color:rgba(250,246,239,.82)}.gu-b li::before{content:'✦';position:absolute;left:2px;color:var(--gdl)}
+.gu-n{display:flex;flex-direction:column;gap:10px}
+.gu-nk{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:rgba(250,246,239,.5);font-weight:600;margin-bottom:2px}
+.nt{display:flex;gap:14px;align-items:center;padding:14px 16px;border-radius:16px;text-decoration:none;color:var(--cr);background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.2);transition:.3s}
+.nt:hover{border-color:var(--gdl);background:rgba(232,201,106,.07);transform:translateX(4px)}
+.nt-i{width:44px;height:44px;flex-shrink:0;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(232,201,106,.12);border:1px solid rgba(232,201,106,.35)}
+.nt-i svg{width:22px;height:22px;fill:none;stroke:#E8C96A;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nt b{display:block;font-size:14.5px;line-height:1.35}.nt small{color:rgba(250,246,239,.55);font-size:12.5px}
+@media(max-width:1000px){.pq-g{grid-template-columns:1fr 1fr}.gu{grid-template-columns:1fr}}
+@media(max-width:700px){.pq-g{grid-template-columns:1fr}.tl{grid-template-columns:1fr;gap:26px}.tl-line{left:36px;right:auto;top:20px;bottom:20px;width:3px;height:auto}.tl-line i{width:100%!important;height:0;transition:height 1.8s}.tl-s{display:grid;grid-template-columns:74px 1fr;gap:4px 16px;text-align:left;padding:0}.tl-b{grid-row:span 3;margin:0}.tl-s small{justify-self:start}.gu-card{grid-template-columns:1fr}.gu-img{max-width:260px;transform:none}}
 /* rueda */
 .rd-sec{background:radial-gradient(90% 70% at 20% 30%,#16304a 0%,var(--nv) 60%);color:var(--cr)}
 .rd-sec h2{color:var(--cr)}.rd-sec h2 em{color:var(--gdl)}.rd-sec .sub{color:rgba(250,246,239,.7)}.rd-sec .k{color:var(--gdl)}
@@ -240,15 +287,15 @@ footer{background:var(--nv);color:rgba(250,246,239,.6);text-align:center;padding
   </aside>
 </section>
 
-<section><div class="wrap">
+<section class="lx lx-pq"><div class="wrap">
   <span class="k">Para quién</span>
   <h2>Si tenés un proyecto gastronómico, <em>esto es para vos</em></h2>
   <p class="sub">Trabajo con quienes están arrancando y con quienes ya tienen el local abierto y quieren que los números cierren.</p>
-  <div class="quien-g">
-    <div class="qc"><i>🚀</i><b>Vas a abrir tu primer local</b><p>Concepto, ubicación, carta, inversión y el plan para llegar al día de apertura sin sorpresas.</p></div>
-    <div class="qc"><i>📉</i><b>Vendés bien pero no te queda</b><p>Food cost, precios, mermas y compras: encontramos dónde se va la plata.</p></div>
-    <div class="qc"><i>📈</i><b>Querés crecer</b><p>Una sucursal, delivery, un producto nuevo o eventos: lo ordenamos antes de escalar.</p></div>
-    <div class="qc"><i>🍱</i><b>Producís comida</b><p>Viandas, congelados, pastelería o catering: estandarizar recetas, costos y procesos.</p></div>
+  <div class="pq-g">
+    <article class="pq"><span class="pq-n">01</span><span class="pq-ic"><svg viewBox="0 0 24 24"><path d="M5 21h14M6 21V10l6-5 6 5v11M10 21v-6h4v6"/></svg></span><b>Vas a abrir tu primer local</b><p>Concepto, ubicación, carta, inversión y el plan para llegar al día de apertura sin sorpresas.</p><a href="#diagnostico" data-m="0">Empezar por Concepto →</a></article>
+    <article class="pq"><span class="pq-n">02</span><span class="pq-ic"><svg viewBox="0 0 24 24"><path d="M3 6l6 6 4-4 8 8M21 11v5h-5"/></svg></span><b>Vendés bien pero no te queda</b><p>Food cost, precios, mermas y compras: encontramos dónde se va la plata.</p><a href="#diagnostico" data-m="2">Empezar por Costeo →</a></article>
+    <article class="pq"><span class="pq-n">03</span><span class="pq-ic"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg></span><b>Querés crecer</b><p>Una sucursal, delivery, un producto nuevo o eventos: lo ordenamos antes de escalar.</p><a href="#diagnostico" data-m="5">Empezar por Finanzas →</a></article>
+    <article class="pq"><span class="pq-n">04</span><span class="pq-ic"><svg viewBox="0 0 24 24"><path d="M4 11h16v3a7 7 0 0 1-7 7h-2a7 7 0 0 1-7-7v-3zM8 7c0-1.5 1-2 1-3.5M12 7c0-1.5 1-2 1-3.5M16 7c0-1.5 1-2 1-3.5"/></svg></span><b>Producís comida</b><p>Viandas, congelados, pastelería o catering: estandarizar recetas, costos y procesos.</p><a href="#diagnostico" data-m="3">Empezar por Operación →</a></article>
   </div>
 </div></section>
 
@@ -326,14 +373,15 @@ footer{background:var(--nv);color:rgba(250,246,239,.6);text-align:center;padding
   <p class="rw-nota">Los valores son referenciales y pueden variar según el alcance y la complejidad del proyecto.</p>
 </div></section>
 
-<section><div class="wrap">
+<section class="lx lx-ct"><div class="wrap">
   <span class="k">Cómo trabajamos</span>
   <h2>Simple y <em>con números</em></h2>
-  <div class="pasos">
-    <div class="pa"><i>1</i><b>Diagnóstico</b><p>Una reunión sin costo para entender tu proyecto y dónde estás parado.</p></div>
-    <div class="pa"><i>2</i><b>Propuesta</b><p>Te paso qué módulos trabajar, tiempos y presupuesto cerrado.</p></div>
-    <div class="pa"><i>3</i><b>Implementación</b><p>Trabajamos juntos, en tu local y a distancia, con entregables concretos.</p></div>
-    <div class="pa"><i>4</i><b>Seguimiento</b><p>Medimos resultados y ajustamos hasta que el negocio camine solo.</p></div>
+  <div class="tl">
+    <div class="tl-line"><i id="tl-fill"></i></div>
+    <div class="tl-s"><span class="tl-b">1</span><b>Diagnóstico</b><p>Una reunión sin costo para entender tu proyecto y dónde estás parado.</p><small>Semana 0</small></div>
+    <div class="tl-s"><span class="tl-b">2</span><b>Propuesta</b><p>Te paso qué módulos trabajar, tiempos y presupuesto cerrado.</p><small>En 72 horas</small></div>
+    <div class="tl-s"><span class="tl-b">3</span><b>Implementación</b><p>Trabajamos juntos, en tu local y a distancia, con entregables concretos.</p><small>Por módulo</small></div>
+    <div class="tl-s"><span class="tl-b">4</span><b>Seguimiento</b><p>Medimos resultados y ajustamos hasta que el negocio camine solo.</p><small>Tablero mensual</small></div>
   </div>
 </div></section>
 
@@ -364,24 +412,25 @@ footer{background:var(--nv);color:rgba(250,246,239,.6);text-align:center;padding
   <p class="cu-nota">¿Ya tenés acceso? <a href="/management/login">Ingresá a tus cursos →</a></p>
 </div></section>
 
-<section id="herramientas" style="padding-top:20px"><div class="wrap">
+<section id="herramientas" class="lx lx-gu"><div class="wrap">
   <span class="k">Material de apoyo</span>
   <h2>Guía de costeo <em>y food cost</em></h2>
-  <div class="her">
-    <a class="prod prod-g" href="/management/guia">
-      <img src="/management/assets/guia.jpg" alt="Guía de costeo y food cost" loading="lazy">
-      <div>
-      <span class="k" style="margin:0">PDF + planilla Excel</span>
-      <h3>La herramienta práctica para costear cada plato y fijar precios con criterio</h3>
-      <div class="pr">$9.900 <small>· pago único · descarga inmediata</small></div>
-      <ul><li>Guía en PDF de 9 capítulos</li><li>Planillas: fichas técnicas, costo por plato y precios</li><li>Para restaurantes, cafés, viandas, rotiserías y delivery</li></ul>
-      <span class="btn">Obtener la guía →</span></div>
+  <div class="gu">
+    <a class="gu-card" href="/management/guia">
+      <div class="gu-img"><img src="/management/assets/guia.jpg" alt="Guía de costeo y food cost" loading="lazy"><span>PDF + Excel</span></div>
+      <div class="gu-b">
+        <h3>La herramienta práctica para costear cada plato y fijar precios con criterio</h3>
+        <div class="gu-pr"><b>$9.900</b><span>pago único<br>descarga inmediata</span></div>
+        <ul><li>Guía en PDF de 9 capítulos</li><li>Planillas: fichas técnicas, costo por plato y precios</li><li>Para restaurantes, cafés, viandas, rotiserías y delivery</li></ul>
+        <span class="bp">Obtener la guía →</span>
+      </div>
     </a>
-    <div class="notas">
-      <a class="nota" href="/blog/ingenieria-de-menu-como-se-arma-una-carta/"><i>📊</i><div><b>Ingeniería de menú: por qué la carta de un restaurante está armada así</b><small>Estrellas, caballitos de batalla, rompecabezas y perros</small></div></a>
-      <a class="nota" href="/blog/manipulacion-de-alimentos-reglas-de-oro/"><i>🧼</i><div><b>Manipulación de alimentos: las reglas de oro</b><small>Lo que tiene que saber todo tu equipo</small></div></a>
-      <a class="nota" href="/blog/como-regenerar-comida-para-que-quede-como-recien-hecha/"><i>🔥</i><div><b>Cómo regenerar comida para que quede recién hecha</b><small>La base de cualquier producción anticipada</small></div></a>
-      <a class="nota" href="/blog"><i>📚</i><div><b>Todas las notas del blog</b><small>Técnica de escuela contada simple</small></div></a>
+    <div class="gu-n">
+      <span class="gu-nk">Para leer gratis</span>
+      <a class="nt" href="/blog/ingenieria-de-menu-como-se-arma-una-carta/"><span class="nt-i"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><span><b>Ingeniería de menú: por qué la carta está armada así</b><small>Estrellas, caballitos de batalla, rompecabezas y perros</small></span></a>
+      <a class="nt" href="/blog/manipulacion-de-alimentos-reglas-de-oro/"><span class="nt-i"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3zM9 12l2 2 4-4"/></svg></span><span><b>Manipulación de alimentos: las reglas de oro</b><small>Lo que tiene que saber todo tu equipo</small></span></a>
+      <a class="nt" href="/blog/como-regenerar-comida-para-que-quede-como-recien-hecha/"><span class="nt-i"><svg viewBox="0 0 24 24"><path d="M12 22c4 0 7-3 7-7 0-5-5-7-5-12-3 2-4 5-4 7-1-1-2-2-2-3-2 2-3 5-3 8 0 4 3 7 7 7z"/></svg></span><span><b>Cómo regenerar comida para que quede recién hecha</b><small>La base de cualquier producción anticipada</small></span></a>
+      <a class="nt" href="/blog"><span class="nt-i"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2V5zM4 21a2 2 0 0 1 2-2h13"/></svg></span><span><b>Todas las notas del blog</b><small>Técnica de escuela contada simple</small></span></a>
     </div>
   </div>
 </div></section>
@@ -664,6 +713,11 @@ document.querySelectorAll('#hc-g button,#rd-mini button').forEach((b) => b.addEv
   elegir(+b.dataset.i);
 }));
 ubicar(); pintar(); presupuesto();
+document.querySelectorAll('.pq a[data-m]').forEach((a) => a.addEventListener('click', () => setTimeout(() => elegir(+a.dataset.m), 450)));
+(() => { const tl = document.querySelector('.tl'); if (!tl) return; const pasos = [...tl.querySelectorAll('.tl-s')], fill = document.getElementById('tl-fill');
+  const go = () => { const v = innerWidth <= 700; fill.style[v ? 'height' : 'width'] = '100%'; pasos.forEach((p, i) => setTimeout(() => p.classList.add('on'), 350 + i * 420)); };
+  if (!('IntersectionObserver' in window)) return go();
+  const io = new IntersectionObserver((e) => { if (e[0].isIntersecting) { go(); io.disconnect(); } }, { threshold: .35 }); io.observe(tl); })();
 // vuelta de MercadoPago
 (() => { const q = new URLSearchParams(location.search).get('pago'); if (!q) return;
   const d = document.createElement('div'); d.className = 'cm-aviso';
