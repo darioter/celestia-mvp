@@ -29,7 +29,6 @@ export default async function handler(req) {
   if (req.method !== 'POST') return new Response('Method not allowed', { status: 405 });
 
   const key = process.env.RESEND_API_KEY;
-  if (!key) return json({ ok: false, error: 'RESEND_API_KEY no configurado' }, 500);
 
   let d;
   try { d = await req.json(); } catch { return json({ ok: false, error: 'JSON inválido' }, 400); }
@@ -76,6 +75,16 @@ export default async function handler(req) {
     </div>
   </div>`;
 
+  const asunto = `${fuera ? '⚠️ [Traslado a cotizar] ' : ''}Nueva solicitud ${tipo} · ${String(d.nombre).slice(0, 60)} · ${d.ref}`;
+  // 1) Gmail de Celestia → celestiachefs@gmail.com y dario@dali-arquitectura.com.ar
+  try {
+    const g = await fetch('https://metodofermento.vercel.app/api/notificar', {
+      method: 'POST', headers: { 'Content-Type': 'application/json', 'x-celestia': 'aviso' },
+      body: JSON.stringify({ asunto, html, replyTo: d.email }),
+    });
+    if (g.ok) return json({ ok: true, via: 'gmail' });
+  } catch (e) {}
+  // 2) Respaldo: Resend a dario@
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
@@ -83,7 +92,7 @@ export default async function handler(req) {
       from: process.env.NOTIFY_FROM || 'Celestia <onboarding@resend.dev>',
       to: [process.env.NOTIFY_TO || 'dario@dali-arquitectura.com.ar'],
       reply_to: d.email && /.+@.+\..+/.test(d.email) ? d.email : undefined,
-      subject: `${fuera ? '⚠️ [Traslado a cotizar] ' : ''}Nueva solicitud ${tipo} · ${String(d.nombre).slice(0, 60)} · ${d.ref}`,
+      subject: asunto,
       html,
     }),
   });

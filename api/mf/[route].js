@@ -4,7 +4,7 @@
 export const config = { runtime: 'edge' };
 
 const ORIGEN = 'https://metodofermento.vercel.app/api/';
-const PERMITIDAS = new Set(['auth', 'crear-preferencia', 'leads']);
+const PERMITIDAS = new Set(['auth', 'crear-preferencia', 'leads', 'admin-celestia']);
 
 export default async function handler(req) {
   const url = new URL(req.url);

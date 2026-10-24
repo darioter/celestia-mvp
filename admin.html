@@ -101,6 +101,37 @@
     display: none;
   }
 
+
+  /* nav del admin + management + celu */
+  .adm-nav{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap}
+  .login-forgot{display:block;margin-top:14px;font-size:12.5px;color:var(--gold-light);text-decoration:none;text-align:center}
+  .login-msg{display:none;margin-top:10px;font-size:12.5px;color:rgba(250,246,239,.75);text-align:center;line-height:1.5}
+  .mg-kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px}
+  .mg-k{background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.2);border-radius:14px;padding:14px}
+  .mg-k b{display:block;font-family:'DM Serif Display',serif;font-weight:400;font-size:26px;color:var(--gold-light)}.mg-k span{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(250,246,239,.5)}
+  .mg-q{width:100%;max-width:420px;margin:0 0 14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px 12px;color:#FAF6EF;font:14px 'DM Sans',sans-serif}
+  .mg-row{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .mg-h{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.mg-h b{font-size:15px}.mg-h small{display:block;color:rgba(250,246,239,.5);font-size:12px;margin-top:2px}
+  .mg-tot{font-family:'DM Serif Display',serif;font-size:20px;color:var(--gold-light);white-space:nowrap}
+  .mg-mod{margin-top:8px;font-size:13px;color:rgba(250,246,239,.8);display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .mg-mod i{font-style:normal;font-size:11.5px;border:1px solid rgba(201,168,76,.3);border-radius:999px;padding:2px 9px;color:rgba(250,246,239,.75)}.mg-mod em{color:rgba(250,246,239,.5);font-size:12px}
+  .mg-a{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;align-items:center}
+  .mg-a select,.mg-nota{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:7px 10px;color:#FAF6EF;font:13px 'DM Sans',sans-serif}
+  .mg-a select option{background:#0D1B2A}.mg-nota{flex:1;min-width:180px}
+  .mg-b{background:rgba(255,255,255,.06);border:1px solid rgba(201,168,76,.3);color:#FAF6EF;border-radius:999px;padding:7px 13px;font:500 12.5px 'DM Sans',sans-serif;text-decoration:none;cursor:pointer}
+  .mg-b.wa{background:#25D366;border-color:#25D366;color:#fff}
+  .mg-st{font-size:11px;border-radius:999px;padding:3px 10px}.mg-st.ok{background:rgba(47,158,101,.2);color:#7fd8a6}.mg-st.off{background:rgba(196,106,106,.2);color:#e7a1a1}
+  .mg-c{display:inline-flex;gap:6px;align-items:center;border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:4px 10px;cursor:pointer}
+  .mg-t{width:100%;border-collapse:collapse;font-size:13px}.mg-t th,.mg-t td{padding:10px 14px;text-align:left;border-bottom:1px solid rgba(255,255,255,.07);white-space:nowrap}.mg-t th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(250,246,239,.5)}
+  @media (max-width: 760px){
+    .admin-header{padding:12px 14px;flex-wrap:wrap;gap:10px}
+    .admin-stats{order:3;width:100%;justify-content:space-around;gap:10px}
+    .admin-body{padding:16px 12px}
+    .adm-nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:18px}
+    .adm-nav .filter-btn{padding:9px 4px;font-size:11.5px;letter-spacing:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center;border-radius:10px}
+    .mg-kpis{grid-template-columns:repeat(2,1fr)}
+    .mg-h{flex-direction:column}
+  }
   /* ADMIN */
   #admin-screen { display: none; }
 
@@ -906,6 +937,8 @@ select{color-scheme:dark}select option,select optgroup{background:#13263a;color:
     <input type="password" class="login-input" id="pwd-input" placeholder="Contraseña" onkeydown="if(event.key==='Enter')login()">
     <button class="login-btn" onclick="login()">Ingresar</button>
     <div class="login-error" id="login-error">Contraseña incorrecta</div>
+    <a href="#" class="login-forgot" onclick="olvideClave();return false;">¿Olvidaste tu contraseña?</a>
+    <div class="login-msg" id="login-msg"></div>
   </div>
 </div>
 
@@ -934,7 +967,7 @@ select{color-scheme:dark}select option,select optgroup{background:#13263a;color:
   </div>
 
   <div class="admin-body">
-    <div style="display:flex;gap:12px;margin-bottom:28px;">
+    <div class="adm-nav">
       <button class="filter-btn active" onclick="verSeccion('reservas',this)">Reservas</button>
       <button class="filter-btn" onclick="verSeccion('semanal',this)">Chef Semanal</button>
       <button class="filter-btn" onclick="verSeccion('agenda',this)">Agenda</button>
@@ -948,7 +981,16 @@ select{color-scheme:dark}select option,select optgroup{background:#13263a;color:
       <button class="filter-btn" onclick="verSeccion('cupones',this)">Cupones</button>
       <button class="filter-btn" onclick="verSeccion('banners',this)">Banners</button>
       <button class="filter-btn" onclick="verSeccion('fiestas',this)">📦 Cajas</button>
+      <button class="filter-btn" onclick="verSeccion('management',this)">🎓 Management</button>
       <a class="filter-btn" href="/admin-historias" style="text-decoration:none;">📸 Historias IG</a>
+    </div>
+
+    <!-- SECCIÓN MANAGEMENT -->
+    <div id="seccion-management" style="display:none;">
+      <div class="mg-kpis" id="mg-kpis"><div class="mg-k"><b>—</b><span>Cargando…</span></div></div>
+      <div class="fx-tabs" id="mg-tabs"><button type="button" class="fx-tab on" data-t="leads">🎯 Diagnósticos</button><button type="button" class="fx-tab" data-t="alumnos">🎓 Alumnos</button><button type="button" class="fx-tab" data-t="compras">💳 Compras</button><a class="fx-tab" href="/management" target="_blank" style="text-decoration:none">Ver la web ↗</a></div>
+      <input type="search" class="mg-q" id="mg-q" placeholder="Buscar por nombre o email…">
+      <div id="mg-list"><div class="empty-state">Cargando…</div></div>
     </div>
 
     <!-- SECCIÓN PAGOS -->
@@ -2000,7 +2042,7 @@ function detenerRealtimeAdmin() {
 }
 
 function verSeccion(seccion, btn) {
-  ['reservas','semanal','agenda','pagos','bloqueos','chefs','casos','resenas','ingredientes','platos','cupones','banners','fiestas'].forEach(s => {
+  ['reservas','semanal','agenda','pagos','bloqueos','chefs','casos','resenas','ingredientes','platos','cupones','banners','fiestas','management'].forEach(s => {
     const el = document.getElementById('seccion-'+s);
     if (el) el.style.display = seccion === s ? 'block' : 'none';
   });
@@ -2022,7 +2064,77 @@ function verSeccion(seccion, btn) {
   if (seccion === 'ingredientes') cargarIngredientes();
   if (seccion === 'cupones') cargarCupones();
   if (seccion === 'banners') cargarBanners();
+  if (seccion === 'management') cargarManagement();
 }
+
+// ─── CELESTIA MANAGEMENT (diagnósticos, alumnos y compras del Supabase de Management) ───
+let mgTab = 'leads', mgData = {};
+const mgFmt = n => '$' + Math.round(Number(n) || 0).toLocaleString('es-AR');
+const mgEsc = v => String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const mgFecha = f => f ? new Date(f).toLocaleDateString('es-AR', { day: '2-digit', month: 'short', year: '2-digit' }) + ' ' + new Date(f).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }) : '—';
+const MG_CURSOS = { curso01: 'Marketing', curso02: 'Emprendimiento', curso03: 'Administración', todos: 'Todos', guia: 'Guía de costeo' };
+async function mgApi(q, body) {
+  const { data } = await supa.auth.getSession();
+  const r = await fetch('/api/mf/admin-celestia' + (q ? '?que=' + q : ''), { method: body ? 'POST' : 'GET', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + (data.session && data.session.access_token) }, body: body ? JSON.stringify(body) : undefined });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.error || 'HTTP ' + r.status);
+  return j;
+}
+async function cargarManagement() {
+  try {
+    const k = await mgApi('resumen');
+    document.getElementById('mg-kpis').innerHTML = [[k.nuevos, 'Diagnósticos nuevos'], [k.leads, 'Diagnósticos totales'], [k.alumnos, 'Alumnos'], [k.compras, 'Compras'], [mgFmt(k.facturado), 'Facturado']].map(([n, l]) => `<div class="mg-k"><b>${n}</b><span>${l}</span></div>`).join('');
+  } catch (e) { document.getElementById('mg-kpis').innerHTML = `<div class="mg-k"><b>!</b><span>${mgEsc(e.message)}</span></div>`; }
+  mgCargar(mgTab);
+}
+async function mgCargar(t) {
+  mgTab = t; const L = document.getElementById('mg-list'); L.innerHTML = '<div class="empty-state">Cargando…</div>';
+  try { mgData[t] = await mgApi(t); mgRender(); } catch (e) { L.innerHTML = `<div class="empty-state">No pude cargar: ${mgEsc(e.message)}</div>`; }
+}
+function mgRender() {
+  const q = (document.getElementById('mg-q').value || '').toLowerCase(), L = document.getElementById('mg-list');
+  const rows = (mgData[mgTab] || []).filter(x => !q || (String(x.nombre || '') + ' ' + String(x.email || '')).toLowerCase().includes(q));
+  if (!rows.length) { L.innerHTML = '<div class="empty-state">No hay registros.</div>'; return; }
+  if (mgTab === 'leads') L.innerHTML = rows.map(x => {
+    const tot = (x.raw_payload && x.raw_payload.totalARS) || 0, tel = String(x.tel || '').replace(/\D/g, '');
+    const mods = Object.entries(x.detalles_modulos || {}).map(([t, d]) => `<div class="mg-mod"><b>${mgEsc(t)}</b> ${(d.items || []).map(i => `<i>${mgEsc(i)}</i>`).join('')} ${d.nota ? `<em>${mgEsc(d.nota)}</em>` : ''}</div>`).join('');
+    return `<div class="mg-row"><div class="mg-h"><div><b>${mgEsc(x.nombre)}</b><small>${mgEsc(x.email)}${x.tel ? ' · ' + mgEsc(x.tel) : ''} · ${mgFecha(x.created_at)}</small></div><div class="mg-tot">${mgFmt(tot)}</div></div>${mods}
+      <div class="mg-a"><select onchange="mgLead(${x.id},{estado:this.value})">${['nuevo', 'contactado', 'cerrado', 'descartado'].map(e => `<option ${x.estado === e ? 'selected' : ''}>${e}</option>`).join('')}</select>
+      ${tel ? `<a class="mg-b wa" target="_blank" href="https://wa.me/${tel.startsWith('54') ? tel : '549' + tel}?text=${encodeURIComponent('Hola ' + String(x.nombre || '').split(' ')[0] + '! Soy Daro, de Celestia Management. Recibí tu diagnóstico y quería coordinar la reunión sin costo.')}">WhatsApp</a>` : ''}
+      <a class="mg-b" href="mailto:${mgEsc(x.email)}?subject=Tu%20diagn%C3%B3stico%20de%20Celestia%20Management">Mail</a>
+      <input class="mg-nota" placeholder="Notas internas…" value="${mgEsc(x.notas || '')}" onchange="mgLead(${x.id},{notas:this.value})"></div></div>`;
+  }).join('');
+  if (mgTab === 'alumnos') L.innerHTML = rows.map(x => `<div class="mg-row"><div class="mg-h"><div><b>${mgEsc(x.nombre)}</b><small>${mgEsc(x.email)} · alta ${mgFecha(x.created_at)} · último acceso ${mgFecha(x.ultimo_acceso)}</small></div><span class="mg-st ${x.activo ? 'ok' : 'off'}">${x.activo ? 'Activo' : 'Inactivo'}</span></div>
+      <div class="mg-mod">${['curso01', 'curso02', 'curso03', 'todos'].map(c => `<label class="mg-c"><input type="checkbox" ${(x.cursos || []).includes(c) ? 'checked' : ''} onchange="mgCursos(${x.id},this)" data-c="${c}"> ${MG_CURSOS[c]}</label>`).join('')}</div>
+      <div class="mg-a"><button class="mg-b" onclick="mgReset('${mgEsc(x.email)}',this)">🔑 Nueva contraseña</button><button class="mg-b" onclick="mgAlumno(${x.id},{activo:${!x.activo}})">${x.activo ? 'Desactivar' : 'Activar'}</button><a class="mg-b" href="mailto:${mgEsc(x.email)}">Mail</a></div></div>`).join('');
+  if (mgTab === 'compras') L.innerHTML = `<div class="mg-row" style="padding:0;overflow-x:auto"><table class="mg-t"><tr><th>Fecha</th><th>Email</th><th>Producto</th><th>Monto</th><th>Estado</th></tr>${rows.map(x => `<tr><td>${mgFecha(x.created_at)}</td><td>${mgEsc(x.email)}</td><td>${mgEsc(MG_CURSOS[x.producto] || x.producto)}</td><td>${mgFmt(x.monto)}</td><td>${mgEsc(x.estado)}</td></tr>`).join('')}</table></div>`;
+}
+async function mgLead(id, b) { try { await mgApi('', Object.assign({ accion: 'lead', id }, b)); const x = (mgData.leads || []).find(r => r.id === id); if (x) Object.assign(x, b); showToast('✓ Guardado'); } catch (e) { alert('No se guardó: ' + e.message); } }
+async function mgAlumno(id, b) { try { await mgApi('', Object.assign({ accion: 'alumno', id }, b)); const x = (mgData.alumnos || []).find(r => r.id === id); if (x) Object.assign(x, b); mgRender(); } catch (e) { alert('No se guardó: ' + e.message); } }
+function mgCursos(id, inp) { const box = inp.closest('.mg-mod'); const cursos = [...box.querySelectorAll('input:checked')].map(i => i.dataset.c); mgAlumno(id, { cursos }); }
+async function mgReset(email, btn) {
+  if (!confirm('¿Generar una contraseña nueva para ' + email + '? Se la mandamos por mail y la vas a ver acá.')) return;
+  btn.disabled = true; try { const j = await mgApi('', { accion: 'reset', email }); prompt('Contraseña nueva (ya se la mandamos por mail). Podés copiarla:', j.password); } catch (e) { alert('No se pudo: ' + e.message); } btn.disabled = false;
+}
+document.addEventListener('click', e => { const t = e.target.closest('#mg-tabs .fx-tab[data-t]'); if (!t) return; document.querySelectorAll('#mg-tabs .fx-tab').forEach(b => b.classList.toggle('on', b === t)); document.getElementById('mg-q').value = ''; mgCargar(t.dataset.t); });
+document.addEventListener('input', e => { if (e.target.id === 'mg-q') mgRender(); });
+
+// ─── RECUPERAR CONTRASEÑA DEL ADMIN ───
+async function olvideClave() {
+  const email = (document.getElementById('email-input').value || '').trim();
+  const m = document.getElementById('login-msg');
+  if (!/.+@.+\..+/.test(email)) { m.textContent = 'Escribí tu email arriba y volvé a tocar el link.'; m.style.display = 'block'; return; }
+  const { error } = await supa.auth.resetPasswordForEmail(email, { redirectTo: location.origin + '/admin' });
+  m.textContent = error ? 'No se pudo enviar: ' + error.message : '✓ Te mandamos un mail con el link para crear una contraseña nueva.'; m.style.display = 'block';
+}
+supa.auth.onAuthStateChange(async (ev) => {
+  if (ev !== 'PASSWORD_RECOVERY') return;
+  const nueva = prompt('Escribí tu contraseña nueva para el admin (mínimo 8 caracteres):');
+  if (!nueva || nueva.length < 8) { alert('La contraseña tiene que tener al menos 8 caracteres. Volvé a pedir el link.'); return; }
+  const { error } = await supa.auth.updateUser({ password: nueva });
+  alert(error ? 'No se pudo cambiar: ' + error.message : '✓ Listo, tu contraseña del admin quedó cambiada.');
+  if (!error) location.replace('/admin');
+});
 
 // ─── CASOS DE ÉXITO ─────────────────────────────────────
 let todosCasos = [];

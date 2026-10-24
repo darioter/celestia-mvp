@@ -97,7 +97,13 @@ export default async function handler(req) {
   const to = process.env.NOTIFY_TO || 'dario@dali-arquitectura.com.ar';
   const [errCli, errDaro] = await Promise.all([
     mandar(key, { from, to: [email], reply_to: to, subject: `Tu presupuesto de Celestia Management · ${ars(total)}`, html: cuerpo(true) }),
-    mandar(key, { from, to: [to], reply_to: email, subject: `Diagnóstico Management · ${nombre} · ${ars(total)}`, html: cuerpo(false) }),
+    (async () => {
+      try {
+        const g = await fetch('https://metodofermento.vercel.app/api/notificar', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-celestia': 'aviso' }, body: JSON.stringify({ asunto: `Diagnóstico Management · ${nombre} · ${ars(total)}`, html: cuerpo(false), replyTo: email }) });
+        if (g.ok) return null;
+      } catch (e) {}
+      return mandar(key, { from, to: [to], reply_to: email, subject: `Diagnóstico Management · ${nombre} · ${ars(total)}`, html: cuerpo(false) });
+    })(),
   ]);
   if (errCli && errDaro) return json({ ok: false, error: 'No se pudo enviar el mail', detalle: errDaro }, 502);
   return json({ ok: true, ref, total, mailCliente: !errCli });
