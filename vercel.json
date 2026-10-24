@@ -3,6 +3,12 @@
   "outputDirectory": ".",
   "redirects": [
     {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "(www\\.)?metodofermento\\.com\\.ar" }],
+      "destination": "https://www.chefprivado.ar/fermento",
+      "permanent": true
+    },
+    {
       "source": "/metodofermento",
       "destination": "/fermento",
       "permanent": true
