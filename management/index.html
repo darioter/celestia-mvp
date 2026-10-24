@@ -65,12 +65,55 @@ section.hero{padding:0}
 .hc-g button b{font-family:'DM Serif Display',serif;font-weight:400;font-size:17px;color:var(--gdl)}
 .hc-g button:hover{background:rgba(201,168,76,.18);border-color:var(--gdl)}
 .hc-f{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;font-size:11.5px;color:rgba(250,246,239,.6);line-height:1.4}.hc-f b{color:var(--cr);font-weight:600}
+/* cursos */
+.cu-sec{background:linear-gradient(180deg,var(--nv) 0%,#0A1522 100%);color:var(--cr)}
+.cu-sec h2{color:var(--cr)}.cu-sec h2 em{color:var(--gdl)}.cu-sec .sub{color:rgba(250,246,239,.7)}.cu-sec .k{color:var(--gdl)}
+.cu-g{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:34px}
+.cu{background:rgba(250,246,239,.04);border:1px solid rgba(201,168,76,.22);border-radius:22px;overflow:hidden;display:flex;flex-direction:column;transition:transform .25s,border-color .25s}
+.cu:hover{transform:translateY(-4px);border-color:rgba(232,201,106,.6)}
+.cu-img{position:relative;aspect-ratio:16/10;overflow:hidden}.cu-img img{width:100%;height:100%;object-fit:cover}
+.cu-img span{position:absolute;left:12px;top:12px;background:rgba(13,27,42,.85);color:var(--gdl);font-size:11px;letter-spacing:.14em;text-transform:uppercase;border-radius:999px;padding:5px 11px;border:1px solid rgba(201,168,76,.4)}
+.cu-b{padding:20px;display:flex;flex-direction:column;gap:10px;flex:1}
+.cu-b h3{font-family:'DM Serif Display',serif;font-weight:400;font-size:22px;line-height:1.2}
+.cu-b small{color:var(--gdl);font-size:12.5px}.cu-b p{font-size:14px;color:rgba(250,246,239,.7)}
+.cu-t{display:flex;flex-wrap:wrap;gap:6px}.cu-t i{font-style:normal;font-size:11.5px;border:1px solid rgba(250,246,239,.18);border-radius:999px;padding:3px 10px;color:rgba(250,246,239,.75)}
+.cu-p{display:flex;align-items:baseline;gap:8px;margin-top:auto;padding-top:8px}.cu-p b{font-family:'DM Serif Display',serif;font-weight:400;font-size:30px;color:var(--gdl)}.cu-p span{font-size:12px;color:rgba(250,246,239,.5)}
+.cu .bp{justify-content:center}
+.cu-nota{text-align:center;margin-top:22px;color:rgba(250,246,239,.6);font-size:14px}.cu-nota a{color:var(--gdl)}
+.prod-g{display:grid;grid-template-columns:200px 1fr;gap:20px;text-decoration:none;color:inherit;align-items:start}
+.prod-g img{width:100%;border-radius:14px;aspect-ratio:3/4;object-fit:cover}
+.prod-g:hover{border-color:var(--gdl)}
+.cm-modal{position:fixed;inset:0;z-index:100;background:rgba(5,10,18,.72);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:16px}
+.cm-modal[hidden]{display:none}
+.cm-box{position:relative;width:100%;max-width:420px;background:var(--nv);color:var(--cr);border:1px solid rgba(201,168,76,.4);border-radius:22px;padding:26px;display:grid;gap:12px;box-shadow:0 30px 70px rgba(0,0,0,.5)}
+.cm-x{position:absolute;right:14px;top:12px;background:none;border:0;color:rgba(250,246,239,.6);font-size:18px;cursor:pointer}
+.cm-t{font-family:'DM Serif Display',serif;font-weight:400;font-size:24px;line-height:1.2}
+.cm-in{width:100%;border:1px solid rgba(250,246,239,.2);border-radius:12px;padding:13px 14px;font:15px 'DM Sans',sans-serif;background:rgba(250,246,239,.06);color:var(--cr)}
+.cm-in::placeholder{color:rgba(250,246,239,.45)}.cm-in:focus{outline:2px solid var(--gd)}
+.cm-tot{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid rgba(201,168,76,.2);padding-top:12px}.cm-tot span{font-size:13px;color:rgba(250,246,239,.6)}.cm-tot b{font-family:'DM Serif Display',serif;font-weight:400;font-size:28px;color:var(--gdl)}
+.cm-n{font-size:12px;color:rgba(250,246,239,.5);margin:0}
+.cm-box .err{color:#f3a08f;font-size:13px}
+@media(max-width:960px){.cu-g{grid-template-columns:1fr}.prod-g{grid-template-columns:120px 1fr}}
+.cm-aviso{position:fixed;left:50%;top:76px;transform:translateX(-50%);z-index:120;background:#FAF6EF;color:#0D1B2A;border:1px solid #C9A84C;border-radius:14px;padding:12px 18px;font-size:14px;box-shadow:0 14px 34px rgba(0,0,0,.3);max-width:calc(100% - 32px)}.cm-aviso a{color:#8A6A20}
 /* rueda */
 .rd-sec{background:radial-gradient(90% 70% at 20% 30%,#16304a 0%,var(--nv) 60%);color:var(--cr)}
 .rd-sec h2{color:var(--cr)}.rd-sec h2 em{color:var(--gdl)}.rd-sec .sub{color:rgba(250,246,239,.7)}.rd-sec .k{color:var(--gdl)}
-.rw{display:grid;grid-template-columns:1fr 1fr;margin-top:34px;border:1px solid rgba(201,168,76,.22);border-radius:26px;background:rgba(13,27,42,.55);overflow:hidden}
+.rw{display:grid;grid-template-columns:1.1fr .9fr;margin-top:34px;border:1px solid rgba(201,168,76,.22);border-radius:26px;background:rgba(13,27,42,.55);overflow:hidden}
 .rw-l{padding:22px;border-right:1px solid rgba(201,168,76,.15);display:flex;flex-direction:column;gap:14px}
-.rw-svg{width:100%;height:auto;max-height:420px;user-select:none}
+.rw-svg{width:100%;height:auto;max-height:500px;user-select:none}
+.rw-3d{perspective:1100px;width:100%;display:flex;justify-content:center}
+.rw-3d .rw-svg{transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.8,.2,1);filter:drop-shadow(0 28px 36px rgba(0,0,0,.45));max-height:500px}
+.rw-svg .sec{fill:rgba(201,168,76,.05);stroke:rgba(201,168,76,.22);stroke-width:1;cursor:pointer;transition:fill .35s}
+.rw-svg .sec:hover{fill:rgba(232,201,106,.14)}
+.rw-svg .sec.pre{fill:rgba(232,201,106,.12)}
+.rw-svg .sec.add{fill:rgba(47,158,101,.16);stroke:rgba(80,190,130,.45)}
+.rw-svg .sec.on{fill:url(#lg-sec);fill-opacity:.32;stroke:#E8C96A;stroke-width:1.5}
+.rw-svg .rw-orb{transform-origin:260px 250px;animation:orb 60s linear infinite}
+@keyframes orb{to{transform:rotate(360deg)}}
+.rw-svg .nd.on{animation:pulso 2.4s ease-in-out infinite}
+@keyframes pulso{50%{opacity:.88}}
+@media(prefers-reduced-motion:reduce){.rw-svg .rw-orb,.rw-svg .nd.on{animation:none}}
+
 .rw-svg .nd{cursor:pointer}.rw-svg .nd circle{transition:fill .3s,stroke .3s}
 .rw-svg .nd:hover circle.c{stroke:#E8C96A;stroke-width:2.5}
 .rw-svg .nd:focus{outline:none}.rw-svg .nd:focus-visible circle.c{stroke:#fff;stroke-width:3}
@@ -172,7 +215,7 @@ footer{background:var(--nv);color:rgba(250,246,239,.6);text-align:center;padding
 </style>
 </head><body>
 <header class="hdr"><a class="lg" href="/management" aria-label="Celestia Management"><img src="/img/management/logo-pill-sm.png" alt="Celestia Management" width="198" height="59"></a>
-<nav><a href="/">Chef privado</a><a href="#diagnostico">Diagnóstico</a><a href="#herramientas">Herramientas</a><a href="#quien">Quién soy</a><a class="cta" href="#diagnostico">Armar mi presupuesto</a></nav></header>
+<nav><a href="/">Chef privado</a><a href="#diagnostico">Diagnóstico</a><a href="#cursos">Cursos</a><a href="/management/guia">Guía de costeo</a><a href="/management/login">Alumnos</a><a class="cta" href="#diagnostico">Armar mi presupuesto</a></nav></header>
 
 <section class="hero">
   <div class="h-img" role="img" aria-label="Daro Castello trabajando en la estrategia de un restaurante"></div><div class="h-ov"></div>
@@ -185,7 +228,7 @@ footer{background:var(--nv);color:rgba(250,246,239,.6);text-align:center;padding
     <div class="h-prueba"><b>9 sem</b><span>a punto de equilibrio</span><i></i><b>+28%</b><span>margen bruto</span><i></i><b>−40%</b><span>rotación</span></div>
     <div class="hx-row">
       <a class="hx" href="#diagnostico"><span class="hx-im" style="background-image:url(/img/management/emblema.png);background-size:84%;background-color:#0D1B2A"></span><span class="hx-t"><b>La rueda</b><small>Presupuesto en vivo</small></span></a>
-      <a class="hx" href="#herramientas"><span class="hx-im" style="background-image:url(/img/management/destacada_costos.png);background-position:center 48%;background-size:260%"></span><span class="hx-t"><b>Guía food cost</b><small>PDF + planillas</small></span></a>
+      <a class="hx" href="/management/guia"><span class="hx-im" style="background-image:url(/img/management/destacada_costos.png);background-position:center 48%;background-size:260%"></span><span class="hx-t"><b>Guía food cost</b><small>PDF + planillas</small></span></a>
       <a class="hx" href="#quien"><span class="hx-im" style="background-image:url(/img/galeria/daro-7f3bbadf-65a80366.webp);background-position:50% 12%"></span><span class="hx-t"><b>Quién soy</b><small>Cocina + negocio</small></span></a>
     </div>
   </div>
@@ -215,22 +258,32 @@ footer{background:var(--nv);color:rgba(250,246,239,.6);text-align:center;padding
   <p class="sub">Tocá un módulo de la rueda, tildá lo que necesitás y armá tu presupuesto estimativo en tiempo real. Al final te lo mandamos por mail.</p>
   <div class="rw">
     <div class="rw-l">
-      <svg class="rw-svg" viewBox="0 0 440 380" role="group" aria-label="Rueda de módulos">
+      <div class="rw-3d" id="rw-3d"><svg class="rw-svg" viewBox="0 0 520 500" role="group" aria-label="Rueda de módulos">
         <defs>
-          <radialGradient id="rg-on" cx="50%" cy="35%" r="70%"><stop offset="0" stop-color="#F3DA8A"/><stop offset="1" stop-color="#C9A84C"/></radialGradient>
-          <radialGradient id="rg-off" cx="50%" cy="30%" r="75%"><stop offset="0" stop-color="#1f3a57"/><stop offset="1" stop-color="#13263a"/></radialGradient>
-          <filter id="rg-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <radialGradient id="rg-on" cx="38%" cy="30%" r="75%"><stop offset="0" stop-color="#FFF1BF"/><stop offset=".45" stop-color="#E8C96A"/><stop offset="1" stop-color="#9C7A28"/></radialGradient>
+          <radialGradient id="rg-off" cx="38%" cy="28%" r="80%"><stop offset="0" stop-color="#2E5277"/><stop offset=".55" stop-color="#173451"/><stop offset="1" stop-color="#0B1826"/></radialGradient>
+          <radialGradient id="rg-add" cx="38%" cy="28%" r="80%"><stop offset="0" stop-color="#3B5E44"/><stop offset=".6" stop-color="#1E3A2E"/><stop offset="1" stop-color="#0F2019"/></radialGradient>
+          <radialGradient id="rg-core" cx="50%" cy="40%" r="65%"><stop offset="0" stop-color="#1D3A5A"/><stop offset="1" stop-color="#0A1522"/></radialGradient>
+          <radialGradient id="rg-halo" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="rgba(232,201,106,.28)"/><stop offset="1" stop-color="rgba(232,201,106,0)"/></radialGradient>
+          <linearGradient id="lg-sec" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F3DA8A"/><stop offset="1" stop-color="#B08A30"/></linearGradient>
+          <filter id="rg-glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="rg-sh" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000" flood-opacity=".55"/></filter>
         </defs>
-        <circle cx="220" cy="190" r="170" fill="none" stroke="rgba(201,168,76,.10)" stroke-width="1"/>
-        <circle cx="220" cy="190" r="152" fill="none" stroke="rgba(201,168,76,.22)" stroke-width="10"/>
-        <circle id="rw-prog" cx="220" cy="190" r="152" fill="none" stroke="#E8C96A" stroke-width="10" stroke-linecap="round" transform="rotate(-90 220 190)" stroke-dasharray="955" stroke-dashoffset="955"/>
+        <circle cx="260" cy="250" r="236" fill="url(#rg-halo)"/>
+        <g id="rw-ticks"></g>
+        <circle cx="260" cy="250" r="214" fill="none" stroke="rgba(201,168,76,.18)" stroke-width="1"/>
+        <circle class="rw-orb" cx="260" cy="250" r="226" fill="none" stroke="rgba(232,201,106,.35)" stroke-width="1.2" stroke-dasharray="2 9"/>
+        <circle cx="260" cy="250" r="200" fill="none" stroke="rgba(201,168,76,.16)" stroke-width="12"/>
+        <circle id="rw-prog" cx="260" cy="250" r="200" fill="none" stroke="url(#lg-sec)" stroke-width="12" stroke-linecap="round" transform="rotate(-90 260 250)"/>
+        <g id="rw-sec"></g>
         <g id="rw-lines"></g>
-        <circle cx="220" cy="190" r="64" fill="#0D1B2A" stroke="rgba(201,168,76,.55)" stroke-width="1.5"/>
-        <circle cx="220" cy="190" r="74" fill="none" stroke="rgba(201,168,76,.18)" stroke-width="1"/>
-        <text id="rw-cn" x="220" y="186" text-anchor="middle" font-family="DM Serif Display,serif" font-size="22" fill="#FAF6EF">Celestia</text>
-        <text id="rw-cs" x="220" y="210" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10.5" letter-spacing="2.5" fill="#E8C96A">MANAGEMENT</text>
+        <circle cx="260" cy="250" r="92" fill="url(#rg-core)" stroke="rgba(232,201,106,.55)" stroke-width="1.5" filter="url(#rg-sh)"/>
+        <circle cx="260" cy="250" r="80" fill="none" stroke="rgba(201,168,76,.25)" stroke-width="1" stroke-dasharray="1 5"/>
+        <image id="rw-emb" href="/img/management/emblema.png" x="214" y="194" width="92" height="92" opacity=".95"/>
+        <text id="rw-cn" x="260" y="254" text-anchor="middle" font-family="DM Serif Display,serif" font-size="54" fill="#FAF6EF" style="display:none">1</text>
+        <text id="rw-cs" x="260" y="304" text-anchor="middle" font-family="DM Sans,sans-serif" font-weight="600" font-size="11" letter-spacing="3" fill="#E8C96A">MANAGEMENT</text>
         <g id="rw-nodes"></g>
-      </svg>
+      </svg></div>
       <div class="rw-bud"><span>Estimado seleccionado</span><div><b id="rw-tot">$ 0</b><small id="rw-usd">≈ USD 0</small></div></div>
     </div>
     <div class="rw-r" aria-live="polite">
@@ -284,17 +337,46 @@ footer{background:var(--nv);color:rgba(250,246,239,.6);text-align:center;padding
   </div>
 </div></section>
 
+<section class="cu-sec" id="cursos"><div class="wrap">
+  <span class="k">Capacitación gastronómica</span>
+  <h2>Aprendé a fondo. <em>Pagás una vez, accedés siempre.</em></h2>
+  <p class="sub">Tres cursos online con lectura y evaluación por módulo. Avanzás cuando aprobás, sin fecha de vencimiento, desde cualquier dispositivo.</p>
+  <div class="cu-g">
+    <article class="cu"><div class="cu-img"><img src="/management/assets/curso01.jpg" alt="Curso de marketing gastronómico" loading="lazy"><span>Curso 01</span></div>
+      <div class="cu-b"><h3>Marketing gastronómico y redes</h3><small>14 módulos · 24 horas de contenido</small>
+      <p>Posicioná tu negocio, construí una marca con identidad propia y conseguí clientes reales con estrategias que funcionan en el mercado argentino.</p>
+      <div class="cu-t"><i>Branding</i><i>Carta efectiva</i><i>Redes</i><i>Plan de marketing</i></div>
+      <div class="cu-p"><b>$69.000</b><span>pago único · acceso permanente</span></div>
+      <button type="button" class="bp" onclick="cmComprar('curso01','Marketing gastronómico y redes',69000)">Pagar con MercadoPago</button></div></article>
+    <article class="cu"><div class="cu-img"><img src="/management/assets/curso02.jpg" alt="Curso para armar un emprendimiento gastronómico" loading="lazy"><span>Curso 02</span></div>
+      <div class="cu-b"><h3>Claves para armar tu emprendimiento</h3><small>14 módulos · 16 horas de contenido</small>
+      <p>Todo lo que necesitás saber antes de abrir: local, equipamiento, proveedores, equipo y un plan de negocio concreto y ejecutable.</p>
+      <div class="cu-t"><i>Plan de negocio</i><i>Proveedores</i><i>RR.HH.</i><i>Habilitaciones</i></div>
+      <div class="cu-p"><b>$49.000</b><span>pago único · acceso permanente</span></div>
+      <button type="button" class="bp" onclick="cmComprar('curso02','Claves para armar tu emprendimiento',49000)">Pagar con MercadoPago</button></div></article>
+    <article class="cu"><div class="cu-img"><img src="/management/assets/curso03.jpg" alt="Curso de administración gastronómica" loading="lazy"><span>Curso 03</span></div>
+      <div class="cu-b"><h3>Administración de negocios gastronómicos</h3><small>12 módulos · 30 horas de contenido</small>
+      <p>Manejá los números con criterio: costos, food cost, auditoría interna, sistemas de gestión y rentabilidad por plato.</p>
+      <div class="cu-t"><i>Food cost</i><i>Prime cost</i><i>Auditoría</i><i>Rentabilidad</i></div>
+      <div class="cu-p"><b>$79.000</b><span>pago único · acceso permanente</span></div>
+      <button type="button" class="bp" onclick="cmComprar('curso03','Administración de negocios gastronómicos',79000)">Pagar con MercadoPago</button></div></article>
+  </div>
+  <p class="cu-nota">¿Ya tenés acceso? <a href="/management/login">Ingresá a tus cursos →</a></p>
+</div></section>
+
 <section id="herramientas" style="padding-top:20px"><div class="wrap">
-  <span class="k">Herramientas</span>
-  <h2>Para empezar <em>hoy mismo</em></h2>
+  <span class="k">Material de apoyo</span>
+  <h2>Guía de costeo <em>y food cost</em></h2>
   <div class="her">
-    <div class="prod">
-      <span class="k" style="margin:0">Guía + planillas</span>
-      <h3>Food cost sin vueltas: la guía y el sistema de planillas</h3>
-      <div class="pr">USD 19 <small>· pago único</small></div>
-      <ul><li>Guía en PDF de 9 capítulos para calcular y bajar tu food cost</li><li>Sistema de planillas Excel: fichas técnicas, costo por plato y precios</li><li>Para restaurantes, cafés, viandas y emprendimientos</li></ul>
-      <a class="btn" id="b-guia" target="_blank" rel="noopener" href="https://wa.me/5491160410607?text=Hola%20Daro!%20Quiero%20la%20gu%C3%ADa%20de%20food%20cost%20%2B%20planillas%20de%20Celestia%20Management">Quiero la guía →</a>
-    </div>
+    <a class="prod prod-g" href="/management/guia">
+      <img src="/management/assets/guia.jpg" alt="Guía de costeo y food cost" loading="lazy">
+      <div>
+      <span class="k" style="margin:0">PDF + planilla Excel</span>
+      <h3>La herramienta práctica para costear cada plato y fijar precios con criterio</h3>
+      <div class="pr">$9.900 <small>· pago único · descarga inmediata</small></div>
+      <ul><li>Guía en PDF de 9 capítulos</li><li>Planillas: fichas técnicas, costo por plato y precios</li><li>Para restaurantes, cafés, viandas, rotiserías y delivery</li></ul>
+      <span class="btn">Obtener la guía →</span></div>
+    </a>
     <div class="notas">
       <a class="nota" href="/blog/ingenieria-de-menu-como-se-arma-una-carta/"><i>📊</i><div><b>Ingeniería de menú: por qué la carta de un restaurante está armada así</b><small>Estrellas, caballitos de batalla, rompecabezas y perros</small></div></a>
       <a class="nota" href="/blog/manipulacion-de-alimentos-reglas-de-oro/"><i>🧼</i><div><b>Manipulación de alimentos: las reglas de oro</b><small>Lo que tiene que saber todo tu equipo</small></div></a>
@@ -303,6 +385,35 @@ footer{background:var(--nv);color:rgba(250,246,239,.6);text-align:center;padding
     </div>
   </div>
 </div></section>
+<div class="cm-modal" id="cm-modal" hidden onclick="if(event.target===this)cmCerrar()">
+  <div class="cm-box" role="dialog" aria-modal="true" aria-labelledby="cm-mt">
+    <button type="button" class="cm-x" onclick="cmCerrar()" aria-label="Cerrar">✕</button>
+    <span class="k" style="margin:0">Completá tu compra</span>
+    <b id="cm-mt" class="cm-t"></b>
+    <input class="cm-in" id="cm-nom" placeholder="Nombre completo" autocomplete="name">
+    <input class="cm-in" id="cm-mail" type="email" placeholder="tu@email.com" autocomplete="email">
+    <div class="cm-tot"><span>Total a pagar</span><b id="cm-pr"></b></div>
+    <button type="button" class="bp" id="cm-btn" onclick="cmPagar()" style="width:100%;justify-content:center">Pagar con MercadoPago →</button>
+    <div class="err" id="cm-err"></div>
+    <p class="cm-n">Pago seguro con MercadoPago. Cuando se aprueba, te llegan por mail tus datos de acceso a la plataforma.</p>
+  </div>
+</div>
+<script>
+var cmProd='';
+function cmComprar(p,n,precio){cmProd=p;document.getElementById('cm-mt').textContent=n;document.getElementById('cm-pr').textContent='$'+precio.toLocaleString('es-AR');document.getElementById('cm-err').textContent='';document.getElementById('cm-modal').hidden=false;setTimeout(function(){document.getElementById('cm-nom').focus();},60);try{window.celTrack&&celTrack('begin_checkout',{item:p,value:precio,currency:'ARS'});}catch(e){}}
+function cmCerrar(){document.getElementById('cm-modal').hidden=true;}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')cmCerrar();});
+async function cmPagar(){
+  var n=document.getElementById('cm-nom').value.trim(),m=document.getElementById('cm-mail').value.trim(),E=document.getElementById('cm-err'),b=document.getElementById('cm-btn');
+  if(n.length<2){E.textContent='Ingresá tu nombre.';return;}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(m)){E.textContent='Ingresá un email válido.';return;}
+  b.disabled=true;b.textContent='Conectando con MercadoPago…';E.textContent='';
+  try{var r=await fetch('/api/mf/crear-preferencia',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:m,nombre:n,producto:cmProd})});var d=await r.json();
+    if(!r.ok||!d.init_point){E.textContent=d.error||'No se pudo iniciar el pago. Probá de nuevo.';}else{location.href=d.init_point;return;}
+  }catch(e){E.textContent='Error de conexión. Probá de nuevo.';}
+  b.disabled=false;b.textContent='Pagar con MercadoPago →';
+}
+</script>
 
 <section id="quien" style="background:#fff"><div class="wrap yo">
   <div class="ft"><img src="/img/galeria/daro-7f3bbadf-65a80366.webp" alt="Daro Castello"></div>
@@ -347,7 +458,7 @@ footer{background:var(--nv);color:rgba(250,246,239,.6);text-align:center;padding
 (function () {
   const f = document.getElementById('fm'), v = id => document.getElementById(id).value.trim(), E = document.getElementById('c-err');
   function track(ev, p) { try { window.celTrack && celTrack(ev, p || {}); } catch (e) {} }
-  document.getElementById('b-guia').addEventListener('click', () => track('management_guia'));
+  
   f.addEventListener('submit', async e => {
     e.preventDefault(); E.textContent = '';
     if (v('c-nom').length < 3 || v('c-tel').replace(/\D/g, '').length < 8) { E.textContent = 'Completá tu nombre y WhatsApp.'; return; }
@@ -366,7 +477,7 @@ footer{background:var(--nv);color:rgba(250,246,239,.6);text-align:center;padding
 import { MODULOS, PRECIOS, USD_ARS } from '/js/management-data.js';
 const $ = (id) => document.getElementById(id);
 const NS = 'http://www.w3.org/2000/svg';
-const CX = 220, CY = 190, R = 152, CIRC = 2 * Math.PI * R;
+const CX = 260, CY = 250, R = 158, CIRC = 2 * Math.PI * 200;
 const MAX = Object.values(PRECIOS).reduce((s, v) => s + v, 0);
 const ars = (n) => '$ ' + Math.round(n).toLocaleString('es-AR');
 const usd = (n) => '≈ USD ' + Math.round(n / USD_ARS).toLocaleString('es-AR');
@@ -387,14 +498,26 @@ MODULOS.forEach((m, i) => {
   const g = document.createElementNS(NS, 'g');
   g.setAttribute('class', 'nd'); g.id = 'RN' + i; g.setAttribute('tabindex', '0'); g.setAttribute('role', 'button');
   g.setAttribute('aria-label', 'Módulo ' + m.n + ': ' + m.t);
-  g.innerHTML = `<circle class="c" r="27" fill="url(#rg-off)" stroke="rgba(201,168,76,.55)" stroke-width="1.5"/>
-    <text text-anchor="middle" dy="5" font-family="DM Sans,sans-serif" font-weight="700" font-size="14" fill="#E8C96A">M${m.n}</text>
-    <g class="nok" style="display:none"><circle cx="20" cy="-20" r="9" fill="#2F9E65" stroke="#0D1B2A" stroke-width="2"/><text x="20" y="-16.5" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">✓</text></g>`;
+  g.innerHTML = `<circle class="c" r="33" fill="url(#rg-off)" stroke="rgba(232,201,106,.6)" stroke-width="1.6" filter="url(#rg-sh)"/>
+    <ellipse cx="-9" cy="-14" rx="13" ry="7" fill="rgba(255,255,255,.14)"/>
+    <text class="tn" text-anchor="middle" dy="-1" font-family="DM Serif Display,serif" font-size="21" fill="#E8C96A">${m.n}</text>
+    <text class="tk" text-anchor="middle" dy="14" font-family="DM Sans,sans-serif" font-weight="600" font-size="8.5" letter-spacing=".6" fill="rgba(250,246,239,.78)">${m.k.toUpperCase()}</text>
+    <g class="nok" style="display:none"><circle cx="24" cy="-24" r="10" fill="#2F9E65" stroke="#0D1B2A" stroke-width="2"/><text x="24" y="-20" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">✓</text></g>`;
   g.addEventListener('click', () => elegir(i));
   g.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); elegir(i); } });
   gN.appendChild(g);
 });
-$('rw-prog').setAttribute('stroke-dasharray', CIRC.toFixed(1));
+$('rw-prog').setAttribute('stroke-dasharray', CIRC.toFixed(1)); $('rw-prog').setAttribute('stroke-dashoffset', CIRC.toFixed(1));
+// marcas del reloj
+(() => { let h = ''; for (let a = 0; a < 360; a += 5) { const r1 = a % 45 === 0 ? 206 : 210, r2 = 216, t = (a - 90) * Math.PI / 180;
+  h += `<line x1="${(CX + r1 * Math.cos(t)).toFixed(1)}" y1="${(CY + r1 * Math.sin(t)).toFixed(1)}" x2="${(CX + r2 * Math.cos(t)).toFixed(1)}" y2="${(CY + r2 * Math.sin(t)).toFixed(1)}" stroke="rgba(232,201,106,${a % 45 === 0 ? .7 : .25})" stroke-width="${a % 45 === 0 ? 2 : 1}"/>`; }
+  $('rw-ticks').innerHTML = h; })();
+// sectores de la rueda (anillo entre r 100 y 186)
+function arco(a0, a1, r0, r1) { const p = (r, a) => { const t = a * Math.PI / 180; return (CX + r * Math.cos(t)).toFixed(2) + ',' + (CY + r * Math.sin(t)).toFixed(2); };
+  return `M${p(r1, a0)} A${r1},${r1} 0 0 1 ${p(r1, a1)} L${p(r0, a1)} A${r0},${r0} 0 0 0 ${p(r0, a0)} Z`; }
+MODULOS.forEach((m, i) => { const path = document.createElementNS(NS, 'path'); path.id = 'RS' + i;
+  path.setAttribute('d', arco(base[i] - 20.5, base[i] + 20.5, 104, 186)); path.setAttribute('class', 'sec');
+  path.addEventListener('click', () => elegir(i)); $('rw-sec').appendChild(path); });
 
 function pos(deg) { const a = deg * Math.PI / 180; return { x: CX + R * Math.cos(a), y: CY + R * Math.sin(a) }; }
 function ubicar() {
@@ -403,6 +526,7 @@ function ubicar() {
     $('RN' + i).setAttribute('transform', `translate(${p.x.toFixed(1)},${p.y.toFixed(1)})`);
     const l = $('RL' + i); l.setAttribute('x2', p.x.toFixed(1)); l.setAttribute('y2', p.y.toFixed(1));
   });
+  $('rw-sec').setAttribute('transform', `rotate(${rot.toFixed(2)} ${CX} ${CY})`);
 }
 function girarA(obj) {
   if (raf) cancelAnimationFrame(raf);
@@ -416,24 +540,27 @@ function girarA(obj) {
 }
 function pintar() {
   MODULOS.forEach((m, i) => {
-    const g = $('RN' + i), c = g.querySelector('circle.c'), t = g.querySelector('text');
-    const on = actual === i, add = agregados.has(m.n);
-    c.setAttribute('fill', on ? 'url(#rg-on)' : 'url(#rg-off)');
-    c.setAttribute('stroke', on || add ? '#E8C96A' : 'rgba(201,168,76,.55)');
-    c.setAttribute('stroke-width', on ? '3' : add ? '2.5' : '1.5');
-    c.setAttribute('filter', on ? 'url(#rg-glow)' : '');
-    t.setAttribute('fill', on ? '#0D1B2A' : '#E8C96A');
-    g.querySelector(".nok").style.display = add ? '' : 'none';
+    const g = $('RN' + i), c = g.querySelector('circle.c');
+    const on = actual === i, add = agregados.has(m.n), sel1 = sel[m.n] && sel[m.n].size;
+    c.setAttribute('fill', on ? 'url(#rg-on)' : add ? 'url(#rg-add)' : 'url(#rg-off)');
+    c.setAttribute('stroke', on || add ? '#E8C96A' : 'rgba(232,201,106,.6)');
+    c.setAttribute('stroke-width', on ? '3' : add ? '2.4' : '1.6');
+    c.setAttribute('filter', on ? 'url(#rg-glow)' : 'url(#rg-sh)');
+    g.querySelector('.tn').setAttribute('fill', on ? '#0D1B2A' : '#E8C96A');
+    g.querySelector('.tk').setAttribute('fill', on ? 'rgba(13,27,42,.85)' : 'rgba(250,246,239,.78)');
+    g.setAttribute('class', 'nd' + (on ? ' on' : ''));
+    g.querySelector('.nok').style.display = add ? '' : 'none';
+    const sc = $('RS' + i); sc.setAttribute('class', 'sec' + (on ? ' on' : add ? ' add' : sel1 ? ' pre' : ''));
     const l = $('RL' + i);
-    l.setAttribute('stroke', on ? '#E8C96A' : 'rgba(201,168,76,.25)');
-    l.setAttribute('stroke-dasharray', on ? '' : '3 5'); l.setAttribute('stroke-width', on ? '2' : '1');
+    l.setAttribute('stroke', on ? '#E8C96A' : 'rgba(201,168,76,.22)');
+    l.setAttribute('stroke-dasharray', on ? '' : '3 6'); l.setAttribute('stroke-width', on ? '2.2' : '1');
   });
   const m = actual !== null ? MODULOS[actual] : null;
-  $('rw-cn').textContent = m ? String(m.n) : 'Celestia';
-  $('rw-cn').setAttribute('font-size', m ? '40' : '22');
-  $('rw-cn').setAttribute('y', m ? '196' : '186');
+  $('rw-emb').style.display = m ? 'none' : '';
+  $('rw-cn').style.display = m ? '' : 'none';
+  $('rw-cn').textContent = m ? String(m.n) : '';
   $('rw-cs').textContent = m ? m.k.toUpperCase() : 'MANAGEMENT';
-  $('rw-cs').setAttribute('y', m ? '218' : '210');
+  $('rw-cs').setAttribute('y', m ? '282' : '318');
 }
 function total() {
   let t = 0;
@@ -506,7 +633,16 @@ $('rd-env').addEventListener('click', async () => {
   for (const [n, s] of Object.entries(sel)) if (s.size) payload.sel[n] = [...s];
   const b = $('rd-env'); b.disabled = true; b.textContent = 'Enviando…';
   let r = null;
-  try { r = await (await fetch('/api/management-lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })).json(); } catch (e) {}
+  // 1) Backend de Management (Supabase de leads + mail al cliente con el presupuesto)
+  const mods = {};
+  MODULOS.forEach((m) => { if (payload.sel[m.n]) mods[m.n] = { title: m.t, checks: payload.sel[m.n].slice().sort().map((i) => m.c[i]), nota: [payload.negocio, payload.etapa].filter(Boolean).join(' · ') }; });
+  try {
+    const rr = await fetch('/api/mf/leads', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ nombre: payload.nombre, email: payload.email, tel: payload.tel, mods }) });
+    const j = await rr.json();
+    if (rr.ok && j.status === 'ok') r = { ok: true, mailCliente: true, ref: 'CM-' + (j.id || Date.now().toString(36).toUpperCase()) };
+  } catch (e) {}
+  // 2) Respaldo: aviso por mail a Daro desde Celestia
+  if (!r) { try { r = await (await fetch('/api/management-lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })).json(); } catch (e) {} }
   b.disabled = false; b.textContent = 'Enviar presupuesto ✓';
   const t = total(), ref = (r && r.ref) || 'CM-' + Date.now().toString(36).toUpperCase();
   const lista = MODULOS.filter((m) => payload.sel[m.n]).map((m) => 'M' + m.n + ' ' + m.t).join(', ');
@@ -528,6 +664,17 @@ document.querySelectorAll('#hc-g button,#rd-mini button').forEach((b) => b.addEv
   elegir(+b.dataset.i);
 }));
 ubicar(); pintar(); presupuesto();
+// vuelta de MercadoPago
+(() => { const q = new URLSearchParams(location.search).get('pago'); if (!q) return;
+  const d = document.createElement('div'); d.className = 'cm-aviso';
+  d.innerHTML = q === 'pendiente' ? '⏳ Tu pago quedó <b>pendiente</b>. Cuando MercadoPago lo apruebe te llega el acceso por mail.' : '⚠️ El pago <b>no se completó</b>. Podés intentarlo de nuevo o escribirme por <a href="https://wa.me/5491160410607">WhatsApp</a>.';
+  document.body.appendChild(d); setTimeout(() => d.remove(), 12000); })();
+// inclinación 3D con el mouse
+(() => { const w = $('rw-3d'), sv = w.querySelector('svg'); if (matchMedia('(hover: none)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  w.addEventListener('mousemove', (e) => { const r = w.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+    sv.style.transform = `rotateX(${(-y * 14).toFixed(2)}deg) rotateY(${(x * 14).toFixed(2)}deg)`; });
+  w.addEventListener('mouseleave', () => { sv.style.transform = 'rotateX(8deg)'; });
+  sv.style.transform = 'rotateX(8deg)'; })();
 </script>
 <script src="/js/analytics.js"></script>
 </body></html>

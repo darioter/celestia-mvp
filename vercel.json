@@ -3,10 +3,103 @@
   "outputDirectory": ".",
   "redirects": [
     {
+      "source": "/login",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?metodofermento\\.com\\.ar"
+        }
+      ],
+      "destination": "https://www.chefprivado.ar/management/login",
+      "permanent": false
+    },
+    {
+      "source": "/guia-gracias.html",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?metodofermento\\.com\\.ar"
+        }
+      ],
+      "destination": "https://www.chefprivado.ar/management/guia/gracias",
+      "permanent": false
+    },
+    {
+      "source": "/guia/gracias",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?metodofermento\\.com\\.ar"
+        }
+      ],
+      "destination": "https://www.chefprivado.ar/management/guia/gracias",
+      "permanent": false
+    },
+    {
+      "source": "/guia.html",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?metodofermento\\.com\\.ar"
+        }
+      ],
+      "destination": "https://www.chefprivado.ar/management/guia",
+      "permanent": false
+    },
+    {
+      "source": "/guia",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?metodofermento\\.com\\.ar"
+        }
+      ],
+      "destination": "https://www.chefprivado.ar/management/guia",
+      "permanent": false
+    },
+    {
+      "source": "/cursos",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?metodofermento\\.com\\.ar"
+        }
+      ],
+      "destination": "https://www.chefprivado.ar/management/cursos",
+      "permanent": false
+    },
+    {
+      "source": "/:c(curso0[1-3])",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?metodofermento\\.com\\.ar"
+        }
+      ],
+      "destination": "https://www.chefprivado.ar/management/:c",
+      "permanent": false
+    },
+    {
+      "source": "/admin",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?metodofermento\\.com\\.ar"
+        }
+      ],
+      "destination": "https://metodofermento.vercel.app/admin",
+      "permanent": false
+    },
+    {
       "source": "/:path*",
-      "has": [{ "type": "host", "value": "(www\\.)?metodofermento\\.com\\.ar" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?metodofermento\\.com\\.ar"
+        }
+      ],
       "destination": "https://www.chefprivado.ar/management",
-      "permanent": true
+      "permanent": false
     },
     {
       "source": "/fermento",

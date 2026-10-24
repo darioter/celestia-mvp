@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>¡Gracias! – Celestia Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0D1B2A;
+      color: #f5f0e8;
+      font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .card {
+      max-width: 460px;
+      width: 100%;
+    }
+
+    .icon {
+      font-size: 3.5rem;
+      display: block;
+      margin-bottom: 1.5rem;
+      animation: pop .5s cubic-bezier(.34,1.56,.64,1) both;
+    }
+
+    @keyframes pop {
+      from { transform: scale(.4); opacity: 0; }
+      to   { transform: scale(1);  opacity: 1; }
+    }
+
+    h1 {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: clamp(1.8rem, 5vw, 2.4rem);
+      font-weight: 400;
+      margin-bottom: 1rem;
+      line-height: 1.25;
+    }
+
+    p {
+      font-size: .98rem;
+      line-height: 1.75;
+      color: rgba(245,240,232,.65);
+      margin-bottom: 1rem;
+    }
+
+    .highlight {
+      background: rgba(201,168,76,.15);
+      border: 1px solid rgba(201,168,76,.3);
+      border-radius: 8px;
+      padding: 1rem 1.2rem;
+      font-size: .9rem;
+      color: rgba(245,240,232,.8);
+      margin: 1.5rem 0 2rem;
+      line-height: 1.65;
+    }
+
+    .highlight strong { color: #B08A30; }
+
+    .btn-back {
+      display: inline-block;
+      color: rgba(245,240,232,.45);
+      font-size: .88rem;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(245,240,232,.2);
+      padding-bottom: 1px;
+      transition: color .2s, border-color .2s;
+    }
+
+    .btn-back:hover {
+      color: rgba(245,240,232,.8);
+      border-color: rgba(245,240,232,.5);
+    }
+
+    footer {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 0; right: 0;
+      text-align: center;
+      font-size: .75rem;
+      color: rgba(245,240,232,.2);
+    }
+  </style>
+<link rel="icon" href="/img/management/favicon.png">
+<style id="celestia-tema">
+/* Celestia Management: tipografías y detalles de marca */
+h1,h2,h3,h4,.serif{font-family:'DM Serif Display',Georgia,serif!important;font-weight:400!important;letter-spacing:0!important}
+.cm-barra{position:sticky;top:0;z-index:9999;display:flex;align-items:center;justify-content:space-between;gap:12px;background:#0D1B2A;padding:8px 22px;border-bottom:1px solid rgba(201,168,76,.18);font-family:'DM Sans',sans-serif}
+.cm-barra img{height:40px;width:auto;display:block}
+.cm-barra nav{display:flex;gap:18px;align-items:center}
+.cm-barra nav a{color:rgba(250,246,239,.82);text-decoration:none;font-size:13.5px;font-weight:500}
+.cm-barra nav a:hover{color:#E8C96A}
+.cm-barra nav a.cta{background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#0D1B2A;font-weight:700;padding:8px 16px;border-radius:999px}
+@media(max-width:700px){.cm-barra nav a:not(.cta){display:none}.cm-barra{padding:8px 14px}.cm-barra img{height:34px}}
+</style>
+</head>
+<body>
+
+  <div class="card">
+    <span class="icon">🌾</span>
+    <h1>¡Pago confirmado!</h1>
+    <p>
+      Tu compra fue procesada con éxito.
+    </p>
+    <div class="highlight">
+      En los próximos minutos vas a recibir un email con el<br>
+      <strong>link de descarga de tu guía</strong>.<br>
+      Revisá también la carpeta de spam por las dudas.
+    </div>
+    <a href="/management/guia" class="btn-back">← Volver a la guía</a>
+  </div>
+
+  <footer>Celestia Management · chefprivado.ar/management</footer>
+
+</body>
+</html>

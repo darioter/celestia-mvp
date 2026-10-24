@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guía de Costeo & Food Cost – Celestia Management</title>
+  <meta name="description" content="Guía completa de costeo y food cost para cualquier negocio gastronómico. PDF 9 capítulos + planilla profesional con 220 ingredientes, calculadora de precios y punto de equilibrio.">
+  <link rel="canonical" href="https://www.chefprivado.ar/management/guia"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --terra:   #B08A30;
+      --terra-d: #8A6A20;
+      --terra-l: rgba(201,168,76,.13);
+      --navy:    #0D1B2A;
+      --ink:     #0F1B28;
+      --muted:   #6B6560;
+      --muted-l: #9C9490;
+      --sand:    #FAF6EF;
+      --line:    #E2DDD6;
+      --serif:   'DM Serif Display', Georgia, serif;
+      --sans:    'DM Sans', system-ui, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+    body { font-family: var(--sans); color: var(--ink); background: #0e0c0b; overflow-x: hidden; line-height: 1.6; }
+    a { color: inherit; text-decoration: none; }
+    p { color: rgba(255,255,255,.5); line-height: 1.75; font-weight: 300; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      padding: 0 28px;
+      background: rgba(14,12,11,.92);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+    .nav-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 62px; gap: 16px;
+    }
+    .nav-logo {
+      font-family: var(--serif); font-size: 1.1rem; font-weight: 700;
+      color: #fff; display: flex; align-items: center; gap: 8px;
+      font-optical-sizing: auto; flex-shrink: 0;
+    }
+    .nav-logo-dot {
+      width: 7px; height: 7px; background: var(--terra); border-radius: 50%;
+      animation: pulse 2.8s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(201,168,76,.4); }
+      60%      { box-shadow: 0 0 0 8px rgba(201,168,76,0); }
+    }
+    .nav-back {
+      font-size: 12px; font-weight: 400; letter-spacing: .06em;
+      text-transform: uppercase; color: rgba(255,255,255,.45);
+      transition: color .2s;
+    }
+    .nav-back:hover { color: #fff; }
+    .btn-nav {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 9px 20px; border-radius: 999px;
+      background: var(--terra); color: #fff;
+      font-family: var(--sans); font-size: 12px; font-weight: 500;
+      letter-spacing: .05em; text-transform: uppercase;
+      transition: background .2s, transform .15s; white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .btn-nav:hover { background: var(--terra-d); transform: translateY(-1px); }
+    .btn-nav-short { display: none; }
+
+    /* ── HERO ── */
+    .hero { background: #0e0c0b; }
+    .hero::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(ellipse 65% 55% at 75% 25%, rgba(201,168,76,.22) 0%, transparent 65%);
+    }
+    .hero-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: block;
+      position: relative; z-index: 1;
+    }
+    .hero-left { padding-bottom: 64px; max-width: 720px; }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 10.5px; font-weight: 600; letter-spacing: .22em;
+      text-transform: uppercase; color: var(--terra); margin-bottom: 24px;
+    }
+    .hero-h1 {
+      font-family: var(--serif); font-size: clamp(2.8rem, 5vw, 4.2rem);
+      font-weight: 900; font-optical-sizing: auto; color: #fff;
+      line-height: 1.05; letter-spacing: -.03em;
+      color: #fff; margin-bottom: 20px;
+    }
+    .hero-h1 em { font-style: italic; color: var(--terra); font-weight: 700; }
+    .hero-sub {
+      font-size: 16px; color: rgba(255,255,255,.55); line-height: 1.75;
+      font-weight: 300; margin-bottom: 28px; max-width: 44ch;
+    }
+    .hero-targets {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 36px;
+    }
+    .hero-target {
+      font-size: 11px; font-weight: 500; letter-spacing: .08em;
+      text-transform: uppercase; color: rgba(255,255,255,.75);
+      border: 1px solid rgba(255,255,255,.22); padding: 5px 12px; border-radius: 999px;
+    }
+    .btn-hero {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--terra); color: #fff;
+      padding: 15px 32px; border-radius: 8px;
+      font-family: var(--sans); font-size: 15px; font-weight: 500;
+      transition: background .2s, transform .15s;
+    }
+    .btn-hero:hover { background: var(--terra-d); transform: translateY(-1px); }
+    .hero-note {
+      font-size: 11.5px; color: rgba(255,255,255,.28);
+      margin-top: 12px;
+    }
+    .hero-right { display: none; }
+
+    /* ── STICKY BAND ── */
+    .compra-band {
+      background: #fff; border-bottom: 1px solid rgba(255,255,255,.06);
+      padding: 0 28px; position: sticky; top: 62px; z-index: 100;
+      box-shadow: 0 4px 24px rgba(0,0,0,.07);
+    }
+    .compra-band-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 20px; padding: 14px 0; flex-wrap: wrap;
+    }
+    .compra-precio {
+      display: flex; align-items: baseline; gap: 10px; flex-shrink: 0;
+    }
+    .precio-actual {
+      font-family: var(--serif); font-size: 1.9rem;
+      font-weight: 700; color: var(--terra); line-height: 1;
+      font-optical-sizing: auto;
+    }
+    .precio-usd { font-size: 13px; color: var(--muted-l); }
+    .band-includes {
+      display: flex; gap: 20px; flex-wrap: wrap;
+    }
+    .band-inc {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; color: var(--muted);
+    }
+    .band-inc-dot { width: 5px; height: 5px; background: var(--terra); border-radius: 50%; flex-shrink: 0; }
+    .btn-band {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: #009ee3; color: #fff;
+      padding: 11px 24px; border-radius: 8px;
+      font-family: var(--sans); font-size: 13px; font-weight: 500;
+      border: none; cursor: pointer; flex-shrink: 0;
+      transition: background .2s, transform .15s;
+    }
+    .btn-band:hover { background: #0088cc; transform: translateY(-1px); }
+
+    /* ── BODY ── */
+    .body-wrap { background: var(--sand); }
+
+    /* ── SECCIÓN GENÉRICA ── */
+    .section-eyebrow { color: var(--terra);
+      font-size: 10.5px; font-weight: 600; letter-spacing: .22em;
+      text-transform: uppercase; color: var(--terra);
+      display: block; margin-bottom: 10px;
+    }
+    .section-h2 {
+      color: #fff;
+      font-family: var(--serif); font-size: clamp(2rem, 3.5vw, 2.8rem);
+      font-weight: 700; font-optical-sizing: auto;
+      color: var(--ink); line-height: 1.15; letter-spacing: -.02em;
+      margin-bottom: 44px;
+    }
+
+    /* ── QUÉ INCLUYE ── */
+    .incluye { max-width: 1100px; margin: 0 auto; padding: 80px 28px; }
+    .incluye-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+    }
+    .inc-card {
+      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px; padding: 32px 28px;
+      transition: background .25s, border-color .25s, transform .25s;
+      position: relative; overflow: hidden;
+    }
+    .inc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2.5px;transition:opacity .25s}
+    .inc-card:nth-child(1)::before{background:linear-gradient(90deg,var(--terra),rgba(201,168,76,.2))}
+    .inc-card:nth-child(2)::before{background:linear-gradient(90deg,#28a064,rgba(40,160,100,.2))}
+    .inc-card:nth-child(3)::before{background:linear-gradient(90deg,#5078dc,rgba(80,120,220,.2))}
+    .inc-card:nth-child(4)::before{background:linear-gradient(90deg,#8a50c8,rgba(138,80,200,.2))}
+    .inc-card:nth-child(5)::before{background:linear-gradient(90deg,var(--terra),rgba(201,168,76,.2))}
+    .inc-card:nth-child(1){border-top-color:rgba(201,168,76,.35)}
+    .inc-card:nth-child(2){border-top-color:rgba(40,160,100,.35)}
+    .inc-card:nth-child(3){border-top-color:rgba(80,120,220,.35)}
+    .inc-card:nth-child(4){border-top-color:rgba(138,80,200,.35)}
+    .inc-card:nth-child(5){border-top-color:rgba(201,168,76,.35)}
+    .inc-card:hover{background:rgba(255,255,255,.07);transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,.3)}
+    .inc-card-icon {
+      width: 56px; height: 56px; border-radius: 14px;
+      background: rgba(201,168,76,.15); border: 1px solid rgba(201,168,76,.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem; margin-bottom: 20px;
+      transition: background .25s, transform .25s;
+    }
+    .inc-card:hover .inc-card-icon{background:rgba(201,168,76,.25);transform:scale(1.08)}
+    .inc-card:nth-child(2) .inc-card-icon{background:rgba(40,160,100,.15);border-color:rgba(40,160,100,.2)}
+    .inc-card:nth-child(2):hover .inc-card-icon{background:rgba(40,160,100,.25)}
+    .inc-card:nth-child(3) .inc-card-icon{background:rgba(80,120,220,.15);border-color:rgba(80,120,220,.2)}
+    .inc-card:nth-child(3):hover .inc-card-icon{background:rgba(80,120,220,.25)}
+    .inc-card:nth-child(4) .inc-card-icon{background:rgba(138,80,200,.15);border-color:rgba(138,80,200,.2)}
+    .inc-card:nth-child(4):hover .inc-card-icon{background:rgba(138,80,200,.25)}
+    .inc-card h3 {
+      font-family: var(--serif); font-size: 1.2rem; font-weight: 700;
+      color: #fff; margin-bottom: 10px; font-optical-sizing: auto;
+      letter-spacing: -.01em;
+    }
+    .inc-card p { font-size: .88rem; margin-bottom: 12px; color: rgba(255,255,255,.45); }
+    .inc-card ul { list-style: none; }
+    .inc-card ul li {
+      font-size: .83rem; color: var(--muted);
+      padding: 5px 0; display: flex; align-items: flex-start; gap: 8px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .inc-card ul li:last-child { border-bottom: none; }
+    .inc-card ul li { color: rgba(255,255,255,.65) !important; }
+    .inc-card ul li::before { content: '→'; color: var(--terra); font-size: .78rem; flex-shrink: 0; margin-top: 2px; }
+    .full-width { grid-column: 1 / -1; }
+
+    /* ── PARA QUIÉN ── */
+    .para-quien { background: #0e0c0b; padding: 72px 28px; }
+    .para-quien-inner { max-width: 1100px; margin: 0 auto; }
+    .para-quien .section-h2 { color: #fff; }
+    .negocios-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 12px;
+    }
+    @media(max-width:1100px){.negocios-grid{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:600px){.negocios-grid{grid-template-columns:repeat(2,1fr)}}
+    .negocio-card {
+      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07);
+      border-radius: 14px; overflow: hidden;
+      transition: transform .25s, border-color .25s, box-shadow .25s;
+      display: flex; flex-direction: column;
+    }
+    .negocio-card:hover { transform: translateY(-4px); border-color: rgba(201,168,76,.3); box-shadow: 0 12px 36px rgba(0,0,0,.3); }
+    .negocio-img {
+      width: 100%; aspect-ratio: 1/1; overflow: hidden;
+      background: rgba(201,168,76,.1); position: relative;
+    }
+    .negocio-img img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform .5s ease;
+      display: block;
+    }
+    .negocio-card:hover .negocio-img img { transform: scale(1.07); }
+    .negocio-img::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to bottom, transparent 50%, rgba(14,12,11,.8) 100%);
+    }
+    .negocio-img-placeholder {
+      width: 100%; height: 100%; display: flex; align-items: center;
+      justify-content: center; font-size: 2.2rem;
+    }
+    .negocio-body { padding: 14px 14px 18px; flex: 1; }
+    .negocio-icon { font-size: 1.6rem; display: block; margin-bottom: 8px; }
+    .negocio-card h3 {
+      font-family: var(--serif); font-size: .95rem; font-weight: 700;
+      color: #fff; margin-bottom: 6px; font-optical-sizing: auto; line-height: 1.25;
+    }
+    .negocio-card p { font-size: .78rem; color: rgba(255,255,255,.5); line-height: 1.55; }
+
+    /* ── LO QUE VAS A APRENDER ── */
+    .aprende { max-width: 1100px; margin: 0 auto; padding: 72px 28px; position: relative; }
+    .aprende-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .aprende-item {
+      display: flex; align-items: flex-start; gap: 14px;
+      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07);
+      border-radius: 12px; padding: 22px;
+      transition: background .2s, border-color .2s;
+    }
+    .aprende-item:hover{background:rgba(201,168,76,.07);border-color:rgba(201,168,76,.2)}
+    .aprende-num {
+      font-family: var(--serif); font-size: 1.5rem; font-weight: 900;
+      color: var(--terra); line-height: 1; flex-shrink: 0; width: 36px;
+      font-optical-sizing: auto;
+    }
+    .aprende-item h4 { font-size: .95rem; font-weight: 600; color: #fff !important; margin-bottom: 4px; }
+    .aprende-item p { font-size: .84rem; line-height: 1.6; color: rgba(255,255,255,.45); }
+
+    /* ── COMPRA PRINCIPAL ── */
+    .compra-main { background: #0e0c0b; padding: 80px 28px; }
+    .compra-main-inner { max-width: 540px; margin: 0 auto; text-align: center; }
+    .compra-main h2 {
+      font-family: var(--serif); font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 900; color: #fff; line-height: 1.1;
+      letter-spacing: -.03em; margin-bottom: 12px; font-optical-sizing: auto;
+    }
+    .compra-main-sub { font-size: .94rem; color: rgba(255,255,255,.5); margin-bottom: 36px; line-height: 1.7; }
+    .precio-bloque { display: flex; align-items: baseline; justify-content: center; gap: 10px; margin-bottom: 6px; }
+    .precio-big {
+      font-family: var(--serif); font-size: 3.4rem; font-weight: 900;
+      color: var(--terra); line-height: 1; font-optical-sizing: auto;
+    }
+    .precio-moneda { font-size: 1.1rem; color: rgba(255,255,255,.35); font-weight: 300; }
+    .precio-equiv { font-size: 12px; color: rgba(255,255,255,.28); margin-bottom: 28px; }
+    .compra-inc-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 28px; text-align: left; }
+    .compra-inc-item {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 13px; color: rgba(255,255,255,.7);
+      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07);
+      border-radius: 8px; padding: 10px 14px;
+    }
+    .compra-inc-item::before { content: '✓'; color: var(--terra); font-weight: 700; flex-shrink: 0; }
+    .input-group { margin-bottom: 12px; text-align: left; }
+    .email-input {
+      width: 100%; padding: .9rem 1.2rem;
+      font-family: var(--sans); font-size: 1rem;
+      background: rgba(245,240,232,.06); border: 1px solid rgba(245,240,232,.18);
+      border-radius: 8px; color: #f5f0e8; outline: none; transition: border-color .2s;
+    }
+    .email-input::placeholder { color: rgba(245,240,232,.28); }
+    .email-input:focus { border-color: var(--terra); }
+    .email-input.error { border-color: #e07070; }
+    .error-msg { display: block; font-size: .8rem; color: #e07070; margin-top: .4rem; }
+    .btn-comprar-main {
+      width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;
+      background: #009ee3; color: #fff; border: none; border-radius: 8px;
+      padding: 1.05rem 2rem; font-family: var(--sans); font-size: 1rem; font-weight: 500;
+      cursor: pointer; transition: background .2s, transform .15s;
+    }
+    .btn-comprar-main:hover:not(:disabled) { background: #0088cc; transform: translateY(-1px); }
+    .btn-comprar-main:disabled { opacity: .65; cursor: not-allowed; }
+    .spinner {
+      width: 20px; height: 20px; border: 2px solid rgba(255,255,255,.3);
+      border-top-color: #fff; border-radius: 50%;
+      animation: spin .7s linear infinite; display: inline-block;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .seguridad { font-size: .78rem; color: rgba(255,255,255,.28); margin-top: .9rem; }
+    .pago-error-msg {
+      background: rgba(224,112,112,.1); border: 1px solid rgba(224,112,112,.25);
+      border-radius: 8px; color: #e07070; font-size: .88rem;
+      padding: .75rem 1rem; margin-bottom: 1rem; display: none;
+    }
+    .pago-error-msg.visible { display: block; }
+
+    /* ── FAQ ── */
+    .faq { max-width: 720px; margin: 0 auto; padding: 72px 28px; background: transparent; }
+    .faq .section-h2 { text-align: center; }
+    .faq-item { border-bottom: 1px solid rgba(255,255,255,.06); }
+    .faq-item summary { color: #fff !important; font-weight: 500;
+      font-size: .97rem; font-weight: 500; color: var(--ink);
+      padding: 1.1rem 0; cursor: pointer; list-style: none;
+      display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+    }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary::after { content: '+'; font-size: 1.3rem; color: var(--terra); transition: transform .2s; flex-shrink: 0; }
+    .faq-item[open] summary::after { transform: rotate(45deg); }
+    .faq-item p { font-size: .9rem; line-height: 1.72; margin: 0 0 1.2rem; color: rgba(255,255,255,.45); }
+
+    /* ── FOOTER ── */
+    footer { background: #0F0F1C; padding: 36px 28px; }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+    }
+    .footer-logo {
+      font-family: var(--serif); font-size: 1.1rem; font-weight: 700;
+      color: #fff; display: flex; align-items: center; gap: 8px; font-optical-sizing: auto;
+    }
+    .footer-dot { width: 6px; height: 6px; background: var(--terra); border-radius: 50%; }
+    .footer-links { display: flex; gap: 20px; list-style: none; }
+    .footer-links a { font-size: 12px; color: rgba(255,255,255,.3); transition: color .15s; text-transform: uppercase; letter-spacing: .05em; }
+    .footer-links a:hover { color: rgba(255,255,255,.65); }
+    .footer-copy { font-size: 12px; color: rgba(255,255,255,.2); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-left { padding-bottom: 40px; }
+      .hero-right { display: none; }
+      .incluye-grid { grid-template-columns: 1fr; }
+      .aprende-grid { grid-template-columns: 1fr; }
+      .compra-band-inner { flex-direction: column; align-items: flex-start; }
+      .band-includes { display: none; }
+      .btn-band { width: 100%; justify-content: center; }
+      .footer-inner { flex-direction: column; gap: 14px; }
+    }
+    @media (max-width: 480px) {
+      .nav-back { display: none; }
+      .btn-nav { font-size: 11px; padding: 8px 12px; }
+      .btn-nav-full { display: none; }
+      .btn-nav-short { display: inline; }
+      .hero { padding: 88px 20px 0; }
+      .incluye, .aprende, .faq { padding: 56px 20px; }
+      .para-quien { padding: 56px 20px; }
+      .compra-main { padding: 60px 20px; }
+    }
+
+    /* GLOBAL CONTRAST OVERRIDE */
+    .body-wrap h2,.body-wrap h3,.body-wrap h4{color:#fff}
+    .body-wrap .section-h2{color:#fff}
+    .body-wrap .section-eyebrow{color:var(--terra)}
+
+  </style>
+<link rel="icon" href="/img/management/favicon.png">
+<style id="celestia-tema">
+/* Celestia Management: tipografías y detalles de marca */
+h1,h2,h3,h4,.serif{font-family:'DM Serif Display',Georgia,serif!important;font-weight:400!important;letter-spacing:0!important}
+.cm-barra{position:sticky;top:0;z-index:9999;display:flex;align-items:center;justify-content:space-between;gap:12px;background:#0D1B2A;padding:8px 22px;border-bottom:1px solid rgba(201,168,76,.18);font-family:'DM Sans',sans-serif}
+.cm-barra img{height:40px;width:auto;display:block}
+.cm-barra nav{display:flex;gap:18px;align-items:center}
+.cm-barra nav a{color:rgba(250,246,239,.82);text-decoration:none;font-size:13.5px;font-weight:500}
+.cm-barra nav a:hover{color:#E8C96A}
+.cm-barra nav a.cta{background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#0D1B2A;font-weight:700;padding:8px 16px;border-radius:999px}
+@media(max-width:700px){.cm-barra nav a:not(.cta){display:none}.cm-barra{padding:8px 14px}.cm-barra img{height:34px}}
+</style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a href="/management" class="nav-logo" aria-label="Celestia Management"><img src="/img/management/logo-pill-sm.png" alt="Celestia Management" style="height:42px;width:auto;display:block"></a>
+      <a href="/management" class="nav-back">← Volver al sitio</a>
+      <a href="#comprar" class="btn-nav"><span class="btn-nav-full">Bajate la guía · solo $9.900</span><span class="btn-nav-short">$9.900 →</span></a>
+    </div>
+  </nav>
+
+  <!-- HERO VIDEO -->
+  <section class="hero" style="padding:0;min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden">
+    <video id="guiaBg" autoplay muted loop playsinline
+      poster="/management/assets/guia-poster.jpg"
+      style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0">
+      <source src="/management/assets/guia.mp4" type="video/mp4">
+    </video>
+    <div style="position:absolute;inset:0;z-index:1;
+      background:linear-gradient(135deg,rgba(14,12,11,.88) 0%,rgba(14,12,11,.72) 55%,rgba(201,168,76,.12) 100%),
+                 linear-gradient(to top,rgba(14,12,11,.75) 0%,transparent 55%)"></div>
+    <div style="position:relative;z-index:2;width:100%;max-width:1100px;margin:0 auto;padding:120px 60px 100px">
+      <div style="max-width:620px">
+        <span class="eyebrow">Producto digital &middot; Celestia Management</span>
+        <h1 class="hero-h1" style="margin-top:16px;color:#fff">
+          Guía de Costeo<br><em>&amp; Food Cost</em>
+        </h1>
+        <p class="hero-sub" style="color:rgba(255,255,255,.55);max-width:44ch">
+          Todo lo que necesitás para saber exactamente cuánto te cuesta cada plato,
+          fijar precios con criterio y saber cuántos clientes necesitás por día para no perder plata.
+        </p>
+        <div class="hero-targets" style="margin:20px 0 28px">
+          <span class="hero-target">Café</span><span class="hero-target">Restaurante</span>
+          <span class="hero-target">Viandas</span><span class="hero-target">Delivery</span>
+          <span class="hero-target">Rotisería</span><span class="hero-target">Despacho</span>
+        </div>
+        <a href="#comprar" class="btn-hero">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+          Bajate la guía · solo $9.900
+        </a>
+        <p class="hero-note" style="margin-top:16px;color:rgba(255,255,255,.4)">≈ USD 7 &middot; Pago único &middot; Acceso inmediato por email</p>
+      </div>
+      <div style="display:flex;gap:1px;margin-top:48px;max-width:420px">
+        <div style="flex:1;background:rgba(14,12,11,.75);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.1);padding:14px 16px;text-align:center;border-radius:12px 0 0 12px">
+          <div style="font-family:var(--serif);font-size:1.4rem;font-weight:900;color:var(--terra);line-height:1">9 cap</div>
+          <div style="font-size:9.5px;color:rgba(255,255,255,.4);margin-top:4px">PDF completo</div>
+        </div>
+        <div style="flex:1;background:rgba(14,12,11,.75);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.1);border-left:none;border-right:none;padding:14px 16px;text-align:center">
+          <div style="font-family:var(--serif);font-size:1.4rem;font-weight:900;color:var(--terra);line-height:1">220+</div>
+          <div style="font-size:9.5px;color:rgba(255,255,255,.4);margin-top:4px">ingredientes</div>
+        </div>
+        <div style="flex:1;background:rgba(14,12,11,.75);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.1);padding:14px 16px;text-align:center;border-radius:0 12px 12px 0">
+          <div style="font-family:var(--serif);font-size:1.4rem;font-weight:900;color:var(--terra);line-height:1">$9.900</div>
+          <div style="font-size:9.5px;color:rgba(255,255,255,.4);margin-top:4px">pago único</div>
+        </div>
+      </div>
+    </div>
+    <div style="position:absolute;bottom:24px;right:60px;z-index:2;display:flex;flex-direction:column;align-items:center;gap:6px;opacity:.4">
+      <div style="font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:#fff">Scroll</div>
+      <div style="width:1px;height:32px;background:linear-gradient(to bottom,#fff,transparent)"></div>
+    </div>
+  </section>
+
+  <!-- STICKY BAND -->
+  <div class="compra-band">
+    <div class="compra-band-inner">
+      <div class="compra-precio">
+        <span class="precio-actual">$9.900</span>
+        <span class="precio-usd">≈ USD 7</span>
+      </div>
+      <div class="band-includes">
+        <span class="band-inc"><span class="band-inc-dot"></span>PDF 9 capítulos</span>
+        <span class="band-inc"><span class="band-inc-dot"></span>Planilla profesional</span>
+        <span class="band-inc"><span class="band-inc-dot"></span>220 ingredientes con mermas</span>
+        <span class="band-inc"><span class="band-inc-dot"></span>Punto de equilibrio</span>
+      </div>
+      <button class="btn-band" onclick="scrollToCompra()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+        Bajate la guía · solo $9.900
+      </button>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="body-wrap" style="background:#0e0c0b">
+
+    <!-- QUÉ INCLUYE -->
+    <section class="incluye">
+      <span class="section-eyebrow">Contenido</span>
+      <h2 class="section-h2">Qué incluye el pack</h2>
+      <div class="incluye-grid">
+
+        <div class="inc-card">
+          <div class="inc-card-icon">📄</div>
+          <h3>PDF Completo · 9 capítulos</h3>
+          <p>Marco conceptual y casos reales para entender el costeo desde cero y aplicarlo hoy.</p>
+          <ul>
+            <li>Qué es el food cost y por qué es el número más importante</li>
+            <li>Los 3 números que necesitás saber antes de fijar un precio</li>
+            <li>Cómo calcular el costo real considerando mermas</li>
+            <li>Food cost por tipo de negocio (café, delivery, viandas, rotisería)</li>
+            <li>Cómo fijar el precio de venta desde el costo</li>
+            <li>El error más caro: vender mucho y ganar poco</li>
+            <li>Punto de equilibrio paso a paso con ejemplos</li>
+            <li>Casos reales con números: café, dark kitchen, viandas</li>
+          </ul>
+        </div>
+
+        <div class="inc-card">
+          <div class="inc-card-icon">📊</div>
+          <h3>Receta Estándar + Food Cost</h3>
+          <p>La hoja central. Una pestaña por receta, hasta 20 platos. Ingresás los ingredientes y el food cost aparece al instante.</p>
+          <ul>
+            <li>220 ingredientes precargados con rendimiento típico</li>
+            <li>Merma calculada automáticamente por ingrediente</li>
+            <li>Costo por porción en tiempo real</li>
+            <li>Food cost % con semáforo visual</li>
+          </ul>
+        </div>
+
+        <div class="inc-card">
+          <div class="inc-card-icon">🧮</div>
+          <h3>Calculadora de Food Cost</h3>
+          <p>Tres herramientas en una sola hoja para decisiones de precios basadas en datos.</p>
+          <ul>
+            <li>Precio mínimo de venta dado un costo y un % objetivo</li>
+            <li>Verificador de viabilidad con semáforo automático</li>
+            <li>Simulador: si suben los ingredientes X%, ¿cuánto subo el precio?</li>
+          </ul>
+        </div>
+
+        <div class="inc-card">
+          <div class="inc-card-icon">📈</div>
+          <h3>Comparador de Rentabilidad</h3>
+          <p>Clasificá cada plato del menú en 4 categorías para saber exactamente qué promover, qué reformular y qué sacar.</p>
+          <ul>
+            <li>⭐ Estrella — food cost bajo + ventas altas → mantener y promover</li>
+            <li>🎯 Potencial — food cost bajo + ventas bajas → trabajar comunicación</li>
+            <li>💰 Vaca lechera — food cost alto + ventas altas → revisar precio</li>
+            <li>❌ Problema — food cost alto + ventas bajas → reformular o eliminar</li>
+          </ul>
+        </div>
+
+        <div class="inc-card full-width">
+          <div class="inc-card-icon">⚖️</div>
+          <h3>Punto de Equilibrio</h3>
+          <p>Calculá la venta mínima mensual para no perder plata, los tickets mínimos por día y el resultado estimado con semáforo. Ingresás los costos fijos una vez y el sistema te da el número concreto de clientes que necesitás atender por día — el piso y la meta real de tu negocio.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PARA QUIÉN -->
+    <section class="para-quien">
+      <div class="para-quien-inner">
+        <span class="section-eyebrow">Para quién es</span>
+        <h2 class="section-h2">Para cualquier negocio que venda comida</h2>
+        <div class="negocios-grid">
+  <div class="negocio-card">
+    <div class="negocio-img">
+      <img src="/management/assets/neg-cafe.jpg" alt="Café / Bar" loading="lazy"
+        onerror="this.parentElement.innerHTML='<div class=negocio-img-placeholder>☕</div>'">
+    </div>
+    <div class="negocio-body">
+      <h3>Café / Bar</h3>
+      <p>Optimizá el mix bebida/comida. El café subsidia la comida — pero hay que saberlo calcular.</p>
+    </div>
+  </div>
+  <div class="negocio-card">
+    <div class="negocio-img">
+      <img src="/management/assets/neg-restaurante.jpg" alt="Restaurante" loading="lazy"
+        onerror="this.parentElement.innerHTML='<div class=negocio-img-placeholder>🍽️</div>'">
+    </div>
+    <div class="negocio-body">
+      <h3>Restaurante</h3>
+      <p>Ficha técnica por plato, ingeniería de carta y punto de equilibrio real con tu estructura.</p>
+    </div>
+  </div>
+  <div class="negocio-card">
+    <div class="negocio-img">
+      <img src="/management/assets/neg-viandas.jpg" alt="Viandas / Catering" loading="lazy"
+        onerror="this.parentElement.innerHTML='<div class=negocio-img-placeholder>🥡</div>'">
+    </div>
+    <div class="negocio-body">
+      <h3>Viandas / Catering</h3>
+      <p>Incluí packaging, transporte y tiempo propio. El food cost "puro" siempre subestima el costo real.</p>
+    </div>
+  </div>
+  <div class="negocio-card">
+    <div class="negocio-img">
+      <img src="/management/assets/neg-delivery.jpg" alt="Delivery / Dark Kitchen" loading="lazy"
+        onerror="this.parentElement.innerHTML='<div class=negocio-img-placeholder>🛵</div>'">
+    </div>
+    <div class="negocio-body">
+      <h3>Delivery / Dark Kitchen</h3>
+      <p>Calculá siempre sobre el precio neto después de la comisión de la plataforma (15–30%).</p>
+    </div>
+  </div>
+  <div class="negocio-card">
+    <div class="negocio-img">
+      <img src="/management/assets/neg-rotiseria.jpg" alt="Rotisería / Despacho" loading="lazy"
+        onerror="this.parentElement.innerHTML='<div class=negocio-img-placeholder>🍗</div>'">
+    </div>
+    <div class="negocio-body">
+      <h3>Rotisería / Despacho</h3>
+      <p>Identificá qué preparaciones están destruyendo el margen. Un promedio global puede ocultar un plato al 55%.</p>
+    </div>
+  </div>
+  <div class="negocio-card">
+    <div class="negocio-img">
+      <img src="/management/assets/neg-hogar.jpg" alt="Emprendimiento hogareño" loading="lazy"
+        onerror="this.parentElement.innerHTML='<div class=negocio-img-placeholder>🏠</div>'">
+    </div>
+    <div class="negocio-body">
+      <h3>Emprendimiento hogareño</h3>
+      <p>Empezá con la estructura correcta antes de fijar precios que después no te cierran.</p>
+    </div>
+  </div>
+</div>
+      </div>
+    </section>
+
+    <!-- LO QUE VAS A PODER HACER -->
+    <section class="aprende">
+      <span class="section-eyebrow">Resultado</span>
+      <h2 class="section-h2">Lo que vas a poder hacer cuando termines</h2>
+      <div class="aprende-grid">
+        <div class="aprende-item">
+          <span class="aprende-num">01</span>
+          <div>
+            <h4>Calcular el costo real de cualquier plato</h4>
+            <p>Con mermas correctas — el costo de la porción que servís, no el precio del paquete.</p>
+          </div>
+        </div>
+        <div class="aprende-item">
+          <span class="aprende-num">02</span>
+          <div>
+            <h4>Fijar el precio mínimo de venta</h4>
+            <p>El número por debajo del cual estás regalando trabajo. Nunca más fijar precios a ojo.</p>
+          </div>
+        </div>
+        <div class="aprende-item">
+          <span class="aprende-num">03</span>
+          <div>
+            <h4>Detectar los platos que te cuestan plata</h4>
+            <p>Clasificar el menú completo y saber exactamente qué promover, reformular o sacar de la carta.</p>
+          </div>
+        </div>
+        <div class="aprende-item">
+          <span class="aprende-num">04</span>
+          <div>
+            <h4>Calcular cuántos clientes necesitás por día</h4>
+            <p>El número concreto de tickets diarios para que el negocio se pague solo — y el objetivo real de ventas.</p>
+          </div>
+        </div>
+        <div class="aprende-item">
+          <span class="aprende-num">05</span>
+          <div>
+            <h4>Simular el impacto de una suba de costos</h4>
+            <p>Si los ingredientes suben 20%, cuánto tenés que ajustar el precio para mantener el margen.</p>
+          </div>
+        </div>
+        <div class="aprende-item">
+          <span class="aprende-num">06</span>
+          <div>
+            <h4>Monitorear el food cost semanalmente</h4>
+            <p>Una operación simple como alerta temprana antes de que el margen se deteriore sin que te des cuenta.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /body-wrap -->
+
+  <!-- COMPRA PRINCIPAL -->
+  <section class="compra-main" id="comprar">
+    <div class="compra-main-inner">
+      <span class="section-eyebrow" style="color:var(--terra)">Acceso inmediato</span>
+      <h2>Pago único.<br>Tuyo para siempre.</h2>
+      <p class="compra-main-sub">
+        Ingresá tu email. Procesamos el pago con MercadoPago y en minutos recibís los links de descarga del PDF y la planilla directamente en tu casilla.
+      </p>
+
+      <div class="precio-bloque">
+        <span class="precio-moneda">ARS</span>
+        <span class="precio-big">$9.900</span>
+      </div>
+      <p class="precio-equiv">≈ USD 7 · Pago único sin suscripción</p>
+
+      <div class="compra-inc-list">
+        <div class="compra-inc-item">PDF Guía de Costeo &amp; Food Cost · 9 capítulos</div>
+        <div class="compra-inc-item">Planilla profesional · Excel / Google Sheets</div>
+        <div class="compra-inc-item">220 ingredientes con rendimiento y merma precargados</div>
+        <div class="compra-inc-item">Calculadora de precios + Comparador + Punto de equilibrio</div>
+      </div>
+
+      <div class="pago-error-msg" id="pagoErrorMsg">
+        Hubo un problema con el pago. Podés intentarlo de nuevo o usar otro medio.
+      </div>
+
+      <div class="input-group">
+        <input type="email" id="emailInput" class="email-input" placeholder="tu@email.com" autocomplete="email">
+        <span class="error-msg" id="emailError"></span>
+      </div>
+
+      <button class="btn-comprar-main" id="btnComprar" onclick="handleComprar()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+        Comprar con MercadoPago
+      </button>
+
+      <p class="seguridad">🔒 Pago seguro · Tarjeta, débito o efectivo · Links de descarga en tu email en minutos</p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq body-wrap">
+    <span class="section-eyebrow" style="display:block;text-align:center;margin-bottom:10px">Dudas</span>
+    <h2 class="section-h2">Preguntas frecuentes</h2>
+    <details class="faq-item">
+      <summary>¿Cuándo recibo el material?</summary>
+      <p>Inmediatamente después del pago confirmado. Te llega un email con los links de descarga del PDF y la planilla. Revisá también la carpeta de spam por las dudas.</p>
+    </details>
+    <details class="faq-item">
+      <summary>¿La planilla funciona en Excel o solo en Google Sheets?</summary>
+      <p>Funciona en ambos. Viene en formato .xlsx. Podés abrirla directamente en Excel o subirla a Google Drive y usarla en Google Sheets — las fórmulas funcionan igual en los dos.</p>
+    </details>
+    <details class="faq-item">
+      <summary>¿Necesito conocimientos previos de gastronomía o finanzas?</summary>
+      <p>No. El PDF arranca desde cero y explica cada concepto antes de usarlo. La planilla está diseñada para que solo ingreses tus datos en las celdas marcadas — el resto lo calcula sola.</p>
+    </details>
+    <details class="faq-item">
+      <summary>¿Cuántas veces puedo descargar el material?</summary>
+      <p>Las veces que quieras. Los links están disponibles durante 30 días desde la compra. Si pasó ese plazo, escribinos por <a href="https://wa.me/5491160410607" style="color:inherit;text-decoration:underline">WhatsApp</a> y te los reenviamos.</p>
+    </details>
+    <details class="faq-item">
+      <summary>¿Con qué medios puedo pagar?</summary>
+      <p>Con cualquier tarjeta de crédito o débito, saldo de Mercado Pago, y efectivo en puntos de pago (Rapipago, Pago Fácil).</p>
+    </details>
+    <details class="faq-item">
+      <summary>¿Esto reemplaza una consultoría?</summary>
+      <p>No. Te da el marco y las herramientas para tomar decisiones con datos hoy. Si después querés profundizar aplicado a tu negocio específico, en Celestia Management hacemos consultoría personalizada — podés consultarnos desde el sitio principal.</p>
+    </details>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-logo"><span class="footer-dot"></span>Celestia Management</div>
+      <ul class="footer-links">
+        <li><a href="/management">Inicio</a></li>
+        <li><a href="/management#diagnostico">Módulos</a></li>
+        <li><a href="/management#contacto">Contacto</a></li>
+      </ul>
+      <div class="footer-copy">© 2026 Celestia Management · Buenos Aires, Argentina</div>
+    </div>
+  </footer>
+
+  <script>
+    if (new URLSearchParams(window.location.search).get('pago') === 'error') {
+      document.getElementById('pagoErrorMsg').classList.add('visible');
+    }
+
+    function scrollToCompra() {
+      document.getElementById('comprar').scrollIntoView({ behavior: 'smooth' });
+      setTimeout(() => document.getElementById('emailInput').focus(), 600);
+    }
+
+    function validateEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+
+    async function handleComprar() {
+      const emailInput = document.getElementById('emailInput');
+      const emailError = document.getElementById('emailError');
+      const btn = document.getElementById('btnComprar');
+      const email = emailInput.value.trim();
+
+      if (!email || !validateEmail(email)) {
+        emailInput.classList.add('error');
+        emailError.textContent = 'Ingresá un email válido para recibir el material';
+        emailInput.focus();
+        return;
+      }
+
+      emailInput.classList.remove('error');
+      emailError.textContent = '';
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>';
+
+      try {
+        const res = await fetch('/api/mf/crear-preferencia', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
+        });
+        const data = await res.json();
+        if (data.init_point) {
+          window.location.href = data.init_point;
+        } else {
+          throw new Error(data.error || 'Sin init_point');
+        }
+      } catch (err) {
+        console.error('[guia]', err);
+        btn.disabled = false;
+        btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg> Comprar con MercadoPago';
+        emailError.textContent = 'Error al conectar. Intentá de nuevo.';
+        emailInput.classList.add('error');
+      }
+    }
+
+    document.getElementById('emailInput').addEventListener('input', function () {
+      const err = document.getElementById('emailError');
+      if (this.value && !validateEmail(this.value)) {
+        this.classList.add('error'); err.textContent = 'Ingresá un email válido';
+      } else {
+        this.classList.remove('error'); err.textContent = '';
+      }
+    });
+
+    document.getElementById('emailInput').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') handleComprar();
+    });
+  </script>
+
+</body>
+</html>

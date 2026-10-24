@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Celestia Management · Plataforma Educativa</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=DM+Sans:wght@300;400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--terra:#B08A30;--terra-d:#8A6A20;--terra-l:rgba(201,168,76,.13);--terra-b:rgba(201,168,76,.25);--navy:#0D1B2A;--ink:#0F1B28;--muted:#6B6560;--muted-l:#9C9490;--sand:#FAF6EF;--sand-d:#EDE6D8;--white:#fff}
+body{font-family:'DM Sans',sans-serif;background:var(--ink);color:var(--sand);min-height:100vh;overflow-x:hidden}
+#landing{background:radial-gradient(ellipse 80% 50% at 85% 0%,rgba(201,168,76,.14) 0%,transparent 60%),radial-gradient(ellipse 50% 40% at 5% 95%,rgba(201,168,76,.08) 0%,transparent 55%),#0e0c0b;padding-bottom:80px;min-height:100vh}
+.land-head{padding:36px 22px 0;max-width:1200px;margin:0 auto}
+.mf-wordmark{font-family:'DM Serif Display',serif;font-size:12px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--muted-l);display:flex;align-items:center;gap:8px;margin-bottom:44px}
+.mf-dot{width:7px;height:7px;border-radius:50%;background:var(--terra);flex-shrink:0}
+.land-eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:5px 14px 5px 10px;margin-bottom:22px}
+.ey-dot{width:5px;height:5px;border-radius:50%;background:var(--terra)}
+.land-title{font-family:'DM Serif Display',serif;font-size:clamp(2.4rem,5vw,3.8rem);font-weight:900;line-height:1.04;letter-spacing:-.03em;color:var(--white);margin-bottom:18px}
+.land-title em{font-style:italic;color:var(--terra)}
+.land-sub{font-size:14px;color:var(--muted-l);line-height:1.75;margin-bottom:42px;max-width:340px}
+@media(min-width:900px){
+  .land-head{padding:48px 48px 0}
+  .land-hero{display:flex;align-items:flex-end;justify-content:space-between;gap:40px;margin-bottom:48px}
+  .land-title{font-size:clamp(3rem,5.5vw,4.2rem);margin-bottom:0;max-width:600px}
+  .land-sub{margin-bottom:0;max-width:280px;font-size:15px}
+}
+.divider{display:flex;align-items:center;gap:10px;margin:0 22px 32px;max-width:1200px}
+.div-line{flex:1;height:1px;background:rgba(255,255,255,.06)}
+.div-dot{width:4px;height:4px;border-radius:50%;background:var(--terra);opacity:.5}
+@media(min-width:900px){.divider{margin:0 auto 40px;padding:0 48px}}
+.cards{padding:0 16px;display:flex;flex-direction:column;gap:14px;max-width:1200px;margin:0 auto}
+@media(min-width:900px){.cards{flex-direction:row;gap:20px;padding:0 48px;align-items:stretch}.curso-card{flex:1;display:flex;flex-direction:column}.card-body{flex:1;display:flex;flex-direction:column}.card-cta{margin-top:auto}}
+.curso-card{border-radius:16px;overflow:hidden;cursor:pointer;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03);transition:transform .25s,border-color .25s;text-decoration:none;display:block}
+.curso-card:hover{transform:translateY(-5px);box-shadow:0 20px 50px rgba(0,0,0,.4)}
+.curso-card:active{transform:scale(.99)}
+.card-stripe{height:3px;width:100%}
+.s0{background:var(--terra)}
+.s1{background:linear-gradient(90deg,var(--terra),rgba(201,168,76,.5))}
+.s2{background:linear-gradient(90deg,var(--navy),#3a4a7a)}
+.card-body{padding:22px}
+.card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.card-num{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.card-pills{display:flex;gap:6px}
+.pill{font-size:10px;padding:3px 9px;border-radius:20px;font-weight:500;background:var(--terra-l);color:var(--terra);border:1px solid var(--terra-b)}
+.pill-navy{background:rgba(13,27,42,.4);color:#8a9cc0;border:1px solid rgba(13,27,42,.6)}
+.card-icon{font-size:28px;margin-bottom:10px;display:block}
+.card-title{font-family:'DM Serif Display',serif;font-size:21px;font-weight:700;color:var(--white);line-height:1.15;margin-bottom:6px}
+.card-meta{font-size:11px;color:var(--muted);margin-bottom:14px}
+.card-desc{font-size:13.5px;color:var(--muted-l);line-height:1.78;margin-bottom:16px}
+.card-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:20px}
+.tag{font-size:10.5px;padding:4px 10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:20px;color:var(--muted-l)}
+.card-cta{width:100%;padding:14px 18px;border-radius:10px;border:none;font-family:'DM Serif Display',serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:all .2s}
+.cta-solid{background:var(--terra);color:var(--white)}.cta-solid:hover{background:var(--terra-d)}
+.cta-ghost{background:var(--terra-l);color:var(--terra);border:1px solid var(--terra-b)}.cta-ghost:hover{background:var(--terra-b)}
+.cta-navy{background:rgba(13,27,42,.5);color:#8a9cc0;border:1px solid rgba(13,27,42,.8)}.cta-navy:hover{background:rgba(13,27,42,.7)}
+.cta-arrow{font-size:18px;transition:transform .2s}
+.curso-card:hover .cta-arrow{transform:translateX(5px)}
+.land-foot{text-align:center;padding:36px 24px 0;font-size:10px;color:var(--muted);opacity:.4;letter-spacing:.08em}
+
+/* ── CARDS BLOQUEADAS ── */
+.curso-card.locked{opacity:1;cursor:default;pointer-events:none}
+.curso-card.locked .card-stripe{background:rgba(255,255,255,.08)!important}
+.locked-badge{display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:4px 12px;margin-bottom:12px}
+.cta-locked{background:rgba(201,168,76,.12)!important;color:var(--terra)!important;border:1px solid var(--terra-b)!important;cursor:pointer!important;pointer-events:all!important}
+.cta-locked:hover{background:rgba(201,168,76,.2)!important}
+
+/* Card image band */
+.card-img-band{height:160px;overflow:hidden;position:relative;background:#1a1412}
+.card-img-band img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease}
+.curso-card:hover .card-img-band img{transform:scale(1.06)}
+.card-img-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(14,12,11,.85) 100%)}
+/* Card border per course */
+.curso-card:nth-child(1){border-color:rgba(201,168,76,.25)!important}
+.curso-card:nth-child(2){border-color:rgba(40,160,100,.2)!important}
+.curso-card:nth-child(3){border-color:rgba(80,120,220,.2)!important}
+
+
+/* ── VIDEO HERO ── */
+.cursos-hero{
+  position:relative;min-height:70vh;display:flex;align-items:flex-end;
+  overflow:hidden;padding-bottom:0;
+}
+.cursos-hero-video{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;
+}
+.cursos-hero-overlay{
+  position:absolute;inset:0;z-index:1;
+  background:
+    linear-gradient(135deg,rgba(14,12,11,.9) 0%,rgba(14,12,11,.7) 50%,rgba(201,168,76,.1) 100%),
+    linear-gradient(to top,rgba(14,12,11,1) 0%,transparent 50%);
+}
+.cursos-hero-content{
+  position:relative;z-index:2;width:100%;max-width:1200px;
+  margin:0 auto;padding:120px 60px 60px;
+}
+@media(max-width:899px){.cursos-hero-content{padding:100px 24px 48px}}
+.cursos-hero-top{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:48px;
+}
+.cursos-user-bar{display:flex;align-items:center;gap:12px}
+.cursos-user-name{font-size:13px;color:rgba(255,255,255,.65);font-weight:500}
+.cursos-logout{
+  background:transparent;border:1px solid rgba(255,255,255,.12);
+  border-radius:8px;color:rgba(255,255,255,.45);font-family:'DM Sans',sans-serif;
+  font-size:12px;padding:6px 14px;cursor:pointer;transition:all .2s;
+}
+.cursos-logout:hover{border-color:rgba(255,255,255,.25);color:rgba(255,255,255,.7)}
+
+/* ── CARDS 2026 ── */
+.cursos-cards-wrap{
+  background:#0e0c0b;padding:0 60px 80px;max-width:1200px;margin:0 auto;
+}
+@media(max-width:899px){.cursos-cards-wrap{padding:0 16px 60px}}
+.cursos-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:rgba(255,255,255,.05);
+  border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.06);
+  margin-top:-2px;
+}
+@media(max-width:899px){.cursos-grid{grid-template-columns:1fr;max-width:440px;margin:0 auto}}
+.curso-card-2026{
+  background:#0e0c0b;display:flex;flex-direction:column;
+  transition:background .25s;position:relative;
+  text-decoration:none;
+}
+.curso-card-2026:hover{background:rgba(20,16,14,.98)}
+.curso-img-2026{
+  height:200px;overflow:hidden;position:relative;background:#1a1412;
+  display:block;
+}
+.curso-img-2026 img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform .5s ease;
+}
+.curso-card-2026:hover .curso-img-2026 img{transform:scale(1.06)}
+.curso-img-2026-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to bottom,transparent 40%,rgba(14,12,11,.9) 100%);
+}
+.curso-img-2026 .curso-num-tag{
+  position:absolute;top:12px;left:12px;z-index:2;
+  font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(255,255,255,.6);background:rgba(0,0,0,.5);
+  border:1px solid rgba(255,255,255,.1);border-radius:4px;
+  padding:3px 8px;backdrop-filter:blur(4px);
+}
+.curso-body-2026{padding:22px 24px;flex:1;display:flex;flex-direction:column}
+.curso-title-2026{
+  font-family:'DM Serif Display',serif;font-size:1.15rem;font-weight:700;
+  color:#fff;line-height:1.2;margin-bottom:6px;
+}
+.curso-meta-2026{font-size:11px;color:rgba(255,255,255,.3);margin-bottom:12px}
+.curso-desc-2026{font-size:12.5px;color:rgba(255,255,255,.45);line-height:1.75;margin-bottom:14px;flex:1}
+.curso-tags-2026{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:18px}
+.curso-tag-2026{
+  font-size:10px;padding:3px 9px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
+  border-radius:20px;color:rgba(255,255,255,.35);
+}
+.curso-price-2026{
+  display:flex;align-items:baseline;gap:8px;margin-bottom:14px;
+}
+.curso-price-num-2026{
+  font-family:'DM Serif Display',serif;font-size:1.7rem;font-weight:900;color:var(--terra);
+}
+.curso-price-lbl-2026{font-size:10px;color:rgba(255,255,255,.25);line-height:1.4}
+
+/* Color accents per course */
+.curso-card-2026:nth-child(1){border-top:2px solid rgba(201,168,76,.5)}
+.curso-card-2026:nth-child(2){border-top:2px solid rgba(40,160,100,.4)}
+.curso-card-2026:nth-child(3){border-top:2px solid rgba(80,120,220,.4)}
+.curso-card-2026:nth-child(1):hover{background:rgba(201,168,76,.05)}
+.curso-card-2026:nth-child(2):hover{background:rgba(40,160,100,.04)}
+.curso-card-2026:nth-child(3):hover{background:rgba(80,120,220,.04)}
+
+
+.btn-ingresar{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:14px;border-radius:10px;
+  background:var(--terra);color:#fff;text-decoration:none;
+  font-family:'DM Serif Display',serif;font-size:14px;font-weight:700;
+  transition:background .2s;text-align:center;
+}
+.btn-ingresar:hover{background:#8A6A20}
+
+
+/* MP button en cards de cursos */
+.curso-card-2026 .btn-mp{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:10px !important;
+  width:100% !important;
+  padding:14px 18px !important;
+  border-radius:10px !important;
+  background:linear-gradient(135deg,#009EE3 0%,#007EB5 100%) !important;
+  color:#fff !important;
+  border:none !important;
+  font-family:'DM Sans',sans-serif !important;
+  font-size:14px !important;
+  font-weight:600 !important;
+  cursor:pointer !important;
+  box-shadow:0 4px 16px rgba(0,158,227,.35) !important;
+  transition:all .2s !important;
+  letter-spacing:.02em !important;
+}
+.curso-card-2026 .btn-mp::before{
+  content:'';
+  display:inline-block;
+  width:18px;height:18px;flex-shrink:0;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M8 5v14l11-7z'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+.curso-card-2026 .btn-mp:hover{
+  background:linear-gradient(135deg,#00AAFF 0%,#0090CC 100%) !important;
+  transform:translateY(-2px) !important;
+  box-shadow:0 8px 24px rgba(0,158,227,.45) !important;
+}
+
+</style>
+<link rel="icon" href="/img/management/favicon.png">
+<style id="celestia-tema">
+/* Celestia Management: tipografías y detalles de marca */
+h1,h2,h3,h4,.serif{font-family:'DM Serif Display',Georgia,serif!important;font-weight:400!important;letter-spacing:0!important}
+.cm-barra{position:sticky;top:0;z-index:9999;display:flex;align-items:center;justify-content:space-between;gap:12px;background:#0D1B2A;padding:8px 22px;border-bottom:1px solid rgba(201,168,76,.18);font-family:'DM Sans',sans-serif}
+.cm-barra img{height:40px;width:auto;display:block}
+.cm-barra nav{display:flex;gap:18px;align-items:center}
+.cm-barra nav a{color:rgba(250,246,239,.82);text-decoration:none;font-size:13.5px;font-weight:500}
+.cm-barra nav a:hover{color:#E8C96A}
+.cm-barra nav a.cta{background:linear-gradient(135deg,#E8C96A,#C9A84C);color:#0D1B2A;font-weight:700;padding:8px 16px;border-radius:999px}
+@media(max-width:700px){.cm-barra nav a:not(.cta){display:none}.cm-barra{padding:8px 14px}.cm-barra img{height:34px}}
+</style>
+</head>
+<body>
+<script>
+(function(){
+  // Ocultar contenido hasta verificar sesión
+  document.documentElement.style.visibility = 'hidden';
+
+  var token = localStorage.getItem("mf_token");
+  if (!token) {
+    window.location.href = "/management/login?next=" + encodeURIComponent(window.location.pathname);
+    return;
+  }
+
+  fetch("/api/mf/auth?action=verify", {
+    headers: { "Authorization": "Bearer " + token }
+  })
+  .then(function(r){ return r.json().then(function(d){ return { status: r.status, data: d }; }); })
+  .then(function(res){
+    if (res.status === 200 && res.data.user) {
+      // Sesión válida — mostrar contenido
+      document.documentElement.style.visibility = '';
+    } else {
+      // Sesión inválida — redirigir
+      localStorage.removeItem("mf_token");
+      localStorage.removeItem("mf_user");
+      window.location.href = "/management/login?next=" + encodeURIComponent(window.location.pathname);
+    }
+  })
+  .catch(function(){
+    // Error de red — mostrar contenido (no penalizar offline)
+    document.documentElement.style.visibility = '';
+  });
+})();
+</script>
+<div id="landing">
+
+<!-- VIDEO HERO -->
+<section class="cursos-hero">
+  <video id="cursosBg" autoplay muted loop playsinline
+    poster="/management/assets/cursos-poster.jpg"
+    style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0">
+    <source src="/management/assets/cursos.mp4" type="video/mp4">
+  </video>
+  <div class="cursos-hero-overlay"></div>
+  <div class="cursos-hero-content">
+    <div class="cursos-hero-top">
+      <a href="/management" class="mf-wordmark" aria-label="Celestia Management"><img src="/img/management/logo-pill-sm.png" alt="Celestia Management" style="height:44px;width:auto;display:block"></a>
+      <div class="cursos-user-bar">
+        <span class="cursos-user-name" id="userName"></span>
+        <button class="cursos-logout" onclick="doLogout()">Salir</button>
+      </div>
+    </div>
+    <div class="land-eyebrow"><div class="ey-dot"></div>Plataforma Educativa &middot; Buenos Aires</div>
+    <h1 class="land-title" style="margin-top:12px">Formación<br>para negocios<br><em>gastronómicos rentables.</em></h1>
+    <p class="land-sub" style="margin-top:16px;max-width:38ch">Tres cursos completos con material de lectura y evaluación por módulo. Avanzás cuando aprobás.</p>
+  </div>
+</section>
+
+<!-- CURSOS GRID -->
+<div style="background:#0e0c0b;padding:0 48px 80px;max-width:1200px;margin:0 auto">
+  <div id="cardsContainer" class="cursos-grid"></div>
+  <p style="text-align:center;margin-top:20px;font-size:11px;color:rgba(255,255,255,.2);letter-spacing:.06em">
+    chefprivado.ar/management &middot; Consultoría Gastronómica Estratégica
+  </p>
+</div>
+
+<!-- MODAL COMPRA -->
+<div id="modalCompra" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)">
+  <div style="background:#1a1917;border:1px solid rgba(255,255,255,.1);border-radius:18px;width:100%;max-width:420px;overflow:hidden">
+    <div style="background:#111;padding:20px 24px;display:flex;align-items:center;justify-content:space-between">
+      <h3 style="font-family:Playfair Display,serif;font-size:1.1rem;color:#fff;margin:0" id="modalTitulo">Comprar curso</h3>
+      <button onclick="cerrarModal()" style="background:none;border:none;color:rgba(255,255,255,.4);font-size:22px;cursor:pointer;line-height:1">&#10005;</button>
+    </div>
+    <div style="padding:24px">
+      <p style="font-size:13px;color:var(--terra);margin:0 0 16px;font-weight:500" id="modalNombreCurso"></p>
+      <div style="margin-bottom:14px">
+        <label style="display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:6px">Nombre completo</label>
+        <input id="mNombre" type="text" placeholder="Tu nombre" autocomplete="name"
+          style="width:100%;padding:12px 14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:9px;color:#fff;font-size:14px;outline:none;font-family:DM Sans,sans-serif">
+      </div>
+      <div style="margin-bottom:16px">
+        <label style="display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:6px">Email</label>
+        <input id="mEmail" type="email" placeholder="tu@email.com" autocomplete="email"
+          style="width:100%;padding:12px 14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:9px;color:#fff;font-size:14px;outline:none;font-family:DM Sans,sans-serif">
+      </div>
+      <div style="background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);border-radius:9px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <span style="font-size:12px;color:rgba(255,255,255,.5)">Total</span>
+        <span style="font-family:Playfair Display,serif;font-size:1.4rem;font-weight:900;color:var(--terra)" id="modalPrecio"></span>
+      </div>
+      <button id="modalBtn" onclick="procesarCompra()"
+        style="width:100%;padding:15px;border-radius:10px;border:none;background:var(--terra);color:#fff;font-family:Playfair Display,serif;font-size:15px;font-weight:700;cursor:pointer">
+        Pagar con MercadoPago &#8594;
+      </button>
+      <p id="modalError" style="font-size:12px;color:#f0a0a0;margin-top:8px;display:none"></p>
+      <p style="font-size:11px;color:rgba(255,255,255,.3);text-align:center;margin-top:12px;line-height:1.6">
+        Pago seguro via MercadoPago. Al aprobar recibis tus credenciales por email.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+var CURSOS_DEF = [
+  {
+    id: 'curso01', slug: '/management/curso01', stripe: 's0', cta: 'cta-solid',
+    num: 'Curso 01', icon: '&#128226;',
+    title: 'Marketing Gastronómico y Redes',
+    meta: '14 módulos · 24 horas de contenido',
+    desc: 'Posicioná tu negocio, construí una marca con identidad propia y captá clientes reales con estrategias que funcionan en el mercado argentino.',
+    tags: ['Branding','Carta efectiva','Social Media','Fidelización','Plan de marketing'],
+    pills: ['24 hs','14 módulos'], pillClass: 'pill',
+    precio: '$69.000',
+    img: '/management/assets/curso01.jpg',
+    borderColor: 'rgba(201,168,76,.4)'
+  },
+  {
+    id: 'curso02', slug: '/management/curso02', stripe: 's1', cta: 'cta-ghost',
+    num: 'Curso 02', icon: '&#128640;',
+    title: 'Claves para Armar tu Emprendimiento',
+    meta: '14 módulos · 16 horas de contenido',
+    desc: 'Todo lo que necesitás saber antes de abrir: local, equipamiento, proveedores, equipo y plan de negocio concreto.',
+    tags: ['Plan de negocio','Proveedores','RRHH','Habilitaciones','Identidad'],
+    pills: ['16 hs','14 módulos'], pillClass: 'pill',
+    precio: '$49.000',
+    img: '/management/assets/curso02.jpg',
+    borderColor: 'rgba(40,160,100,.35)'
+  },
+  {
+    id: 'curso03', slug: '/management/curso03', stripe: 's2', cta: 'cta-navy',
+    num: 'Curso 03', icon: '&#128202;',
+    title: 'Administración de Negocios Gastronómico',
+    meta: '12 módulos · 30 horas de contenido',
+    desc: 'Manejá los números con criterio: costos, food cost, auditoría interna, sistemas de gestión y rentabilidad por plato.',
+    tags: ['Food cost','Prime cost','Auditoría','Sistemas','Rentabilidad'],
+    pills: ['30 hs','12 módulos'], pillClass: 'pill pill-navy',
+    precio: '$79.000',
+    img: '/management/assets/curso03.jpg',
+    borderColor: 'rgba(80,120,220,.35)'
+  }
+];
+
+var _modalProducto = '';
+
+function tieneAcceso(user, cursoId) {
+  if (!user || !user.cursos) return false;
+  var cursos = user.cursos;
+  // Acepta: 'todos', 'curso01', 'curso02', 'curso03'
+  // También acepta sin prefijo: '01', '02', '03' por si acaso
+  return cursos.includes('todos') 
+    || cursos.includes(cursoId)
+    || cursos.includes(cursoId.replace('curso',''))
+    || cursos.some(function(c){ return c.indexOf(cursoId) >= 0 || cursoId.indexOf(c) >= 0; });
+}
+
+function renderCards() {
+  var user = JSON.parse(localStorage.getItem('mf_user') || 'null');
+  var container = document.getElementById('cardsContainer');
+  container.innerHTML = '';
+
+  CURSOS_DEF.forEach(function(curso) {
+    var acceso = tieneAcceso(user, curso.id);
+
+    var tags = curso.tags.map(function(t){
+      return '<span class="curso-tag-2026">' + t + '</span>';
+    }).join('');
+
+    var ctaHtml = acceso
+      ? '<a href="' + curso.slug + '" class="btn-ingresar">Ingresar al curso &#8594;</a>'
+      : '<div class="locked-badge" style="margin-bottom:10px">&#128274; No disponible</div>'
+        + '<button class="btn-mp" data-id="' + curso.id + '" data-title="' + curso.title + '" data-precio="' + curso.precio + '" onclick="handleComprar(this)">Pagar con MercadoPago</button>';
+
+    var priceHtml = acceso ? ''
+      : '<div class="curso-price-2026"><span class="curso-price-num-2026">' + curso.precio + '</span><span class="curso-price-lbl-2026">pago único · acceso permanente</span></div>';
+
+    var card = document.createElement('div');
+    card.className = 'curso-card-2026';
+    card.innerHTML =
+      '<div class="curso-img-2026">'
+      + '<span class="curso-num-tag">' + curso.num + '</span>'
+      + '<img src="' + curso.img + '" alt="' + curso.title + '" loading="lazy">'
+      + '<div class="curso-img-2026-overlay"></div>'
+      + '</div>'
+      + '<div class="curso-body-2026">'
+      + '<div class="curso-title-2026">' + curso.title + '</div>'
+      + '<div class="curso-meta-2026">' + curso.meta + '</div>'
+      + '<p class="curso-desc-2026">' + curso.desc + '</p>'
+      + '<div class="curso-tags-2026">' + tags + '</div>'
+      + priceHtml
+      + ctaHtml
+      + '</div>';
+
+    container.appendChild(card);
+  });
+}
+
+function handleComprar(btn) {
+  var producto = btn.getAttribute('data-id');
+  var nombre   = btn.getAttribute('data-title');
+  var precio   = btn.getAttribute('data-precio');
+  abrirModal({ stopPropagation: function(){} }, producto, nombre, precio);
+}
+
+function abrirModal(e, producto, nombre, precio) {
+  e.stopPropagation();
+  _modalProducto = producto;
+  document.getElementById('modalTitulo').textContent = 'Comprar acceso';
+  document.getElementById('modalNombreCurso').textContent = nombre;
+  document.getElementById('modalPrecio').textContent = precio;
+  // Pre-fill with logged user data
+  var u = JSON.parse(localStorage.getItem('mf_user') || 'null');
+  if (u) {
+    document.getElementById('mNombre').value = u.nombre || '';
+    document.getElementById('mEmail').value  = u.email  || '';
+  }
+  document.getElementById('modalError').style.display = 'none';
+  var m = document.getElementById('modalCompra');
+  m.style.display = 'flex';
+}
+
+function cerrarModal() {
+  document.getElementById('modalCompra').style.display = 'none';
+}
+
+document.getElementById('modalCompra').addEventListener('click', function(e){
+  if (e.target === this) cerrarModal();
+});
+
+document.addEventListener('keydown', function(e){ if(e.key==='Escape') cerrarModal(); });
+
+async function procesarCompra() {
+  var nombre = document.getElementById('mNombre').value.trim();
+  var email  = document.getElementById('mEmail').value.trim();
+  var errEl  = document.getElementById('modalError');
+  var btn    = document.getElementById('modalBtn');
+
+  if (!nombre) { mostrarError('Ingresa tu nombre.'); return; }
+  if (!email || email.indexOf('@') < 0) { mostrarError('Ingresa un email valido.'); return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Procesando...';
+  errEl.style.display = 'none';
+
+  try {
+    var res = await fetch('/api/mf/crear-preferencia', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, nombre: nombre, producto: _modalProducto })
+    });
+    var data = await res.json();
+    if (!res.ok) { mostrarError(data.error || 'Error al procesar.'); return; }
+    window.location.href = data.init_point;
+  } catch(e) {
+    mostrarError('Error de conexion. Intenta de nuevo.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Pagar con MercadoPago →';
+  }
+}
+
+function mostrarError(msg) {
+  var el = document.getElementById('modalError');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+// Renderizar: primero intentar datos frescos del servidor
+(async function(){
+  var token = localStorage.getItem('mf_token');
+
+  // Set username immediately from localStorage
+  var _u = JSON.parse(localStorage.getItem('mf_user') || 'null');
+  var _nameEl = document.getElementById('userName');
+  if (_u && _nameEl) _nameEl.textContent = _u.nombre || _u.email;
+
+  if (!token) { renderCards(); return; }
+  try {
+    var r = await fetch('/api/mf/auth?action=verify', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (r.ok) {
+      var d = await r.json();
+      if (d.user) {
+        localStorage.setItem('mf_user', JSON.stringify(d.user));
+        // Update name with fresh data
+        if (_nameEl) _nameEl.textContent = d.user.nombre || d.user.email;
+      }
+    }
+  } catch(e) { /* usar datos locales si falla */ }
+  renderCards();
+})();
+</script>
+</div>
+</body>
+</html>
