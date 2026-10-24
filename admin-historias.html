@@ -166,7 +166,9 @@ input[type=range]{width:100%;accent-color:var(--gold)}
 </div>
 <div class="wrap" id="modo-reel" style="display:none">
     <aside class="side">
-      <p class="hint" style="margin-top:2px"><b style="color:var(--cream)">1. Elegí un tema</b><br>El reel se arma solo con la nota: portada, las ideas principales, un tip y el cierre.</p>
+      <p class="hint" style="margin-top:2px"><b style="color:var(--cream)">🎬 Reels de presentación</b><br>Guiones listos para relanzar la cuenta. Elegí uno, después subí tus fotos (en el orden de las placas) y se reparten solas. Cada placa te dice qué foto va mejor.</p>
+      <div class="items" id="r-pres" style="margin-bottom:18px"></div>
+      <p class="hint"><b style="color:var(--cream)">1. O elegí un tema del blog</b><br>El reel se arma solo con la nota: portada, las ideas principales, un tip y el cierre.</p>
       <div class="items" id="r-notas"></div>
       <p class="hint" style="margin-top:18px"><b style="color:var(--cream)">2. Sumá tus fotos (opcional)</b><br>Se reparten en orden entre las placas. Si subís 10, cada placa lleva una tuya.</p>
       <label class="drop" id="r-drop"><b>Subí las fotos del reel</b>Arrastralas en el orden en que van.<input type="file" id="r-fotos" accept="image/*" multiple hidden></label>
@@ -668,7 +670,45 @@ document.querySelectorAll('.modo').forEach(b => b.onclick = () => {
   document.getElementById('modo-reel').style.display = reel ? 'grid' : 'none';
   if (reel) { reelPanel(); reelRender(); }
 });
+const PRESENTACION = [
+  { id: 'quien', icono: '👨‍🍳', nombre: 'Quién soy', sub: '7 placas · tu cara y tu historia', gancho: 'Soy Daro: arquitecto de profesión y cocinero de alma 👨‍🍳',
+    cuerpo: ['Hace más de 10 años que cocino, me formé en la escuela de cocina EAG y diseño cada menú como diseño un proyecto: pensando en las personas que lo van a vivir.', 'Llego a tu casa, cocino en tu cocina, sirvo cada paso y me voy dejando todo limpio. Vos solo disfrutás con tu gente.'],
+    frames: [
+      ['portada', 'Celestia · Chef privado', 'Soy Daro.', 'Arquitecto de profesión, cocinero de alma', 'Tu cara, con chaqueta o delantal, mirando a cámara'],
+      ['foto', 'Mi historia', 'Hace más de 10 años que cocino', 'Me formé en la escuela de cocina EAG', 'Vos cocinando, con fuego o sartén en acción'],
+      ['foto', 'Lo que me hace distinto', 'Diseño cada menú como un proyecto', 'Cada detalle pensado para tu mesa', 'Un plato emplatado de cerca'],
+      ['foto', 'En tu casa', 'Llevo todo, cocino y sirvo', 'Vos solo ponés la mesa', 'Vos en la cocina de un cliente'],
+      ['foto', 'Para cada ocasión', 'Aniversarios, cumpleaños y cenas con amigos', '', 'Una mesa con gente disfrutando'],
+      ['foto', '¿No querés que vaya?', 'Te llevo la cena lista en una caja', 'Cajas Celestia para tus fiestas', 'Una caja o una fuente lista para servir'],
+      ['cierre', 'Reservá tu fecha sin costo', 'chefprivado.ar', 'Seguime para recetas de chef con lo que tenés en casa', '']] },
+  { id: 'cena', icono: '🍽️', nombre: 'Así es una cena en tu casa', sub: '7 placas · cómo funciona, paso a paso', gancho: '¿Cómo es tener un chef privado en tu casa? Te lo muestro en 30 segundos 🍽️',
+    cuerpo: ['1️⃣ Diseñamos el menú juntos\n2️⃣ Llego con todo, producto fresco del día\n3️⃣ Cocino en tu cocina\n4️⃣ Sirvo cada paso en la mesa\n5️⃣ Me voy y la cocina queda limpia'],
+    frames: [
+      ['portada', 'Cena con chef privado', 'Así es una noche con Celestia', '', 'Una mesa puesta o un plato lindo'],
+      ['foto', '1 · Antes', 'Diseñamos el menú juntos', 'Por WhatsApp, a tu gusto', 'Ingredientes, una libreta o el menú escrito'],
+      ['foto', '2 · Llego', 'Con todo listo y producto del día', '', 'Vos llegando con las bolsas o la mise en place'],
+      ['foto', '3 · Cocino', 'En tu cocina, terminado en el momento', 'Como en un restaurante', 'Vos cocinando'],
+      ['foto', '4 · Sirvo', 'Paso a paso, en la mesa', 'Con servicio completo', 'Un plato llegando a la mesa'],
+      ['foto', '5 · Me voy', 'Y la cocina queda limpia', 'Vos solo disfrutaste', 'Brindis o la cocina ordenada'],
+      ['cierre', 'Reservá tu fecha sin costo', 'chefprivado.ar', 'Menús de 3 y 7 pasos · CABA y GBA', '']] },
+  { id: 'navidad', icono: '🎄', nombre: 'Navidad sin cocinar', sub: '5 placas · Cajas Celestia', gancho: 'Esta Navidad no cocines vos 🎄',
+    cuerpo: ['Cajas Celestia: la cena completa de chef llega a tu casa el 24, fría y lista para regenerar, con la guía de cada plato.', 'Pedidos hasta el 21/12 o hasta completar cupos. Envío a CABA y GBA.'],
+    frames: [
+      ['portada', 'Cajas Celestia', 'Esta Navidad, no cocines', '', 'La caja cerrada o la mesa navideña'],
+      ['foto', '🎄 Nochebuena', 'Una cena completa de chef', 'Entradas, principal, guarnición y postre', 'Un plato de fiestas'],
+      ['foto', 'Llega el 24', 'Fría y lista para regenerar', 'Con la guía de cada plato', 'La caja abierta con los envases'],
+      ['foto', 'Sumá del mercadito', 'Vitel toné, pan dulce, langostinos…', '', 'Detalle de algún producto'],
+      ['cierre', 'Pedidos hasta el 21/12', 'chefprivado.ar/cajas', 'Cupos limitados · envío a CABA y GBA', '']] }
+];
+function reelPresentacion(id) {
+  const p = PRESENTACION.find(x => x.id === id); if (!p) return;
+  REEL.nota = null; REEL.preset = p;
+  REEL.frames = p.frames.map(([tipo, kicker, titulo, texto, pide], k) => ({ tipo, kicker, titulo, texto, pide, img: null, foco: 50, dir: k % 2 }));
+  reelRepartirFotos(); reelRender(); reelDibujarEn(0); capGenerar(); portDesdeReel();
+  toast('Guion listo: subí tus fotos en el orden de las placas');
+}
 function reelPanel() {
+  document.getElementById('r-pres').innerHTML = PRESENTACION.map(p => `<button class="it" onclick="reelPresentacion('${p.id}')"><span class="ic">${p.icono}</span><div><b>${esc(p.nombre)}</b><span>${esc(p.sub)}</span></div></button>`).join('');
   document.getElementById('r-notas').innerHTML = BASE.notas.map((n, i) =>
     `<button class="it${USADOS['reel:' + n.slug] ? ' usado' : ''}" onclick="reelDesdeNota(${i})"><img src="${esc(n.img_sq)}" alt="" loading="lazy"><div><b>${esc(n.titulo)}</b><span>${esc(n.icono + ' ' + n.cat)} · ${(n.secciones || []).length + 3} placas</span></div></button>`).join('');
   const inp = document.getElementById('r-fotos'), d = document.getElementById('r-drop');
@@ -688,7 +728,7 @@ function reelRepartirFotos() {
   let k = 0; REEL.frames.forEach(f => { if (f.tipo !== 'texto' || REEL.fotos.length >= REEL.frames.length) { if (k < REEL.fotos.length) { f.img = REEL.fotos[k++]; if (f.tipo === 'texto') f.tipo = 'foto'; } } });
 }
 function reelDesdeNota(i) {
-  const n = BASE.notas[i]; REEL.nota = n; marcarUsado('reel:' + n.slug);
+  const n = BASE.notas[i]; REEL.nota = n; REEL.preset = null; marcarUsado('reel:' + n.slug);
   const fr = [];
   fr.push({ tipo: 'portada', kicker: n.icono + ' ' + n.cat, titulo: n.titulo, texto: '', img: n.img });
   fr.push({ tipo: 'texto', kicker: 'En esta nota', titulo: n.bajada, texto: '', img: null });
@@ -705,7 +745,7 @@ function reelDesdeFotos() {
     return { tipo: k === 0 ? 'portada' : 'foto', kicker: k === 0 ? 'Celestia · Chef privado' : f[0], titulo: k === 0 ? 'Una noche de chef en casa' : f[1], texto: '', img: u };
   });
   fr.push({ tipo: 'cierre', kicker: 'Reservá tu fecha sin costo', titulo: 'chefprivado.ar', texto: 'Cenas de 3 y 7 pasos en tu casa, con servicio completo', img: null });
-  REEL.frames = fr.map((f, k) => Object.assign({ foco: 50, dir: k % 2 }, f)); REEL.nota = null;
+  REEL.frames = fr.map((f, k) => Object.assign({ foco: 50, dir: k % 2 }, f)); REEL.nota = null; REEL.preset = null;
   reelRender(); reelDibujarEn(0); capGenerar(); portDesdeReel(); toast('Reel armado con ' + REEL.fotos.length + ' fotos');
 }
 function reelAgregar() { REEL.frames.splice(Math.max(REEL.frames.length - 1, 0), 0, { tipo: 'texto', kicker: '', titulo: 'Nuevo texto', texto: '', img: null, foco: 50, dir: REEL.frames.length % 2 }); reelRender(); }
@@ -723,6 +763,7 @@ function reelRender() {
       <canvas width="270" height="480" id="rt-${i}" onclick="reelDibujarEn(${i})" title="Ver en el reproductor"></canvas>
       <div>
         <div class="tipo">${i + 1} · <select class="inp" style="display:inline-block;width:auto;padding:3px 6px;font-size:11px;margin:0" onchange="rset(${i},'tipo',this.value)">${Object.entries(TIPOS_R).map(([k, v]) => `<option value="${k}" ${f.tipo === k ? 'selected' : ''}>${v}</option>`).join('')}</select></div>
+        ${f.pide ? `<div style="font-size:11.5px;color:${f.img ? 'var(--mut)' : 'var(--gold2)'};margin-bottom:5px">📷 ${f.img ? 'Foto puesta · ideal: ' : 'Foto ideal: '}${esc(f.pide)}</div>` : ''}
         <input class="inp" value="${esc(f.kicker)}" placeholder="Volanta" oninput="rset(${i},'kicker',this.value)">
         <textarea class="inp" placeholder="Texto principal" oninput="rset(${i},'titulo',this.value)">${esc(f.titulo)}</textarea>
         <input class="inp" value="${esc(f.texto)}" placeholder="Texto chico (opcional)" oninput="rset(${i},'texto',this.value)">
@@ -909,6 +950,13 @@ function capGenerar(otra) {
   if (otra) _capV++;
   const ta = document.getElementById('r-cap'); if (!REEL.frames.length) { ta.value = ''; capCont(); return; }
   const n = REEL.nota, v = _capV % 3, L = [];
+  if (!n && REEL.preset) {
+    const pr = REEL.preset;
+    L.push(pr.gancho, '', ...pr.cuerpo.flatMap(t => [t, '']));
+    L.push(pr.id === 'navidad' ? '🛒 Pedí la tuya en chefprivado.ar/cajas (link en la bio).' : '📅 Reservá tu fecha sin costo en chefprivado.ar (link en la bio).', '', CIERRES[v], '');
+    L.push([...HASH_BASE, ...(pr.id === 'navidad' ? ['#navidad', '#cenadenavidad', '#nochebuena', '#delivery'] : ['#chefadomicilio', '#cenaencasa', '#experienciagastronomica', '#chefargentino'])].join(' '));
+    ta.value = L.join('\n'); capCont(); return;
+  }
   if (n) {
     const puntos = REEL.frames.filter(f => /^\d+$/.test(f.kicker || '')).map(f => f.titulo).filter(Boolean);
     const tip = REEL.frames.find(f => /tip/i.test(f.kicker || ''));
