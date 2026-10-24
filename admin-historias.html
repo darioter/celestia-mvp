@@ -114,7 +114,7 @@ input[type=range]{width:100%;accent-color:var(--gold)}
 .gal-h{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold2);margin:18px 0 8px;display:flex;justify-content:space-between}.gal-h span{color:var(--mut);letter-spacing:0;text-transform:none}
 .gal{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
 .gal button{position:relative;border:2px solid transparent;border-radius:10px;overflow:hidden;padding:0;background:var(--navy3);aspect-ratio:1}
-.gal button img{width:100%;height:100%;object-fit:cover;display:block}
+.gal button img{width:100%;height:100%;object-fit:cover;object-position:50% 20%;display:block}
 .gal button:hover{border-color:var(--gold)}.gal button.on{border-color:var(--gold2)}
 .gal button i{position:absolute;top:4px;left:4px;background:var(--gold);color:var(--navy);font-style:normal;font-weight:700;font-size:12px;border-radius:999px;min-width:22px;height:22px;display:flex;align-items:center;justify-content:center}
 .sel-foto{position:fixed;inset:0;background:rgba(5,10,18,.75);z-index:90;display:none;align-items:center;justify-content:center;padding:20px}
@@ -122,6 +122,7 @@ input[type=range]{width:100%;accent-color:var(--gold)}
 .sel-foto-c{background:var(--navy3);border:1px solid var(--line);border-radius:18px;padding:18px;width:min(860px,100%);max-height:86vh;overflow:auto}
 .sf-h{display:flex;gap:8px;align-items:center}.sf-h b{font-family:'DM Serif Display',serif;font-weight:400;font-size:22px}
 .sf-g{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
+.enc{display:flex;align-items:center;gap:8px}.enc span{width:18px;text-align:center;font-size:13px;color:var(--mut)}
 .qch-c.on{background:var(--gold);border-color:var(--gold);color:var(--navy);font-weight:600}
 @media(max-width:1100px){.reel{grid-template-columns:1fr}.r-play{position:static;max-width:380px}}
 @media(max-width:900px){.wrap{grid-template-columns:1fr}.side{position:static;max-height:none;border-right:0;border-bottom:1px solid var(--line)}}
@@ -330,7 +331,7 @@ function galeriaHTML(modo) {
   return `<div class="gal-h">📁 Galería Celestia <span>${GALERIA.length} fotos</span></div>
     <div class="qch-chips" style="margin-bottom:8px">${tags.map(t => `<button class="qch-c${galTag === t ? ' on' : ''}" onclick="galTag='${t}';${modo === 'reel' ? 'reelGaleria()' : 'renderPanel()'}">${t}</button>`).join('')}</div>
     <p class="hint" style="margin-bottom:8px">${modo === 'reel' ? 'Tocá las fotos en el orden en que van en el reel.' : 'Tocá una foto para sumar una historia con ella.'}</p>
-    <div class="gal">${lista.map(([g, i]) => `<button class="${enReel(g.src) ? 'on' : ''}" onclick="${modo === 'reel' ? `reelGalToggle(${i})` : `agregar(desdeFoto({ url: GALERIA[${i}].src }))`}"><img src="${g.src}" alt="" loading="lazy">${enReel(g.src) ? `<i>${REEL.fotos.indexOf(g.src) + 1}</i>` : ''}</button>`).join('')}</div>`;
+    <div class="gal">${lista.map(([g, i]) => `<button class="${enReel(g.src) ? 'on' : ''}" onclick="${modo === 'reel' ? `reelGalToggle(${i})` : `agregar(Object.assign(desdeFoto({ url: GALERIA[${i}].src }), { foco: 25 }))`}"><img src="${g.src}" alt="" loading="lazy">${enReel(g.src) ? `<i>${REEL.fotos.indexOf(g.src) + 1}</i>` : ''}</button>`).join('')}</div>`;
 }
 function renderPanel() {
   const P = document.getElementById('panel'); let h = '';
@@ -436,8 +437,11 @@ function renderGrid() {
         <label>Volanta</label><input class="inp" value="${esc(h.kicker)}" oninput="set(${i},'kicker',this.value)">
         <label>Título</label><input class="inp" value="${esc(h.titulo)}" oninput="set(${i},'titulo',this.value)">
         <label>Texto</label><textarea class="inp" oninput="set(${i},'texto',this.value)">${esc(h.texto)}</textarea>
-        ${h.img ? `<label>Encuadre de la foto</label><input type="range" min="0" max="100" value="${h.foco}" oninput="set(${i},'foco',+this.value)">
-        <label>Zoom</label><input type="range" min="100" max="200" value="${Math.round(h.zoom * 100)}" oninput="set(${i},'zoom',this.value/100)">` : ''}
+        ${h.img ? `<label>Encuadre <span style="text-transform:none;letter-spacing:0;color:var(--gold2)">· también podés arrastrar la foto en la vista previa</span></label>
+        <div class="enc"><span>↕</span><input type="range" min="0" max="100" value="${h.foco}" id="enc-v-${i}" oninput="set(${i},'foco',+this.value)"></div>
+        <div class="enc"><span>↔</span><input type="range" min="0" max="100" value="${h.fx == null ? 50 : h.fx}" id="enc-h-${i}" oninput="set(${i},'fx',+this.value)"></div>
+        <div class="enc"><span>🔍</span><input type="range" min="50" max="200" value="${Math.round(h.zoom * 100)}" oninput="set(${i},'zoom',this.value/100)"></div>
+        <div class="row" style="margin:0 0 4px"><button class="btn sec sm" onclick="set(${i},'zoom',.6);set(${i},'foco',50);set(${i},'fx',50);renderGrid()">Ver foto entera</button><button class="btn sec sm" onclick="set(${i},'zoom',1);set(${i},'foco',25);set(${i},'fx',50);renderGrid()">Cara arriba</button></div>` : ''}
         <label>Link para el sticker</label>
         <div class="link"><span>${esc(h.link || '')}</span><button onclick="copiar(${i})">Copiar</button></div>
         ${h.sticker != null ? `<label>Texto del sticker (lo que se ve en Instagram)</label><div class="link"><input class="inp" style="margin:0;flex:1;padding:6px 8px;font-size:12.5px" value="${esc(h.sticker)}" oninput="historias[${i}].sticker=this.value"><button onclick="copiarTxt(historias[${i}].sticker)">Copiar</button></div>` : ''}
@@ -451,13 +455,23 @@ function renderGrid() {
       </div>
     </div>`).join('');
   historias.forEach((h, i) => dibujar(i));
+  historias.forEach((h, i) => { if (h.img) arrastrable(document.getElementById('cv-' + i), () => historias[i], (k, v) => { set(i, k, v); const el = document.getElementById(k === 'foco' ? 'enc-v-' + i : 'enc-h-' + i); if (el) el.value = v; }); });
+}
+/* arrastrar la foto en la vista previa para encuadrar */
+function arrastrable(cv, obj, setter) {
+  if (!cv) return; cv.style.cursor = 'grab'; cv.style.touchAction = 'none'; let p0 = null;
+  cv.onpointerdown = e => { p0 = { x: e.clientX, y: e.clientY, f: obj().foco == null ? 50 : obj().foco, h: obj().fx == null ? 50 : obj().fx }; cv.setPointerCapture(e.pointerId); cv.style.cursor = 'grabbing'; };
+  cv.onpointermove = e => { if (!p0) return; const r = cv.getBoundingClientRect();
+    const nf = Math.round(Math.max(0, Math.min(100, p0.f - (e.clientY - p0.y) / r.height * 160))), nh = Math.round(Math.max(0, Math.min(100, p0.h - (e.clientX - p0.x) / r.width * 160)));
+    if (nf !== obj().foco) setter('foco', nf); if (nh !== obj().fx) setter('fx', nh); };
+  cv.onpointerup = cv.onpointercancel = () => { p0 = null; cv.style.cursor = 'grab'; };
 }
 const _deb = {};
 function set(i, k, v) { historias[i][k] = v; clearTimeout(_deb[i]); _deb[i] = setTimeout(() => dibujar(i), 60); if (k === 'tpl') setTimeout(renderGrid, 0); }
 function mover(i, d) { const j = i + d; if (j < 0 || j >= historias.length) return; [historias[i], historias[j]] = [historias[j], historias[i]]; renderGrid(); }
 function quitar(i) { historias.splice(i, 1); renderGrid(); }
 let _cambiarIdx = -1;
-function cambiarFoto(i) { _cambiarIdx = i; if (GALERIA.length) return elegirFoto(src => { historias[i].img = src; renderGrid(); }, () => document.getElementById('f-cambiar').click()); document.getElementById('f-cambiar').click(); }
+function cambiarFoto(i) { _cambiarIdx = i; if (GALERIA.length) return elegirFoto(src => { historias[i].img = src; historias[i].foco = 25; historias[i].fx = 50; renderGrid(); }, () => document.getElementById('f-cambiar').click()); document.getElementById('f-cambiar').click(); }
 document.getElementById('f-cambiar').onchange = e => {
   const f = e.target.files[0]; if (!f || _cambiarIdx < 0) return;
   const url = URL.createObjectURL(f); fotos.push({ url, nombre: f.name });
@@ -499,11 +513,20 @@ async function render(cv, h) {
   (TPL[h.tpl] || TPL.foto)(x, h, img, logo, iso_);
 }
 
-function cover(x, img, dx, dy, dw, dh, foco = 50, zoom = 1) {
-  const r = Math.max(dw / img.width, dh / img.height) * zoom;
-  const sw = dw / r, sh = dh / r;
-  const sx = (img.width - sw) / 2, sy = (img.height - sh) * (foco / 100);
-  x.drawImage(img, sx, Math.max(0, sy), sw, sh, dx, dy, dw, dh);
+/* foto dentro de un recuadro: foco = encuadre vertical (0 arriba · 100 abajo), fx = horizontal, zoom < 1 muestra la foto entera con fondo difuminado */
+function cover(x, img, dx, dy, dw, dh, foco = 50, zoom = 1, fx = 50) {
+  foco = Math.max(0, Math.min(100, foco == null ? 50 : foco)); fx = Math.max(0, Math.min(100, fx == null ? 50 : fx)); zoom = zoom || 1;
+  const r = Math.max(dw / img.width, dh / img.height) * zoom, iw = img.width * r, ih = img.height * r;
+  x.save(); x.beginPath(); x.rect(dx, dy, dw, dh); x.clip();
+  if (iw < dw - 1 || ih < dh - 1) {
+    const rb = Math.max(dw / img.width, dh / img.height) * 1.1;
+    if ('filter' in x) x.filter = 'blur(28px)';
+    x.drawImage(img, dx + (dw - img.width * rb) / 2, dy + (dh - img.height * rb) / 2, img.width * rb, img.height * rb);
+    if ('filter' in x) x.filter = 'none';
+    x.fillStyle = 'rgba(13,27,42,.35)'; x.fillRect(dx, dy, dw, dh);
+  }
+  x.drawImage(img, dx + (dw - iw) * (fx / 100), dy + (dh - ih) * (foco / 100), iw, ih);
+  x.restore();
 }
 function lineas(x, txt, maxW) {
   const out = [];
@@ -558,7 +581,7 @@ function sinFoto(x, msg) { x.fillStyle = C.navy2; x.fillRect(0, 0, W, H); x.fill
 
 const TPL = {
   foto(x, h, img, logo) {
-    if (img) cover(x, img, 0, 0, W, H, h.foco, h.zoom); else sinFoto(x);
+    if (img) cover(x, img, 0, 0, W, H, h.foco, h.zoom, h.fx); else sinFoto(x);
     let g = x.createLinearGradient(0, 0, 0, 420); g.addColorStop(0, 'rgba(13,27,42,.65)'); g.addColorStop(1, 'rgba(13,27,42,0)'); x.fillStyle = g; x.fillRect(0, 0, W, 420);
     g = x.createLinearGradient(0, H * .45, 0, H); g.addColorStop(0, 'rgba(13,27,42,0)'); g.addColorStop(.45, 'rgba(13,27,42,.82)'); g.addColorStop(1, 'rgba(13,27,42,.97)'); x.fillStyle = g; x.fillRect(0, H * .45, W, H * .55);
     logoTop(x, logo);
@@ -573,7 +596,7 @@ const TPL = {
     logoTop(x, logo);
     const px = 110, py = 420, pw = W - 220, ph = 820;
     x.save(); x.beginPath(); x.roundRect(px, py, pw, ph, 40); x.clip();
-    if (img) cover(x, img, px, py, pw, ph, h.foco, h.zoom); else { x.fillStyle = C.navy2; x.fillRect(px, py, pw, ph); }
+    if (img) cover(x, img, px, py, pw, ph, h.foco, h.zoom, h.fx); else { x.fillStyle = C.navy2; x.fillRect(px, py, pw, ph); }
     x.restore();
     x.strokeStyle = 'rgba(201,168,76,.55)'; x.lineWidth = 3; x.beginPath(); x.roundRect(px - 18, py - 18, pw + 36, ph + 36, 52); x.stroke();
     let y = 1290;
@@ -584,7 +607,7 @@ const TPL = {
   },
   nota(x, h, img, logo) {
     x.fillStyle = C.navy; x.fillRect(0, 0, W, H);
-    if (img) cover(x, img, 0, 0, W, 1120, h.foco, h.zoom); else { x.fillStyle = C.navy2; x.fillRect(0, 0, W, 1120); }
+    if (img) cover(x, img, 0, 0, W, 1120, h.foco, h.zoom, h.fx); else { x.fillStyle = C.navy2; x.fillRect(0, 0, W, 1120); }
     let g = x.createLinearGradient(0, 760, 0, 1130); g.addColorStop(0, 'rgba(13,27,42,0)'); g.addColorStop(1, C.navy); x.fillStyle = g; x.fillRect(0, 760, W, 370);
     g = x.createLinearGradient(0, 0, 0, 380); g.addColorStop(0, 'rgba(13,27,42,.6)'); g.addColorStop(1, 'rgba(13,27,42,0)'); x.fillStyle = g; x.fillRect(0, 0, W, 380);
     logoTop(x, logo);
@@ -600,7 +623,7 @@ const TPL = {
     x.fillStyle = C.navy; x.fillRect(0, 0, W, 520);
     x.save(); x.beginPath(); x.rect(0, 0, W, 520); x.clip(); estrellas(x, 0, 0, 0, 60, 11); x.restore();
     logoTop(x, logo);
-    if (img) { x.save(); x.beginPath(); x.arc(W / 2, 520, 130, 0, 7); x.clip(); cover(x, img, W / 2 - 130, 390, 260, 260, h.foco, h.zoom); x.restore(); x.strokeStyle = C.gold; x.lineWidth = 8; x.beginPath(); x.arc(W / 2, 520, 134, 0, 7); x.stroke(); }
+    if (img) { x.save(); x.beginPath(); x.arc(W / 2, 520, 130, 0, 7); x.clip(); cover(x, img, W / 2 - 130, 390, 260, 260, h.foco, h.zoom, h.fx); x.restore(); x.strokeStyle = C.gold; x.lineWidth = 8; x.beginPath(); x.arc(W / 2, 520, 134, 0, 7); x.stroke(); }
     let y = 700;
     y = bloque(x, '💡 ' + (h.kicker || 'Tip de chef'), { font: '600 {s}px "DM Sans"', size: 34, maxW: W - 180, maxLines: 1, y, color: '#a08a5c', align: 'center', upper: true, spacing: 6 });
     x.fillStyle = C.gold; x.font = '400 200px "DM Serif Display"'; x.textAlign = 'center'; x.fillText('“', W / 2, y + 190);
@@ -622,7 +645,7 @@ const TPL = {
   },
   resena(x, h, img, logo) {
     fondoNavy(x, 33);
-    if (img) { x.globalAlpha = .22; cover(x, img, 0, 0, W, H, h.foco, h.zoom); x.globalAlpha = 1; }
+    if (img) { x.globalAlpha = .22; cover(x, img, 0, 0, W, H, h.foco, h.zoom, h.fx); x.globalAlpha = 1; }
     logoTop(x, logo);
     let y = 560;
     y = bloque(x, h.kicker || 'Lo que dicen', { font: '600 {s}px "DM Sans"', size: 32, maxW: W - 180, maxLines: 1, y, color: C.gold2, align: 'center', upper: true, spacing: 6 });
@@ -802,6 +825,7 @@ function reelRender() {
         <input class="inp" value="${esc(f.kicker)}" placeholder="Volanta" oninput="rset(${i},'kicker',this.value)">
         <textarea class="inp" placeholder="Texto principal" oninput="rset(${i},'titulo',this.value)">${esc(f.titulo)}</textarea>
         <input class="inp" value="${esc(f.texto)}" placeholder="Texto chico (opcional)" oninput="rset(${i},'texto',this.value)">
+        ${f.img ? `<div class="enc"><span>↕</span><input type="range" min="0" max="100" value="${f.foco == null ? 50 : f.foco}" id="renc-v-${i}" oninput="rset(${i},'foco',+this.value)"><span>↔</span><input type="range" min="0" max="100" value="${f.fx == null ? 50 : f.fx}" id="renc-h-${i}" oninput="rset(${i},'fx',+this.value)"><span>🔍</span><input type="range" min="60" max="160" value="${Math.round((f.zoom || 1) * 100)}" oninput="rset(${i},'zoom',this.value/100)"></div>` : ''}
       </div>
       <div class="acc">
         <button onclick="reelFoto(${i})">${f.img ? '🖼 Cambiar' : '🖼 Foto'}</button>
@@ -812,6 +836,9 @@ function reelRender() {
     </div>`).join('');
   reelInfo();
   REEL.frames.forEach((f, i) => reelMini(i));
+  const rsetEnc = i => (k, v) => { rset(i, k, v); const el = document.getElementById((k === 'foco' ? 'renc-v-' : 'renc-h-') + i); if (el) el.value = v; };
+  const big = document.getElementById('r-cv');
+  arrastrable(big, () => REEL.frames[REEL.sel || 0] || {}, (k, v) => { const i = REEL.sel || 0; if (REEL.frames[i] && REEL.frames[i].img) rsetEnc(i)(k, v); });
 }
 const _rdeb = {};
 function rset(i, k, v) { REEL.frames[i][k] = v; clearTimeout(_rdeb[i]); _rdeb[i] = setTimeout(() => { reelMini(i); reelDibujarEn(i); }, 80); }
@@ -849,7 +876,7 @@ function reelFrame(x, f, p, a, img, logo, iso_) {
     x.globalAlpha = .5; estrellasMov(x, p, f.dir); x.globalAlpha = 1;
   } else {
     const z = f.dir ? 1.16 - .12 * p : 1.04 + .12 * p;
-    cover(x, img, 0, 0, W, H, f.foco + (f.dir ? -8 + 16 * p : 8 - 16 * p), z);
+    cover(x, img, 0, 0, W, H, f.foco + (f.dir ? -8 + 16 * p : 8 - 16 * p), z * (f.zoom || 1), f.fx);
     let g = x.createLinearGradient(0, H * .38, 0, H); g.addColorStop(0, 'rgba(13,27,42,0)'); g.addColorStop(.5, 'rgba(13,27,42,.8)'); g.addColorStop(1, 'rgba(13,27,42,.96)');
     x.fillStyle = g; x.fillRect(0, H * .38, W, H * .62);
     g = x.createLinearGradient(0, 0, 0, 380); g.addColorStop(0, 'rgba(13,27,42,.55)'); g.addColorStop(1, 'rgba(13,27,42,0)'); x.fillStyle = g; x.fillRect(0, 0, W, 380);
@@ -917,7 +944,7 @@ async function reelMini(i) {
   const x = cv.getContext('2d'); x.clearRect(0, 0, cv.width, cv.height); x.drawImage(big, 0, 0, cv.width, cv.height);
 }
 async function reelDibujarEn(i) {
-  if (!REEL.frames.length || REEL.playing) return;
+  if (!REEL.frames.length || REEL.playing) return; REEL.sel = i;
   const R = await reelImgs(); reelEn(document.getElementById('r-cv').getContext('2d'), i * REEL.seg + REEL.seg * .6, R);
 }
 async function reelPlay() {

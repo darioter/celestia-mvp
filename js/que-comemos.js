@@ -194,7 +194,7 @@ Español rioplatense con voseo, pasos en imperativo (salteá, sumá, cociná), t
   Object.assign(TPL, {
     qch_pregunta(x, h, img, logo) {
       fondoNavy(x, 103);
-      if (img) { x.globalAlpha = .25; cover(x, img, 0, 0, W, H, h.foco, h.zoom); x.globalAlpha = 1; }
+      if (img) { x.globalAlpha = .25; cover(x, img, 0, 0, W, H, h.foco, h.zoom, h.fx); x.globalAlpha = 1; }
       logoTop(x, logo, 190);
       let y = 420;
       y = bloque(x, h.kicker, { font: '600 {s}px "DM Sans"', size: 32, maxW: W - 180, maxLines: 1, y, color: C.gold2, align: 'center', upper: true, spacing: 6 });
@@ -212,7 +212,7 @@ Español rioplatense con voseo, pasos en imperativo (salteá, sumá, cociná), t
     },
     qch_portada(x, h, img, logo) {
       fondoNavy(x, 57);
-      if (img) { x.globalAlpha = .28; cover(x, img, 0, 0, W, H, h.foco, h.zoom); x.globalAlpha = 1; }
+      if (img) { x.globalAlpha = .28; cover(x, img, 0, 0, W, H, h.foco, h.zoom, h.fx); x.globalAlpha = 1; }
       logoTop(x, logo, 200);
       let y = 470;
       y = bloque(x, h.kicker, { font: '600 {s}px "DM Sans"', size: 32, maxW: W - 180, maxLines: 1, y, color: C.gold2, align: 'center', upper: true, spacing: 6 });
@@ -231,7 +231,7 @@ Español rioplatense con voseo, pasos en imperativo (salteá, sumá, cociná), t
     },
     qch_lista(x, h, img, logo, iso_) {
       x.fillStyle = C.cream; x.fillRect(0, 0, W, H);
-      x.fillStyle = C.navy; x.fillRect(0, 0, W, 470); x.save(); x.beginPath(); x.rect(0, 0, W, 470); x.clip(); if (img) { cover(x, img, 0, 0, W, 470, h.foco, h.zoom); x.fillStyle = 'rgba(13,27,42,.35)'; x.fillRect(0, 0, W, 470); } else estrellas(x, 0, 0, 0, 60, 13); x.restore();
+      x.fillStyle = C.navy; x.fillRect(0, 0, W, 470); x.save(); x.beginPath(); x.rect(0, 0, W, 470); x.clip(); if (img) { cover(x, img, 0, 0, W, 470, h.foco, h.zoom, h.fx); x.fillStyle = 'rgba(13,27,42,.35)'; x.fillRect(0, 0, W, 470); } else estrellas(x, 0, 0, 0, 60, 13); x.restore();
       logoTop(x, logo, 150);
       let y = 520;
       y = bloque(x, '🧊 ' + (h.kicker || 'Con lo que hay'), { font: '600 {s}px "DM Sans"', size: 32, maxW: W - 180, maxLines: 1, y, color: '#a08a5c', align: 'center', upper: true, spacing: 6 });
@@ -252,7 +252,7 @@ Español rioplatense con voseo, pasos en imperativo (salteá, sumá, cociná), t
       fondoNavy(x, 71);
       let y;
       if (img) {
-        cover(x, img, 0, 0, W, 760, h.foco, h.zoom);
+        cover(x, img, 0, 0, W, 760, h.foco, h.zoom, h.fx);
         const g = x.createLinearGradient(0, 480, 0, 780); g.addColorStop(0, 'rgba(13,27,42,0)'); g.addColorStop(1, C.navy); x.fillStyle = g; x.fillRect(0, 480, W, 300);
         const g2 = x.createLinearGradient(0, 0, 0, 330); g2.addColorStop(0, 'rgba(13,27,42,.6)'); g2.addColorStop(1, 'rgba(13,27,42,0)'); x.fillStyle = g2; x.fillRect(0, 0, W, 330);
         logoTop(x, logo, 150); y = 740;
@@ -276,7 +276,7 @@ Español rioplatense con voseo, pasos en imperativo (salteá, sumá, cociná), t
     },
     qch_cierre(x, h, img, logo) {
       fondoNavy(x, 89);
-      if (img) { x.globalAlpha = .3; cover(x, img, 0, 0, W, H, h.foco, h.zoom); x.globalAlpha = 1; x.fillStyle = 'rgba(13,27,42,.35)'; x.fillRect(0, 0, W, H); }
+      if (img) { x.globalAlpha = .3; cover(x, img, 0, 0, W, H, h.foco, h.zoom, h.fx); x.globalAlpha = 1; x.fillStyle = 'rgba(13,27,42,.35)'; x.fillRect(0, 0, W, H); }
       logoTop(x, logo, 200);
       let y = 470;
       y = bloque(x, '✦ ' + (h.kicker || 'El toque de chef'), { font: '600 {s}px "DM Sans"', size: 32, maxW: W - 180, maxLines: 1, y, color: C.gold2, align: 'center', upper: true, spacing: 6 });
