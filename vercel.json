@@ -3,6 +3,16 @@
   "outputDirectory": ".",
   "redirects": [
     {
+      "source": "/metodofermento",
+      "destination": "/fermento",
+      "permanent": true
+    },
+    {
+      "source": "/metodo-fermento",
+      "destination": "/fermento",
+      "permanent": true
+    },
+    {
       "source": "/fiestas",
       "destination": "/cajas",
       "permanent": false

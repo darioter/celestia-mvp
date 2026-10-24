@@ -104,6 +104,7 @@ html.cel-pre body{visibility:hidden}
 .cp-volver{position:absolute;top:18px;left:max(18px,calc((100% - 760px)/2 + 22px));z-index:2;display:inline-flex;align-items:center;gap:8px;background:rgba(13,27,42,.6);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(232,201,106,.55);color:var(--cr);text-decoration:none;font:600 14px 'DM Sans',sans-serif;padding:10px 16px 10px 13px;border-radius:999px;transition:background .2s}
 .cp-volver:hover{background:rgba(13,27,42,.85)}
 .cp-volver b{color:var(--gdl);font-size:17px;line-height:1}
+.cp-mf{max-width:720px;margin:34px auto 0;padding:24px 26px;border-radius:22px;background:var(--nv);color:var(--cr);box-sizing:border-box}.cp-mf>span{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--gdl)}.cp-mf b{display:block;font-family:'DM Serif Display',serif;font-weight:400;font-size:24px;line-height:1.2;margin:8px 0}.cp-mf p{opacity:.78;margin:0 0 14px}.cp-mf a{display:inline-block;background:var(--gdl);color:var(--nv);font-weight:700;text-decoration:none;padding:11px 20px;border-radius:999px}@media(max-width:760px){.cp-mf{margin:30px 16px 0;width:auto}}
 .cp-fin{max-width:720px;margin:30px auto 0;padding:0 22px;display:flex;gap:10px;flex-wrap:wrap}
 .cp-fin a{flex:1 1 220px;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;font:600 15px 'DM Sans',sans-serif;padding:14px 18px;border-radius:999px;border:1px solid var(--nv);color:var(--nv)}
 .cp-fin a.pri{background:var(--nv);color:var(--gdl)}
@@ -262,6 +263,10 @@ def articulo(a):
           f'<button type="button" class="tts-b" data-fs="1" aria-label="Agrandar la letra" style="font-size:17px">A+</button>'
           '</div></section>')
     h += f'<article class="cp-body"><div class="b-es">{bloques(es["cuerpo"],"es")}</div><div class="b-en" lang="en">{bloques(en["cuerpo"],"en")}</div></article>'
+    if a['cat'] in ('trastienda', 'seguridad'):
+        h += ('<aside class="cp-mf"><span>✦ Método Fermento</span><b>' + bi('¿Tenés un restaurante, café o emprendimiento gastronómico?', 'Do you run a restaurant, café or food business?') + '</b>'
+              '<p>' + bi('Te ayudo con carta, costos, procesos, equipo y marca. Primer diagnóstico sin costo.', 'I help with menu, costs, processes, team and brand. First diagnosis free.') + '</p>'
+              '<a href="/fermento?utm_source=blog&utm_medium=nota&utm_campaign=' + a['slug'][:40] + '">' + bi('Conocer la consultoría →', 'See the consulting →') + '</a></aside>')
     h += (f'<nav class="cp-fin" aria-label="Volver"><a class="pri" href="/blog">← {bi("Volver a todas las notas","Back to all notes")}</a>'
           f'<a href="/blog#{a["cat"]}">{c["icono"]} {bi("Más de " + c["es"], "More " + c["en"])}</a></nav>')
     h += f'<a class="cp-flot" id="cp-flot" href="/blog"><b>←</b>{bi("Blog","Blog")}</a><script>(function(){{var f=document.getElementById("cp-flot");addEventListener("scroll",function(){{var e=document.querySelector(".cp-fin");f.classList.toggle("on",scrollY>520&&(!e||e.getBoundingClientRect().top>innerHeight));}},{{passive:true}});}})();</script>'
