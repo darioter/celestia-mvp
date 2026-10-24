@@ -2711,10 +2711,29 @@ async function eliminarBloqueo(id) {
   cargarBloqueos();
 }
 
+const ADMIN_EMAILS = ['dario@dali-arquitectura.com.ar', 'celestiachefs@gmail.com'];
+function esAdminEmail(e) { return ADMIN_EMAILS.includes(String(e || '').toLowerCase()); }
+function entrarAdmin() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('admin-screen').style.display = 'block';
+  cargarReservas();
+  iniciarRealtimeAdmin();
+}
+// Si ya hay sesión de admin (por ejemplo, al volver de Instagram u otra página), entrar directo
+(async () => {
+  try {
+    if (/type=recovery/.test(location.hash)) return;
+    const { data } = await supa.auth.getSession();
+    const u = data.session && data.session.user;
+    if (u && esAdminEmail(u.email)) entrarAdmin();
+  } catch (e) {}
+})();
+
 async function login() {
   const email = document.getElementById('email-input').value;
   const pwd = document.getElementById('pwd-input').value;
-  const { error } = await supa.auth.signInWithPassword({ email, password: pwd });
+  const { data: li, error } = await supa.auth.signInWithPassword({ email, password: pwd });
+  if (!error && !esAdminEmail(li.user && li.user.email)) { await supa.auth.signOut(); document.getElementById('login-error').textContent = 'Ese usuario no tiene acceso al admin'; document.getElementById('login-error').style.display = 'block'; return; }
   if (!error) {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('admin-screen').style.display = 'block';
