@@ -411,6 +411,7 @@ function renderGrid() {
         <label>Zoom</label><input type="range" min="100" max="200" value="${Math.round(h.zoom * 100)}" oninput="set(${i},'zoom',this.value/100)">` : ''}
         <label>Link para el sticker</label>
         <div class="link"><span>${esc(h.link || '')}</span><button onclick="copiar(${i})">Copiar</button></div>
+        ${h.sticker != null ? `<label>Texto del sticker (lo que se ve en Instagram)</label><div class="link"><input class="inp" style="margin:0;flex:1;padding:6px 8px;font-size:12.5px" value="${esc(h.sticker)}" oninput="historias[${i}].sticker=this.value"><button onclick="copiarTxt(historias[${i}].sticker)">Copiar</button></div>` : ''}
         <div class="row">
           <button class="btn sm" onclick="descargar(${i})">⬇ PNG</button>
           <button class="btn sec sm" onclick="cambiarFoto(${i})">${h.img ? 'Cambiar foto' : 'Sumar foto'}</button>
@@ -434,6 +435,7 @@ document.getElementById('f-cambiar').onchange = e => {
   historias[_cambiarIdx].img = url; e.target.value = ''; renderGrid();
 };
 function copiar(i) { const t = historias[i].link || ''; (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => toast('Link copiado'), () => toast(t)); }
+function copiarTxt(t) { (navigator.clipboard ? navigator.clipboard.writeText(t || '') : Promise.reject()).then(() => toast('Texto copiado'), () => toast(t)); }
 function toast(t) { const el = document.getElementById('toast'); el.textContent = t; el.classList.add('on'); clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('on'), 1800); }
 
 /* ───────── render en canvas ───────── */

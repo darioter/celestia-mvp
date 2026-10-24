@@ -149,7 +149,7 @@
   };
   function sumarSaga(placas) {
     const ini = historias.length;
-    placas.forEach(h => historias.push(Object.assign({ foco: 50, zoom: 1 }, h)));
+    placas.forEach(h => historias.push(Object.assign({ foco: 50, zoom: 1, sticker: h.tpl === 'qch_pregunta' ? 'Todas las recetas 🧊' : h.tpl === 'qch_cierre' ? 'La receta completa acá 👉' : 'Ver la receta completa 👉' }, h)));
     renderGrid(); renderPanel(); if (placas.length > 1) toast('Saga sumada: ' + placas.length + ' historias');
     setTimeout(() => { const c = document.querySelectorAll('.card')[ini]; c && c.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 80);
   }
