@@ -16,11 +16,11 @@
 html{scroll-behavior:smooth}
 body{background:var(--cr);color:var(--tx);font-family:'DM Sans',sans-serif;line-height:1.6}
 a{color:inherit}img{max-width:100%;display:block}
-.hdr{position:sticky;top:0;z-index:30;background:rgba(13,27,42,.96);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:64px}
+.hdr{position:sticky;top:0;z-index:30;background:rgba(13,27,42,.97);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:space-between;padding:0 30px;height:60px;border-bottom:1px solid rgba(201,168,76,.12)}
 .hdr .lg{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--cr)}
-.hdr .lg img{height:30px}.hdr .lg span{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gdl);border-left:1px solid rgba(232,201,106,.4);padding-left:12px}
+.hdr .lg img{height:36px}.hdr .lg span{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gdl);border-left:1px solid rgba(232,201,106,.4);padding-left:12px}
 .hdr nav{display:flex;gap:14px;align-items:center}
-.hdr nav a{color:rgba(250,246,239,.72);text-decoration:none;font-size:13px;font-weight:500}
+.hdr nav{gap:22px}.hdr nav a{color:rgba(250,246,239,.85);text-decoration:none;font-size:14px;font-weight:500}.hdr nav a:hover{color:var(--gdl)}
 .hdr nav a.cta{background:linear-gradient(135deg,var(--gdl),var(--gd));color:var(--nv);font-weight:700;padding:9px 18px;border-radius:999px}
 .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
 .k{display:inline-block;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#a08a5c;margin-bottom:12px;font-weight:600}
@@ -28,20 +28,100 @@ h2{font-family:'DM Serif Display',serif;font-weight:400;font-size:clamp(30px,4.4
 h2 em{color:var(--fer)}
 .sub{color:var(--mut);font-size:17px;max-width:640px}
 section{padding:84px 0}
+section.hero{padding:0}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;cursor:pointer;background:linear-gradient(135deg,var(--gdl),var(--gd));color:var(--nv);font:700 15px 'DM Sans',sans-serif;padding:14px 26px;border-radius:999px;text-decoration:none}
 .btn.sec{background:none;border:1px solid rgba(250,246,239,.4);color:var(--cr)}
-/* hero */
-.hero{background:radial-gradient(120% 90% at 80% 10%,#1d3550 0%,var(--nv) 60%);color:var(--cr);padding:0;overflow:hidden}
-.hero .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center;min-height:calc(100svh - 64px);padding-top:40px;padding-bottom:40px}
-.hero .k{color:var(--gdl)}
-.hero h1{font-family:'DM Serif Display',serif;font-weight:400;font-size:clamp(40px,6vw,68px);line-height:1.03;margin-bottom:18px}
-.hero h1 em{color:var(--gdl)}
-.hero p{font-size:18px;color:rgba(250,246,239,.8);max-width:560px;margin-bottom:28px}
-.hero .bt{display:flex;gap:12px;flex-wrap:wrap}
-.hero .ph{position:relative;border-radius:26px;overflow:hidden;aspect-ratio:3/4;box-shadow:0 30px 70px rgba(0,0,0,.45);border:1px solid rgba(232,201,106,.3)}
-.hero .ph img{width:100%;height:100%;object-fit:cover}
-.hero .ph span{position:absolute;left:16px;bottom:16px;background:rgba(13,27,42,.85);color:var(--gdl);font-size:12px;letter-spacing:.12em;text-transform:uppercase;border-radius:999px;padding:7px 13px}
-.hero .ig{margin-top:22px;font-size:13px;color:rgba(250,246,239,.6)}.hero .ig a{color:var(--gdl)}
+/* hero estilo Celestia */
+.hero{position:relative;height:calc(100svh - 60px);min-height:620px;max-height:820px;overflow:hidden;background:var(--nv);color:var(--cr)}
+.h-img{position:absolute;inset:0;background:url(/img/svc-corporativos.webp) center 45%/cover no-repeat;transform:scale(1.04);animation:hz 18s ease-out forwards}
+@keyframes hz{to{transform:scale(1)}}
+.h-ov{position:absolute;inset:0;background:linear-gradient(90deg,rgba(13,27,42,.86) 0%,rgba(13,27,42,.55) 42%,rgba(13,27,42,.15) 75%),linear-gradient(to bottom,rgba(13,27,42,.45) 0%,rgba(13,27,42,.05) 35%,rgba(13,27,42,.88) 100%)}
+.h-cnt{position:absolute;left:0;bottom:0;padding:0 52px 44px;max-width:640px;width:100%;z-index:3}
+.h-badge{display:inline-flex;align-items:center;gap:7px;font-size:10.5px;letter-spacing:.14em;color:var(--gdl);border:1px solid rgba(201,168,76,.45);border-radius:20px;padding:5px 14px;margin-bottom:16px;background:rgba(13,27,42,.35)}
+.h-h1{font-family:'DM Serif Display',serif;font-weight:400;font-size:clamp(34px,3.6vw,48px);line-height:1.12;margin-bottom:14px}
+.h-h1 em{color:var(--gdl);font-style:italic}
+.h-sub{font-size:14.5px;color:rgba(250,246,239,.72);font-weight:300;line-height:1.7;margin-bottom:22px;max-width:520px}
+.h-sub a{color:var(--gdl);text-decoration:underline;text-underline-offset:3px}
+.bp{display:inline-flex;align-items:center;gap:6px;font:700 14px 'DM Sans',sans-serif;background:linear-gradient(135deg,var(--gdl),var(--gd));color:var(--nv);border:0;border-radius:26px;padding:14px 28px;cursor:pointer;text-decoration:none;white-space:nowrap;transition:transform .2s,box-shadow .2s}
+.bp:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(201,168,76,.3)}
+.bp:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+.bp.sm{padding:10px 18px;font-size:13px}
+.bs{font:600 13px 'DM Sans',sans-serif;background:none;border:1px solid rgba(250,246,239,.35);color:var(--cr);border-radius:24px;padding:11px 18px;cursor:pointer}
+.bs:hover{border-color:var(--gdl);color:var(--gdl)}
+.h-risk{margin-top:10px;font-size:11.5px;color:rgba(250,246,239,.55)}
+.h-prueba{display:inline-flex;align-items:center;gap:8px;margin-top:12px;padding:7px 14px;border-radius:999px;background:rgba(13,27,42,.5);border:1px solid rgba(201,168,76,.35);font-size:12px;color:rgba(250,246,239,.75);backdrop-filter:blur(4px);flex-wrap:wrap}
+.h-prueba b{color:var(--gdl);font-weight:700}.h-prueba i{width:1px;height:12px;background:rgba(201,168,76,.35)}
+.hx-row{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.hx{display:flex;align-items:center;gap:9px;background:rgba(13,27,42,.55);border:1px solid rgba(201,168,76,.35);border-radius:14px;padding:5px 13px 5px 5px;color:var(--cr);text-decoration:none;backdrop-filter:blur(6px);transition:border-color .2s,transform .2s}
+.hx:hover{border-color:var(--gdl);transform:translateY(-1px)}
+.hx-im{width:40px;height:40px;border-radius:10px;background:#1a2e42 center/cover no-repeat;flex-shrink:0}
+.hx-rueda{display:flex;align-items:center;justify-content:center;color:var(--gdl);font-size:26px;background:radial-gradient(circle,#1f3a57,#0D1B2A)}
+.hx-t{display:flex;flex-direction:column;gap:2px;line-height:1.2}.hx-t b{font-family:'DM Serif Display',serif;font-weight:400;font-size:14.5px}.hx-t small{font-size:10.5px;color:var(--gdl)}
+.h-card{position:absolute;right:52px;bottom:44px;z-index:3;width:340px;background:rgba(13,27,42,.78);border:1px solid rgba(201,168,76,.4);border-radius:18px;padding:18px;backdrop-filter:blur(10px);box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.hc-k{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gdl)}
+.hc-t{display:block;font-family:'DM Serif Display',serif;font-weight:400;font-size:22px;margin:4px 0 12px}
+.hc-g{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.hc-g button{background:rgba(250,246,239,.06);border:1px solid rgba(201,168,76,.25);border-radius:11px;color:var(--cr);padding:8px 2px 7px;cursor:pointer;font:500 10.5px 'DM Sans',sans-serif;display:flex;flex-direction:column;align-items:center;gap:2px;transition:.2s}
+.hc-g button b{font-family:'DM Serif Display',serif;font-weight:400;font-size:17px;color:var(--gdl)}
+.hc-g button:hover{background:rgba(201,168,76,.18);border-color:var(--gdl)}
+.hc-f{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;font-size:11.5px;color:rgba(250,246,239,.6);line-height:1.4}.hc-f b{color:var(--cr);font-weight:600}
+/* rueda */
+.rd-sec{background:radial-gradient(90% 70% at 20% 30%,#16304a 0%,var(--nv) 60%);color:var(--cr)}
+.rd-sec h2{color:var(--cr)}.rd-sec h2 em{color:var(--gdl)}.rd-sec .sub{color:rgba(250,246,239,.7)}.rd-sec .k{color:var(--gdl)}
+.rw{display:grid;grid-template-columns:1fr 1fr;margin-top:34px;border:1px solid rgba(201,168,76,.22);border-radius:26px;background:rgba(13,27,42,.55);overflow:hidden}
+.rw-l{padding:22px;border-right:1px solid rgba(201,168,76,.15);display:flex;flex-direction:column;gap:14px}
+.rw-svg{width:100%;height:auto;max-height:420px;user-select:none}
+.rw-svg .nd{cursor:pointer}.rw-svg .nd circle{transition:fill .3s,stroke .3s}
+.rw-svg .nd:hover circle.c{stroke:#E8C96A;stroke-width:2.5}
+.rw-svg .nd:focus{outline:none}.rw-svg .nd:focus-visible circle.c{stroke:#fff;stroke-width:3}
+.rw-bud{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid rgba(201,168,76,.3);background:rgba(201,168,76,.06);border-radius:16px;padding:14px 18px}
+.rw-bud span{font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(250,246,239,.6);font-weight:600}
+.rw-bud div{text-align:right}.rw-bud b{display:block;font-family:'DM Serif Display',serif;font-weight:400;font-size:30px;color:var(--gdl);line-height:1.1}.rw-bud small{font-size:12px;color:rgba(250,246,239,.5)}
+.rw-r{padding:24px;min-height:520px;display:flex;scroll-margin-top:70px}
+.rd{display:flex;flex-direction:column;width:100%;animation:rdin .35s ease}
+.rd[hidden]{display:none}
+@keyframes rdin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.rd-empty{margin:auto;text-align:center;color:rgba(250,246,239,.55)}
+.rd-empty i{font-style:normal;display:inline-flex;width:54px;height:54px;border:1px solid rgba(201,168,76,.4);border-radius:50%;align-items:center;justify-content:center;color:var(--gdl);font-size:26px;margin-bottom:12px}
+.rd-empty p{font-family:'DM Serif Display',serif;font-style:italic;font-size:18px}
+.rd-mini{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:22px;text-align:left}
+.rd-mini button{background:rgba(250,246,239,.04);border:1px solid rgba(201,168,76,.2);border-radius:12px;padding:10px 12px;color:var(--cr);cursor:pointer;font:500 13px 'DM Sans',sans-serif;text-align:left}
+.rd-mini button b{color:var(--gdl);margin-right:6px;font-family:'DM Serif Display',serif;font-weight:400}
+.rd-mini button:hover{border-color:var(--gdl)}
+.rd-h{display:flex;align-items:center;gap:14px;padding-bottom:14px;border-bottom:1px solid rgba(201,168,76,.18)}
+.rd-n{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,var(--gdl),var(--gd));color:var(--nv);display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:24px;flex-shrink:0}
+.rd-h b{font-family:'DM Serif Display',serif;font-weight:400;font-size:24px}
+.rd-d{padding:14px 2px;font-size:14.5px;color:rgba(250,246,239,.78);line-height:1.7}
+.rd-res{background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);color:var(--gdl);border-radius:10px;padding:9px 12px;font-size:13.5px;font-weight:600}
+.rd-q{display:block;margin:18px 0 10px;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(250,246,239,.5);font-weight:600}
+.rd-ck{display:flex;flex-direction:column;gap:8px}
+.rd-ck label{display:flex;align-items:center;gap:12px;border:1px solid rgba(250,246,239,.12);border-radius:12px;padding:11px 14px;cursor:pointer;font-size:14.5px;transition:.2s}
+.rd-ck label:hover{border-color:rgba(201,168,76,.5)}
+.rd-ck label.on{border-color:var(--gd);background:rgba(201,168,76,.1)}
+.rd-ck input{width:18px;height:18px;accent-color:#C9A84C;flex-shrink:0}
+.rd-ck label span{flex:1}.rd-ck label em{font-style:normal;color:var(--gdl);font-size:12.5px;font-weight:600;white-space:nowrap}
+.rd-f{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding-top:20px;border-top:1px solid rgba(201,168,76,.15);font-size:12.5px;color:rgba(250,246,239,.6);flex-wrap:wrap}
+.rd-f b{color:var(--gdl)}
+.rd-tt{font-family:'DM Serif Display',serif;font-weight:400;font-size:24px;display:block;margin-bottom:12px}
+.rd-p{font-size:13.5px;color:rgba(250,246,239,.6);margin:-6px 0 14px}
+.rd-sum{display:flex;flex-direction:column;gap:9px}
+.rd-it{display:flex;justify-content:space-between;gap:12px;border:1px solid rgba(201,168,76,.22);border-radius:12px;padding:12px 14px;background:rgba(250,246,239,.03);cursor:pointer}
+.rd-it:hover{border-color:var(--gdl)}
+.rd-it b{display:block;font-size:14.5px}.rd-it small{display:block;color:rgba(250,246,239,.55);font-size:12.5px;margin-top:2px}.rd-it span{color:var(--gdl);font-weight:700;white-space:nowrap;font-size:14px}
+.rd-tot{display:flex;justify-content:space-between;align-items:baseline;padding:12px 4px 0;font-family:'DM Serif Display',serif;font-size:20px}.rd-tot b{color:var(--gdl);font-weight:400;font-size:26px}
+#rd-form{display:grid;gap:10px}
+.rin{width:100%;border:1px solid rgba(250,246,239,.18);border-radius:12px;padding:13px 14px;font:15px 'DM Sans',sans-serif;background:rgba(250,246,239,.06);color:var(--cr)}
+.rin::placeholder{color:rgba(250,246,239,.45)}.rin:focus{outline:2px solid var(--gd);outline-offset:1px}
+select.rin option{background:var(--nv);color:var(--cr)}
+.rd-ok{margin:auto;text-align:center;max-width:380px}
+.rd-ok i{font-style:normal;display:inline-flex;width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--gdl),var(--gd));color:var(--nv);align-items:center;justify-content:center;font-size:30px;margin-bottom:14px}
+.rd-ok b{display:block;font-family:'DM Serif Display',serif;font-weight:400;font-size:28px;margin-bottom:8px}.rd-ok p{color:rgba(250,246,239,.72);font-size:15px}
+.rw-nota{text-align:center;font-size:13px;color:rgba(250,246,239,.45);margin-top:16px}
+.rd-sec .err{color:#f3a08f}
+@media(max-width:1000px){.h-card{display:none}}
+@media(max-width:900px){.hero{height:auto;min-height:0;max-height:none}.h-cnt{position:relative;padding:150px 18px 34px}.h-h1{font-size:32px}.hx-row{display:grid;grid-template-columns:1fr 1fr 1fr}.hx{flex-direction:column;padding:6px;text-align:center;gap:6px}.hx-t small{display:none}.hx-t b{font-size:13px}.hx-im{width:100%;height:56px}
+.rw{grid-template-columns:1fr}.rw-l{border-right:0;border-bottom:1px solid rgba(201,168,76,.15)}.rw-r{min-height:0}.rd-empty{padding:10px 0}}
+@media(max-width:600px){.h-cnt{padding:120px 16px 28px}.h-prueba{font-size:11px}.rw-l,.rw-r{padding:16px}.rd-h b{font-size:20px}}
 /* para quién */
 .quien-g{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:30px}
 .qc{background:#fff;border:1px solid var(--crd);border-radius:20px;padding:22px}
@@ -92,18 +172,30 @@ footer{background:var(--nv);color:rgba(250,246,239,.6);text-align:center;padding
 </style>
 </head><body>
 <header class="hdr"><a class="lg" href="/" aria-label="Celestia"><img src="/img/img-d316320d6b.webp" alt="Celestia Chef Privado"><span>Management</span></a>
-<nav><a href="#metodo">El método</a><a href="#herramientas">Herramientas</a><a href="#quien">Quién soy</a><a class="cta" href="#contacto">Diagnóstico sin costo</a></nav></header>
+<nav><a href="#diagnostico">Diagnóstico</a><a href="#herramientas">Herramientas</a><a href="#quien">Quién soy</a><a class="cta" href="#diagnostico">Armar mi presupuesto</a></nav></header>
 
-<section class="hero"><div class="wrap">
-  <div>
-    <span class="k">✦ Celestia Management · Costos, carta y rentabilidad</span>
-    <h1>Que los números de tu negocio gastronómico <em>cierren.</em></h1>
-    <p>Costos, carta y rentabilidad para restaurantes, cafés y emprendimientos de comida en Buenos Aires. Food cost, precios, procesos, equipo y espacio: de la idea al crecimiento.</p>
-    <div class="bt"><a class="btn" href="#contacto">Agendá un diagnóstico sin costo →</a><a class="btn sec" href="#metodo">Ver el método</a></div>
-    <p class="ig">Seguí los tips de negocio en <a href="https://www.instagram.com/metodofermento/" target="_blank" rel="noopener">@metodofermento</a> y la cocina en <a href="https://www.instagram.com/celestiachefprivado/" target="_blank" rel="noopener">@celestiachefprivado</a></p>
+<section class="hero">
+  <div class="h-img" role="img" aria-label="Salón de restaurante preparado para el servicio"></div><div class="h-ov"></div>
+  <div class="h-cnt">
+    <span class="h-badge">✦ Celestia Management · Buenos Aires</span>
+    <h1 class="h-h1">Que los números de tu negocio cierren.<br><em>Costos, carta y rentabilidad gastronómica.</em></h1>
+    <p class="h-sub"><a href="#diagnostico">Diagnóstico de 8 módulos</a> para restaurantes, cafés y emprendimientos de comida. Food cost, precios, procesos, equipo y espacio: de la idea al crecimiento, con números reales.</p>
+    <a class="bp" href="#diagnostico">Armar mi diagnóstico →</a>
+    <div class="h-risk">✓ Primera reunión sin costo · te llega el presupuesto por mail</div>
+    <div class="h-prueba"><b>9 sem</b><span>a punto de equilibrio</span><i></i><b>+28%</b><span>margen bruto</span><i></i><b>−40%</b><span>rotación</span></div>
+    <div class="hx-row">
+      <a class="hx" href="#diagnostico"><span class="hx-im hx-rueda" aria-hidden="true">◎</span><span class="hx-t"><b>La rueda</b><small>Presupuesto en vivo</small></span></a>
+      <a class="hx" href="#herramientas"><span class="hx-im" style="background-image:url(/img/management/destacada_costos.png);background-position:center 48%;background-size:260%"></span><span class="hx-t"><b>Guía food cost</b><small>PDF + planillas</small></span></a>
+      <a class="hx" href="#quien"><span class="hx-im" style="background-image:url(/img/galeria/daro-7f3bbadf-65a80366.webp);background-position:50% 12%"></span><span class="hx-t"><b>Quién soy</b><small>Cocina + negocio</small></span></a>
+    </div>
   </div>
-  <div class="ph"><img src="/img/galeria/daro-4226ef6d-01-ee369ecf.webp" alt="Daro Castello emplatando" style="object-position:50% 30%"><span>Cocina + negocio</span></div>
-</div></section>
+  <aside class="h-card" aria-label="Empezá el diagnóstico">
+    <span class="hc-k">✦ Diagnóstico en 2 minutos</span>
+    <b class="hc-t">¿Por dónde empezamos?</b>
+    <div class="hc-g" id="hc-g"></div>
+    <div class="hc-f"><span>Elegí un módulo<br><b>Sin costo y sin compromiso</b></span><a class="bp sm" href="#diagnostico">Empezar →</a></div>
+  </aside>
+</section>
 
 <section><div class="wrap">
   <span class="k">Para quién</span>
@@ -117,20 +209,68 @@ footer{background:var(--nv);color:rgba(250,246,239,.6);text-align:center;padding
   </div>
 </div></section>
 
-<section class="met" id="metodo"><div class="wrap">
-  <span class="k">El método</span>
-  <h2>Ocho módulos, <em>un negocio que funciona</em></h2>
-  <p class="sub">Cada proyecto toma los módulos que necesita. Empezamos por un diagnóstico y armamos el plan con prioridades claras.</p>
-  <div class="met-g">
-    <div class="mc"><div class="n">01</div><b>Concepto y propuesta</b><p>Qué vendés, a quién y por qué te van a elegir a vos.</p></div>
-    <div class="mc"><div class="n">02</div><b>Carta e ingeniería de menú</b><p>Platos estrella, precios y diseño de carta que empuja lo que más deja.</p></div>
-    <div class="mc"><div class="n">03</div><b>Costos y food cost</b><p>Fichas técnicas, costo por plato, margen y control de mermas.</p></div>
-    <div class="mc"><div class="n">04</div><b>Espacio y equipamiento</b><p>Distribución, cocina, salón y equipos, con mirada de diseño comercial.</p></div>
-    <div class="mc"><div class="n">05</div><b>Procesos y cocina</b><p>Recetas estándar, mise en place, compras, stock y seguridad alimentaria.</p></div>
-    <div class="mc"><div class="n">06</div><b>Equipo</b><p>Puestos, roles, capacitación y cómo sostener la calidad sin estar vos todo el día.</p></div>
-    <div class="mc"><div class="n">07</div><b>Marca y comunicación</b><p>Identidad, Instagram, contenido y reseñas que llenan mesas.</p></div>
-    <div class="mc"><div class="n">08</div><b>Lanzamiento y seguimiento</b><p>Apertura, primeros 90 días y tablero con los números que importan.</p></div>
+<section class="rd-sec" id="diagnostico"><div class="wrap">
+  <span class="k">El diagnóstico</span>
+  <h2>8 módulos. <em>Tu proyecto, a medida.</em></h2>
+  <p class="sub">Tocá un módulo de la rueda, tildá lo que necesitás y armá tu presupuesto estimativo en tiempo real. Al final te lo mandamos por mail.</p>
+  <div class="rw">
+    <div class="rw-l">
+      <svg class="rw-svg" viewBox="0 0 440 380" role="group" aria-label="Rueda de módulos">
+        <defs>
+          <radialGradient id="rg-on" cx="50%" cy="35%" r="70%"><stop offset="0" stop-color="#F3DA8A"/><stop offset="1" stop-color="#C9A84C"/></radialGradient>
+          <radialGradient id="rg-off" cx="50%" cy="30%" r="75%"><stop offset="0" stop-color="#1f3a57"/><stop offset="1" stop-color="#13263a"/></radialGradient>
+          <filter id="rg-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <circle cx="220" cy="190" r="170" fill="none" stroke="rgba(201,168,76,.10)" stroke-width="1"/>
+        <circle cx="220" cy="190" r="152" fill="none" stroke="rgba(201,168,76,.22)" stroke-width="10"/>
+        <circle id="rw-prog" cx="220" cy="190" r="152" fill="none" stroke="#E8C96A" stroke-width="10" stroke-linecap="round" transform="rotate(-90 220 190)" stroke-dasharray="955" stroke-dashoffset="955"/>
+        <g id="rw-lines"></g>
+        <circle cx="220" cy="190" r="64" fill="#0D1B2A" stroke="rgba(201,168,76,.55)" stroke-width="1.5"/>
+        <circle cx="220" cy="190" r="74" fill="none" stroke="rgba(201,168,76,.18)" stroke-width="1"/>
+        <text id="rw-cn" x="220" y="186" text-anchor="middle" font-family="DM Serif Display,serif" font-size="22" fill="#FAF6EF">Celestia</text>
+        <text id="rw-cs" x="220" y="210" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10.5" letter-spacing="2.5" fill="#E8C96A">MANAGEMENT</text>
+        <g id="rw-nodes"></g>
+      </svg>
+      <div class="rw-bud"><span>Estimado seleccionado</span><div><b id="rw-tot">$ 0</b><small id="rw-usd">≈ USD 0</small></div></div>
+    </div>
+    <div class="rw-r" aria-live="polite">
+      <div class="rd" id="RD0"><div class="rd-empty"><i>◎</i><p>Tocá un módulo de la rueda<br>para ver el detalle</p><div class="rd-mini" id="rd-mini"></div></div></div>
+      <div class="rd" id="RD1" hidden>
+        <div class="rd-h"><span class="rd-n" id="rd-n">3</span><b id="rd-t">Oferta &amp; Costeo</b></div>
+        <div class="rd-d" id="rd-d"></div>
+        <div class="rd-res" id="rd-res"></div>
+        <span class="rd-q">¿Qué necesitás de este módulo?</span>
+        <div class="rd-ck" id="rd-ck"></div>
+        <div class="rd-f"><span>Seleccionados: <b id="rd-cnt">0</b></span><button type="button" class="bp" id="rd-add" disabled>Agregar al presupuesto →</button></div>
+      </div>
+      <div class="rd" id="RD2" hidden>
+        <b class="rd-tt">Tu selección de módulos</b>
+        <div class="rd-sum" id="rd-sum"></div>
+        <div class="rd-f"><button type="button" class="bs" id="rd-mas">← Seguir eligiendo</button><button type="button" class="bp" id="rd-cont">Continuar →</button></div>
+      </div>
+      <div class="rd" id="RD3" hidden>
+        <b class="rd-tt">Tus datos para recibir el presupuesto</b>
+        <p class="rd-p">Te mandamos el estimativo por mail en minutos.</p>
+        <form id="rd-form" novalidate>
+          <input class="rin" id="r-nom" placeholder="Nombre completo *" autocomplete="name">
+          <input class="rin" id="r-mail" type="email" placeholder="Email *" autocomplete="email">
+          <input class="rin" id="r-tel" type="tel" placeholder="WhatsApp (opcional)" autocomplete="tel">
+          <div class="two">
+            <select class="rin" id="r-neg"><option value="">Tipo de negocio</option><option>Restaurante</option><option>Café / pastelería</option><option>Bar</option><option>Viandas / producción</option><option>Delivery / dark kitchen</option><option>Catering / eventos</option><option>Otro</option></select>
+            <select class="rin" id="r-eta"><option value="">Etapa</option><option>Es una idea</option><option>Por abrir</option><option>Abierto hace menos de 1 año</option><option>Abierto hace más de 1 año</option><option>Quiero crecer o sumar un local</option></select>
+          </div>
+          <div class="err" id="r-err"></div>
+        </form>
+        <div class="rd-f"><button type="button" class="bs" id="rd-vol">← Volver</button><button type="button" class="bp" id="rd-env">Enviar presupuesto ✓</button></div>
+      </div>
+      <div class="rd" id="RD4" hidden>
+        <div class="rd-ok"><i>✓</i><b id="rd-okt">¡Listo!</b><p id="rd-okp">Te mandamos el presupuesto por mail.</p>
+        <a class="wa" id="rd-wa" target="_blank" rel="noopener" href="https://wa.me/5491160410607">Coordinar la reunión por WhatsApp</a>
+        <button type="button" class="bs" id="rd-otra" style="margin-top:12px">Armar otro presupuesto</button></div>
+      </div>
+    </div>
   </div>
+  <p class="rw-nota">Los valores son referenciales y pueden variar según el alcance y la complejidad del proyecto.</p>
 </div></section>
 
 <section><div class="wrap">
@@ -221,6 +361,173 @@ footer{background:var(--nv);color:rgba(250,246,239,.6);text-align:center;padding
     f.style.display = 'none'; document.getElementById('c-ok').style.display = 'block';
   });
 })();
+</script>
+<script type="module">
+import { MODULOS, PRECIOS, USD_ARS } from '/js/management-data.js';
+const $ = (id) => document.getElementById(id);
+const NS = 'http://www.w3.org/2000/svg';
+const CX = 220, CY = 190, R = 152, CIRC = 2 * Math.PI * R;
+const MAX = Object.values(PRECIOS).reduce((s, v) => s + v, 0);
+const ars = (n) => '$ ' + Math.round(n).toLocaleString('es-AR');
+const usd = (n) => '≈ USD ' + Math.round(n / USD_ARS).toLocaleString('es-AR');
+const k = (n) => '+$' + Math.round(n / 1000) + 'k';
+const track = (ev, p) => { try { window.celTrack && celTrack(ev, p || {}); } catch (e) {} };
+
+let rot = 0, raf = null, actual = null;
+const sel = {};            // n -> Set de índices tildados
+const agregados = new Set();
+const base = MODULOS.map((_, i) => (i / 8) * 360 - 90);
+
+// ── armar la rueda
+const gL = $('rw-lines'), gN = $('rw-nodes');
+MODULOS.forEach((m, i) => {
+  const l = document.createElementNS(NS, 'line');
+  l.setAttribute('x1', CX); l.setAttribute('y1', CY); l.setAttribute('stroke', 'rgba(201,168,76,.25)');
+  l.setAttribute('stroke-dasharray', '3 5'); l.id = 'RL' + i; gL.appendChild(l);
+  const g = document.createElementNS(NS, 'g');
+  g.setAttribute('class', 'nd'); g.id = 'RN' + i; g.setAttribute('tabindex', '0'); g.setAttribute('role', 'button');
+  g.setAttribute('aria-label', 'Módulo ' + m.n + ': ' + m.t);
+  g.innerHTML = `<circle class="c" r="27" fill="url(#rg-off)" stroke="rgba(201,168,76,.55)" stroke-width="1.5"/>
+    <text text-anchor="middle" dy="5" font-family="DM Sans,sans-serif" font-weight="700" font-size="14" fill="#E8C96A">M${m.n}</text>
+    <g class="nok" style="display:none"><circle cx="20" cy="-20" r="9" fill="#2F9E65" stroke="#0D1B2A" stroke-width="2"/><text x="20" y="-16.5" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">✓</text></g>`;
+  g.addEventListener('click', () => elegir(i));
+  g.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); elegir(i); } });
+  gN.appendChild(g);
+});
+$('rw-prog').setAttribute('stroke-dasharray', CIRC.toFixed(1));
+
+function pos(deg) { const a = deg * Math.PI / 180; return { x: CX + R * Math.cos(a), y: CY + R * Math.sin(a) }; }
+function ubicar() {
+  MODULOS.forEach((_, i) => {
+    const p = pos(base[i] + rot);
+    $('RN' + i).setAttribute('transform', `translate(${p.x.toFixed(1)},${p.y.toFixed(1)})`);
+    const l = $('RL' + i); l.setAttribute('x2', p.x.toFixed(1)); l.setAttribute('y2', p.y.toFixed(1));
+  });
+}
+function girarA(obj) {
+  if (raf) cancelAnimationFrame(raf);
+  const ini = rot, d = ((obj - ini + 540) % 360) - 180, t0 = performance.now(), dur = 650;
+  const step = (t) => {
+    const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+    rot = ini + d * e; ubicar();
+    if (p < 1) raf = requestAnimationFrame(step); else rot = ((rot % 360) + 360) % 360;
+  };
+  raf = requestAnimationFrame(step);
+}
+function pintar() {
+  MODULOS.forEach((m, i) => {
+    const g = $('RN' + i), c = g.querySelector('circle.c'), t = g.querySelector('text');
+    const on = actual === i, add = agregados.has(m.n);
+    c.setAttribute('fill', on ? 'url(#rg-on)' : 'url(#rg-off)');
+    c.setAttribute('stroke', on || add ? '#E8C96A' : 'rgba(201,168,76,.55)');
+    c.setAttribute('stroke-width', on ? '3' : add ? '2.5' : '1.5');
+    c.setAttribute('filter', on ? 'url(#rg-glow)' : '');
+    t.setAttribute('fill', on ? '#0D1B2A' : '#E8C96A');
+    g.querySelector(".nok").style.display = add ? '' : 'none';
+    const l = $('RL' + i);
+    l.setAttribute('stroke', on ? '#E8C96A' : 'rgba(201,168,76,.25)');
+    l.setAttribute('stroke-dasharray', on ? '' : '3 5'); l.setAttribute('stroke-width', on ? '2' : '1');
+  });
+  const m = actual !== null ? MODULOS[actual] : null;
+  $('rw-cn').textContent = m ? String(m.n) : 'Celestia';
+  $('rw-cn').setAttribute('font-size', m ? '40' : '22');
+  $('rw-cn').setAttribute('y', m ? '196' : '186');
+  $('rw-cs').textContent = m ? m.k.toUpperCase() : 'MANAGEMENT';
+  $('rw-cs').setAttribute('y', m ? '218' : '210');
+}
+function total() {
+  let t = 0;
+  for (const [n, s] of Object.entries(sel)) s.forEach((i) => t += PRECIOS[n + '-' + i] || 0);
+  return t;
+}
+function presupuesto() {
+  const t = total();
+  $('rw-tot').textContent = ars(t); $('rw-usd').textContent = usd(t);
+  $('rw-prog').setAttribute('stroke-dashoffset', (CIRC * (1 - Math.min(1, t / MAX))).toFixed(1));
+}
+function mostrar(id) { ['RD0', 'RD1', 'RD2', 'RD3', 'RD4'].forEach((d) => $(d).hidden = d !== id); if (innerWidth <= 900 && id !== 'RD1' && id !== 'RD0') document.querySelector('.rw-r').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+
+function elegir(i) {
+  actual = i; const m = MODULOS[i];
+  girarA(-90 - base[i]); pintar();
+  if (!sel[m.n]) sel[m.n] = new Set();
+  $('rd-n').textContent = m.n; $('rd-t').textContent = m.t;
+  $('rd-d').innerHTML = m.d.map((x) => '<div>' + x + '</div>').join('');
+  $('rd-res').textContent = m.r;
+  $('rd-ck').innerHTML = m.c.map((c, ci) => {
+    const on = sel[m.n].has(ci);
+    return `<label class="${on ? 'on' : ''}"><input type="checkbox" data-ci="${ci}" ${on ? 'checked' : ''}><span>${c}</span><em>${k(PRECIOS[m.n + '-' + ci])}</em></label>`;
+  }).join('');
+  $('rd-ck').querySelectorAll('input').forEach((inp) => inp.addEventListener('change', () => {
+    const ci = +inp.dataset.ci;
+    inp.checked ? sel[m.n].add(ci) : sel[m.n].delete(ci);
+    inp.closest('label').classList.toggle('on', inp.checked);
+    if (!sel[m.n].size) agregados.delete(m.n);
+    contador(); presupuesto(); pintar();
+  }));
+  contador(); mostrar('RD1');
+  if (innerWidth <= 900) setTimeout(() => document.querySelector('.rw-r').scrollIntoView({ behavior: 'smooth', block: 'start' }), 60);
+  track('management_modulo', { modulo: m.n });
+}
+function contador() {
+  const m = MODULOS[actual], n = sel[m.n].size, b = $('rd-add');
+  $('rd-cnt').textContent = n; b.disabled = n === 0;
+  b.textContent = agregados.has(m.n) && n ? 'Ver mi presupuesto →' : 'Agregar al presupuesto →';
+}
+$('rd-add').addEventListener('click', () => {
+  const m = MODULOS[actual];
+  if (agregados.has(m.n)) { resumen(); return; }
+  agregados.add(m.n); pintar(); contador();
+  track('management_agregar', { modulo: m.n, total: total() });
+});
+function resumen() {
+  const ms = MODULOS.filter((m) => sel[m.n] && sel[m.n].size);
+  ms.forEach((m) => agregados.add(m.n)); pintar();
+  if (!ms.length) { mostrar('RD0'); return; }
+  $('rd-sum').innerHTML = ms.map((m) => {
+    const ts = [...sel[m.n]].sort(), sub = ts.reduce((s, i) => s + PRECIOS[m.n + '-' + i], 0);
+    return `<div class="rd-it" data-i="${m.n - 1}"><div><b>M${m.n} — ${m.t}</b><small>${ts.map((i) => m.c[i]).join(' · ')}</small></div><span>${ars(sub)}</span></div>`;
+  }).join('') + `<div class="rd-tot">Total estimado <b>${ars(total())}</b></div>`;
+  $('rd-sum').querySelectorAll('.rd-it').forEach((el) => el.addEventListener('click', () => elegir(+el.dataset.i)));
+  mostrar('RD2');
+}
+$('rd-mas').addEventListener('click', () => { actual = null; pintar(); mostrar('RD0'); });
+$('rd-cont').addEventListener('click', () => { mostrar('RD3'); setTimeout(() => $('r-nom').focus(), 50); });
+$('rd-vol').addEventListener('click', resumen);
+$('rd-otra').addEventListener('click', () => {
+  Object.keys(sel).forEach((n) => delete sel[n]); agregados.clear(); actual = null;
+  presupuesto(); pintar(); mostrar('RD0'); girarA(0);
+});
+$('rd-env').addEventListener('click', async () => {
+  const v = (id) => $(id).value.trim(), E = $('r-err'); E.textContent = '';
+  if (v('r-nom').length < 2) { E.textContent = 'Completá tu nombre.'; return; }
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v('r-mail'))) { E.textContent = 'Revisá el email.'; return; }
+  const payload = { nombre: v('r-nom'), email: v('r-mail'), tel: v('r-tel'), negocio: v('r-neg'), etapa: v('r-eta'), sel: {} };
+  for (const [n, s] of Object.entries(sel)) if (s.size) payload.sel[n] = [...s];
+  const b = $('rd-env'); b.disabled = true; b.textContent = 'Enviando…';
+  let r = null;
+  try { r = await (await fetch('/api/management-lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })).json(); } catch (e) {}
+  b.disabled = false; b.textContent = 'Enviar presupuesto ✓';
+  const t = total(), ref = (r && r.ref) || 'CM-' + Date.now().toString(36).toUpperCase();
+  const lista = MODULOS.filter((m) => payload.sel[m.n]).map((m) => 'M' + m.n + ' ' + m.t).join(', ');
+  $('rd-wa').href = 'https://wa.me/5491160410607?text=' + encodeURIComponent(`Hola Daro! Soy ${payload.nombre}. Armé mi diagnóstico de Celestia Management (${ref}): ${lista}. Total estimado ${ars(t)}. Quiero coordinar la reunión sin costo.`);
+  $('rd-okt').textContent = '¡Listo, ' + payload.nombre.split(' ')[0] + '!';
+  $('rd-okp').textContent = r && r.ok && r.mailCliente
+    ? `Te mandamos el presupuesto a ${payload.email}. Si no lo ves, revisá la carpeta de spam. Te escribo para coordinar la reunión sin costo.`
+    : 'Recibí tu diagnóstico. Para no perder tiempo, mandame un WhatsApp y coordinamos la reunión sin costo.';
+  mostrar('RD4');
+  track('generate_lead', { servicio: 'management', value: t, currency: 'ARS' });
+});
+
+// accesos rápidos (hero y estado vacío)
+const chip = (m, i) => `<button type="button" data-i="${i}"><b>${m.n}</b>${m.k}</button>`;
+$('hc-g').innerHTML = MODULOS.map(chip).join('');
+$('rd-mini').innerHTML = MODULOS.map(chip).join('');
+document.querySelectorAll('#hc-g button,#rd-mini button').forEach((b) => b.addEventListener('click', () => {
+  if (b.closest('#hc-g')) document.getElementById('diagnostico').scrollIntoView({ behavior: 'smooth' });
+  elegir(+b.dataset.i);
+}));
+ubicar(); pintar(); presupuesto();
 </script>
 <script src="/js/analytics.js"></script>
 </body></html>

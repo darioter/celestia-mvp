@@ -17,6 +17,8 @@ const files = [];
 // JS externos propios
 const jsFiles = fs.existsSync(path.join(ROOT, 'js')) ? fs.readdirSync(path.join(ROOT, 'js')).filter(f => f.endsWith('.js')).map(f => path.join(ROOT, 'js', f)) : [];
 let errores = 0, revisados = 0;
+// Módulos ES: se sacan import/export para poder validar la sintaxis con vm.Script
+const sinModulo = (c) => c.replace(/^\s*import\s[^;]+;?\s*$/gm, '').replace(/^(\s*)export\s+(default\s+)?/gm, '$1');
 const line = (src, idx) => src.slice(0, idx).split('\n').length;
 for (const f of files) {
   const src = fs.readFileSync(f, 'utf8');
@@ -30,12 +32,13 @@ for (const f of files) {
     try {
       if (type === 'application/ld+json') JSON.parse(code);
       else if (!type || /javascript/.test(type)) new vm.Script(code, { filename: rel });
+      else if (type === 'module') new vm.Script('(async()=>{' + sinModulo(code) + '\n})', { filename: rel });
     } catch (e) { errores++; console.error('✗ ' + rel + ' → ' + e.message); }
   }
 }
 for (const f of jsFiles) {
   revisados++;
-  try { new vm.Script(fs.readFileSync(f, 'utf8'), { filename: f }); }
+  try { new vm.Script(sinModulo(fs.readFileSync(f, 'utf8')), { filename: f }); }
   catch (e) { errores++; console.error('✗ ' + path.relative(ROOT, f) + ' → ' + e.message); }
 }
 console.log(`${files.length} páginas, ${revisados} scripts revisados, ${errores} con errores`);
