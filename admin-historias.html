@@ -122,6 +122,7 @@ input[type=range]{width:100%;accent-color:var(--gold)}
 .sel-foto-c{background:var(--navy3);border:1px solid var(--line);border-radius:18px;padding:18px;width:min(860px,100%);max-height:86vh;overflow:auto}
 .sf-h{display:flex;gap:8px;align-items:center}.sf-h b{font-family:'DM Serif Display',serif;font-weight:400;font-size:22px}
 .sf-g{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
+.mv{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}.mv button{background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.3);color:var(--cream);border-radius:999px;padding:5px 10px;font:500 12px 'DM Sans',sans-serif;cursor:pointer}.mv button.on{background:var(--gold);color:#0D1B2A;border-color:var(--gold)}
 .enc{display:flex;align-items:center;gap:8px}.enc span{width:18px;text-align:center;font-size:13px;color:var(--mut)}
 .qch-c.on{background:var(--gold);border-color:var(--gold);color:var(--navy);font-weight:600}
 @media(max-width:1100px){.reel{grid-template-columns:1fr}.r-play{position:static;max-width:380px}}
@@ -159,6 +160,7 @@ input[type=range]{width:100%;accent-color:var(--gold)}
         <button class="tab" data-t="resenas">⭐ Reseñas</button>
         <button class="tab" data-t="agenda">📅 Agenda</button>
         <button class="tab" data-t="qch">🧊 ¿Qué comemos hoy?</button>
+        <button class="tab" data-t="mg">🎓 Management</button>
       </div>
       <div id="panel"></div>
     </aside>
@@ -351,6 +353,8 @@ function renderPanel() {
   } else if (tabActual === 'resenas') {
     h = RESENAS.length ? `<div class="items">` + RESENAS.map((r, i) => item('resena:' + r.id, null, r.nombre + (r.zona ? ' · ' + r.zona : ''), r.texto, `agregar(desdeResena(${i}))`, '⭐')).join('') + '</div>'
       : `<p class="hint">No hay reseñas cargadas. Sumalas desde Admin → Reseñas.</p>`;
+  } else if (tabActual === 'mg' && window.panelMG) {
+    h = panelMG();
   } else if (tabActual === 'qch' && window.panelQCH) {
     h = panelQCH();
   } else if (tabActual === 'agenda') {
@@ -442,6 +446,13 @@ function renderGrid() {
         <div class="enc"><span>↔</span><input type="range" min="0" max="100" value="${h.fx == null ? 50 : h.fx}" id="enc-h-${i}" oninput="set(${i},'fx',+this.value)"></div>
         <div class="enc"><span>🔍</span><input type="range" min="50" max="200" value="${Math.round(h.zoom * 100)}" oninput="set(${i},'zoom',this.value/100)"></div>
         <div class="row" style="margin:0 0 4px"><button class="btn sec sm" onclick="set(${i},'zoom',.6);set(${i},'foco',50);set(${i},'fx',50);renderGrid()">Ver foto entera</button><button class="btn sec sm" onclick="set(${i},'zoom',1);set(${i},'foco',25);set(${i},'fx',50);renderGrid()">Cara arriba</button></div>` : ''}
+        <label>Posición de los elementos <span style="text-transform:none;letter-spacing:0;color:var(--gold2)">· elegí qué mover y arrastrá en la vista previa</span></label>
+        <div class="mv">${[['foto','📷 Foto'],['t','✍️ Textos'],['l','⭐ Logo'],['b','🔘 Botón/pie']].filter(([k]) => k !== 'foto' || h.img).map(([k, v]) => `<button type="button" class="${(h._mv || (h.img ? 'foto' : 't')) === k ? 'on' : ''}" onclick="historias[${i}]._mv='${k}';renderGrid()">${v}</button>`).join('')}</div>
+        <div class="enc"><span title="Textos arriba/abajo">✍️</span><input type="range" min="-900" max="600" value="${h.ty || 0}" id="pos-t-${i}" oninput="set(${i},'ty',+this.value)"></div>
+        <div class="enc"><span title="Textos izquierda/derecha">↔</span><input type="range" min="-350" max="350" value="${h.tx || 0}" id="pos-tx-${i}" oninput="set(${i},'tx',+this.value)"></div>
+        <div class="enc"><span title="Logo arriba/abajo">⭐</span><input type="range" min="-200" max="1400" value="${h.ly || 0}" id="pos-l-${i}" oninput="set(${i},'ly',+this.value)"></div>
+        <div class="enc"><span title="Botón y pie arriba/abajo">🔘</span><input type="range" min="-1450" max="180" value="${h.by || 0}" id="pos-b-${i}" oninput="set(${i},'by',+this.value)"></div>
+        <div class="row" style="margin:0 0 4px"><button class="btn sec sm" onclick="Object.assign(historias[${i}],{ty:0,tx:0,ly:0,by:0});renderGrid()">↺ Posiciones originales</button><button class="btn sec sm" onclick="Object.assign(historias[${i}],{ty:-620});renderGrid()">Textos arriba</button></div>
         <label>Link para el sticker</label>
         <div class="link"><span>${esc(h.link || '')}</span><button onclick="copiar(${i})">Copiar</button></div>
         ${h.sticker != null ? `<label>Texto del sticker (lo que se ve en Instagram)</label><div class="link"><input class="inp" style="margin:0;flex:1;padding:6px 8px;font-size:12.5px" value="${esc(h.sticker)}" oninput="historias[${i}].sticker=this.value"><button onclick="copiarTxt(historias[${i}].sticker)">Copiar</button></div>` : ''}
@@ -455,7 +466,11 @@ function renderGrid() {
       </div>
     </div>`).join('');
   historias.forEach((h, i) => dibujar(i));
-  historias.forEach((h, i) => { if (h.img) arrastrable(document.getElementById('cv-' + i), () => historias[i], (k, v) => { set(i, k, v); const el = document.getElementById(k === 'foco' ? 'enc-v-' + i : 'enc-h-' + i); if (el) el.value = v; }); });
+  historias.forEach((h, i) => {
+    const cv = document.getElementById('cv-' + i), modo = h._mv || (h.img ? 'foto' : 't');
+    if (modo === 'foto' && h.img) arrastrable(cv, () => historias[i], (k, v) => { set(i, k, v); const el = document.getElementById(k === 'foco' ? 'enc-v-' + i : 'enc-h-' + i); if (el) el.value = v; });
+    else moverElemento(cv, i, modo === 'foto' ? 't' : modo);
+  });
 }
 /* arrastrar la foto en la vista previa para encuadrar */
 function arrastrable(cv, obj, setter) {
@@ -465,6 +480,17 @@ function arrastrable(cv, obj, setter) {
     const nf = Math.round(Math.max(0, Math.min(100, p0.f - (e.clientY - p0.y) / r.height * 160))), nh = Math.round(Math.max(0, Math.min(100, p0.h - (e.clientX - p0.x) / r.width * 160)));
     if (nf !== obj().foco) setter('foco', nf); if (nh !== obj().fx) setter('fx', nh); };
   cv.onpointerup = cv.onpointercancel = () => { p0 = null; cv.style.cursor = 'grab'; };
+}
+/* arrastrar textos, logo o botón en la vista previa */
+function moverElemento(cv, i, k) {
+  if (!cv) return; cv.style.cursor = 'move'; cv.style.touchAction = 'none'; let p0 = null;
+  const campo = { t: 'ty', l: 'ly', b: 'by' }[k], lim = { ty: [-900, 600], ly: [-200, 1400], by: [-1450, 180], tx: [-350, 350] };
+  const cl = (v, c) => Math.round(Math.max(lim[c][0], Math.min(lim[c][1], v)));
+  cv.onpointerdown = e => { const h = historias[i]; p0 = { x: e.clientX, y: e.clientY, v: +h[campo] || 0, tx: +h.tx || 0 }; cv.setPointerCapture(e.pointerId); };
+  cv.onpointermove = e => { if (!p0) return; const r = cv.getBoundingClientRect(), dy = (e.clientY - p0.y) / r.height * H, dx = (e.clientX - p0.x) / r.width * W;
+    set(i, campo, cl(p0.v + dy, campo)); const s1 = document.getElementById('pos-' + k + '-' + i); if (s1) s1.value = historias[i][campo];
+    if (k === 't') { set(i, 'tx', cl(p0.tx + dx, 'tx')); const s2 = document.getElementById('pos-tx-' + i); if (s2) s2.value = historias[i].tx; } };
+  cv.onpointerup = cv.onpointercancel = () => { p0 = null; };
 }
 const _deb = {};
 function set(i, k, v) { historias[i][k] = v; clearTimeout(_deb[i]); _deb[i] = setTimeout(() => dibujar(i), 60); if (k === 'tpl') setTimeout(renderGrid, 0); }
@@ -509,8 +535,10 @@ async function dibujar(i) {
 async function render(cv, h) {
   const x = cv.getContext('2d');
   const [img, logo, iso_] = await Promise.all([cargarImg(h.img), LOGO, ISO]);
+  if (window.MLOGO_P) await window.MLOGO_P;
   x.clearRect(0, 0, W, H); x.textBaseline = 'alphabetic';
-  (TPL[h.tpl] || TPL.foto)(x, h, img, logo, iso_);
+  OFF = { activo: true, t: +h.ty || 0, tx: +h.tx || 0, l: +h.ly || 0, b: +h.by || 0, abierto: false };
+  try { (TPL[h.tpl] || TPL.foto)(x, h, img, logo, iso_); } finally { cerrarTextos(x); OFF.activo = false; }
 }
 
 /* foto dentro de un recuadro: foco = encuadre vertical (0 arriba · 100 abajo), fx = horizontal, zoom < 1 muestra la foto entera con fondo difuminado */
@@ -560,10 +588,15 @@ function fondoNavy(x, seed) {
   const g = x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#13263a'); g.addColorStop(1, C.navy);
   x.fillStyle = g; x.fillRect(0, 0, W, H); estrellas(x, 0, 0, 0, 170, seed);
 }
+/* posiciones ajustables por historia: t/tx = textos y contenido, l = logo, b = botón y pie */
+let OFF = { activo: false, t: 0, tx: 0, l: 0, b: 0, abierto: false };
+function cerrarTextos(x) { if (OFF.abierto) { x.restore(); OFF.abierto = false; } }
+const offB = () => OFF.activo ? OFF.b : 0;
 function logoTop(x, logo, y0 = 240) {
-  if (!logo) return; const w = 300, hh = w * logo.height / logo.width;
-  x.save(); x.shadowColor = 'rgba(0,0,0,.45)'; x.shadowBlur = 30; x.shadowOffsetY = 6;
-  x.drawImage(logo, (W - w) / 2, y0, w, hh); x.restore();
+  if (logo) { const w = 300, hh = w * logo.height / logo.width;
+    x.save(); x.shadowColor = 'rgba(0,0,0,.45)'; x.shadowBlur = 30; x.shadowOffsetY = 6;
+    x.drawImage(logo, (W - w) / 2, y0 + (OFF.activo ? OFF.l : 0), w, hh); x.restore(); }
+  if (OFF.activo && !OFF.abierto) { x.save(); x.translate(OFF.tx, OFF.t); OFF.abierto = true; }
 }
 function pie(x, logo, oscuro = true) {
   if (logo) { const w = 330, hh = w * logo.height / logo.width; x.drawImage(logo, (W - w) / 2, 1585, w, hh); }
@@ -572,6 +605,7 @@ function pie(x, logo, oscuro = true) {
   x.fillText('CHEFPRIVADO.AR', W / 2, 1585 + 130); if ('letterSpacing' in x) x.letterSpacing = '0px';
 }
 function pastilla(x, txt, y, { bg = C.gold, fg = C.navy } = {}) {
+  cerrarTextos(x); y += offB();
   x.font = '600 38px "DM Sans"'; const w = x.measureText(txt).width + 90, hh = 92, px = (W - w) / 2;
   const g = x.createLinearGradient(px, 0, px + w, 0); g.addColorStop(0, C.gold); g.addColorStop(1, C.gold2);
   x.fillStyle = bg === C.gold ? g : bg; x.beginPath(); x.roundRect(px, y, w, hh, hh / 2); x.fill();
@@ -589,7 +623,7 @@ const TPL = {
     y = bloque(x, '✦ ' + (h.kicker || ''), { font: '600 {s}px "DM Sans"', size: 32, maxW: W - 180, maxLines: 1, y, color: C.gold2, align: 'center', upper: true, spacing: 5 });
     y = bloque(x, h.titulo, { font: '400 {s}px "DM Serif Display"', size: 92, maxW: W - 180, maxLines: 3, y: y + 30, color: C.cream, align: 'center' });
     bloque(x, h.texto, { font: '400 {s}px "DM Sans"', size: 40, maxW: W - 220, maxLines: 3, y: y + 30, color: 'rgba(250,246,239,.82)', align: 'center', lh: 1.35 });
-    x.font = '500 30px "DM Sans"'; x.textAlign = 'center'; x.fillStyle = 'rgba(250,246,239,.7)'; if ('letterSpacing' in x) x.letterSpacing = '4px'; x.fillText('CHEFPRIVADO.AR', W / 2, 1660); if ('letterSpacing' in x) x.letterSpacing = '0px';
+    cerrarTextos(x); x.font = '500 30px "DM Sans"'; x.textAlign = 'center'; x.fillStyle = 'rgba(250,246,239,.7)'; if ('letterSpacing' in x) x.letterSpacing = '4px'; x.fillText('CHEFPRIVADO.AR', W / 2, 1660 + offB()); if ('letterSpacing' in x) x.letterSpacing = '0px';
   },
   plato(x, h, img, logo) {
     x.fillStyle = C.navy; x.fillRect(0, 0, W, H); estrellas(x, 0, 0, 0, 90, 3);
@@ -603,7 +637,7 @@ const TPL = {
     y = bloque(x, h.kicker, { font: '600 {s}px "DM Sans"', size: 30, maxW: W - 180, maxLines: 1, y, color: C.gold2, align: 'center', upper: true, spacing: 5 });
     y = bloque(x, h.titulo, { font: '400 {s}px "DM Serif Display"', size: 80, maxW: W - 200, maxLines: 2, y: y + 22, color: C.cream, align: 'center' });
     bloque(x, h.texto, { font: '400 {s}px "DM Sans"', size: 36, maxW: W - 240, maxLines: 2, y: y + 22, color: 'rgba(250,246,239,.72)', align: 'center', lh: 1.35 });
-    x.font = '500 30px "DM Sans"'; x.textAlign = 'center'; x.fillStyle = 'rgba(250,246,239,.6)'; if ('letterSpacing' in x) x.letterSpacing = '4px'; x.fillText('CHEFPRIVADO.AR', W / 2, 1660); if ('letterSpacing' in x) x.letterSpacing = '0px';
+    cerrarTextos(x); x.font = '500 30px "DM Sans"'; x.textAlign = 'center'; x.fillStyle = 'rgba(250,246,239,.6)'; if ('letterSpacing' in x) x.letterSpacing = '4px'; x.fillText('CHEFPRIVADO.AR', W / 2, 1660 + offB()); if ('letterSpacing' in x) x.letterSpacing = '0px';
   },
   nota(x, h, img, logo) {
     x.fillStyle = C.navy; x.fillRect(0, 0, W, H);
@@ -630,7 +664,7 @@ const TPL = {
     y = bloque(x, h.titulo, { font: '400 {s}px "DM Serif Display"', size: 64, maxW: W - 200, maxLines: 2, y: y + 160, color: C.navy, align: 'center' });
     bloque(x, h.texto, { font: '400 {s}px "DM Serif Display"', size: 70, min: 40, maxW: W - 200, maxLines: 9, y: y + (h.titulo ? 30 : 10), color: C.navy, align: 'center', lh: 1.25 });
     if (h.firma) bloque(x, 'De la nota: ' + h.firma, { font: 'italic 400 {s}px "DM Serif Display"', size: 32, maxW: W - 240, maxLines: 2, y: 1500, color: '#7a6a4a', align: 'center', lh: 1.3 });
-    x.font = '500 30px "DM Sans"'; x.textAlign = 'center'; x.fillStyle = 'rgba(13,27,42,.6)'; if ('letterSpacing' in x) x.letterSpacing = '4px'; x.fillText('CHEFPRIVADO.AR/BLOG', W / 2, 1660); if ('letterSpacing' in x) x.letterSpacing = '0px';
+    cerrarTextos(x); x.font = '500 30px "DM Sans"'; x.textAlign = 'center'; x.fillStyle = 'rgba(13,27,42,.6)'; if ('letterSpacing' in x) x.letterSpacing = '4px'; x.fillText('CHEFPRIVADO.AR/BLOG', W / 2, 1660 + offB()); if ('letterSpacing' in x) x.letterSpacing = '0px';
   },
   dato(x, h, img, logo) {
     fondoNavy(x, 21);
@@ -641,7 +675,7 @@ const TPL = {
     y = bloque(x, h.titulo, { font: '400 {s}px "DM Serif Display"', size: 60, maxW: W - 200, maxLines: 2, y: y + 90, color: C.cream, align: 'center' });
     bloque(x, h.texto, { font: '400 {s}px "DM Sans"', size: 56, min: 34, maxW: W - 200, maxLines: 11, y: y + (h.titulo ? 40 : 40), color: 'rgba(250,246,239,.9)', align: 'center', lh: 1.4 });
     if (h.firma) bloque(x, 'Más en la nota: ' + h.firma, { font: 'italic 400 {s}px "DM Serif Display"', size: 32, maxW: W - 240, maxLines: 2, y: 1500, color: 'rgba(232,201,106,.85)', align: 'center', lh: 1.3 });
-    x.font = '500 30px "DM Sans"'; x.textAlign = 'center'; x.fillStyle = 'rgba(250,246,239,.6)'; if ('letterSpacing' in x) x.letterSpacing = '4px'; x.fillText('CHEFPRIVADO.AR/BLOG', W / 2, 1660); if ('letterSpacing' in x) x.letterSpacing = '0px';
+    cerrarTextos(x); x.font = '500 30px "DM Sans"'; x.textAlign = 'center'; x.fillStyle = 'rgba(250,246,239,.6)'; if ('letterSpacing' in x) x.letterSpacing = '4px'; x.fillText('CHEFPRIVADO.AR/BLOG', W / 2, 1660 + offB()); if ('letterSpacing' in x) x.letterSpacing = '0px';
   },
   resena(x, h, img, logo) {
     fondoNavy(x, 33);
@@ -1231,5 +1265,6 @@ document.getElementById('f-cambiar').addEventListener('change', e => {
 </script>
 <script src="/js/que-comemos-recetas.js"></script>
 <script src="/js/que-comemos.js"></script>
+<script src="/js/management-historias.js"></script>
 </body>
 </html>

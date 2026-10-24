@@ -7,7 +7,7 @@ from articulos import ARTICULOS, CATS
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 SITE = 'https://www.chefprivado.ar'
-U = lambda img, w, h: f'https://images.unsplash.com/{img}?w={w}&h={h}&fit=crop&q=72&auto=format'
+U = lambda img, w, h: (SITE + img) if img.startswith('/') else f'https://images.unsplash.com/{img}?w={w}&h={h}&fit=crop&q=72&auto=format'
 MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre']
 MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December']
 

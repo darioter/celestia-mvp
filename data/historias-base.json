@@ -1,6 +1,111 @@
 {
  "notas": [
   {
+   "slug": "como-calcular-el-food-cost-de-un-plato",
+   "cat": "La trastienda",
+   "icono": "📊",
+   "titulo": "Cómo calcular el food cost de un plato (y fijar el precio con criterio)",
+   "bajada": "Ficha técnica, merma, rendimiento y precio de venta: el paso a paso que se usa en cualquier cocina profesional, con un ejemplo con números reales.",
+   "img": "https://www.chefprivado.ar/management/assets/curso03.jpg",
+   "img_sq": "https://www.chefprivado.ar/management/assets/curso03.jpg",
+   "foto": "Celestia Management",
+   "url": "https://www.chefprivado.ar/blog/como-calcular-el-food-cost-de-un-plato",
+   "tips": [
+    "Actualizá las fichas técnicas cada vez que cambia el precio de un proveedor importante. Con inflación, un costo de hace tres meses ya no sirve para fijar precios."
+   ],
+   "datos": [
+    "Si querés hacerlo con planillas ya armadas, la Guía de costeo y food cost trae fichas técnicas, cálculo de rendimiento y precios. Y si preferís que lo veamos juntos con tu carta, armá tu diagnóstico sin costo."
+   ],
+   "secciones": [
+    {
+     "h2": "1. Armá la ficha técnica",
+     "texto": "Cada plato necesita una receta estándar: todos los ingredientes, con la cantidad exacta que lleva una porción."
+    },
+    {
+     "h2": "2. Calculá el rendimiento de cada ingrediente",
+     "texto": "Casi nada se usa tal cual se compra."
+    },
+    {
+     "h2": "3. Sumá el costo de la porción",
+     "texto": "Lomo (kilo útil a $32.000) · 220 g"
+    },
+    {
+     "h2": "4. Del costo al precio",
+     "texto": "Con un food cost objetivo del 30%, el precio de venta sale de dividir el costo por ese porcentaje: $9.280 ÷ 0,30 = unos $30.900."
+    },
+    {
+     "h2": "5. Los errores que más plata hacen perder",
+     "texto": "Costear con el peso bruto, sin la merma."
+    }
+   ]
+  },
+  {
+   "slug": "punto-de-equilibrio-de-un-restaurante",
+   "cat": "La trastienda",
+   "icono": "📊",
+   "titulo": "Punto de equilibrio de un restaurante: cuántos cubiertos necesitás para no perder plata",
+   "bajada": "Costos fijos, costos variables y margen de contribución, explicados simple. Con un ejemplo para saber cuántos clientes por día tiene que tener tu local para empezar a ganar.",
+   "img": "https://www.chefprivado.ar/management/assets/curso02.jpg",
+   "img_sq": "https://www.chefprivado.ar/management/assets/curso02.jpg",
+   "foto": "Celestia Management",
+   "url": "https://www.chefprivado.ar/blog/punto-de-equilibrio-de-un-restaurante",
+   "tips": [
+    "Calculalo antes de firmar un alquiler. Si para cubrir los fijos necesitás llenar el local todos los días, el número no cierra antes de abrir."
+   ],
+   "datos": [
+    "Proyectar ventas, gastos y punto de equilibrio es el módulo 6 del diagnóstico de Celestia Management. En nuestros proyectos, el equilibrio llega en promedio a las 9 semanas de abrir."
+   ],
+   "secciones": [
+    {
+     "h2": "Fijos y variables",
+     "texto": "Costos fijos: los pagás vendas o no."
+    },
+    {
+     "h2": "El margen de contribución",
+     "texto": "De cada venta, una parte se va en costos variables."
+    },
+    {
+     "h2": "Un ejemplo con números",
+     "texto": "Costos fijos del mes (alquiler, sueldos, servicios) · $9.000.000"
+    },
+    {
+     "h2": "Cómo bajar el punto de equilibrio",
+     "texto": "Subir el ticket promedio: una entrada sugerida, un postre, una bebida de la casa."
+    }
+   ]
+  },
+  {
+   "slug": "prime-cost-el-numero-que-define-si-tu-restaurante-gana",
+   "cat": "La trastienda",
+   "icono": "📊",
+   "titulo": "Prime cost: el número que define si tu restaurante gana plata",
+   "bajada": "Materia prima más mano de obra: los dos costos más grandes de cualquier cocina, juntos en un solo indicador. Qué valores son sanos y cómo bajarlo sin bajar la calidad.",
+   "img": "https://www.chefprivado.ar/management/assets/guia.jpg",
+   "img_sq": "https://www.chefprivado.ar/management/assets/guia.jpg",
+   "foto": "Celestia Management",
+   "url": "https://www.chefprivado.ar/blog/prime-cost-el-numero-que-define-si-tu-restaurante-gana",
+   "tips": [
+    "Medí el prime cost por semana, no solo por mes. Si una semana se dispara, todavía estás a tiempo de corregir antes de cerrar el mes."
+   ],
+   "datos": [
+    "Ordenar costos, carta y equipo es lo que trabajamos en Celestia Management. Si querés saber dónde está tu número, armá tu diagnóstico sin costo."
+   ],
+   "secciones": [
+    {
+     "h2": "Cómo se calcula",
+     "texto": "Prime cost = (costo de materia prima + costo total de mano de obra) ÷ ventas."
+    },
+    {
+     "h2": "Qué valores son sanos",
+     "texto": "Hasta 60%: muy bien."
+    },
+    {
+     "h2": "Cómo bajarlo sin bajar la calidad",
+     "texto": "Ingeniería de menú: empujar los platos que dejan más y reformular los que no (te lo contamos en esta nota)."
+    }
+   ]
+  },
+  {
    "slug": "como-regenerar-comida-para-que-quede-como-recien-hecha",
    "cat": "Cocina segura",
    "icono": "🧼",

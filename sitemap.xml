@@ -91,6 +91,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.chefprivado.ar/blog/como-calcular-el-food-cost-de-un-plato</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://www.chefprivado.ar/blog/como-catar-un-vino-y-maridar</loc>
     <lastmod>2026-10-24</lastmod>
     <changefreq>monthly</changefreq>
@@ -206,6 +212,18 @@
   </url>
   <url>
     <loc>https://www.chefprivado.ar/blog/pasta-fresca-casera-al-huevo-y-a-la-yema</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.chefprivado.ar/blog/prime-cost-el-numero-que-define-si-tu-restaurante-gana</loc>
+    <lastmod>2026-10-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.chefprivado.ar/blog/punto-de-equilibrio-de-un-restaurante</loc>
     <lastmod>2026-10-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>

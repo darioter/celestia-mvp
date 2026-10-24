@@ -180,7 +180,7 @@ Español rioplatense con voseo, pasos en imperativo (salteá, sumá, cociná), t
   /* ───────── plantillas de canvas ───────── */
   Object.assign(PLANTILLAS, { qch_pregunta: '¿Qué comemos hoy? · #1 Caja de preguntas', qch_portada: '¿Qué comemos hoy? · Portada', qch_lista: '¿Qué comemos hoy? · Heladera', qch_paso: '¿Qué comemos hoy? · Paso', qch_cierre: '¿Qué comemos hoy? · Toque de chef' });
   const ls = (x, on) => { if ('letterSpacing' in x) x.letterSpacing = on; };
-  function marca(x, oscuro) { x.font = '500 30px "DM Sans"'; x.textAlign = 'center'; x.fillStyle = oscuro ? 'rgba(250,246,239,.6)' : 'rgba(13,27,42,.6)'; ls(x, '4px'); x.fillText('CHEFPRIVADO.AR', W / 2, 1700); ls(x, '0px'); }
+  function marca(x, oscuro) { cerrarTextos(x); x.font = '500 30px "DM Sans"'; x.textAlign = 'center'; x.fillStyle = oscuro ? 'rgba(250,246,239,.6)' : 'rgba(13,27,42,.6)'; ls(x, '4px'); x.fillText('CHEFPRIVADO.AR', W / 2, 1700 + offB()); ls(x, '0px'); }
   function chips(x, items, y0, { bg, fg, borde, size = 38 }) {
     x.font = `500 ${size}px "DM Sans"`; const padX = 30, hh = size + 40, gap = 18, maxW = W - 160; let fila = [], filas = [], ancho = 0;
     items.forEach(t => { const w = x.measureText(t).width + padX * 2; if (ancho + w + (fila.length ? gap : 0) > maxW && fila.length) { filas.push(fila); fila = []; ancho = 0; } fila.push([t, w]); ancho += w + (fila.length > 1 ? gap : 0); });
