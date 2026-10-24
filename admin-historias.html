@@ -104,6 +104,11 @@ input[type=range]{width:100%;accent-color:var(--gold)}
 .qch-g{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold2);margin:12px 0 7px}
 .qch-chips{display:flex;flex-wrap:wrap;gap:6px}
 .qch-c{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);color:var(--cream);border-radius:999px;padding:6px 11px;font-size:12.5px}
+.qch-box{background:rgba(201,168,76,.07);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:6px}
+.qch-rec{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:10px;margin-bottom:6px}
+.qch-rec summary{cursor:pointer;padding:9px 11px;font-size:13px;font-weight:600}
+.qch-r{display:block;width:100%;text-align:left;background:none;border:0;border-top:1px solid rgba(255,255,255,.06);color:var(--cream);padding:8px 12px;font-size:12.5px}
+.qch-r:hover{background:rgba(201,168,76,.1)}.qch-r.falta{color:var(--mut)}.qch-r i{font-style:normal;font-size:11px;color:#d9a066}
 .qch-c.on{background:var(--gold);border-color:var(--gold);color:var(--navy);font-weight:600}
 @media(max-width:1100px){.reel{grid-template-columns:1fr}.r-play{position:static;max-width:380px}}
 @media(max-width:900px){.wrap{grid-template-columns:1fr}.side{position:static;max-height:none;border-right:0;border-bottom:1px solid var(--line)}}
@@ -452,7 +457,7 @@ const LOGO = cargarImg('/img/ig-logo.png'), ISO = cargarImg('/img/ig-iso.png');
 
 async function dibujar(i) {
   const h = historias[i]; const cv = document.getElementById('cv-' + i); if (!h || !cv) return;
-  await render(cv, h);
+  await render(cv, Object.assign({}, h, { _pv: true }));   // _pv: guías que solo se ven en pantalla, no en el PNG
 }
 async function render(cv, h) {
   const x = cv.getContext('2d');
@@ -1096,6 +1101,7 @@ document.getElementById('f-cambiar').addEventListener('change', e => {
   const f = e.target.files[0]; if (!f) return; PORT.img = URL.createObjectURL(f); e.target.value = ''; portDibujar();
 }, true);
 </script>
+<script src="/js/que-comemos-recetas.js"></script>
 <script src="/js/que-comemos.js"></script>
 </body>
 </html>

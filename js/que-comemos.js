@@ -7,32 +7,13 @@
     ['Proteínas', [['pollo', '🍗', 'Pollo'], ['carne', '🥩', 'Bife o nalga'], ['picada', '🍔', 'Carne picada'], ['cerdo', '🐖', 'Cerdo (bondiola o carré)'], ['pescado', '🐟', 'Pescado blanco'], ['salmon', '🍣', 'Salmón'], ['langostinos', '🦐', 'Langostinos'], ['huevos', '🥚', 'Huevos'], ['atun', '🥫', 'Atún en lata'], ['legumbres', '🫘', 'Garbanzos o lentejas']]],
     ['Verduras y frutas', [['papa', '🥔', 'Papa'], ['batata', '🍠', 'Batata'], ['zapallo', '🎃', 'Zapallo'], ['cebolla', '🧅', 'Cebolla'], ['ajo', '🧄', 'Ajo'], ['tomate', '🍅', 'Tomate'], ['morron', '🫑', 'Morrón'], ['zucchini', '🥒', 'Zucchini'], ['berenjena', '🍆', 'Berenjena'], ['espinaca', '🥬', 'Espinaca o acelga'], ['hongos', '🍄', 'Hongos'], ['brocoli', '🥦', 'Brócoli'], ['zanahoria', '🥕', 'Zanahoria'], ['choclo', '🌽', 'Choclo'], ['palta', '🥑', 'Palta'], ['limon', '🍋', 'Limón'], ['verdeo', '🌱', 'Cebolla de verdeo'], ['hierbas', '🌿', 'Hierbas frescas']]],
     ['Lácteos', [['manteca', '🧈', 'Manteca'], ['crema', '🥛', 'Crema'], ['queso', '🧀', 'Queso rallado'], ['cremoso', '🧀', 'Queso cremoso'], ['yogur', '🥣', 'Yogur natural'], ['leche', '🥛', 'Leche']]],
-    ['Despensa', [['arroz', '🍚', 'Arroz'], ['fideos', '🍝', 'Fideos'], ['pan', '🥖', 'Pan'], ['harina', '🌾', 'Harina'], ['vino', '🍷', 'Vino'], ['mostaza', '🟡', 'Mostaza'], ['miel', '🍯', 'Miel'], ['soja', '🥢', 'Salsa de soja'], ['tomate_lata', '🥫', 'Tomate en lata'], ['caldo', '🍲', 'Caldo'], ['frutos_secos', '🥜', 'Frutos secos'], ['aceitunas', '🫒', 'Aceitunas']]]
+    ['Despensa', [['arroz', '🍚', 'Arroz'], ['fideos', '🍝', 'Fideos'], ['pan', '🥖', 'Pan'], ['harina', '🌾', 'Harina'], ['vino', '🍷', 'Vino'], ['mostaza', '🟡', 'Mostaza'], ['miel', '🍯', 'Miel'], ['soja', '🥢', 'Salsa de soja'], ['tomate_lata', '🥫', 'Tomate en lata'], ['caldo', '🍲', 'Caldo'], ['frutos_secos', '🥜', 'Frutos secos'], ['aceitunas', '🫒', 'Aceitunas']]],
+    ['Para el postre', [['chocolate', '🍫', 'Chocolate'], ['ddl', '🥄', 'Dulce de leche'], ['azucar', '🍬', 'Azúcar'], ['banana', '🍌', 'Banana'], ['manzana', '🍎', 'Manzana'], ['frutillas', '🍓', 'Frutillas o frutos rojos'], ['galletitas', '🍪', 'Galletitas'], ['queso_crema', '🧁', 'Queso crema'], ['cafe', '☕', 'Café']]]
   ];
   const INFO = {}; ING.forEach(([, l]) => l.forEach(([k, e, n]) => { INFO[k] = { e, n }; }));
 
   /* principales: req = todos necesarios · alt = alcanza con uno · tag = con qué salsas combina */
-  const PRINC = [
-    { id: 'pollo-sarten', req: ['pollo'], tag: 'pollo', nombre: 'Pollo dorado a la sartén', corto: 'El pollo', pasos: ['Secá bien el pollo con papel y salpimentalo 10 minutos antes.', 'Sartén bien caliente con un hilo de aceite: apoyá el lado lindo y no lo muevas en 5 minutos.', 'Dalo vuelta, bajá el fuego y terminá tapado hasta que el centro esté bien cocido.', 'Reposo de 3 minutos antes de cortar: así no pierde los jugos.'] },
-    { id: 'pollo-horno', req: ['pollo', 'limon'], tag: 'pollo', nombre: 'Pollo al horno con limón y hierbas', corto: 'El pollo', pasos: ['Masajeá el pollo con aceite, ralladura y jugo de limón, sal y pimienta.', 'Rodajas de limón y ajo debajo, piel hacia arriba en la fuente.', 'Horno fuerte, 200 °C, 35 a 45 minutos según las presas.', 'Los últimos 5 minutos, gratinador: piel bien crocante.'] },
-    { id: 'pollo-wok', req: ['pollo', 'soja'], tag: 'pollo', nombre: 'Salteado de pollo al wok', corto: 'El salteado', pasos: ['Cortá el pollo en tiras finas y las verduras en bastones parejos.', 'Wok o sartén al máximo: el pollo primero, en tandas, para que dore y no hierva.', 'Sacalo, salteá las verduras 2 minutos y que queden crocantes.', 'Volvé todo a la sartén con la salsa y un minuto más de fuego.'] },
-    { id: 'bife', req: ['carne'], tag: 'carne', nombre: 'Bife sellado en su punto', corto: 'El bife', pasos: ['Sacá la carne de la heladera 20 minutos antes y secala bien.', 'Sartén de hierro humeante, sal gruesa justo antes de apoyar.', '3 a 4 minutos por lado para un punto jugoso; una sola vuelta.', 'Reposo de 5 minutos sobre tabla y cortá en contra de la fibra.'] },
-    { id: 'albondigas', guar: ['ensalada-verde', 'ensalada-palta', 'pan-ajo', 'brocoli', 'hongos', 'espinaca-crema', 'asados'], req: ['picada'], alt: ['tomate_lata', 'tomate'], tag: 'picada', nombre: 'Albóndigas caseras en salsa', corto: 'Las albóndigas', pasos: ['Mezclá la carne con sal, pimienta, ajo picado y (si tenés) pan remojado en leche y un huevo.', 'Formá bolitas del mismo tamaño con las manos húmedas.', 'Doralas en sartén por todos lados: no hace falta que se cocinen adentro.', 'Terminalas 15 minutos en la salsa, a fuego bajo y tapadas.'] },
-    { id: 'hamburguesa', req: ['picada'], tag: 'carne', nombre: 'Hamburguesa de autor', corto: 'La hamburguesa', pasos: ['Armá medallones de 150 g sin amasar de más; hundí apenas el centro con el pulgar.', 'Sal recién al momento de cocinar, nunca antes.', 'Plancha bien caliente: 3 minutos, vuelta y 2 minutos más.', 'Si tenés queso, arriba el último minuto y tapá para que se funda.'] },
-    { id: 'cerdo', req: ['cerdo'], tag: 'cerdo', nombre: 'Bondiola sellada y glaseada', corto: 'El cerdo', pasos: ['Cortá bifes de 2 cm y salpimentá.', 'Sellá en sartén caliente 3 minutos por lado hasta dorar.', 'Bajá el fuego y terminá 4 a 5 minutos: el centro apenas rosado, jugoso.', 'Glaseá en la misma sartén con la salsa y reposá 3 minutos.'] },
-    { id: 'pescado-noisette', req: ['pescado', 'manteca'], tag: 'pescado', nombre: 'Pescado a la manteca noisette', corto: 'El pescado', pasos: ['Secá muy bien los filetes y pasalos apenas por harina si tenés.', 'Sartén con aceite, el filete del lado de la piel (o el más lindo) 3 minutos.', 'Vuelta, sumá una cucharada de manteca y bañalo con la cuchara mientras espuma.', 'Cuando la manteca huele a avellana, listo: unas gotas de limón al final.'] },
-    { id: 'pescado-papillote', req: ['pescado', 'limon'], tag: 'pescado', nombre: 'Pescado en papillote', corto: 'El papillote', pasos: ['Sobre papel manteca: verduras en juliana fina, el filete encima.', 'Sal, pimienta, rodajas de limón, hierbas y un hilo de aceite.', 'Cerrá el paquete bien plegado para que no se escape el vapor.', 'Horno a 200 °C, 12 a 15 minutos. Se abre en la mesa.'] },
-    { id: 'salmon', req: ['salmon'], tag: 'salmon', nombre: 'Salmón con piel crocante', corto: 'El salmón', pasos: ['Secá la piel con papel y hacele dos cortes superficiales.', 'Sartén con aceite, piel abajo, presionando 10 segundos para que no se curve.', '4 a 5 minutos sin moverlo, hasta que la piel cruja; vuelta y 1 minuto más.', 'Servilo con el centro apenas rosado: queda húmedo y sedoso.'] },
-    { id: 'langostinos', guar: ['ensalada-verde', 'ensalada-palta', 'pan-ajo', 'brocoli', 'hongos', 'espinaca-crema', 'asados'], req: ['langostinos', 'ajo'], tag: 'langostinos', nombre: 'Langostinos al ajillo', corto: 'Los langostinos', pasos: ['Pelalos dejando la cola y sacales la tripa.', 'Aceite con ajo laminado a fuego bajo hasta que el ajo apenas dore.', 'Subí el fuego y sumá los langostinos: 1 minuto y medio por lado.', 'Fuera del fuego, perejil y unas gotas de limón. Pan para mojar.'] },
-    { id: 'tortilla', guar: ['ensalada-verde', 'ensalada-palta', 'pan-ajo', 'brocoli', 'hongos', 'espinaca-crema', 'asados'], req: ['huevos', 'papa'], tag: 'huevos', nombre: 'Tortilla de papas jugosa', corto: 'La tortilla', pasos: ['Papas en láminas finas confitadas en abundante aceite a fuego bajo, 20 minutos (con cebolla, si tenés).', 'Escurrí y mezclá con los huevos batidos y sal. Que repose 5 minutos.', 'Sartén caliente con poco aceite, volcá y mové los bordes los primeros segundos.', 'Vuelta con un plato y 1 minuto más: el centro tiene que quedar jugoso.'] },
-    { id: 'shakshuka', guar: ['ensalada-verde', 'ensalada-palta', 'pan-ajo', 'brocoli', 'hongos', 'espinaca-crema', 'asados'], req: ['huevos', 'cebolla'], alt: ['tomate_lata', 'tomate'], tag: 'huevos', nombre: 'Huevos en salsa de tomate especiada', corto: 'Los huevos', pasos: ['Rehogá cebolla (y morrón, si tenés) en aceite hasta que estén tiernos.', 'Sumá el tomate, sal, pimentón o comino y cociná 10 minutos.', 'Hacé huecos en la salsa y cascá un huevo en cada uno.', 'Tapá a fuego bajo 5 a 6 minutos: claras cuajadas, yemas líquidas.'] },
-    { id: 'frittata', guar: ['ensalada-verde', 'ensalada-palta', 'pan-ajo', 'brocoli', 'hongos', 'espinaca-crema', 'asados'], req: ['huevos'], tag: 'huevos', nombre: 'Frittata de verduras', corto: 'La frittata', pasos: ['Salteá las verduras que tengas en una sartén apta horno.', 'Batí los huevos con sal, pimienta y queso rallado si hay.', 'Volcá sobre las verduras y cociná a fuego bajo hasta que los bordes cuajen.', 'Terminá 5 minutos en horno o gratinador hasta que se infle y dore.'] },
-    { id: 'croquetas-atun', req: ['atun', 'papa'], tag: 'pescado', nombre: 'Croquetas de atún y papa', corto: 'Las croquetas', pasos: ['Hacé un puré seco de papa y mezclalo con el atún bien escurrido.', 'Sumá verdeo o perejil picado, sal, pimienta y un huevo si tenés.', 'Formá croquetas, pasalas por pan rallado o harina y enfrialas 15 minutos.', 'Doralas en sartén con aceite o al horno a 200 °C dándolas vuelta.'] },
-    { id: 'curry-garbanzos', guar: ['ensalada-verde', 'ensalada-palta', 'pan-ajo', 'brocoli', 'hongos', 'espinaca-crema', 'asados'], req: ['legumbres'], alt: ['tomate_lata', 'tomate', 'crema', 'leche'], tag: 'legumbres', nombre: 'Curry de garbanzos o lentejas', corto: 'El curry', pasos: ['Rehogá cebolla y ajo con curry o pimentón y comino hasta que perfume.', 'Sumá las legumbres cocidas y el tomate (o la crema).', 'Cociná 15 minutos a fuego bajo hasta que espese.', 'Terminá con limón y hierbas frescas para darle vida.'] },
-    { id: 'risotto', guar: ['ensalada-verde', 'ensalada-palta', 'pan-ajo', 'brocoli', 'hongos', 'espinaca-crema', 'asados'], req: ['arroz', 'manteca'], alt: ['caldo', 'cebolla'], tag: 'arroz', nombre: 'Risotto cremoso', corto: 'El risotto', pasos: ['Rehogá cebolla en manteca, sumá el arroz y nacaralo 2 minutos.', 'Desglasá con vino (si hay) y agregá caldo caliente de a un cucharón, revolviendo.', 'A los 16-18 minutos el grano está al dente.', 'Fuera del fuego, manteca fría y queso: la mantecatura le da la cremosidad.'] },
-    { id: 'pasta', guar: ['ensalada-verde', 'ensalada-palta', 'pan-ajo', 'brocoli', 'hongos', 'espinaca-crema', 'asados'], req: ['fideos'], tag: 'pasta', nombre: 'Fideos de chef', corto: 'La pasta', pasos: ['Agua abundante con sal (10 g por litro) en hervor fuerte.', 'Cociná 1 minuto menos de lo que dice el paquete.', 'Guardá una taza del agua de cocción antes de colar.', 'Terminá los fideos 1 minuto dentro de la salsa con un chorrito de esa agua: liga y brilla.'] },
-    { id: 'parmesana', guar: ['ensalada-verde', 'ensalada-palta', 'pan-ajo', 'brocoli', 'hongos', 'espinaca-crema', 'asados'], req: ['berenjena', 'queso'], alt: ['tomate_lata', 'tomate'], tag: 'vegetal', nombre: 'Berenjenas a la parmesana', corto: 'Las berenjenas', pasos: ['Cortá rodajas de 1 cm, salalas y dejalas 15 minutos; secalas.', 'Doralas a la plancha o al horno con un hilo de aceite.', 'Armá capas en una fuente: salsa de tomate, berenjena, queso.', 'Horno a 200 °C, 20 minutos hasta que gratine.'] }
-  ];
+  const PRINC = (window.QCH_DATA || {}).PRINC || [], POSTRES = (window.QCH_DATA || {}).POSTRES || [];
   const SALSAS = [
     { id: 'mostaza-miel', req: ['mostaza', 'miel'], va: ['pollo', 'cerdo', 'salmon'], nombre: 'Glaseado de mostaza y miel', pasos: ['Mezclá 2 cucharadas de mostaza con 1 de miel y un chorrito de agua.', 'Volcalo en la sartén caliente donde cocinaste, raspando el fondo.', 'Reducí 1 minuto hasta que brille y bañá la proteína.'] },
     { id: 'crema-hongos', req: ['crema', 'hongos'], va: ['pollo', 'carne', 'cerdo', 'pasta', 'arroz'], nombre: 'Salsa de crema y hongos', pasos: ['Salteá los hongos a fuego fuerte sin moverlos, hasta dorar.', 'Sumá ajo, sal y pimienta, y después la crema.', 'Reducí 3 a 4 minutos a fuego bajo hasta que nape la cuchara.'] },
@@ -92,23 +73,26 @@
   };
   const usados = (x, sel) => [...new Set([...(x.req || []), ...(x.alt || []).filter(k => sel.has(k)), ...(x.min2 || []).filter(k => sel.has(k))])].filter(k => sel.has(k));
 
-  function combinar(sel) {
-    const ps = PRINC.filter(p => cumple(p, sel));
+  const LIVIANAS = ['ensalada-verde', 'ensalada-palta', 'pan-ajo', 'brocoli', 'hongos', 'espinaca-crema', 'asados', 'arroz-pilaf'];
+  function opcionesDe(p, sel) {
     const out = [];
-    ps.forEach(p => {
-      const ss = SALSAS.filter(s => s.va.includes(p.tag) && cumple(s, sel));
-      const gs = GUARN.filter(g => cumple(g, sel) && (!p.guar || p.guar.includes(g.id)) && !(g.req || []).some(k => (p.req || []).includes(k) && k !== 'ajo' && k !== 'manteca'));
-      const opS = ss.length ? ss : [null], opG = gs.length ? gs : [null];
-      opS.forEach(s => opG.forEach(g => {
-        const u = new Set([...usados(p, sel), ...(s ? usados(s, sel) : []), ...(g ? usados(g, sel) : [])]);
-        out.push({ p, s, g, usa: [...u], score: u.size * 10 + (s ? 6 : 0) + (g ? 6 : 0) + (p.req.length > 1 ? 3 : 0) });
-      }));
-    });
+    const ss = p.c || p.ns ? [] : SALSAS.filter(s => s.va.includes(p.tag) && cumple(s, sel));
+    const gs = GUARN.filter(g => cumple(g, sel) && (!p.c || LIVIANAS.includes(g.id)) && !(g.req || []).some(k => (p.req || []).includes(k) && k !== 'ajo' && k !== 'manteca'));
+    const opS = ss.length ? ss : [null], opG = gs.length ? gs : [null];
+    opS.forEach(s => opG.forEach(g => {
+      const u = new Set([...usados(p, sel), ...(s ? usados(s, sel) : []), ...(g ? usados(g, sel) : [])]);
+      out.push({ p, s, g, usa: [...u], score: u.size * 10 + (s ? 6 : 0) + (g ? 6 : 0) + (p.c ? 10 : p.ns ? 5 : 0) + (p.req.length > 1 ? 3 : 0) });
+    }));
+    return out.sort((a, b) => b.score - a.score);
+  }
+  function combinar(sel) {
+    const out = [];
+    PRINC.filter(p => cumple(p, sel)).forEach(p => out.push(...opcionesDe(p, sel)));
     out.sort((a, b) => b.score - a.score);
     // variedad: no repetir principal en las primeras opciones
     const top = [], uso = {};
     const pen = o => (uso['p' + o.p.id] || 0) * 14 + (o.s ? (uso['s' + o.s.id] || 0) * 9 : 0) + (o.g ? (uso['g' + o.g.id] || 0) * 9 : 0);
-    while (top.length < 4 && out.length) {
+    while (top.length < 6 && out.length) {
       let bi = 0, bv = -1e9; out.forEach((o, k) => { const v = o.score - pen(o); if (v > bv) { bv = v; bi = k; } });
       const o = out.splice(bi, 1)[0]; top.push(o); uso['p' + o.p.id] = (uso['p' + o.p.id] || 0) + 1; if (o.s) uso['s' + o.s.id] = (uso['s' + o.s.id] || 0) + 1; if (o.g) uso['g' + o.g.id] = (uso['g' + o.g.id] || 0) + 1;
     }
@@ -117,59 +101,105 @@
   const nombrePlato = o => o.p.nombre + (o.s ? ', ' + o.s.nombre.charAt(0).toLowerCase() + o.s.nombre.slice(1) : '') + (o.g ? ' y ' + o.g.nombre.charAt(0).toLowerCase() + o.g.nombre.slice(1) : '');
 
   /* ───────── estado y panel ───────── */
-  const QCH = window.QCH = { sel: new Set(), opciones: [], n: 1 };
-  try { const g = JSON.parse(localStorage.getItem('cel_qch') || '{}'); (g.sel || []).forEach(k => INFO[k] && QCH.sel.add(k)); QCH.n = g.n || 1; } catch (e) {}
-  const guardar = () => { try { localStorage.setItem('cel_qch', JSON.stringify({ sel: [...QCH.sel], n: QCH.n })); } catch (e) {} };
+  const QCH = window.QCH = { sel: new Set(), opciones: [], postres: [], n: 1, quien: '', preg: 'heladera', pregProt: 'pollo', postreSel: '' };
+  try { const g = JSON.parse(localStorage.getItem('cel_qch') || '{}'); (g.sel || []).forEach(k => INFO[k] && QCH.sel.add(k)); ['n', 'quien', 'preg', 'pregProt'].forEach(k => { if (g[k] != null) QCH[k] = g[k]; }); } catch (e) {}
+  const guardar = () => { try { localStorage.setItem('cel_qch', JSON.stringify({ sel: [...QCH.sel], n: QCH.n, quien: QCH.quien, preg: QCH.preg, pregProt: QCH.pregProt })); } catch (e) {} };
   const escQ = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const PROTS = ['pollo', 'carne', 'picada', 'cerdo', 'pescado', 'salmon', 'langostinos', 'huevos', 'atun', 'legumbres'];
+  const nomProt = k => ({ carne: 'carne', picada: 'carne picada', cerdo: 'cerdo', pescado: 'pescado', salmon: 'salmón', huevos: 'huevos', atun: 'atún', legumbres: 'garbanzos o lentejas' })[k] || (INFO[k] ? INFO[k].n.toLowerCase() : k);
+  const PREG = {
+    heladera: { nom: '🧊 ¿Qué tenés en la heladera?', titulo: '¿Qué tenés en la heladera?', texto: 'Contame 3 o 4 ingredientes y te armo un plato de chef con lo que hay.', sticker: 'Tengo… 🧊' },
+    proteina: { nom: '🍗 Tengo una proteína…', titulo: 'Tengo {p}. ¿Qué le hago?', texto: 'Contame qué más hay en tu heladera y te armo la receta completa: salsa, guarnición y toque de chef.', sticker: 'Con {p} tengo…' },
+    postre: { nom: '🍫 ¿Y de postre?', titulo: '¿Y de postre?', texto: 'Contame qué dulce tenés a mano (chocolate, frutas, dulce de leche…) y te armo un postre de chef.', sticker: 'Para el postre tengo… 🍫' },
+    antojo: { nom: '😋 ¿Qué tenés ganas de comer?', titulo: '¿Qué tenés ganas de comer hoy?', texto: 'Pollo, pasta, algo liviano o algo dulce… Contame y te paso la receta estilo chef.', sticker: 'Hoy tengo ganas de…' }
+  };
+  const pregTxt = (t) => t.replace(/\{p\}/g, nomProt(QCH.pregProt));
+  const quienTxt = () => { const q = String(QCH.quien || '').trim(); return q ? (q.startsWith('@') ? q : '@' + q) : ''; };
 
   window.panelQCH = function () {
-    const sel = QCH.sel;
+    const sel = QCH.sel, P_ = PREG[QCH.preg] || PREG.heladera;
     QCH.opciones = sel.size ? combinar(sel) : [];
-    return `<p class="hint"><b style="color:var(--cream)">🧊 ¿Qué comemos hoy?</b><br>Marcá lo que hay en la heladera y te armo el plato estilo chef: principal, salsa, guarnición y toque de chef. Cada plato se convierte en una saga de 6 historias. Sal, pimienta y aceite se dan por sentados.</p>
-      <div class="qch-top"><span>${sel.size ? sel.size + ' elegidos' : 'Nada elegido'}</span><button class="btn sec sm" onclick="qchAzar()">🎲 Heladera al azar</button>${sel.size ? '<button class="btn sec sm" onclick="qchLimpiar()">Vaciar</button>' : ''}</div>
+    QCH.postres = POSTRES.filter(x => cumple(x, sel)).sort((a, b) => usados(b, sel).length - usados(a, sel).length);
+    if (QCH.postreSel && !QCH.postres.some(x => x.id === QCH.postreSel)) QCH.postreSel = '';
+    const protsSel = PROTS.filter(k => sel.has(k)).concat(['arroz', 'fideos', 'berenjena'].filter(k => sel.has(k)));
+    return `<div class="qch-box">
+        <div class="qch-g" style="margin-top:0">📮 Historia #1 · Caja de preguntas</div>
+        <p class="hint" style="margin-bottom:8px">Publicala primero: tiene el lugar para el sticker de preguntas. Con lo que te respondan, armás la saga.</p>
+        <select class="inp" onchange="QCH.preg=this.value;qchGuardar();renderPanel()">${Object.entries(PREG).map(([k, v]) => `<option value="${k}" ${QCH.preg === k ? 'selected' : ''}>${v.nom}</option>`).join('')}</select>
+        ${QCH.preg === 'proteina' ? `<select class="inp" onchange="QCH.pregProt=this.value;qchGuardar();renderPanel()">${PROTS.map(k => `<option value="${k}" ${QCH.pregProt === k ? 'selected' : ''}>${INFO[k].e} ${escQ(INFO[k].n)}</option>`).join('')}</select>` : ''}
+        <div class="link" style="margin:2px 0 8px"><span>Sticker: “${escQ(pregTxt(P_.sticker))}”</span><button onclick="qchCopiarSticker()">Copiar</button></div>
+        <button class="btn sm" style="width:100%" onclick="qchPregunta()">+ Sumar historia #1 con caja de preguntas</button>
+      </div>
+      <div class="qch-g" style="margin-top:18px">🧊 Lo que respondieron (o lo que hay)</div>
+      <input class="inp" placeholder="¿Quién lo pidió? @usuario (opcional)" value="${escQ(QCH.quien)}" onchange="QCH.quien=this.value;qchGuardar()">
+      <div class="qch-top"><span>${sel.size ? sel.size + ' elegidos' : 'Nada elegido'}</span><button class="btn sec sm" onclick="qchAzar()">🎲 Al azar</button>${sel.size ? '<button class="btn sec sm" onclick="qchLimpiar()">Vaciar</button>' : ''}</div>
       ${ING.map(([g, l]) => `<div class="qch-g">${g}</div><div class="qch-chips">${l.map(([k, e, n]) => `<button class="qch-c${sel.has(k) ? ' on' : ''}" onclick="qchToggle('${k}')">${e} ${escQ(n)}</button>`).join('')}</div>`).join('')}
-      <div class="qch-g" style="margin-top:16px">Platos posibles</div>
-      ${!sel.size ? '<p class="hint">Elegí al menos una proteína, huevos, arroz o fideos.</p>' : !QCH.opciones.length ? '<p class="hint">Con esto no me sale un plato completo: sumá una proteína, huevos, arroz o fideos.</p>' :
-        `<div class="items">${QCH.opciones.map((o, i) => `<button class="it" onclick="qchSaga(${i})"><span class="ic">${INFO[o.p.req[0]].e}</span><div><b>${escQ(o.p.nombre)}</b><span>${escQ([o.s && 'Salsa: ' + o.s.nombre, o.g && 'Guarnición: ' + o.g.nombre].filter(Boolean).join(' · ') || 'Sin salsa ni guarnición con lo elegido')}</span></div></button>`).join('')}</div>
-        <p class="hint" style="margin-top:8px">Tocá un plato para sumar la saga a la mesa. Después podés editar cada placa y sumarle tu foto.</p>`}
-      <div class="qch-g" style="margin-top:14px">Con IA</div>
+      <div class="qch-g" style="margin-top:18px">🍽️ Platos posibles</div>
+      ${!sel.size ? '<p class="hint">Elegí al menos una proteína, huevos, arroz o fideos.</p>' : !QCH.opciones.length ? '<p class="hint">Con esto no me sale un plato: sumá una proteína, huevos, arroz o fideos.</p>' :
+        `${QCH.postres.length ? `<label class="hint" style="display:flex;gap:8px;align-items:center;margin-bottom:8px">🍰 Sumar postre a la saga: <select class="inp" style="margin:0;flex:1;padding:6px 8px" onchange="QCH.postreSel=this.value"><option value="">Sin postre</option>${QCH.postres.map(x => `<option value="${x.id}" ${QCH.postreSel === x.id ? 'selected' : ''}>${escQ(x.nombre)}</option>`).join('')}</select></label>` : ''}
+        <div class="items">${QCH.opciones.map((o, i) => `<button class="it" onclick="qchSaga(${i})"><span class="ic">${INFO[o.p.prot] ? INFO[o.p.prot].e : '🍽️'}</span><div><b>${escQ(o.p.nombre)}</b><span>${escQ([o.s && 'Salsa: ' + o.s.nombre, o.g && 'Guarnición: ' + o.g.nombre].filter(Boolean).join(' · ') || (o.p.c ? 'Plato completo' : 'Con lo elegido, sin salsa ni guarnición'))}</span></div></button>`).join('')}</div>`}
+      ${protsSel.length ? `<div class="qch-g" style="margin-top:16px">📖 Recetario completo</div>${protsSel.map(k => { const l = PRINC.filter(p => p.prot === k); return `<details class="qch-rec"><summary>${INFO[k].e} ${escQ(INFO[k].n)} · ${l.length} recetas</summary>${l.map(p => `<button class="qch-r${cumple(p, sel) ? '' : ' falta'}" onclick="qchReceta('${p.id}')" title="${cumple(p, sel) ? '' : 'Falta: ' + escQ([...p.req.filter(r => !sel.has(r)), ...(p.alt.length && !p.alt.some(a => sel.has(a)) ? [p.alt.map(a => INFO[a] ? INFO[a].n : a).join(' o ')] : [])].map(r => INFO[r] ? INFO[r].n : r).join(', '))}">${escQ(p.nombre)}${cumple(p, sel) ? '' : ' <i>· falta algo</i>'}</button>`).join('')}</details>`; }).join('')}` : ''}
+      <div class="qch-g" style="margin-top:16px">🍰 Postres posibles</div>
+      ${QCH.postres.length ? `<div class="items">${QCH.postres.map((x, i) => `<button class="it" onclick="qchPostre(${i})"><span class="ic">🍰</span><div><b>${escQ(x.nombre)}</b><span>Saga dulce de 4 historias</span></div></button>`).join('')}</div>` : '<p class="hint">Marcá ingredientes de “Para el postre” (chocolate, dulce de leche, frutas, galletitas…).</p>'}
+      <div class="qch-g" style="margin-top:16px">✨ Con IA</div>
       <button class="btn sec sm" id="qch-ia" onclick="qchIA()" style="width:100%" ${sel.size ? '' : 'disabled'}>✨ Que la IA invente un plato con lo elegido</button>`;
   };
+  window.qchGuardar = guardar;
   window.qchToggle = k => { QCH.sel.has(k) ? QCH.sel.delete(k) : QCH.sel.add(k); guardar(); renderPanel(); };
   window.qchLimpiar = () => { QCH.sel.clear(); guardar(); renderPanel(); };
   window.qchAzar = () => {
     QCH.sel.clear(); const pick = (arr, n) => arr.slice().sort(() => Math.random() - .5).slice(0, n);
-    const prot = ING[0][1].map(x => x[0]), veg = ING[1][1].map(x => x[0]), lac = ING[2][1].map(x => x[0]), des = ING[3][1].map(x => x[0]);
-    [...pick(prot, 1), ...pick(veg, 5), ...pick(lac, 2), ...pick(des, 3)].forEach(k => QCH.sel.add(k)); guardar(); renderPanel();
+    const g = i => ING[i][1].map(x => x[0]);
+    [...pick(g(0), 1), ...pick(g(1), 5), ...pick(g(2), 2), ...pick(g(3), 3), ...pick(g(4), 2)].forEach(k => QCH.sel.add(k)); guardar(); renderPanel();
   };
+  window.qchCopiarSticker = () => { const t = pregTxt((PREG[QCH.preg] || PREG.heladera).sticker); (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => toast('Texto del sticker copiado'), () => toast(t)); };
 
-  /* ───────── la saga: 6 placas ───────── */
+  /* ───────── la saga ───────── */
   const LINK = 'https://chefprivado.ar/?utm_source=instagram&utm_medium=historia&utm_campaign=que-comemos-hoy';
+  const TOQUE_DULCE = 'Servilo en vasitos o copas individuales: se ve de restaurante y se porciona solo.';
+  const ingTxt = ks => ks.map(k => INFO[k] ? INFO[k].e + ' ' + INFO[k].n : k);
+  window.qchPregunta = function () {
+    const P_ = PREG[QCH.preg] || PREG.heladera;
+    sumarSaga([{ tpl: 'qch_pregunta', kicker: '¿Qué comemos hoy? · #' + QCH.n, titulo: pregTxt(P_.titulo), texto: pregTxt(P_.texto), link: LINK }]);
+    toast('Historia #1 sumada. Pegá el sticker de preguntas en la zona marcada');
+  };
   function saga(plato) {
     const n = QCH.n++; guardar();
+    const q = quienTxt();
     const etq = '¿Qué comemos hoy? · #' + n;
-    const ingred = plato.ingredientes.map(k => INFO[k] ? INFO[k].e + ' ' + INFO[k].n : k);
+    const ingred = ingTxt(plato.ingredientes);
     const out = [
-      { tpl: 'qch_portada', kicker: etq, titulo: '¿Qué comemos hoy?', texto: ingred.join('\n'), link: LINK },
-      { tpl: 'qch_lista', kicker: 'Con lo que hay', titulo: plato.nombre, texto: ingred.join('\n'), link: LINK },
-      { tpl: 'qch_paso', kicker: 'Paso 1 · ' + plato.principal.corto, titulo: plato.principal.nombre, texto: plato.principal.pasos.join('\n'), link: LINK, img: null }
+      { tpl: 'qch_portada', kicker: q ? '#' + n + ' · pedido de ' + q : etq, titulo: plato.portada || '¿Qué comemos hoy?', texto: ingred.join('\n'), link: LINK },
+      { tpl: 'qch_lista', kicker: q ? 'Lo que tiene ' + q : 'Con lo que hay', titulo: plato.nombre, texto: ingred.join('\n'), link: LINK }
     ];
-    if (plato.salsa) out.push({ tpl: 'qch_paso', kicker: 'Paso 2 · La salsa', titulo: plato.salsa.nombre, texto: plato.salsa.pasos.join('\n'), link: LINK });
-    if (plato.guarnicion) out.push({ tpl: 'qch_paso', kicker: 'Paso ' + (plato.salsa ? 3 : 2) + ' · La guarnición', titulo: plato.guarnicion.nombre, texto: plato.guarnicion.pasos.join('\n'), link: LINK });
-    out.push({ tpl: 'qch_cierre', kicker: 'El toque de chef', titulo: plato.nombre, texto: plato.toque + '\n' + EMPLATADO, link: LINK });
+    let k = 1;
+    if (plato.principal) out.push({ tpl: 'qch_paso', kicker: 'Paso ' + k++ + ' · ' + plato.principal.corto, titulo: plato.principal.nombre, texto: plato.principal.pasos.join('\n'), link: LINK });
+    if (plato.salsa) out.push({ tpl: 'qch_paso', kicker: 'Paso ' + k++ + ' · La salsa', titulo: plato.salsa.nombre, texto: plato.salsa.pasos.join('\n'), link: LINK });
+    if (plato.guarnicion) out.push({ tpl: 'qch_paso', kicker: 'Paso ' + k++ + ' · La guarnición', titulo: plato.guarnicion.nombre, texto: plato.guarnicion.pasos.join('\n'), link: LINK });
+    if (plato.postre) out.push({ tpl: 'qch_paso', kicker: plato.principal ? 'Y de postre' : 'Paso ' + k++ + ' · El postre', titulo: plato.postre.nombre, texto: plato.postre.pasos.join('\n'), link: LINK });
+    out.push({ tpl: 'qch_cierre', kicker: plato.principal ? 'El toque de chef' : 'El toque dulce', titulo: plato.nombre + (plato.principal && plato.postre ? ' + ' + plato.postre.nombre.toLowerCase() : ''), texto: plato.toque + '\n' + (plato.principal ? EMPLATADO : 'Frío de heladera hasta el momento de servir, y algo crocante o fresco arriba para el contraste.'), link: LINK });
     return out;
   }
-  window.qchSaga = function (i) {
-    const o = QCH.opciones[i]; if (!o) return;
-    const plato = { nombre: nombrePlato(o), principal: o.p, salsa: o.s, guarnicion: o.g, toque: TOQUES[o.p.tag] || TOQUES.vegetal,
-      ingredientes: [...QCH.sel].filter(k => o.usa.includes(k)) };
-    if (!plato.ingredientes.length) plato.ingredientes = o.usa;
-    sumarSaga(saga(plato));
+  function desdeOpcion(o) {
+    const sel = QCH.sel, postre = QCH.postreSel ? POSTRES.find(x => x.id === QCH.postreSel) : null;
+    const ing = [...sel].filter(k => o.usa.includes(k) || (postre && usados(postre, sel).includes(k)));
+    return { nombre: nombrePlato(o), principal: o.p, salsa: o.s, guarnicion: o.g, postre, toque: TOQUES[o.p.tag] || TOQUES.vegetal, ingredientes: ing.length ? ing : o.usa };
+  }
+  window.qchSaga = function (i) { const o = QCH.opciones[i]; if (o) sumarSaga(saga(desdeOpcion(o))); };
+  window.qchReceta = function (id) {
+    const p = PRINC.find(x => x.id === id); if (!p) return;
+    const o = opcionesDe(p, QCH.sel)[0] || { p, s: null, g: null, usa: usados(p, QCH.sel) };
+    const pl = desdeOpcion(o); if (!pl.ingredientes.length) pl.ingredientes = p.req.concat(p.alt.slice(0, 1));
+    sumarSaga(saga(pl));
+  };
+  window.qchPostre = function (i) {
+    const x = QCH.postres[i]; if (!x) return;
+    sumarSaga(saga({ portada: '¿Y de postre?', nombre: x.nombre, postre: x, toque: TOQUE_DULCE, ingredientes: usados(x, QCH.sel) }));
   };
   function sumarSaga(placas) {
     const ini = historias.length;
     placas.forEach(h => historias.push(Object.assign({ foco: 50, zoom: 1 }, h)));
-    renderGrid(); renderPanel(); toast('Saga sumada: ' + placas.length + ' historias');
+    renderGrid(); renderPanel(); if (placas.length > 1) toast('Saga sumada: ' + placas.length + ' historias');
     setTimeout(() => { const c = document.querySelectorAll('.card')[ini]; c && c.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 80);
   }
 
@@ -197,7 +227,7 @@ Español rioplatense con voseo, pasos en imperativo (salteá, sumá, cociná), t
   };
 
   /* ───────── plantillas de canvas ───────── */
-  Object.assign(PLANTILLAS, { qch_portada: '¿Qué comemos hoy? · Portada', qch_lista: '¿Qué comemos hoy? · Heladera', qch_paso: '¿Qué comemos hoy? · Paso', qch_cierre: '¿Qué comemos hoy? · Toque de chef' });
+  Object.assign(PLANTILLAS, { qch_pregunta: '¿Qué comemos hoy? · #1 Caja de preguntas', qch_portada: '¿Qué comemos hoy? · Portada', qch_lista: '¿Qué comemos hoy? · Heladera', qch_paso: '¿Qué comemos hoy? · Paso', qch_cierre: '¿Qué comemos hoy? · Toque de chef' });
   const ls = (x, on) => { if ('letterSpacing' in x) x.letterSpacing = on; };
   function marca(x, oscuro) { x.font = '500 30px "DM Sans"'; x.textAlign = 'center'; x.fillStyle = oscuro ? 'rgba(250,246,239,.6)' : 'rgba(13,27,42,.6)'; ls(x, '4px'); x.fillText('CHEFPRIVADO.AR', W / 2, 1700); ls(x, '0px'); }
   function chips(x, items, y0, { bg, fg, borde, size = 38 }) {
@@ -211,6 +241,24 @@ Español rioplatense con voseo, pasos en imperativo (salteá, sumá, cociná), t
     return y;
   }
   Object.assign(TPL, {
+    qch_pregunta(x, h, img, logo) {
+      fondoNavy(x, 103);
+      if (img) { x.globalAlpha = .25; cover(x, img, 0, 0, W, H, h.foco, h.zoom); x.globalAlpha = 1; }
+      logoTop(x, logo, 190);
+      let y = 420;
+      y = bloque(x, h.kicker, { font: '600 {s}px "DM Sans"', size: 32, maxW: W - 180, maxLines: 1, y, color: C.gold2, align: 'center', upper: true, spacing: 6 });
+      y = bloque(x, h.titulo, { font: '400 {s}px "DM Serif Display"', size: 104, min: 60, maxW: W - 160, maxLines: 3, y: y + 34, color: C.cream, align: 'center', lh: 1.06 });
+      y = bloque(x, h.texto, { font: '400 {s}px "DM Sans"', size: 40, min: 30, maxW: W - 220, maxLines: 3, y: y + 34, color: 'rgba(250,246,239,.8)', align: 'center', lh: 1.35 });
+      const zy = Math.max(y + 110, 1010), zh = 380;
+      x.fillStyle = C.gold2; x.font = '400 64px "DM Sans"'; x.textAlign = 'center'; x.fillText('👇', W / 2, zy - 22);
+      if (h._pv) {
+        x.save(); x.setLineDash([18, 14]); x.strokeStyle = 'rgba(232,201,106,.75)'; x.lineWidth = 4; x.beginPath(); x.roundRect(150, zy, W - 300, zh, 40); x.stroke(); x.restore();
+        x.fillStyle = 'rgba(232,201,106,.85)'; x.font = '600 34px "DM Sans"'; x.fillText('Acá va la caja de preguntas', W / 2, zy + zh / 2 - 6);
+        x.font = '400 26px "DM Sans"'; x.fillStyle = 'rgba(250,246,239,.55)'; x.fillText('(esta guía no sale en el PNG)', W / 2, zy + zh / 2 + 36);
+      }
+      x.font = 'italic 400 36px "DM Serif Display"'; x.fillStyle = 'rgba(232,201,106,.9)'; x.fillText('Las mejores respuestas se vuelven receta ✦', W / 2, zy + zh + 90);
+      marca(x, true);
+    },
     qch_portada(x, h, img, logo) {
       fondoNavy(x, 57);
       if (img) { x.globalAlpha = .28; cover(x, img, 0, 0, W, H, h.foco, h.zoom); x.globalAlpha = 1; }
