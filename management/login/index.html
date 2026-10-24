@@ -66,7 +66,13 @@ h1,h2,h3,h4,.serif{font-family:'DM Serif Display',Georgia,serif!important;font-w
   </button>
   <div class="error" id="errorMsg"></div>
   <div class="foot">
-    ¿No tenés acceso? <a href="mailto:dario@dali-arquitectura.com.ar">Contactanos</a><br>
+    <a href="#" id="lnkReset" style="color:var(--terra)">¿Olvidaste tu contraseña?</a><br>
+    <div id="resetBox" style="display:none;margin:12px 0;padding:14px;border:1px solid var(--terra-b);border-radius:10px;text-align:left;font-size:13px;line-height:1.6">
+      Escribí tu email arriba y tocá el botón: te mandamos una contraseña nueva.
+      <button type="button" class="btn" id="btnReset" style="margin-top:10px"><span class="btn-text">Enviarme una contraseña nueva</span></button>
+      <div id="resetMsg" style="margin-top:8px"></div>
+    </div>
+    ¿No tenés acceso? <a href="https://wa.me/5491160410607?text=Hola%20Daro!%20Necesito%20ayuda%20con%20mi%20acceso%20a%20los%20cursos%20de%20Celestia%20Management" target="_blank" rel="noopener">Escribinos por WhatsApp</a> · <a href="/management#cursos">Ver cursos</a><br>
     <a href="/management" style="color:var(--muted-l)">← Volver al sitio</a>
   </div>
 </div>
@@ -82,6 +88,18 @@ if (stored) {
 
 document.getElementById('email').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('password').focus(); });
 document.getElementById('password').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+
+document.getElementById('lnkReset').addEventListener('click', e => { e.preventDefault(); const b = document.getElementById('resetBox'); b.style.display = b.style.display === 'none' ? 'block' : 'none'; document.getElementById('email').focus(); });
+document.getElementById('btnReset').addEventListener('click', async () => {
+  const email = document.getElementById('email').value.trim(), m = document.getElementById('resetMsg'), b = document.getElementById('btnReset');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { m.textContent = 'Escribí arriba el email con el que compraste.'; return; }
+  b.disabled = true; m.textContent = 'Enviando…';
+  try {
+    const r = await fetch('/api/mf/auth?action=reset', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) });
+    m.innerHTML = r.ok ? '✓ Si ese email tiene una cuenta, en unos minutos te llega la contraseña nueva. Revisá también spam.' : 'No se pudo enviar. Escribinos por <a href="https://wa.me/5491160410607" target="_blank" rel="noopener">WhatsApp</a>.';
+  } catch (e) { m.innerHTML = 'No se pudo enviar. Escribinos por <a href="https://wa.me/5491160410607" target="_blank" rel="noopener">WhatsApp</a>.'; }
+  b.disabled = false;
+});
 
 async function doLogin() {
   const email = document.getElementById('email').value.trim();
