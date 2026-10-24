@@ -102,6 +102,7 @@
 
   /* ───────── estado y panel ───────── */
   const QCH = window.QCH = { sel: new Set(), opciones: [], postres: [], n: 1, quien: '', preg: 'heladera', pregProt: 'pollo', postreSel: '' };
+  
   try { const g = JSON.parse(localStorage.getItem('cel_qch') || '{}'); (g.sel || []).forEach(k => INFO[k] && QCH.sel.add(k)); ['n', 'quien', 'preg', 'pregProt'].forEach(k => { if (g[k] != null) QCH[k] = g[k]; }); } catch (e) {}
   const guardar = () => { try { localStorage.setItem('cel_qch', JSON.stringify({ sel: [...QCH.sel], n: QCH.n, quien: QCH.quien, preg: QCH.preg, pregProt: QCH.pregProt })); } catch (e) {} };
   const escQ = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -109,10 +110,10 @@
   const nomProt = k => ({ carne: 'carne', picada: 'carne picada', cerdo: 'cerdo', pescado: 'pescado', salmon: 'salmón', huevos: 'huevos', atun: 'atún', legumbres: 'garbanzos o lentejas' })[k] || (INFO[k] ? INFO[k].n.toLowerCase() : k);
   const PREG = {
     heladera: { nom: '🧊 ¿Qué tenés en la heladera?', titulo: '¿Qué tenés en la heladera?', texto: 'Contame 3 o 4 ingredientes y te armo un plato de chef con lo que hay.', sticker: 'Tengo… 🧊' },
-    proteina: { nom: '🍗 Tengo pollo, carne, pescado…', titulo: 'Tengo {p}. ¿Qué le hago?', texto: 'Contame qué más hay en tu heladera y te armo la receta completa: salsa, guarnición y toque de chef.', sticker: 'Con {p} tengo…' },
     postre: { nom: '🍫 ¿Y de postre?', titulo: '¿Y de postre?', texto: 'Contame qué dulce tenés a mano (chocolate, frutas, dulce de leche…) y te armo un postre de chef.', sticker: 'Para el postre tengo… 🍫' },
     antojo: { nom: '😋 ¿Qué tenés ganas de comer?', titulo: '¿Qué tenés ganas de comer hoy?', texto: 'Pollo, pasta, algo liviano o algo dulce… Contame y te paso la receta estilo chef.', sticker: 'Hoy tengo ganas de…' }
   };
+  if (!PREG[QCH.preg]) QCH.preg = 'heladera';
   const pregTxt = (t) => t.replace(/\{p\}/g, nomProt(QCH.pregProt));
   const quienTxt = () => { const q = String(QCH.quien || '').trim(); return q ? (q.startsWith('@') ? q : '@' + q) : ''; };
 
@@ -124,9 +125,8 @@
     const protsSel = PROTS.filter(k => sel.has(k)).concat(['arroz', 'fideos', 'berenjena'].filter(k => sel.has(k)));
     return `<div class="qch-box">
         <div class="qch-g" style="margin-top:0">📮 Historia #1 · Caja de preguntas</div>
-        <p class="hint" style="margin-bottom:8px">Publicala primero: tiene el lugar para el sticker de preguntas. Con lo que te respondan, armás la saga.</p>
+        <p class="hint" style="margin-bottom:8px">Es la primera de la saga: le preguntás a tus seguidores qué tienen. Deja el lugar para el sticker de preguntas. Con lo que te respondan, armás la historia 2 (“Tengo…”) y la receta.</p>
         <select class="inp" onchange="QCH.preg=this.value;qchGuardar();renderPanel()">${Object.entries(PREG).map(([k, v]) => `<option value="${k}" ${QCH.preg === k ? 'selected' : ''}>${v.nom}</option>`).join('')}</select>
-        ${QCH.preg === 'proteina' ? `<select class="inp" onchange="QCH.pregProt=this.value;qchGuardar();renderPanel()">${PROTS.map(k => `<option value="${k}" ${QCH.pregProt === k ? 'selected' : ''}>${INFO[k].e} ${escQ(INFO[k].n)}</option>`).join('')}</select>` : ''}
         <div class="link" style="margin:2px 0 8px"><span>Sticker: “${escQ(pregTxt(P_.sticker))}”</span><button onclick="qchCopiarSticker()">Copiar</button></div>
         <button class="btn sm" style="width:100%" onclick="qchPregunta()">+ Sumar historia #1 con caja de preguntas</button>
       </div>
@@ -157,6 +157,14 @@
   /* ───────── la saga ───────── */
   const LINK = 'https://chefprivado.ar/?utm_source=instagram&utm_medium=historia&utm_campaign=que-comemos-hoy';
   const TOQUE_DULCE = 'Servilo en vasitos o copas individuales: se ve de restaurante y se porciona solo.';
+  /* historia 2: la respuesta del seguidor, "Tengo pollo, papa y crema. ¿Qué le hago?" */
+  function tengo(ks, dulce) {
+    const orden = dulce ? ks.slice() : ks.slice().sort((a, b) => (PROTS.includes(b) ? 1 : 0) - (PROTS.includes(a) ? 1 : 0));
+    const nom = orden.map(k => INFO[k] ? INFO[k].n.toLowerCase().replace(/ \(.*\)$/, '') : k);
+    const tres = nom.slice(0, 3), mas = nom.length > 3;
+    const lista = mas ? tres.join(', ') + ' y algo más' : tres.length > 1 ? tres.slice(0, -1).join(', ') + ' y ' + tres[tres.length - 1] : (tres[0] || 'algo en la heladera');
+    return 'Tengo ' + lista + '. ' + (dulce ? '¿Qué postre hago?' : '¿Qué le hago?');
+  }
   const ingTxt = ks => ks.map(k => INFO[k] ? INFO[k].e + ' ' + INFO[k].n : k);
   window.qchPregunta = function () {
     const P_ = PREG[QCH.preg] || PREG.heladera;
@@ -169,7 +177,7 @@
     const etq = '¿Qué comemos hoy? · #' + n;
     const ingred = ingTxt(plato.ingredientes);
     const out = [
-      { tpl: 'qch_portada', kicker: q ? '#' + n + ' · pedido de ' + q : etq, titulo: plato.portada || '¿Qué comemos hoy?', texto: ingred.join('\n'), link: LINK },
+      { tpl: 'qch_portada', kicker: q ? '#' + n + ' · me escribió ' + q : etq + ' · me escribieron', titulo: tengo(plato.ingredientes, !plato.principal), texto: ingred.join('\n'), link: LINK },
       { tpl: 'qch_lista', kicker: q ? 'Lo que tiene ' + q : 'Con lo que hay', titulo: plato.nombre, texto: ingred.join('\n'), link: LINK }
     ];
     let k = 1;
@@ -265,12 +273,14 @@ Español rioplatense con voseo, pasos en imperativo (salteá, sumá, cociná), t
       logoTop(x, logo, 200);
       let y = 470;
       y = bloque(x, h.kicker, { font: '600 {s}px "DM Sans"', size: 32, maxW: W - 180, maxLines: 1, y, color: C.gold2, align: 'center', upper: true, spacing: 6 });
-      x.font = '400 150px "DM Serif Display"'; x.textAlign = 'center'; x.fillStyle = C.cream;
-      const t = String(h.titulo || '¿Qué comemos hoy?'), m = t.match(/^(.*?)(\S+\s*\?)$/);
-      x.fillText(m ? m[1].trim() : t, W / 2, y + 190);
-      if (m) { x.font = 'italic 400 170px "DM Serif Display"'; x.fillStyle = C.gold2; x.fillText(m[2], W / 2, y + 360); }
-      y += 440;
-      x.font = '400 40px "DM Sans"'; x.fillStyle = 'rgba(250,246,239,.78)'; x.fillText('Abrí la heladera. Con esto armo un plato de chef:', W / 2, y);
+      const t = String(h.titulo || ''), qi = t.lastIndexOf('¿'), dicho = qi > 0 ? t.slice(0, qi).trim() : '', preg = qi >= 0 ? t.slice(qi) : t;
+      if (dicho) {
+        x.font = 'italic 400 120px "DM Serif Display"'; x.fillStyle = 'rgba(232,201,106,.35)'; x.textAlign = 'left'; x.fillText('“', 70, y + 150);
+        y = bloque(x, dicho, { font: '400 {s}px "DM Serif Display"', size: 92, min: 56, maxW: W - 200, maxLines: 3, y: y + 40, color: C.cream, align: 'center', lh: 1.08 });
+        y = bloque(x, preg, { font: 'italic 400 {s}px "DM Serif Display"', size: 96, min: 60, maxW: W - 180, maxLines: 2, y: y + 24, color: C.gold2, align: 'center', lh: 1.05 });
+      } else y = bloque(x, preg, { font: 'italic 400 {s}px "DM Serif Display"', size: 130, min: 70, maxW: W - 160, maxLines: 2, y: y + 40, color: C.gold2, align: 'center', lh: 1.05 });
+      y += 90;
+      x.font = '400 38px "DM Sans"'; x.fillStyle = 'rgba(250,246,239,.78)'; x.textAlign = 'center'; x.fillText('Lo que hay en la heladera:', W / 2, y);
       const items = String(h.texto || '').split('\n').map(s => s.trim()).filter(Boolean).slice(0, 12);
       chips(x, items, y + 50, { bg: 'rgba(250,246,239,.08)', fg: C.cream, borde: 'rgba(201,168,76,.55)', size: items.length > 8 ? 34 : 40 });
       pastilla(x, 'Deslizá y cocinamos →', 1540);
