@@ -70,8 +70,8 @@ export default async function handler(req) {
   <div style="background:#FAF6EF;padding:24px 12px;font-family:Arial,Helvetica,sans-serif">
   <div style="max-width:600px;margin:auto;background:#fff;border-radius:16px;overflow:hidden;border:1px solid #E7DFCF">
     <div style="background:#0D1B2A;padding:28px 26px;color:#FAF6EF">
-      <div style="font-family:Georgia,serif;font-size:26px">Celestia <i style="color:#E8C96A">Management</i></div>
-      <div style="font-size:11px;letter-spacing:.2em;color:rgba(250,246,239,.6);margin-top:6px">COSTOS · CARTA · RENTABILIDAD GASTRONÓMICA</div>
+      <img src="https://www.chefprivado.ar/img/management/logo-pill.png" width="250" alt="Celestia Management" style="display:block;height:auto;border:0">
+      <div style="font-size:11px;letter-spacing:.2em;color:rgba(250,246,239,.6);margin-top:12px">COSTOS · CARTA · RENTABILIDAD GASTRONÓMICA</div>
     </div>
     <div style="padding:24px 26px 6px;color:#2a2a3a;font-size:15px;line-height:1.6">
       ${paraCliente
