@@ -111,6 +111,12 @@ input[type=range]{width:100%;accent-color:var(--gold)}
 .qch-rec summary{cursor:pointer;padding:9px 11px;font-size:13px;font-weight:600}
 .qch-r{display:block;width:100%;text-align:left;background:none;border:0;border-top:1px solid rgba(255,255,255,.06);color:var(--cream);padding:8px 12px;font-size:12.5px}
 .qch-r:hover{background:rgba(201,168,76,.1)}.qch-r.falta{color:var(--mut)}.qch-r i{font-style:normal;font-size:11px;color:#d9a066}
+.gal-h{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold2);margin:18px 0 8px;display:flex;justify-content:space-between}.gal-h span{color:var(--mut);letter-spacing:0;text-transform:none}
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.gal button{position:relative;border:2px solid transparent;border-radius:10px;overflow:hidden;padding:0;background:var(--navy3);aspect-ratio:1}
+.gal button img{width:100%;height:100%;object-fit:cover;display:block}
+.gal button:hover{border-color:var(--gold)}.gal button.on{border-color:var(--gold2)}
+.gal button i{position:absolute;top:4px;left:4px;background:var(--gold);color:var(--navy);font-style:normal;font-weight:700;font-size:12px;border-radius:999px;min-width:22px;height:22px;display:flex;align-items:center;justify-content:center}
 .qch-c.on{background:var(--gold);border-color:var(--gold);color:var(--navy);font-weight:600}
 @media(max-width:1100px){.reel{grid-template-columns:1fr}.r-play{position:static;max-width:380px}}
 @media(max-width:900px){.wrap{grid-template-columns:1fr}.side{position:static;max-height:none;border-right:0;border-bottom:1px solid var(--line)}}
@@ -168,11 +174,12 @@ input[type=range]{width:100%;accent-color:var(--gold)}
     <aside class="side">
       <p class="hint" style="margin-top:2px"><b style="color:var(--cream)">🎬 Reels de presentación</b><br>Guiones listos para relanzar la cuenta. Elegí uno, después subí tus fotos (en el orden de las placas) y se reparten solas. Cada placa te dice qué foto va mejor.</p>
       <div class="items" id="r-pres" style="margin-bottom:18px"></div>
-      <p class="hint"><b style="color:var(--cream)">1. O elegí un tema del blog</b><br>El reel se arma solo con la nota: portada, las ideas principales, un tip y el cierre.</p>
-      <div class="items" id="r-notas"></div>
-      <p class="hint" style="margin-top:18px"><b style="color:var(--cream)">2. Sumá tus fotos (opcional)</b><br>Se reparten en orden entre las placas. Si subís 10, cada placa lleva una tuya.</p>
+      <p class="hint" style="margin-top:0"><b style="color:var(--cream)">📷 Tus fotos</b><br>Se reparten en orden entre las placas. Si subís 10, cada placa lleva una tuya.</p>
       <label class="drop" id="r-drop"><b>Subí las fotos del reel</b>Arrastralas en el orden en que van.<input type="file" id="r-fotos" accept="image/*" multiple hidden></label>
       <button class="btn sec sm" onclick="reelDesdeFotos()" style="width:100%">Armar reel solo con mis fotos</button>
+      <div id="r-gal"></div>
+      <p class="hint" style="margin-top:22px"><b style="color:var(--cream)">📰 O armá un reel desde una nota del blog</b><br>El reel se arma solo con la nota: portada, las ideas principales, un tip y el cierre.</p>
+      <div class="items" id="r-notas"></div>
     </aside>
     <main class="main">
       <div class="reel">
@@ -251,6 +258,7 @@ const FRASES = [
 ];
 const DIAS = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
 
+let GALERIA = [], galTag = 'todas';
 let BASE = { notas: [] }, PLATOS = [], RESENAS = [], OCUPADAS = new Set();
 let historias = [], fotos = [], tabActual = 'fotos';
 const imgCache = {};
@@ -280,6 +288,7 @@ supa.auth.getSession().then(({ data }) => { if (data && data.session) entrar(); 
 /* ───────── base de contenido ───────── */
 async function cargarBase() {
   try { BASE = await (await fetch('/data/historias-base.json', { cache: 'no-store' })).json(); } catch (e) { BASE = { notas: [] }; }
+  try { GALERIA = await (await fetch('/data/galeria.json', { cache: 'no-store' })).json(); } catch (e) { GALERIA = []; }
   const hoy = new Date(); const desde = iso(hoy); const hasta = iso(new Date(hoy.getFullYear(), hoy.getMonth() + 2, 0));
   const [p, r, rv, b] = await Promise.all([
     supa.from('platos_catalogo').select('id,titulo,descripcion,imagen_url,cocina,activo').order('titulo'),
@@ -306,12 +315,24 @@ const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&am
 function item(k, img, titulo, sub, onclick, icono) {
   return `<button class="it${USADOS[k] ? ' usado' : ''}" onclick="${onclick}">${img ? `<img src="${esc(img)}" alt="" loading="lazy">` : `<span class="ic">${icono || '✦'}</span>`}<div><b>${esc(titulo)}</b><span>${esc(sub)}</span></div></button>`;
 }
+/* galería de fotos propias (data/galeria.json, se carga con tools/galeria.py) */
+function galeriaHTML(modo) {
+  if (!GALERIA.length) return `<p class="hint" style="margin-top:14px">📁 <b style="color:var(--cream)">Galería Celestia</b>: todavía no hay fotos cargadas.</p>`;
+  const tags = ['todas', ...new Set(GALERIA.map(g => g.tag || 'general'))];
+  const lista = GALERIA.map((g, i) => [g, i]).filter(([g]) => galTag === 'todas' || (g.tag || 'general') === galTag);
+  const enReel = src => modo === 'reel' && REEL.fotos.includes(src);
+  return `<div class="gal-h">📁 Galería Celestia <span>${GALERIA.length} fotos</span></div>
+    <div class="qch-chips" style="margin-bottom:8px">${tags.map(t => `<button class="qch-c${galTag === t ? ' on' : ''}" onclick="galTag='${t}';${modo === 'reel' ? 'reelGaleria()' : 'renderPanel()'}">${t}</button>`).join('')}</div>
+    <p class="hint" style="margin-bottom:8px">${modo === 'reel' ? 'Tocá las fotos en el orden en que van en el reel.' : 'Tocá una foto para sumar una historia con ella.'}</p>
+    <div class="gal">${lista.map(([g, i]) => `<button class="${enReel(g.src) ? 'on' : ''}" onclick="${modo === 'reel' ? `reelGalToggle(${i})` : `agregar(desdeFoto({ url: GALERIA[${i}].src }))`}"><img src="${g.src}" alt="" loading="lazy">${enReel(g.src) ? `<i>${REEL.fotos.indexOf(g.src) + 1}</i>` : ''}</button>`).join('')}</div>`;
+}
 function renderPanel() {
   const P = document.getElementById('panel'); let h = '';
   if (tabActual === 'fotos') {
     h = `<label class="drop" id="drop"><b>Subí tus fotos</b>Arrastralas acá o tocá para elegir. Cada foto se convierte en una historia con la plantilla y un texto de la base.<input type="file" id="f-fotos" accept="image/*" multiple hidden></label>
       <p class="hint">Las fotos quedan solo en este navegador mientras trabajás; no se suben a ningún servidor.</p>
-      <div class="items">${fotos.map((f, i) => `<button class="it" onclick="agregarFoto(${i})"><img src="${f.url}" alt=""><div><b>Foto ${i + 1}</b><span>Tocá para sumar otra historia con esta foto</span></div></button>`).join('')}</div>`;
+      <div class="items">${fotos.map((f, i) => `<button class="it" onclick="agregarFoto(${i})"><img src="${f.url}" alt=""><div><b>Foto ${i + 1}</b><span>Tocá para sumar otra historia con esta foto</span></div></button>`).join('')}</div>
+      ${galeriaHTML('hist')}`;
   } else if (tabActual === 'notas') {
     h = `<p class="hint">Una historia por nota, con el link para el sticker.</p><div class="items">` + BASE.notas.map((n, i) => item('nota:' + n.slug, n.img_sq, n.titulo, n.icono + ' ' + n.cat, `agregar(desdeNota(${i}))`)).join('') + '</div>';
   } else if (tabActual === 'tips') {
@@ -708,6 +729,7 @@ function reelPresentacion(id) {
   toast('Guion listo: subí tus fotos en el orden de las placas');
 }
 function reelPanel() {
+  reelGaleria();
   document.getElementById('r-pres').innerHTML = PRESENTACION.map(p => `<button class="it" onclick="reelPresentacion('${p.id}')"><span class="ic">${p.icono}</span><div><b>${esc(p.nombre)}</b><span>${esc(p.sub)}</span></div></button>`).join('');
   document.getElementById('r-notas').innerHTML = BASE.notas.map((n, i) =>
     `<button class="it${USADOS['reel:' + n.slug] ? ' usado' : ''}" onclick="reelDesdeNota(${i})"><img src="${esc(n.img_sq)}" alt="" loading="lazy"><div><b>${esc(n.titulo)}</b><span>${esc(n.icono + ' ' + n.cat)} · ${(n.secciones || []).length + 3} placas</span></div></button>`).join('');
@@ -716,6 +738,13 @@ function reelPanel() {
   d.ondragover = e => { e.preventDefault(); d.classList.add('over'); };
   d.ondragleave = () => d.classList.remove('over');
   d.ondrop = e => { e.preventDefault(); d.classList.remove('over'); reelSubir(e.dataTransfer.files); };
+}
+function reelGaleria() { const el = document.getElementById('r-gal'); if (el) el.innerHTML = galeriaHTML('reel'); }
+function reelGalToggle(i) {
+  const src = GALERIA[i].src, k = REEL.fotos.indexOf(src);
+  if (k >= 0) REEL.fotos.splice(k, 1); else REEL.fotos.push(src);
+  if (REEL.frames.length) { REEL.frames.forEach(f => { if (f.img && !REEL.fotos.includes(f.img) && !/^blob:/.test(f.img)) f.img = null; }); reelRepartirFotos(); reelRender(); }
+  reelGaleria();
 }
 function reelSubir(list) {
   const arr = [...list].filter(f => /^image\//.test(f.type)); if (!arr.length) return;
