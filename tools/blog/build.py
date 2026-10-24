@@ -264,9 +264,9 @@ def articulo(a):
           '</div></section>')
     h += f'<article class="cp-body"><div class="b-es">{bloques(es["cuerpo"],"es")}</div><div class="b-en" lang="en">{bloques(en["cuerpo"],"en")}</div></article>'
     if a['cat'] in ('trastienda', 'seguridad'):
-        h += ('<aside class="cp-mf"><span>✦ Método Fermento</span><b>' + bi('¿Tenés un restaurante, café o emprendimiento gastronómico?', 'Do you run a restaurant, café or food business?') + '</b>'
+        h += ('<aside class="cp-mf"><span>✦ Celestia Management</span><b>' + bi('¿Tenés un restaurante, café o emprendimiento gastronómico?', 'Do you run a restaurant, café or food business?') + '</b>'
               '<p>' + bi('Te ayudo con carta, costos, procesos, equipo y marca. Primer diagnóstico sin costo.', 'I help with menu, costs, processes, team and brand. First diagnosis free.') + '</p>'
-              '<a href="/fermento?utm_source=blog&utm_medium=nota&utm_campaign=' + a['slug'][:40] + '">' + bi('Conocer la consultoría →', 'See the consulting →') + '</a></aside>')
+              '<a href="/management?utm_source=blog&utm_medium=nota&utm_campaign=' + a['slug'][:40] + '">' + bi('Conocer la consultoría →', 'See the consulting →') + '</a></aside>')
     h += (f'<nav class="cp-fin" aria-label="Volver"><a class="pri" href="/blog">← {bi("Volver a todas las notas","Back to all notes")}</a>'
           f'<a href="/blog#{a["cat"]}">{c["icono"]} {bi("Más de " + c["es"], "More " + c["en"])}</a></nav>')
     h += f'<a class="cp-flot" id="cp-flot" href="/blog"><b>←</b>{bi("Blog","Blog")}</a><script>(function(){{var f=document.getElementById("cp-flot");addEventListener("scroll",function(){{var e=document.querySelector(".cp-fin");f.classList.toggle("on",scrollY>520&&(!e||e.getBoundingClientRect().top>innerHeight));}},{{passive:true}});}})();</script>'

@@ -5,17 +5,22 @@
     {
       "source": "/:path*",
       "has": [{ "type": "host", "value": "(www\\.)?metodofermento\\.com\\.ar" }],
-      "destination": "https://www.chefprivado.ar/fermento",
+      "destination": "https://www.chefprivado.ar/management",
+      "permanent": true
+    },
+    {
+      "source": "/fermento",
+      "destination": "/management",
       "permanent": true
     },
     {
       "source": "/metodofermento",
-      "destination": "/fermento",
+      "destination": "/management",
       "permanent": true
     },
     {
       "source": "/metodo-fermento",
-      "destination": "/fermento",
+      "destination": "/management",
       "permanent": true
     },
     {
