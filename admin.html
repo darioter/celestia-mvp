@@ -103,7 +103,11 @@
 
 
   /* nav del admin + management + celu */
-  .adm-nav{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap}
+  .adm-nav{display:flex;gap:12px;margin-bottom:28px;flex-wrap:wrap;align-items:stretch}
+  .nav-g{display:flex;flex-direction:column;gap:7px;padding:9px 11px 11px;border:1px solid rgba(255,255,255,.06);border-top:2px solid var(--g);border-radius:12px;background:rgba(255,255,255,.02)}
+  .nav-gl{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--g);font-weight:600}
+  .nav-gb{display:flex;gap:6px;flex-wrap:wrap}
+  .nav-g .filter-btn.active{border-color:var(--g);color:var(--g);background:color-mix(in srgb,var(--g) 14%,transparent)}
   .login-forgot{display:block;margin-top:14px;font-size:12.5px;color:var(--gold-light);text-decoration:none;text-align:center}
   .login-msg{display:none;margin-top:10px;font-size:12.5px;color:rgba(250,246,239,.75);text-align:center;line-height:1.5}
   .mg-kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px}
@@ -127,7 +131,8 @@
     .admin-header{padding:12px 14px;flex-wrap:wrap;gap:10px}
     .admin-stats{order:3;width:100%;justify-content:space-around;gap:10px}
     .admin-body{padding:16px 12px}
-    .adm-nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:18px}
+    .adm-nav{flex-direction:column;gap:8px;margin-bottom:18px}
+    .nav-gb{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
     .adm-nav .filter-btn{padding:9px 4px;font-size:11.5px;letter-spacing:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center;border-radius:10px}
     .mg-kpis{grid-template-columns:repeat(2,1fr)}
     .mg-h{flex-direction:column}
@@ -338,6 +343,16 @@
   .ing-tag.c{background:rgba(201,168,76,0.12);color:var(--gold-light);border:1px solid rgba(201,168,76,0.3)}
   .ing-tag.m{background:rgba(124,158,191,0.12);color:#9fbcd8;border:1px solid rgba(124,158,191,0.3)}
   .ing-up{color:#E2A33E}.ing-down{color:#5DBF87}
+  .ing-kpi.gen{border-color:var(--gold);background:rgba(201,168,76,0.07)}
+  .ing-rubros{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:14px}
+  .ing-rb{text-align:left;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-left:3px solid var(--rc);border-radius:10px;padding:9px 12px;cursor:pointer;color:var(--cream);font-family:inherit}
+  .ing-rb:hover{background:rgba(255,255,255,0.06)}
+  .ing-rb.on{background:color-mix(in srgb,var(--rc) 16%,transparent);border-color:var(--rc)}
+  .ing-rb small{display:block;font-size:11px;color:rgba(250,246,239,0.65)}
+  .ing-rb b{display:block;font-family:'DM Serif Display',serif;font-weight:400;font-size:19px;margin:2px 0}
+  .ing-rb span{font-size:10.5px;color:rgba(250,246,239,0.4)}
+  .ing-t tr.ing-rh td{background:color-mix(in srgb,var(--rc) 10%,transparent);border-left:3px solid var(--rc);padding:9px 12px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--rc);font-weight:600}
+  .ing-t tr.ing-rh td em{font-style:normal;letter-spacing:0;text-transform:none;font-weight:500;margin-left:10px}
   .ing-bar{display:inline-block;height:6px;border-radius:3px;background:linear-gradient(90deg,var(--gold),var(--gold-light));vertical-align:middle;margin-right:6px}
   @media(max-width:800px){.ing-kpis{grid-template-columns:1fr 1fr}.ing-t .hide-m{display:none}}
   .res-senia {
@@ -968,21 +983,11 @@ select{color-scheme:dark}select option,select optgroup{background:#13263a;color:
 
   <div class="admin-body">
     <div class="adm-nav">
-      <button class="filter-btn active" onclick="verSeccion('reservas',this)">Reservas</button>
-      <button class="filter-btn" onclick="verSeccion('semanal',this)">Chef Semanal</button>
-      <button class="filter-btn" onclick="verSeccion('agenda',this)">Agenda</button>
-      <button class="filter-btn" onclick="verSeccion('pagos',this)">Pagos</button>
-      <button class="filter-btn" onclick="verSeccion('bloqueos',this)">Bloquear días</button>
-      <button class="filter-btn" onclick="verSeccion('chefs',this)">Chefs</button>
-      <button class="filter-btn" onclick="verSeccion('casos',this)">Casos de éxito</button>
-      <button class="filter-btn" onclick="verSeccion('resenas',this)">Reseñas</button>
-      <button class="filter-btn" onclick="verSeccion('ingredientes',this)">Ingredientes</button>
-      <button class="filter-btn" onclick="verSeccion('platos',this)">Platos</button>
-      <button class="filter-btn" onclick="verSeccion('cupones',this)">Cupones</button>
-      <button class="filter-btn" onclick="verSeccion('banners',this)">Banners</button>
-      <button class="filter-btn" onclick="verSeccion('fiestas',this)">📦 Cajas</button>
-      <button class="filter-btn" onclick="verSeccion('management',this)">🎓 Management</button>
-      <a class="filter-btn" href="/admin-historias" style="text-decoration:none;">📸 Historias IG</a>
+      <div class="nav-g" style="--g:#C9A84C"><span class="nav-gl">Celestia · Servicio</span><div class="nav-gb"><button class="filter-btn active" onclick="verSeccion('reservas',this)">Reservas</button><button class="filter-btn" onclick="verSeccion('semanal',this)">Chef Semanal</button><button class="filter-btn" onclick="verSeccion('agenda',this)">Agenda</button><button class="filter-btn" onclick="verSeccion('pagos',this)">Pagos</button><button class="filter-btn" onclick="verSeccion('bloqueos',this)">Bloquear días</button><button class="filter-btn" onclick="verSeccion('chefs',this)">Chefs</button></div></div>
+      <div class="nav-g" style="--g:#5DBF87"><span class="nav-gl">Cocina &amp; costos</span><div class="nav-gb"><button class="filter-btn" onclick="verSeccion('ingredientes',this)">Ingredientes</button><button class="filter-btn" onclick="verSeccion('platos',this)">Platos</button></div></div>
+      <div class="nav-g" style="--g:#E2A33E"><span class="nav-gl">Tienda</span><div class="nav-gb"><button class="filter-btn" onclick="verSeccion('fiestas',this)">📦 Cajas</button><button class="filter-btn" onclick="verSeccion('cupones',this)">Cupones</button></div></div>
+      <div class="nav-g" style="--g:#D98BB5"><span class="nav-gl">Marketing</span><div class="nav-gb"><button class="filter-btn" onclick="verSeccion('casos',this)">Casos de éxito</button><button class="filter-btn" onclick="verSeccion('resenas',this)">Reseñas</button><button class="filter-btn" onclick="verSeccion('banners',this)">Banners</button><a class="filter-btn" href="/admin-historias" style="text-decoration:none;">📸 Historias IG</a></div></div>
+      <div class="nav-g" style="--g:#8EC5E8"><span class="nav-gl">Management · Clases</span><div class="nav-gb"><button class="filter-btn" onclick="verSeccion('management',this)">🎓 Management</button></div></div>
     </div>
 
     <!-- SECCIÓN MANAGEMENT -->
@@ -1156,6 +1161,7 @@ select{color-scheme:dark}select option,select optgroup{background:#13263a;color:
         El resto se suma automáticamente a medida que cargás la lista de compras de cada menú confirmado.
       </div>
       <div class="ing-kpis" id="ing-kpis"></div>
+      <div class="ing-rubros" id="ing-rubros"></div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 12px;align-items:center;">
         <input class="bloqueo-input" id="ing-buscar" placeholder="Buscar ingrediente..." oninput="renderIngredientes()" style="max-width:280px;margin:0;">
         <button class="filter-btn active" data-ingf="todos" onclick="filtroIng('todos',this)">Todos</button>
@@ -3013,7 +3019,28 @@ async function enviarM(id, mKey, telWA, msg) {
 
 
 // ─── INGREDIENTES: canasta de referencia + listas de compras de menús ───
-let ING_DATA = [], ING_FILTRO = 'todos';
+let ING_DATA = [], ING_FILTRO = 'todos', ING_RUBRO = '';
+const ING_RUBROS = [
+  ['Proteínas', '#E07A5F', 'vacio entrana bife_chorizo cuadril tapa_asado osobuco carne_picada pollo_entero pechuga muslo bondiola matambre_cerdo costilla_cerdo cordero molleja ojo_bife lomo', /carne|vac[ií]o|bife|lomo|cuadril|asado|pollo|pechuga|suprema|muslo|cerdo|bondiola|cordero|osobuco|nalga|peceto|entra[ñn]a|molleja|pato|ternera|matambr|solomillo|roast|bola de lomo|colita/],
+  ['Pescados y mariscos', '#5FA8D3', 'merluza langostinos calamar trucha salmon atun', /pescado|merluza|salm[oó]n|langostin|calamar|trucha|at[uú]n|pulpo|mejill[oó]n|camar[oó]n|abadejo|lenguado|r[oó]balo|marisco|vieira|kanikama/],
+  ['Fiambres y embutidos', '#C46A6A', 'jamon_crudo jamon_cocido panceta chorizo morcilla', /jam[oó]n|panceta|(?<!bife de )chorizo|morcilla|salame|mortadela|bacon|prosciutto|longaniza/],
+  ['Lácteos y huevos', '#E8D9A8', 'leche queso_crema mozzarella reggianito provolone ricota yogur queso_azul sardo dulce_leche leche_condensada manteca crema parmesano huevos crema_vegetal', /leche|queso|crema|manteca|yogur|ricota|mozzarella|muzzarella|parmesano|huevo|reggianito|provolone|sardo|burrata|mascarpone|brie|gouda/],
+  ['Verdulería', '#5DBF87', 'cebolla cebolla_morada ajo tomate cherry morron zanahoria zapallo batata champinones puerro apio espinaca lechuga rucula brocoli berenjena zucchini choclo papa verdeo perejil albahaca jengibre palta', /cebolla|\bajo|tomate|morr[oó]n|pimiento|zanahoria|zapallo|batata|papa|champi|hongo|puerro|apio|espinaca|lechuga|r[uú]cula|br[oó]coli|berenjena|zucchini|zapallito|choclo|palta|verdeo|perejil|albahaca|jengibre|cilantro|romero|tomillo|hierba|verdura|repollo|remolacha|pepino|echalote|chalota|kale|radicheta|menta|eneldo|ciboulette|hinojo|esp[aá]rrago|arveja|chaucha/],
+  ['Frutas', '#F2A65A', 'limon naranja frutilla manzana banana', /lim[oó]n|naranja|frutilla|manzana|banana|\bpera\b|durazno|fruta|ar[aá]ndano|frambuesa|mango|anan[aá]|kiwi|\buva|maracuy[aá]|\blima\b|pomelo/],
+  ['Almacén', '#B8A07E', 'carnaroli arroz fideos harina_000 harina sal_fina sal_gruesa pimienta aceite_girasol aceite_oliva balsamico vinagre mostaza mayonesa soja pure_tomate tomate_lata caldo lentejas garbanzos aceitunas', /arroz|fideo|pasta|harina|\bsal\b|pimienta|aceite|aceto|vinagre|mostaza|mayonesa|soja|salsa|pur[eé]|caldo|lenteja|garbanzo|poroto|aceituna|especia|piment[oó]n|comino|or[eé]gano|curry|alcaparra|nuez moscada|quinoa|polenta/],
+  ['Repostería', '#D98BB5', 'azucar impalpable chocolate cacao levadura polvo_hornear vainilla maicena nueces almendras miel gelatina', /az[uú]car|chocolate|cacao|levadura|polvo de hornear|vainilla|maicena|almid[oó]n|nuez|nueces|almendra|miel|gelatina|esencia|\bcoco|pasas|avellana|pistacho/],
+  ['Panificados y masas', '#C9A84C', 'pan_rallado pan_molde tapas_empanada hojaldre', /\bpan\b|rallado|tapas|masa|hojaldre|tortilla|brioche|focaccia|pascualina/],
+  ['Bebidas', '#9B7EDE', 'vino_tinto vino_blanco', /vino|cerveza|espumante|\bagua\b|jugo|gaseosa|licor|\bron\b|whisky|vermut|cognac|brandy|sidra/],
+];
+const ING_OTROS = ['Otros', '#8A93A0'];
+function ingRubro(clave, nombre){
+  if (clave) { const r = ING_RUBROS.find(r => r[2].split(' ').includes(clave)); if (r) return r[0]; }
+  const n = ingNorm(nombre);
+  const r = ING_RUBROS.find(r => r[3].test(n));
+  return r ? r[0] : ING_OTROS[0];
+}
+const ingColor = rb => (ING_RUBROS.find(r => r[0] === rb) || ING_OTROS)[1];
+function filtroRubro(rb){ ING_RUBRO = ING_RUBRO === rb ? '' : rb; renderIngredientes(); }
 const ingNorm = t => (t||'').toString().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\(.*?\)/g,'').replace(/\s+/g,' ').trim();
 function filtroIng(f, btn){ ING_FILTRO = f; document.querySelectorAll('[data-ingf]').forEach(b=>b.classList.toggle('active', b===btn)); renderIngredientes(); }
 async function cargarIngredientes(){
@@ -3036,7 +3063,7 @@ async function cargarIngredientes(){
   const items = {};
   Object.values(porClave).forEach(c => {
     const vars = Object.values(c.supers).map(o => o.ult / o.base - 1);
-    items[ingNorm(c.nombre)] = { nombre: c.nombre, canasta: true, supers: c.supers, variacion: vars.length ? vars.reduce((a,b)=>a+b,0)/vars.length : null, usos: 0, menus: [], categoria: 'Canasta', cantidades: [] };
+    items[ingNorm(c.nombre)] = { nombre: c.nombre, rubro: ingRubro(c.clave, c.nombre), canasta: true, supers: c.supers, variacion: vars.length ? vars.reduce((a,b)=>a+b,0)/vars.length : null, usos: 0, menus: [], categoria: 'Canasta', cantidades: [] };
   });
   // Menús: listas de compras
   reservas.forEach(r => {
@@ -3047,7 +3074,7 @@ async function cargarIngredientes(){
       let key = n;
       const canastaKey = Object.keys(items).find(k => items[k].canasta && (n.includes(k) || k.includes(n)));
       if (canastaKey) key = canastaKey;
-      const o = items[key] = items[key] || { nombre: it.nombre, canasta: false, usos: 0, menus: [], categoria: sec.categoria || '', cantidades: [] };
+      const o = items[key] = items[key] || { nombre: it.nombre, rubro: ingRubro(null, it.nombre), canasta: false, usos: 0, menus: [], categoria: sec.categoria || '', cantidades: [] };
       o.usos++; o.menus.push({ fecha: r.fecha, menu: r.menu, ref: r.ref, personas: r.personas });
       if (it.cantidad) o.cantidades.push(it.cantidad + (r.personas ? ' · ' + r.personas + 'p' : ''));
       if (!o.categoria && sec.categoria) o.categoria = sec.categoria;
@@ -3057,7 +3084,7 @@ async function cargarIngredientes(){
   const ultIdx = indices.length ? indices[indices.length - 1] : null;
   const nMenus = ING_DATA.filter(i => i.usos > 0).length;
   document.getElementById('ing-kpis').innerHTML =
-    `<div class="ing-kpi"><small>Índice ingredientes</small><b>${ultIdx ? (ultIdx.indice >= 1 ? '+' : '') + ((ultIdx.indice - 1) * 100).toFixed(1) + '%' : '—'}</b><span>${ultIdx ? 'vs. semana base · ' + new Date(ultIdx.fecha + 'T12:00:00').toLocaleDateString('es-AR', { day: 'numeric', month: 'short' }) : 'sin datos aún'}</span></div>` +
+    `<div class="ing-kpi gen"><small>Índice general · ajusta el sitio</small><b>${ultIdx ? (ultIdx.indice >= 1 ? '+' : '') + ((ultIdx.indice - 1) * 100).toFixed(1) + '%' : '—'}</b><span>${ultIdx ? 'vs. semana base · ' + new Date(ultIdx.fecha + 'T12:00:00').toLocaleDateString('es-AR', { day: 'numeric', month: 'short' }) : 'sin datos aún'}</span></div>` +
     `<div class="ing-kpi"><small>Con seguimiento</small><b>${Object.keys(porClave).length}</b><span>Jumbo + Carrefour, cada lunes</span></div>` +
     `<div class="ing-kpi"><small>De tus menús</small><b>${nMenus}</b><span>${reservas.length} listas de compras</span></div>` +
     `<div class="ing-kpi"><small>Semanas registradas</small><b>${indices.length}</b><span>historial de precios</span></div>`;
@@ -3066,16 +3093,29 @@ async function cargarIngredientes(){
 function renderIngredientes(){
   const q = ingNorm(document.getElementById('ing-buscar')?.value || '');
   const fmtP = n => n ? '$' + Math.round(n).toLocaleString('es-AR') : '—';
-  let rows = ING_DATA.filter(i => (!q || ingNorm(i.nombre).includes(q)) && (ING_FILTRO === 'todos' || (ING_FILTRO === 'canasta' ? i.canasta : i.usos > 0)));
-  if (!rows.length) { document.getElementById('ing-tabla').innerHTML = '<div class="loading">Todavía no hay ingredientes para mostrar. Se suman solos cuando cargás la lista de compras de un menú confirmado.</div>'; return; }
+  const prom = a => a.length ? a.reduce((x,y)=>x+y,0)/a.length : null;
+  const fmtV = v => v == null ? '<span class="mut">—</span>' : `<span class="${v > 0.001 ? 'ing-up' : v < -0.001 ? 'ing-down' : 'mut'}">${v > 0 ? '▲ +' : v < 0 ? '▼ ' : ''}${(v * 100).toFixed(1)}%</span>`;
+  // Resumen por rubro (siempre sobre todos los ingredientes)
+  const orden = [...ING_RUBROS.map(r => r[0]), ING_OTROS[0]];
+  const stats = {};
+  ING_DATA.forEach(i => { const st = stats[i.rubro] = stats[i.rubro] || { canasta: 0, menus: 0, vars: [] }; if (i.canasta) st.canasta++; if (i.usos) st.menus++; if (i.variacion != null) st.vars.push(i.variacion); });
+  document.getElementById('ing-rubros').innerHTML = orden.filter(rb => stats[rb]).map(rb => {
+    const st = stats[rb];
+    return `<button type="button" class="ing-rb${ING_RUBRO === rb ? ' on' : ''}" style="--rc:${ingColor(rb)}" onclick="filtroRubro('${rb}')"><small>${rb}</small><b>${fmtV(prom(st.vars))}</b><span>${st.canasta} con seguimiento${st.menus ? ' · ' + st.menus + ' en menús' : ''}</span></button>`;
+  }).join('');
+  let rows = ING_DATA.filter(i => (!q || ingNorm(i.nombre).includes(q)) && (!ING_RUBRO || i.rubro === ING_RUBRO) && (ING_FILTRO === 'todos' || (ING_FILTRO === 'canasta' ? i.canasta : i.usos > 0)));
+  if (!rows.length) { document.getElementById('ing-tabla').innerHTML = '<div class="loading">No hay ingredientes con ese filtro.</div>'; return; }
   const maxU = Math.max(1, ...rows.map(r => r.usos));
-  document.getElementById('ing-tabla').innerHTML = `<table class="ing-t"><thead><tr><th>Ingrediente</th><th class="hide-m">Categoría</th><th>Precio de referencia</th><th>Variación</th><th>Usado en</th><th class="hide-m">Cantidades usadas</th></tr></thead><tbody>` +
-    rows.map(i => {
+  const fila = i => {
       const sp = i.supers ? Object.entries(i.supers).map(([k,o]) => `<div>${k === 'jumbo' ? 'Jumbo' : 'Carrefour'} <b>${fmtP(o.ult)}</b></div><div class="mut" style="margin-bottom:3px">${(o.prod||'').slice(0,42)}</div>`).join('') : '<span class="mut">—</span>';
-      const v = i.variacion == null ? '<span class="mut">—</span>' : `<span class="${i.variacion > 0.001 ? 'ing-up' : i.variacion < -0.001 ? 'ing-down' : 'mut'}">${i.variacion > 0 ? '▲ +' : i.variacion < 0 ? '▼ ' : ''}${(i.variacion * 100).toFixed(1)}%</span>`;
       const u = i.usos ? `<span class="ing-bar" style="width:${Math.max(6, 60 * i.usos / maxU)}px"></span>${i.usos} menú${i.usos > 1 ? 's' : ''}<div class="mut">${i.menus.slice(-2).map(m => (m.ref || '') + ' · ' + (m.menu || '')).join('<br>')}</div>` : '<span class="mut">—</span>';
       return `<tr><td><b style="font-weight:500">${i.nombre}</b>${i.canasta ? '<span class="ing-tag c">📈 seguimiento</span>' : ''}${i.usos ? '<span class="ing-tag m">🍽 menús</span>' : ''}</td>` +
-        `<td class="hide-m mut">${i.categoria || ''}</td><td>${sp}</td><td>${v}</td><td>${u}</td><td class="hide-m mut">${i.cantidades.slice(-3).join('<br>') || '—'}</td></tr>`;
+        `<td>${sp}</td><td>${fmtV(i.variacion)}</td><td>${u}</td><td class="hide-m mut">${i.cantidades.slice(-3).join('<br>') || '—'}</td></tr>`;
+  };
+  document.getElementById('ing-tabla').innerHTML = `<table class="ing-t"><thead><tr><th>Ingrediente</th><th>Precio de referencia</th><th>Variación</th><th>Usado en</th><th class="hide-m">Cantidades usadas</th></tr></thead><tbody>` +
+    orden.map(rb => {
+      const rr = rows.filter(i => i.rubro === rb); if (!rr.length) return '';
+      return `<tr class="ing-rh" style="--rc:${ingColor(rb)}"><td colspan="5">${rb}<em>${fmtV(prom(stats[rb].vars))} · ${rr.length} ítem${rr.length > 1 ? 's' : ''}</em></td></tr>` + rr.map(fila).join('');
     }).join('') + '</tbody></table>';
 }
 
