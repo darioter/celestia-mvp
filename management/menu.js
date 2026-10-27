@@ -25,10 +25,10 @@
 
   var css = document.createElement('style');
   css.textContent =
-    '.cmm-btn{display:none;align-items:center;justify-content:center;gap:6px;flex:none;min-width:44px;height:40px;margin-left:8px;padding:0 12px;border-radius:999px;border:1px solid rgba(232,201,106,.55);background:rgba(250,246,239,.06);color:#FAF6EF;font:600 13px "DM Sans",system-ui,sans-serif;cursor:pointer}' +
-    '.cmm-btn svg{width:18px;height:18px}' +
-    '@media(max-width:960px){.cmm-btn{display:inline-flex}}' +
-    '@media(max-width:600px){.cmm-btn{width:42px;min-width:42px;padding:0}.cmm-btn span{display:none}}' +
+    '.cmm-btn{display:none;flex-direction:column;justify-content:center;gap:4px;flex:none;width:38px;height:38px;margin-left:8px;padding:0 9px;border-radius:10px;border:1px solid rgba(201,168,76,.35);background:none;cursor:pointer}' +
+    '.cmm-btn i{display:block;height:1.5px;background:#E8C97A;border-radius:2px;transition:transform .25s,opacity .2s}' +
+    '.cmm-btn[aria-expanded=true] i:nth-child(1){transform:translateY(5.5px) rotate(45deg)}.cmm-btn[aria-expanded=true] i:nth-child(2){opacity:0}.cmm-btn[aria-expanded=true] i:nth-child(3){transform:translateY(-5.5px) rotate(-45deg)}' +
+    '@media(max-width:960px){.cmm-btn{display:flex}}' +
     '@media(max-width:600px){header.hdr{gap:8px}header.hdr .lg img{height:38px}header.hdr nav a.cta{font-size:12.5px;padding:8px 13px;white-space:nowrap}.cm-barra nav a.cta{font-size:12.5px;padding:8px 12px;white-space:nowrap}nav:has(>.nav-inner){padding:0 14px}.nav-inner{gap:8px}.nav-inner .nav-logo img{height:38px;width:auto}}' +
     '.cmm-ov{position:fixed;inset:0;z-index:100000;background:rgba(5,10,16,.55);opacity:0;pointer-events:none;transition:opacity .25s}' +
     '.cmm-ov.on{opacity:1;pointer-events:auto}' +
@@ -53,8 +53,8 @@
 
   var btn = document.createElement('button');
   btn.type = 'button'; btn.className = 'cmm-btn';
-  btn.setAttribute('aria-label', 'Abrir menú'); btn.setAttribute('aria-expanded', 'false'); btn.setAttribute('aria-controls', 'cmm-p');
-  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span>Menú</span>';
+  btn.setAttribute('aria-label', 'Menú'); btn.setAttribute('aria-expanded', 'false'); btn.setAttribute('aria-controls', 'cmm-p');
+  btn.innerHTML = '<i></i><i></i><i></i>';
   hdr.appendChild(btn);
 
   var ov = document.createElement('div'); ov.className = 'cmm-ov';
