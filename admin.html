@@ -985,12 +985,15 @@ select{color-scheme:dark}select option,select optgroup{background:#13263a;color:
 
   <div class="admin-body">
     <div class="adm-nav">
-      <div class="nav-g" style="--g:#C9A84C"><span class="nav-gl">Celestia · Servicio</span><div class="nav-gb"><button class="filter-btn active" onclick="verSeccion('reservas',this)">Reservas</button><button class="filter-btn" onclick="verSeccion('semanal',this)">Chef Semanal</button><button class="filter-btn" onclick="verSeccion('agenda',this)">Agenda</button><button class="filter-btn" onclick="verSeccion('pagos',this)">Pagos</button><button class="filter-btn" onclick="verSeccion('bloqueos',this)">Bloquear días</button><button class="filter-btn" onclick="verSeccion('chefs',this)">Chefs</button></div></div>
+      <div class="nav-g" style="--g:#C9A84C"><span class="nav-gl">Celestia · Servicio</span><div class="nav-gb"><button class="filter-btn active" onclick="verSeccion('reservas',this)">Reservas</button><button class="filter-btn" onclick="verSeccion('semanal',this)">Chef Semanal</button><button class="filter-btn" onclick="verSeccion('agenda',this)">Agenda</button><button class="filter-btn" onclick="verSeccion('pagos',this)">Pagos</button><button class="filter-btn" onclick="verSeccion('bloqueos',this)">Bloquear días</button><button class="filter-btn" onclick="verSeccion('presupuestos',this)">📄 Presupuestos</button><button class="filter-btn" onclick="verSeccion('chefs',this)">Chefs</button></div></div>
       <div class="nav-g" style="--g:#5DBF87"><span class="nav-gl">Cocina &amp; costos</span><div class="nav-gb"><button class="filter-btn" onclick="verSeccion('ingredientes',this)">Ingredientes</button><button class="filter-btn" onclick="verSeccion('platos',this)">Platos</button></div></div>
       <div class="nav-g" style="--g:#E2A33E"><span class="nav-gl">Tienda</span><div class="nav-gb"><button class="filter-btn" onclick="verSeccion('fiestas',this)">📦 Cajas</button><button class="filter-btn" onclick="verSeccion('cupones',this)">Cupones</button></div></div>
       <div class="nav-g" style="--g:#D98BB5"><span class="nav-gl">Marketing</span><div class="nav-gb"><button class="filter-btn" onclick="verSeccion('casos',this)">Casos de éxito</button><button class="filter-btn" onclick="verSeccion('resenas',this)">Reseñas</button><button class="filter-btn" onclick="verSeccion('banners',this)">Banners</button><a class="filter-btn" href="/admin-historias" style="text-decoration:none;">📸 Historias IG</a></div></div>
       <div class="nav-g" style="--g:#8EC5E8"><span class="nav-gl">Management · Clases</span><div class="nav-gb"><button class="filter-btn" onclick="verSeccion('management',this)">🎓 Management</button></div></div>
     </div>
+
+    <!-- SECCIÓN PRESUPUESTOS (A4: propuesta + carta) -->
+    <div id="seccion-presupuestos" style="display:none"><div class="pz-wrap"><div class="pz-form" id="pz-form"></div><div class="pz-prev" id="pz-prev"><div id="pz-doc" class="pz-scale"></div></div></div></div>
 
     <!-- SECCIÓN MANAGEMENT -->
     <div id="seccion-management" style="display:none;">
@@ -2050,7 +2053,7 @@ function detenerRealtimeAdmin() {
 }
 
 function verSeccion(seccion, btn) {
-  ['reservas','semanal','agenda','pagos','bloqueos','chefs','casos','resenas','ingredientes','platos','cupones','banners','fiestas','management'].forEach(s => {
+  ['reservas','semanal','agenda','pagos','bloqueos','presupuestos','chefs','casos','resenas','ingredientes','platos','cupones','banners','fiestas','management'].forEach(s => {
     const el = document.getElementById('seccion-'+s);
     if (el) el.style.display = seccion === s ? 'block' : 'none';
   });
@@ -2073,6 +2076,7 @@ function verSeccion(seccion, btn) {
   if (seccion === 'cupones') cargarCupones();
   if (seccion === 'banners') cargarBanners();
   if (seccion === 'management') cargarManagement();
+  if (seccion === 'presupuestos' && window.cargarPresupuestos) cargarPresupuestos();
 }
 
 // ─── CELESTIA MANAGEMENT (diagnósticos, alumnos y compras del Supabase de Management) ───
@@ -3506,5 +3510,7 @@ async function estadoFiesta(id, estado) {
   const p = todosFiestas.find(x => x.id === id); if (p) p.estado = estado; renderFiestas();
 }
 </script>
+<script src="/js/menus-ejemplo.js"></script>
+<script src="/admin-presupuesto.js"></script>
 </body>
 </html>
