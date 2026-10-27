@@ -1,6 +1,254 @@
 {
  "notas": [
   {
+   "slug": "noquis-de-papa-receta-de-escuela",
+   "cat": "Pasta fresca",
+   "icono": "🍝",
+   "titulo": "Ñoquis de papa: la receta de escuela y la regla de la harina",
+   "bajada": "La receta de Cocina 1 de la escuela, con sus cantidades, y la regla que define si un ñoqui queda liviano o pesado: cuánta harina por kilo de puré.",
+   "img": "https://images.pexels.com/photos/4694432/pexels-photo-4694432.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1920&fit=crop",
+   "img_sq": "https://images.pexels.com/photos/4694432/pexels-photo-4694432.jpeg?auto=compress&cs=tinysrgb&w=800&h=800&fit=crop",
+   "foto": "Pexels",
+   "url": "https://www.chefprivado.ar/blog/noquis-de-papa-receta-de-escuela",
+   "tips": [
+    "Antes de cortar toda la masa, hervé un ñoqui de prueba. Si se desarma, sumá una cucharada de harina; si queda firme, seguí. Así no te pasás de harina por las dudas."
+   ],
+   "datos": [
+    "Se congelan crudos: separados en una placa con semolín, 1 hora de freezer y después a una bolsa. Se cocinan directo del freezer, sin descongelar."
+   ],
+   "secciones": [
+    {
+     "h2": "Ingredientes (3 porciones)",
+     "texto": "Papa · 500 g"
+    },
+    {
+     "h2": "Paso a paso",
+     "texto": "Lavá las papas y cocinalas con piel en abundante agua con sal, a fuego medio alto y sin que hierva bruscamente, hasta que estén blandas por dentro."
+    },
+    {
+     "h2": "Los tres secretos",
+     "texto": "Papa con piel: hervida entera absorbe menos agua, y cada gota de agua de más hay que compensarla con harina."
+    },
+    {
+     "h2": "Con qué salsa",
+     "texto": "En la misma clase los acompañábamos con amatriciana, bolognesa o salsa panna."
+    }
+   ]
+  },
+  {
+   "slug": "risotto-de-hongos-receta-de-escuela",
+   "cat": "Recetas con toque de chef",
+   "icono": "🍳",
+   "titulo": "Risotto de hongos: la receta de escuela, del nacarado al mantecato",
+   "bajada": "Un risotto no es un arroz con crema: la cremosidad sale del almidón del grano. La receta de Cocina 1, con caldo siempre caliente y mantecato fuera del fuego.",
+   "img": "https://images.pexels.com/photos/31779539/pexels-photo-31779539/free-photo-of-delicious-mushroom-risotto-with-parmesan-cheese.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1920&fit=crop",
+   "img_sq": "https://images.pexels.com/photos/31779539/pexels-photo-31779539/free-photo-of-delicious-mushroom-risotto-with-parmesan-cheese.jpeg?auto=compress&cs=tinysrgb&w=800&h=800&fit=crop",
+   "foto": "Pexels",
+   "url": "https://www.chefprivado.ar/blog/risotto-de-hongos-receta-de-escuela",
+   "tips": [
+    "El punto final es «all'onda»: al inclinar el plato, el risotto se mueve como una ola lenta. Si queda parado como una montaña, sumá un chorrito de caldo antes de mantecar."
+   ],
+   "datos": [
+    "No laves el arroz para risotto: le sacarías justamente el almidón que lo hace cremoso. El agua de los hongos de pino es la mitad del sabor; si tiene arenilla, colala con un papel antes de usarla."
+   ],
+   "secciones": [
+    {
+     "h2": "Ingredientes (2 porciones)",
+     "texto": "Arroz carnaroli, arborio o doble carolina · 150 g"
+    },
+    {
+     "h2": "Paso a paso",
+     "texto": "Cortá la cebolla y el ajo en brunoise."
+    },
+    {
+     "h2": "Los tres momentos que lo definen",
+     "texto": "Nacarado: tostar el grano en la grasa sella su exterior para que se cocine parejo y no se pase."
+    }
+   ]
+  },
+  {
+   "slug": "focaccia-de-escuela-romero-cherrys-y-aceitunas",
+   "cat": "Panadería en casa",
+   "icono": "🥖",
+   "titulo": "Focaccia de escuela: romero, cherrys y aceitunas en una hora y media",
+   "bajada": "La focaccia de la clase de Panadería: masa al 60 % de hidratación, lista para el horno en una hora y media, y el truco del romero aceitado para que no se queme.",
+   "img": "https://images.pexels.com/photos/34581436/pexels-photo-34581436/free-photo-of-rustic-focaccia-bread-with-grapes-and-herbs.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1920&fit=crop",
+   "img_sq": "https://images.pexels.com/photos/34581436/pexels-photo-34581436/free-photo-of-rustic-focaccia-bread-with-grapes-and-herbs.jpeg?auto=compress&cs=tinysrgb&w=800&h=800&fit=crop",
+   "foto": "Pexels",
+   "url": "https://www.chefprivado.ar/blog/focaccia-de-escuela-romero-cherrys-y-aceitunas",
+   "tips": [
+    "Antes de hornear, hundí bien los dedos aceitados en la masa para marcar los hoyuelos clásicos. Ahí se junta el aceite y la superficie queda dorada y crocante."
+   ],
+   "datos": [
+    "Se conserva un día envuelta en un repasador. Para regenerarla, 5 minutos a 200 °C y vuelve a estar crocante. También se congela en porciones."
+   ],
+   "secciones": [
+    {
+     "h2": "Ingredientes (un molde mediano)",
+     "texto": "Harina · 400 g"
+    },
+    {
+     "h2": "Paso a paso",
+     "texto": "Formá una corona con la harina y el azúcar."
+    },
+    {
+     "h2": "Los tres secretos",
+     "texto": "Masa húmeda: tiene que quedar un poco pegajosa."
+    }
+   ]
+  },
+  {
+   "slug": "medialunas-de-manteca-receta-de-escuela",
+   "cat": "Panadería en casa",
+   "icono": "🥖",
+   "titulo": "Medialunas de manteca: empaste, tres pliegues simples y almíbar",
+   "bajada": "La pregunta de examen era cuántos dobleces simples lleva la medialuna de manteca. La respuesta es tres. La receta de la clase de facturas, con tiempos de frío y fermentación.",
+   "img": "https://images.pexels.com/photos/30666852/pexels-photo-30666852/free-photo-of-delicious-freshly-baked-croissants-in-box.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1920&fit=crop",
+   "img_sq": "https://images.pexels.com/photos/30666852/pexels-photo-30666852/free-photo-of-delicious-freshly-baked-croissants-in-box.jpeg?auto=compress&cs=tinysrgb&w=800&h=800&fit=crop",
+   "foto": "Pexels",
+   "url": "https://www.chefprivado.ar/blog/medialunas-de-manteca-receta-de-escuela",
+   "tips": [
+    "Cortá los triángulos con cuchillo bien filoso o rueda, de un solo movimiento. Un corte limpio deja las capas abiertas en el borde; uno aplastado las pega y la medialuna no se abre en el horno."
+   ],
+   "datos": [
+    "Las medialunas de grasa, las rectas, son otra técnica: el empaste es una crema de grasa y margarina que se unta sobre la masa, se hace una sola vuelta simple y después se arrolla en cilindros. Se hornean más fuerte, a 200-210 °C durante 8 a 10 minutos."
+   ],
+   "secciones": [
+    {
+     "h2": "Ingredientes (unas 24 medialunas)",
+     "texto": "Harina 000 · 250 g"
+    },
+    {
+     "h2": "Paso a paso",
+     "texto": "Amasá todos los ingredientes de la masa: 3 minutos en primera velocidad y 10 en segunda (o el equivalente a mano, hasta que esté lisa)."
+    },
+    {
+     "h2": "Los tres secretos",
+     "texto": "Frío entre pliegues: los reposos en heladera relajan el gluten y vuelven a enfriar la manteca."
+    }
+   ]
+  },
+  {
+   "slug": "diseno-de-cocina-profesional-normas-basicas",
+   "cat": "La trastienda",
+   "icono": "📊",
+   "titulo": "Diseño de cocina profesional: las normas que se enseñan en la escuela",
+   "bajada": "Antes de comprar un horno, definí el menú. Las medidas, proporciones y principios de higiene para que una cocina funcione sin cruces ni pasos de más.",
+   "img": "https://images.pexels.com/photos/6375553/pexels-photo-6375553.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1920&fit=crop",
+   "img_sq": "https://images.pexels.com/photos/6375553/pexels-photo-6375553.jpeg?auto=compress&cs=tinysrgb&w=800&h=800&fit=crop",
+   "foto": "Pexels",
+   "url": "https://www.chefprivado.ar/blog/diseno-de-cocina-profesional-normas-basicas",
+   "tips": [
+    "Una cocina chica genera cruces, demoras y contaminación; una sobredimensionada, cansancio, pasos de más y costos de limpieza, luz y mantenimiento. El objetivo es el mínimo espacio con la máxima eficiencia, no la cocina más grande que entre."
+   ],
+   "datos": [
+    "La cocina va lo más cerca posible del salón y en el mismo nivel, y a la vez cerca del depósito y de la calle: lo ideal es que ni la mercadería ni la basura pasen por el área de servicio."
+   ],
+   "secciones": [
+    {
+     "h2": "Qué tenés que definir antes de dibujar",
+     "texto": "Tipo de comida: determina equipos, instalaciones y personal."
+    },
+    {
+     "h2": "Las medidas que conviene respetar",
+     "texto": "Cocina respecto del salón · De 1 a 4 hasta 1 a 1, según equipos y rotación"
+    },
+    {
+     "h2": "Los principios de higiene que ordenan el plano",
+     "texto": "Marcha hacia adelante: los alimentos avanzan sin retroceder, desde la recepción hasta el pase."
+    }
+   ]
+  },
+  {
+   "slug": "concepto-de-negocio-gastronomico",
+   "cat": "La trastienda",
+   "icono": "📊",
+   "titulo": "El concepto de un restaurante: que todo cuente la misma historia",
+   "bajada": "Nombre, carta, platos, uniformes y luces tienen que seguir una misma idea rectora. Qué incluye el concepto de negocio y por qué conviene enfocarlo en un solo tipo de cliente.",
+   "img": "https://images.pexels.com/photos/32523798/pexels-photo-32523798/free-photo-of-elegant-wine-wall-in-modern-restaurant-setting.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1920&fit=crop",
+   "img_sq": "https://images.pexels.com/photos/32523798/pexels-photo-32523798/free-photo-of-elegant-wine-wall-in-modern-restaurant-setting.jpeg?auto=compress&cs=tinysrgb&w=800&h=800&fit=crop",
+   "foto": "Pexels",
+   "url": "https://www.chefprivado.ar/blog/concepto-de-negocio-gastronomico",
+   "tips": [
+    "Hacé la prueba de tapar el nombre: si alguien ve solo tu carta, tus platos y tu salón, ¿adivina qué tipo de lugar es? Si cada elemento cuenta una historia distinta, el concepto todavía no está."
+   ],
+   "datos": [
+    "Para que el concepto sea consistente hay que conocer a la población a la que apunta: sus raíces y gustos, sus hábitos de consumo, su nivel de ingresos y por qué sale a comer afuera."
+   ],
+   "secciones": [
+    {
+     "h2": "Qué incluye el concepto",
+     "texto": "Nombre del local, logotipo e isotipo."
+    },
+    {
+     "h2": "El ejemplo de la escuela",
+     "texto": "Un restaurante de frutos de mar."
+    },
+    {
+     "h2": "Un concepto, una motivación",
+     "texto": "Es muy difícil armar un local cuya ambientación, platos, precios y servicio sirvan para todos."
+    }
+   ]
+  },
+  {
+   "slug": "analisis-foda-para-un-restaurante",
+   "cat": "La trastienda",
+   "icono": "📊",
+   "titulo": "Análisis FODA para un restaurante: las preguntas que hay que hacerse",
+   "bajada": "Fortalezas, oportunidades, debilidades y amenazas, con las preguntas guía de la escuela para completarlo y la regla de oro: un FODA que no termina en acciones no sirve.",
+   "img": "https://images.pexels.com/photos/6284909/pexels-photo-6284909.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1920&fit=crop",
+   "img_sq": "https://images.pexels.com/photos/6284909/pexels-photo-6284909.jpeg?auto=compress&cs=tinysrgb&w=800&h=800&fit=crop",
+   "foto": "Pexels",
+   "url": "https://www.chefprivado.ar/blog/analisis-foda-para-un-restaurante",
+   "tips": [
+    "Hacelo con tu equipo, no solo. El mozo que escucha las quejas y el cocinero que ve qué vuelve en los platos conocen debilidades que desde la caja no se ven."
+   ],
+   "datos": [
+    "La apertura de un restaurante siempre tiene que justificarse por sus oportunidades y fortalezas: una demanda insatisfecha en la zona o una propuesta realmente distinta a la de la competencia son buenas razones para arriesgarse."
+   ],
+   "secciones": [
+    {
+     "h2": "Cómo leerlo",
+     "texto": "Fortalezas y debilidades son internas: podés actuar sobre ellas."
+    },
+    {
+     "h2": "Del cuadro a las acciones",
+     "texto": "Un FODA bien hecho que no se traduce en decisiones no sirve de nada."
+    }
+   ]
+  },
+  {
+   "slug": "posicionamiento-de-un-restaurante",
+   "cat": "La trastienda",
+   "icono": "📊",
+   "titulo": "Posicionamiento de un restaurante: cómo despegarte de la competencia",
+   "bajada": "El lugar que ocupás en la cabeza del cliente. Los tres tipos de posicionamiento, los tres errores más comunes y las cinco vías del marketing de experiencias.",
+   "img": "https://images.pexels.com/photos/5865152/pexels-photo-5865152.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1920&fit=crop",
+   "img_sq": "https://images.pexels.com/photos/5865152/pexels-photo-5865152.jpeg?auto=compress&cs=tinysrgb&w=800&h=800&fit=crop",
+   "foto": "Pexels",
+   "url": "https://www.chefprivado.ar/blog/posicionamiento-de-un-restaurante",
+   "tips": [
+    "Elegí una ventaja y defendela en todo: carta, redes, salón y servicio. Es mejor ser recordado por una cosa que olvidado por diez."
+   ],
+   "datos": [
+    "Un chef privado es marketing de experiencias en estado puro: cocina terminada frente a los invitados, menú a medida y servicio personalizado en la propia casa del cliente."
+   ],
+   "secciones": [
+    {
+     "h2": "Formas de posicionarse",
+     "texto": "Por atributos: la ubicación, la ambientación, las comodidades, el menú."
+    },
+    {
+     "h2": "Los tres pasos",
+     "texto": "Identificar ventajas competitivas: tienen que ser importantes, distintivas, comunicables, difíciles de copiar, asequibles y rentables."
+    },
+    {
+     "h2": "Marketing de experiencias: las cinco vías",
+     "texto": "Hoy el cliente valora cada vez más la experiencia que el plato."
+    }
+   ]
+  },
+  {
    "slug": "como-calcular-el-food-cost-de-un-plato",
    "cat": "La trastienda",
    "icono": "📊",

@@ -7,7 +7,10 @@ from articulos import ARTICULOS, CATS
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 SITE = 'https://www.chefprivado.ar'
-U = lambda img, w, h: (SITE + img) if img.startswith('/') else f'https://images.unsplash.com/{img}?w={w}&h={h}&fit=crop&q=72&auto=format'
+def U(img, w, h):
+    if img.startswith('/'): return SITE + img
+    if img.startswith('http'): return f'{img}?auto=compress&cs=tinysrgb&w={w}&h={h}&fit=crop'  # Pexels
+    return f'https://images.unsplash.com/{img}?w={w}&h={h}&fit=crop&q=72&auto=format'
 MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre']
 MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December']
 
@@ -43,6 +46,7 @@ def bloques(cuerpo, lang):
     return '\n'.join(h)
 
 TTS_JS = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tts.js'), encoding='utf-8').read()
+TTS_INDICE = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tts_indice.js'), encoding='utf-8').read()
 
 def bi(es, en, tag='span'):
     return f'<{tag} class="b-es">{es}</{tag}><{tag} class="b-en" lang="en">{en}</{tag}>'
@@ -274,7 +278,10 @@ def articulo(a):
     h += ('<section class="cp-ctab"><div><h3>' + bi('¿Querés que lo cocine en tu casa?', 'Want me to cook it at your home?') + '</h3><p>' +
           bi('Menús de 3 o 7 pasos, terminados en tu casa y con servicio completo en CABA y GBA.', '3- or 7-course menus, finished at your home with full service in Buenos Aires.') +
           '</p><a class="cp-btn" href="/">' + bi('Reservar una experiencia →', 'Book an experience →') + '</a></div></section>')
-    h += f'<p class="cp-cred">{bi("Foto de referencia", "Reference photo")}: {a["foto"]} · <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a></p>'
+    if 'pexels.com' in a['img']:
+        h += f'<p class="cp-cred">{bi("Foto de referencia", "Reference photo")}: <a href="https://www.pexels.com" target="_blank" rel="noopener">Pexels</a></p>'
+    else:
+        h += f'<p class="cp-cred">{bi("Foto de referencia", "Reference photo")}: {a["foto"]} · <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a></p>'
     h += '<section class="cp-rel"><h3>' + bi('Seguí leyendo', 'Keep reading') + '</h3><div class="cp-grid">' + ''.join(card(x) for x in otros) + '</div></section>'
     h += TTS_JS
     h += FOOT.format(caps=bi('Blog', 'Blog'))
@@ -292,7 +299,9 @@ def indice():
     usadas = [k for k in CATS if any(a['cat'] == k for a in ARTICULOS)]
     h += '<div class="cp-chips"><button type="button" class="cp-chip on" data-cat="todas">' + bi('Todas', 'All') + '</button>' + ''.join(
         f'<button type="button" class="cp-chip" data-cat="{k}">{CATS[k]["icono"]} {bi(CATS[k]["es"], CATS[k]["en"])}</button>' for k in usadas) + '</div>'
-    h += '<div class="cp-grid">' + ''.join(card(a) for a in sorted(ARTICULOS, key=lambda x: x['fecha'], reverse=True)) + '</div>'
+    esc = lambda a: (f'<button type="button" class="cp-esc" data-slug="{a["slug"]}" hidden aria-pressed="false" aria-label="Escuchar la nota: {html.escape(a["es"]["titulo"])}">'
+                     '<i aria-hidden="true">▶</i><span>Escuchar</span></button>')
+    h += '<div class="cp-grid">' + ''.join(f'<div class="cp-cw">{card(a)}{esc(a)}</div>' for a in sorted(ARTICULOS, key=lambda x: x['fecha'], reverse=True)) + '</div>'
     def tile(k):
         c = CATS[k]; n = sum(1 for a in ARTICULOS if a['cat'] == k)
         badge = bi(f'{n} nota' + ('s' if n != 1 else ''), f'{n} note' + ('s' if n != 1 else '')) if n else bi('Pronto', 'Soon')
@@ -303,6 +312,7 @@ def indice():
           bi('Todo lo que aprendí en la escuela de cocina, ordenado para que vayas de lo básico a lo avanzado.',
              'Everything I learned at culinary school, organized from the basics to the advanced.') + '</p><div class="cp-tg">' +
           ''.join(tile(k) for k in CATS) + '</div></section>')
+    h += TTS_INDICE
     h += FOOT.format(caps=bi('Blog', 'Blog'))
     escribir('blog/index.html', h)
 
