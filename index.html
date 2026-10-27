@@ -1857,6 +1857,74 @@ body.beta-mode > [id*="section"],
 @media(max-width:600px){#bl-agp{left:12px;right:12px;width:auto;bottom:74px}}
 @media(prefers-reduced-motion:reduce){.cc-d,.cc-mo span,#beta-landing #bl-hcal{animation:none!important;opacity:1}.cc-go::before{display:none}#bl-agf,#bl-agp{transition:none}#bl-agf.on .ic{animation:none}}
 </style>
+<style id="cel-globitos">
+/* ── Globitos de estado en los calendarios (agenda, hero, flotante y paso Fecha) ── */
+.g-glo{position:absolute;left:50%;top:-11px;transform:translateX(-50%);z-index:3;display:inline-flex;align-items:center;gap:4px;height:17px;padding:0 7px 0 5px;border-radius:9px;font:700 9.5px/1 'DM Sans',sans-serif;letter-spacing:.03em;white-space:nowrap;pointer-events:none;box-shadow:0 4px 10px rgba(13,27,42,.18);animation:gPop .45s cubic-bezier(.2,1.4,.4,1) both}
+.g-glo::after{content:'';position:absolute;left:50%;bottom:-4px;margin-left:-4px;border:4px solid transparent;border-bottom:0;border-top-color:inherit}
+.g-glo i{font-style:normal;display:inline-flex;align-items:center;justify-content:center}
+.g-glo b{font-weight:700}
+.g-glo-res{background:#0D1B2A;color:#E8C96B;border-top-color:#0D1B2A}
+.g-glo-res::after{border-top-color:#0D1B2A}
+.g-glo-pre{background:#FFF8E6;color:#0D1B2A;border:1px solid #C9A84C}
+.g-glo-pre::after{border-top-color:#C9A84C}
+.g-dots{gap:2px}.g-dots u{width:3.5px;height:3.5px;border-radius:50%;background:#C9A84C;text-decoration:none;display:block;animation:gDot 1.2s ease-in-out infinite}
+.g-dots u:nth-child(2){animation-delay:.15s}.g-dots u:nth-child(3){animation-delay:.3s}
+.g-mini{left:auto;right:-6px;top:-7px;transform:none;height:16px;min-width:16px;padding:0 4px;border-radius:8px;justify-content:center}
+.g-mini b{display:none}
+.g-mini::after{left:4px;margin-left:0}
+.g-static{position:relative!important;left:auto!important;right:auto!important;top:auto!important;transform:none!important;animation:none!important;box-shadow:none!important}
+.g-static::after{display:none}
+.g-fl{position:absolute;top:-2px;left:calc(50% + 6px);z-index:2;font-size:10px;line-height:1;pointer-events:none;filter:drop-shadow(0 1px 2px rgba(201,120,20,.35));animation:gFlick 2.4s ease-in-out infinite;transform-origin:50% 90%}
+@keyframes gPop{from{opacity:0;transform:translateX(-50%) translateY(6px) scale(.6)}to{opacity:1;transform:translateX(-50%)}}
+.g-mini{animation-name:gPopM}
+@keyframes gPopM{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+@keyframes gDot{0%,60%,100%{transform:translateY(0);opacity:.55}30%{transform:translateY(-2.5px);opacity:1}}
+@keyframes gFlick{0%,100%{transform:scale(1) rotate(0)}40%{transform:scale(1.12) rotate(-6deg)}70%{transform:scale(.95) rotate(4deg)}}
+/* celdas */
+.g-cell{position:relative;overflow:visible!important}
+.g-cell.g-res{text-decoration:line-through;text-decoration-color:rgba(13,27,42,.35)}
+.g-cell.g-pre{background-image:repeating-linear-gradient(135deg,rgba(201,168,76,.22) 0 3px,transparent 3px 7px)!important;cursor:pointer!important}
+.g-cell.g-res{cursor:pointer!important}
+/* leyenda, resumen y notas */
+.g-ley{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font:500 11px 'DM Sans',sans-serif;color:#6B5F4F}
+.g-ley-i{display:inline-flex;align-items:center;gap:6px}
+.g-sum{display:flex;align-items:center;gap:8px;margin:0 0 12px;padding:8px 12px;border-radius:12px;background:linear-gradient(100deg,#FFF6E0,#FAF0D7);border:1px solid rgba(201,168,76,.45);font:600 12px/1.35 'DM Sans',sans-serif;color:#5a4314}
+.g-nota{display:none;margin:12px 0 4px;padding:10px 12px;border-radius:12px;background:#FFF8E6;border:1px solid rgba(201,168,76,.55);font:400 12px/1.45 'DM Sans',sans-serif;color:#4f463b}
+.g-nota.on{display:block;animation:gIn .3s ease both}
+.g-nota b{display:block;color:#0D1B2A;font-weight:700;margin-bottom:2px}.g-nota b::first-letter,.cc-gn b::first-letter{text-transform:uppercase}
+.g-nota span{display:block}
+.g-nota a{display:table;margin-top:6px;color:#0D1B2A;font-weight:700;text-decoration:none;border-bottom:1.5px solid #C9A84C}
+.g-dem-nota{display:inline-flex;align-items:center;gap:5px;margin-top:4px;padding:2px 9px;border-radius:999px;background:#FFF1D6;color:#8a5a10;font:700 10.5px 'DM Sans',sans-serif}
+@keyframes gIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+/* agenda (sección "Elegí el día") */
+#beta-landing .bl-cg{row-gap:14px!important;padding-top:8px}
+#beta-landing .bl-cal-leg .g-ley{margin-top:4px}
+#beta-landing .bl-cd.g-res{color:rgba(13,27,42,.45)!important;cursor:pointer!important}
+#beta-landing .bl-cd.g-pre{color:#8a6418!important;cursor:pointer!important}
+/* paso Fecha del proceso */
+.cal-grid.g-grid{row-gap:14px;padding-top:8px}
+.cal-day.g-res{opacity:1!important;color:rgba(13,27,42,.45)!important;cursor:pointer!important}
+.cal-day.g-pre{opacity:1!important;color:#8a6418!important;cursor:pointer!important}
+/* calendario oscuro (hero y flotante) */
+.cc .g-fl{top:1px;right:2px;left:auto;font-size:9px}
+.cc .cc-d.g-pre{color:rgba(250,246,239,.75);background-image:repeating-linear-gradient(135deg,rgba(232,201,107,.22) 0 3px,transparent 3px 7px)!important;cursor:pointer}
+.cc .cc-d.g-res{color:rgba(250,246,239,.35)}
+.cc .cc-d.g-pre{text-decoration:none}
+.cc .g-glo-pre{background:#1d2c3d;color:#FAF6EF;border-color:#E8C96B}
+.cc .g-glo-res{background:#E8C96B;color:#0D1B2A}.cc .g-glo-res::after{border-top-color:#E8C96B}
+.cc .cc-grid{row-gap:6px}
+.cc-gn{display:none;margin-top:8px;padding:8px 10px;border-radius:12px;background:rgba(232,201,107,.12);border:1px solid rgba(232,201,107,.45);font:400 11.5px/1.4 'DM Sans',sans-serif;color:rgba(250,246,239,.85)}
+.cc-gn.on{display:block;animation:gIn .3s ease both}
+.cc-gn b{display:block;color:#E8C96B}
+.cc-gn a{display:block;margin-top:4px;color:#E8C96B;font-weight:700;text-decoration:none}
+.cc-gn span{display:block}
+.cc .cc-leg .g-glo-res i{color:#0D1B2A}.cc .cc-leg .g-glo-pre i{color:#E8C96B}
+.cc-sel .g-dem-nota{margin-top:3px;background:rgba(232,201,107,.16);color:#E8C96B}
+.cc .cc-leg.g-ley{color:rgba(250,246,239,.6);justify-content:flex-start;gap:4px 12px;font-size:10.5px}
+.cc .g-ley .g-glo-pre{background:#1d2c3d}
+.resumen-val .g-dem-nota{margin:4px 0 0 0}
+@media(prefers-reduced-motion:reduce){.g-glo,.g-fl,.g-dots u{animation:none!important}}
+</style>
 <div id="bl-hcal" class="cc" role="group" aria-label="Elegí tu fecha"></div>
 <button type="button" id="bl-agf" aria-label="Reservar fecha" aria-expanded="false" aria-controls="bl-agp"><span class="ic" aria-hidden="true"><small id="bl-agf-m">Oct</small><b id="bl-agf-d">22</b></span><span class="tx"><b id="bl-agf-t">Reserv&aacute; tu fecha</b><small id="bl-agf-s">Sin costo para reservar</small></span><span class="ar" aria-hidden="true">&rarr;</span></button>
 <div id="bl-agp" class="cc" role="dialog" aria-label="Calendario de reservas"><button type="button" class="cc-x" aria-label="Cerrar">&times;</button></div>
@@ -1878,7 +1946,7 @@ function stopHero(){try{hero.classList.add('bl-hs-stop');}catch(e){}}
 /* Componente: modo 'mes' o '2sem' */
 function Cal(root,opt){
  var sel=null,mode=opt.mode,ref;
- root.insertAdjacentHTML('beforeend','<div class="cc-top"><div><span class="cc-k"></span><b class="cc-mo"></b></div><div class="cc-nav"><button type="button" class="cc-p" aria-label="Anterior">&lsaquo;</button><button type="button" class="cc-n" aria-label="Siguiente">&rsaquo;</button></div></div><div class="cc-dn"></div><div class="cc-grid"></div><div class="cc-ft"><div class="cc-sel"></div><button type="button" class="cc-go"></button></div><div class="cc-leg"></div>');
+ root.insertAdjacentHTML('beforeend','<div class="cc-top"><div><span class="cc-k"></span><b class="cc-mo"></b></div><div class="cc-nav"><button type="button" class="cc-p" aria-label="Anterior">&lsaquo;</button><button type="button" class="cc-n" aria-label="Siguiente">&rsaquo;</button></div></div><div class="cc-dn"></div><div class="cc-grid"></div><div class="cc-gn" aria-live="polite"></div><div class="cc-ft"><div class="cc-sel"></div><button type="button" class="cc-go"></button></div><div class="cc-leg"></div>');
  var q=function(c){return root.querySelector(c);},grid=q('.cc-grid');
  function resetRef(){var m=minD();if(mode==='mes'){ref=new Date(m.getFullYear(),m.getMonth(),1,12);}else{ref=new Date(m);ref.setDate(ref.getDate()-((ref.getDay()+6)%7));}}
  resetRef();
@@ -1886,20 +1954,21 @@ function Cal(root,opt){
   if(mode==='mes'){start=new Date(ref);var off=(start.getDay()+6)%7;for(var v=0;v<off;v++)h+='<span class="cc-d vac" style="--i:0"></span>';end=new Date(ref.getFullYear(),ref.getMonth()+1,0,12);titulo=(en()?MEN:MES)[ref.getMonth()]+' '+ref.getFullYear();}
   else{start=new Date(ref);end=new Date(ref);end.setDate(end.getDate()+13);var m1=start.getMonth(),m2=end.getMonth();titulo=m1===m2?(en()?MEN:MES)[m1]+' '+start.getFullYear():(en()?MCE:MC)[m1]+' – '+(en()?MCE:MC)[m2]+' '+end.getFullYear();}
   for(var d=new Date(start);d<=end;d.setDate(d.getDate()+1)){var k=iso(d),w=d.getDay(),pas=k<mk,ok=!pas&&libre(k),we=(w===0||w===5||w===6);
-   h+='<button type="button" class="cc-d'+(we?' we':'')+(k===hoy?' hoy':'')+(!pas&&!ok?' oc':'')+(sel===k?' on':'')+'" style="--i:'+(i++)+'" data-k="'+k+'"'+(ok?'':' disabled')+' aria-label="'+lab(k)+(ok?'':(en()?' · not available':' · no disponible'))+'">'+d.getDate()+'</button>';}
+   var gi=(!pas&&window.celFechaInfo)?celFechaInfo(k):null,gp=!!(gi&&!ok&&(gi.estado==='prereserva'||gi.estado==='reservada'));
+   h+='<button type="button" class="cc-d g-cell'+(we?' we':'')+(k===hoy?' hoy':'')+(!pas&&!ok?' oc':'')+(gp?(gi.estado==='prereserva'?' g-pre':' g-res'):'')+(sel===k?' on':'')+'" style="--i:'+(i++)+'" data-k="'+k+'"'+(ok?'':(gp?' aria-disabled="true"':' disabled'))+' aria-label="'+lab(k)+' · '+(gi?celEtiqueta(gi):(en()?'not available':'no disponible'))+'">'+d.getDate()+(gi&&(gp||ok)?celGlobito(gi,true):'')+'</button>';}
   var sig=h+'|'+mode;if(sig!==root._sig||anim){root._sig=sig;grid.classList.toggle('cc-still',!anim&&root._drawn);grid.innerHTML=h;root._drawn=true;}
   var mo=q('.cc-mo');if(mo.textContent!==titulo||anim)mo.innerHTML='<span>'+titulo+'</span>';
   q('.cc-k').textContent=en()?'✦ Book your date':'✦ Reservá tu fecha';
   q('.cc-dn').innerHTML=(en()?['M','T','W','T','F','S','S']:['L','M','M','J','V','S','D']).map(function(x){return '<span>'+x+'</span>';}).join('');
   var first=mode==='mes'?new Date(m.getFullYear(),m.getMonth(),1,12):(function(){var r=new Date(m);r.setDate(r.getDate()-((r.getDay()+6)%7));return r;})();
   q('.cc-p').disabled=ref<=first;var lim=new Date(m);lim.setMonth(lim.getMonth()+6);q('.cc-n').disabled=ref>=lim;
-  q('.cc-leg').innerHTML=en()?'<span><i>●</i> Fri night &amp; weekend +10%</span><span>Free to book</span>':'<span><i>●</i> Vie noche y finde +10%</span><span>Sin costo para reservar</span>';
+  var lg=q('.cc-leg');if(window.celLeyendaHTML){lg.innerHTML=celLeyendaHTML();lg.classList.add('g-ley');}else{lg.innerHTML=en()?'<span><i>●</i> Fri night &amp; weekend +10%</span><span>Free to book</span>':'<span><i>●</i> Vie noche y finde +10%</span><span>Sin costo para reservar</span>';}
   pie();}
- function pie(){q('.cc-sel').innerHTML=sel?'<span>'+(en()?'Your date':'Tu fecha')+'</span><b>'+lab(sel)+'</b>':'<span>'+(en()?'Pick a day':'Elegí un día')+'</span><b>'+(en()?'Free to book':'Sin costo para reservar')+'</b>';
+ function pie(){var gd=(sel&&window.celFechaInfo)?celFechaInfo(sel):null;q('.cc-sel').innerHTML=sel?'<span>'+(en()?'Your date':'Tu fecha')+'</span><b>'+lab(sel)+'</b>'+(gd&&gd.demanda?'<span class="g-dem-nota">🔥 '+celEtiqueta(gd)+'</span>':''):'<span>'+(en()?'Pick a day':'Elegí un día')+'</span><b>'+(en()?'Free to book':'Sin costo para reservar')+'</b>';
   q('.cc-go').textContent=sel?(en()?'Book →':'Reservar →'):(en()?'Next free →':'Primera libre →');}
  function mover(dir){if(mode==='mes')ref=new Date(ref.getFullYear(),ref.getMonth()+dir,1,12);else ref.setDate(ref.getDate()+14*dir);render(true);}
  q('.cc-p').addEventListener('click',function(){mover(-1);});q('.cc-n').addEventListener('click',function(){mover(1);});
- grid.addEventListener('click',function(e){var b=e.target.closest('.cc-d');if(!b||b.disabled)return;sel=b.getAttribute('data-k');grid.querySelectorAll('.cc-d.on').forEach(function(x){x.classList.remove('on');});b.classList.add('on');pie();track(opt.ev+'_fecha',sel);if(opt.onPick)opt.onPick(sel);});
+ grid.addEventListener('click',function(e){var b=e.target.closest('.cc-d');var gn=q('.cc-gn');if(b&&b.getAttribute('aria-disabled')==='true'){if(gn&&window.celNotaOcupada){gn.innerHTML=celNotaOcupada(b.getAttribute('data-k'));gn.classList.add('on');}track(opt.ev+'_ocupada',b.getAttribute('data-k'));return;}if(!b||b.disabled)return;if(gn)gn.classList.remove('on');sel=b.getAttribute('data-k');grid.querySelectorAll('.cc-d.on').forEach(function(x){x.classList.remove('on');});b.classList.add('on');pie();track(opt.ev+'_fecha',sel);if(opt.onPick)opt.onPick(sel);});
  q('.cc-go').addEventListener('click',function(){if(!sel){var f=primerLibre();if(!f)return;sel=f;var d=new Date(f+'T12:00:00');if(mode==='mes')ref=new Date(d.getFullYear(),d.getMonth(),1,12);else{ref=new Date(d);ref.setDate(ref.getDate()-((ref.getDay()+6)%7));}render(true);if(opt.onPick)opt.onPick(sel);return;}track(opt.ev+'_cta',sel);if(opt.onGo)opt.onGo(sel);irA(sel,0);});
  root.addEventListener('pointerdown',function(){if(opt.onTouch)opt.onTouch();});
  return {render:render,setMode:function(m){if(m!==mode){mode=m;resetRef();render(true);}},get:function(){return sel;}};
@@ -3720,6 +3789,102 @@ async function cargarFechasBloqueadas() {
   if (state.step === 3) renderCalendar();
 }
 
+// ─── Estado visible de cada fecha: globitos del calendario ───────────────
+// Solo muestra lo que es real: reservas con seña, solicitudes pendientes de seña
+// y los días que más se piden (viernes, sábados y fechas de fiestas).
+// No cambia qué fechas se pueden reservar: eso lo sigue decidiendo la lógica de arriba.
+const CEL_FIESTAS = { '12-08': 'Feriado', '12-24': 'Nochebuena', '12-25': 'Navidad', '12-31': 'Fin de año', '01-01': 'Año Nuevo' };
+const CEL_WA = '5491160410607';
+function celFechaInfo(k) {
+  const b = (typeof fechasBloqueadas !== 'undefined' && fechasBloqueadas) ? fechasBloqueadas[k] : null;
+  const est = b ? Object.values(b) : [];
+  const manual = (typeof diasBloqueados !== 'undefined' && diasBloqueados) ? diasBloqueados.includes(k) : false;
+  let estado = 'libre';
+  if (est.some(e => e === 'confirmada' || e === 'aceptada')) estado = 'reservada';
+  else if (est.length) estado = 'prereserva';
+  else if (manual) estado = 'bloqueo';
+  const d = new Date(k + 'T12:00:00'), w = d.getDay();
+  const fiesta = CEL_FIESTAS[k.slice(5)] || '';
+  const demanda = estado === 'libre' && (w === 5 || w === 6 || !!fiesta);
+  return { estado, demanda, fiesta };
+}
+function celEn() { return document.documentElement.classList.contains('lang-en'); }
+function celGlobito(info, mini) {
+  const en = celEn();
+  if (info.estado === 'reservada')
+    return `<span class="g-glo g-glo-res${mini ? ' g-mini' : ''}" aria-hidden="true"><i>✓</i><b>${en ? 'Booked' : 'Reservada'}</b></span>`;
+  if (info.estado === 'prereserva')
+    return `<span class="g-glo g-glo-pre${mini ? ' g-mini' : ''}" aria-hidden="true"><i class="g-dots"><u></u><u></u><u></u></i><b>${en ? 'On hold' : 'Pre-reserva'}</b></span>`;
+  if (info.demanda)
+    return `<span class="g-fl" aria-hidden="true" title="${en ? 'High demand' : 'Alta demanda'}">🔥</span>`;
+  return '';
+}
+function celEtiqueta(info) {
+  const en = celEn();
+  if (info.estado === 'reservada') return en ? 'Booked' : 'Reservada';
+  if (info.estado === 'prereserva') return en ? 'On hold · may free up' : 'Pre-reservada · puede liberarse';
+  if (info.estado === 'bloqueo') return en ? 'Not available' : 'No disponible';
+  if (info.demanda) return info.fiesta ? (info.fiesta + (en ? ' · high demand' : ' · alta demanda')) : (en ? 'High demand' : 'Alta demanda');
+  return en ? 'Available' : 'Disponible';
+}
+function celAvisoLink(k) {
+  const d = new Date(k + 'T12:00:00');
+  const lab = d.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
+  return 'https://wa.me/' + CEL_WA + '?text=' + encodeURIComponent('Hola Daro! Vi que el ' + lab + ' tiene una pre-reserva. Si se libera, ¿me avisás? Me interesa esa fecha.');
+}
+// Mensaje para una fecha ocupada (reservada o pre-reservada). Devuelve HTML.
+function celNotaOcupada(k) {
+  const info = celFechaInfo(k), en = celEn();
+  const d = new Date(k + 'T12:00:00');
+  const lab = d.toLocaleDateString(en ? 'en-US' : 'es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
+  if (info.estado === 'prereserva') {
+    return `<b>${lab} · ${en ? 'on hold' : 'pre-reservada'}</b>` +
+      `<span>${en ? 'Someone requested this date and hasn’t confirmed with the deposit yet. If it frees up, it goes back on the calendar.' : 'Alguien la pidió y todavía no confirmó con la seña. Si no se confirma, vuelve a quedar libre.'}</span>` +
+      `<a href="${celAvisoLink(k)}" target="_blank" rel="noopener">${en ? 'Let me know if it frees up →' : 'Avisame si se libera →'}</a>`;
+  }
+  if (info.estado === 'reservada') {
+    return `<b>${lab} · ${en ? 'booked' : 'reservada'}</b><span>${en ? 'This date is already confirmed. Pick another one: the nearest free dates are on the calendar.' : 'Esta fecha ya está confirmada. Elegí otra: tenés las más cercanas en el calendario.'}</span>`;
+  }
+  return '';
+}
+// Resumen real del mes: cuántos viernes/sábados siguen libres y cuántas pre-reservas hay.
+function celResumenMes(y, m, libreFn) {
+  const en = celEn(), min = new Date(); min.setHours(0, 0, 0, 0); min.setDate(min.getDate() + 2);
+  let findes = 0, pre = 0, res = 0;
+  const dim = new Date(y, m + 1, 0).getDate();
+  for (let d = 1; d <= dim; d++) {
+    const dt = new Date(y, m, d); dt.setHours(0, 0, 0, 0);
+    if (dt < min) continue;
+    const k = dt.getFullYear() + '-' + String(m + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+    const info = celFechaInfo(k);
+    if (info.estado === 'prereserva') pre++;
+    else if (info.estado === 'reservada') res++;
+    const w = dt.getDay();
+    if ((w === 5 || w === 6) && libreFn(k)) findes++;
+  }
+  const MES = en ? ['January','February','March','April','May','June','July','August','September','October','November','December'] : ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const partes = [];
+  partes.push(en ? `🔥 ${findes} Friday & Saturday date${findes === 1 ? '' : 's'} left in ${MES[m]}` : `🔥 ${findes === 1 ? 'Queda 1 viernes o sábado libre' : 'Quedan ' + findes + ' viernes y sábados libres'} en ${MES[m]}`);
+  if (pre) partes.push(en ? `${pre} on hold` : `${pre} ${pre === 1 ? 'fecha pre-reservada' : 'fechas pre-reservadas'}`);
+  if (res) partes.push(en ? `${res} booked` : `${res} ${res === 1 ? 'reservada' : 'reservadas'}`);
+  return partes.join(' · ');
+}
+function celLeyendaHTML() {
+  const en = celEn();
+  return `<span class="g-ley-i"><span class="g-glo g-glo-res g-mini g-static"><i>✓</i></span>${en ? 'Booked' : 'Reservada'}</span>` +
+    `<span class="g-ley-i"><span class="g-glo g-glo-pre g-mini g-static"><i class="g-dots"><u></u><u></u><u></u></i></span>${en ? 'On hold (may free up)' : 'Pre-reserva (puede liberarse)'}</span>` +
+    `<span class="g-ley-i"><span class="g-fl g-static">🔥</span>${en ? 'High demand' : 'Alta demanda'}</span>`;
+}
+window.celFechaInfo = celFechaInfo; window.celGlobito = celGlobito; window.celEtiqueta = celEtiqueta;
+window.celNotaOcupada = celNotaOcupada; window.celResumenMes = celResumenMes; window.celLeyendaHTML = celLeyendaHTML;
+function celDemandaTexto(info) {
+  const en = celEn();
+  if (!info || !info.demanda) return '';
+  if (info.fiesta) return '🔥 ' + info.fiesta + (en ? ' · high demand, book early' : ' · alta demanda, conviene reservar con tiempo');
+  return en ? '🔥 High demand · Fridays and Saturdays are the most requested' : '🔥 Alta demanda · los viernes y sábados son los más pedidos';
+}
+window.celDemandaTexto = celDemandaTexto;
+
 async function guardarReservaSupabase(reserva) {
   const fechaFormateada = reserva.fecha ? reserva.fecha.slice(0, 10) : null;
   console.log('Guardando reserva:', reserva.ref, fechaFormateada, reserva.turno);
@@ -4760,6 +4925,18 @@ function renderCalendar() {
       (isBlocked ? ' disabled' : '') +
       (isSelected ? ' selected' : '');
     el.textContent = d;
+    const gi = !isBefore48 ? celFechaInfo(dateStr) : null;
+    if (gi) {
+      const gOcup = isFechaBloqueada && (gi.estado === 'prereserva' || gi.estado === 'reservada');
+      if (gOcup) {
+        el.classList.add('g-cell', gi.estado === 'prereserva' ? 'g-pre' : 'g-res');
+        el.insertAdjacentHTML('beforeend', celGlobito(gi, window.innerWidth < 700));
+        el.onclick = () => celNotaPaso(dateStr, true);
+      } else if (!isBlocked && gi.demanda) {
+        el.classList.add('g-cell', 'g-dem');
+        el.insertAdjacentHTML('beforeend', celGlobito(gi));
+      }
+    }
 
     // Indicador visual de turnos parcialmente ocupados
     if (!isBlocked && !isSelected && bloqueada && (almuerzoOcupado || cenaOcupada)) {
@@ -4787,9 +4964,34 @@ function renderCalendar() {
     grid.appendChild(el);
   }
 
+  celMarcoPaso(grid);
   // Actualizar turnos disponibles según día elegido y tipo semana/finde
   renderTurnos();
   checkStep3();
+}
+
+function celMarcoPaso(grid) {
+  grid.classList.add('g-grid');
+  let sum = document.getElementById('cal-gsum');
+  if (!sum) { sum = document.createElement('div'); sum.id = 'cal-gsum'; sum.className = 'g-sum'; grid.parentNode.insertBefore(sum, grid); }
+  sum.textContent = celResumenMes(calYear, calMonth, k => celFechaInfo(k).estado === 'libre');
+  let ley = document.getElementById('cal-gley');
+  if (!ley) { ley = document.createElement('div'); ley.id = 'cal-gley'; ley.className = 'g-ley'; ley.style.marginTop = '14px'; grid.insertAdjacentElement('afterend', ley); }
+  ley.innerHTML = celLeyendaHTML();
+  if (!document.getElementById('cal-gnote')) {
+    const n = document.createElement('div'); n.id = 'cal-gnote'; n.className = 'g-nota'; n.setAttribute('aria-live', 'polite');
+    ley.insertAdjacentElement('afterend', n);
+  }
+  celNotaPaso(state.fecha, false);
+}
+function celNotaPaso(k, ocupada) {
+  const n = document.getElementById('cal-gnote');
+  if (!n) return;
+  if (!k) { n.classList.remove('on'); return; }
+  const info = celFechaInfo(k);
+  const html = ocupada ? celNotaOcupada(k) : (info.demanda ? '<b>' + new Date(k + 'T12:00:00').toLocaleDateString(celEn() ? 'en-US' : 'es-AR', { weekday: 'long', day: 'numeric', month: 'long' }) + '</b><span>' + celDemandaTexto(info) + '</span>' : '');
+  n.innerHTML = html; n.classList.toggle('on', !!html);
+  if (ocupada) { try { window.celTrack && celTrack('paso_fecha_ocupada', { fecha: k }); } catch (e) {} }
 }
 
 function renderTurnos() {
@@ -4866,6 +5068,7 @@ function selectFecha(dateStr, el) {
   document.getElementById('turno-cena').classList.remove('selected');
   renderTurnos();
   checkStep3();
+  celNotaPaso(dateStr, false);
 }
 
 function selectTurno(turno) {
@@ -5526,7 +5729,7 @@ async function renderResumen() {
     </div>
     <div class="resumen-row">
       <div class="resumen-label">${t('resumen_fecha')}</div>
-      <div class="resumen-val">${fechaStr}</div>
+      <div class="resumen-val">${fechaStr}${(() => { const gi = celFechaInfo(state.fecha); return gi.demanda ? '<br><span class="g-dem-nota">' + celDemandaTexto(gi) + '</span>' : ''; })()}</div>
     </div>
     <div class="resumen-row">
       <div class="resumen-label">${t('resumen_turno')}</div>
@@ -5895,12 +6098,35 @@ function resetFlow() {
       tc.classList.add('bl-tc-off'); tc.style.opacity = '.26';
       ct.textContent = 'Solo finde';
     }
+    var gInfo = window.celFechaInfo ? celFechaInfo(dateStr) : null;
+    if (gInfo && gInfo.demanda) tn.insertAdjacentHTML('beforeend', '<br><span class="g-dem-nota">' + celDemandaTexto(gInfo) + '</span>');
     // Turno por defecto y tarifa de la calculadora según el día elegido
     [ta, tc].forEach(function(x){ x.classList.remove('sel'); });
     (iF ? tc : ta).classList.add('sel');
     var dtW = document.getElementById('bl-dtw'), dtF = document.getElementById('bl-dtf');
     var objetivo = (iW || iF) ? dtF : dtW;
     if (objetivo && !objetivo.classList.contains('act')) objetivo.click();
+  }
+
+  function blNotaOcupada(k) {
+    var n = document.getElementById('bl-gnote');
+    if (!n) return;
+    if (!k || !window.celNotaOcupada) { n.classList.remove('on'); return; }
+    n.innerHTML = celNotaOcupada(k); n.classList.add('on');
+    try { window.celTrack && celTrack('agenda_fecha_ocupada', { fecha: k }); } catch (e) {}
+  }
+  function blGlobitosMarco(grid) {
+    if (!window.celResumenMes) return;
+    var sum = document.getElementById('bl-gsum');
+    if (!sum) { sum = document.createElement('div'); sum.id = 'bl-gsum'; sum.className = 'g-sum'; grid.parentNode.insertBefore(sum, grid); }
+    sum.textContent = celResumenMes(blCalYear, blCalMonth, function(k){ return celFechaInfo(k).estado === 'libre'; });
+    var leg = grid.parentNode.querySelector('.bl-cal-leg');
+    if (leg && !leg.querySelector('.g-ley')) { var g = document.createElement('div'); g.className = 'g-ley'; g.style.flexBasis = '100%'; leg.appendChild(g); }
+    if (leg) leg.querySelector('.g-ley').innerHTML = celLeyendaHTML();
+    if (!document.getElementById('bl-gnote')) {
+      var n = document.createElement('div'); n.id = 'bl-gnote'; n.className = 'g-nota'; n.setAttribute('aria-live', 'polite');
+      (leg || grid).insertAdjacentElement('afterend', n);
+    } else blNotaOcupada(null);
   }
 
   window.blRenderCalendario = function() {
@@ -5958,11 +6184,25 @@ function resetFlow() {
       el.className = cls;
       el.textContent = d;
       el.dataset.fecha = dateStr;
+      var gi = (!esPasado && window.celFechaInfo) ? celFechaInfo(dateStr) : null;
+      if (gi) {
+        var gOcup = noDisponible && (gi.estado === 'prereserva' || gi.estado === 'reservada');
+        if (gOcup) {
+          el.classList.add('g-cell', gi.estado === 'prereserva' ? 'g-pre' : 'g-res');
+          el.insertAdjacentHTML('beforeend', celGlobito(gi, window.innerWidth < 700));
+          el.addEventListener('click', function() { blNotaOcupada(this.dataset.fecha); });
+        } else if (!noDisponible && gi.demanda) {
+          el.classList.add('g-cell', 'g-dem');
+          el.insertAdjacentHTML('beforeend', celGlobito(gi));
+        }
+        el.setAttribute('aria-label', d + ' · ' + celEtiqueta(gi));
+      }
 
       if (!noDisponible) {
         if (primerDiaHabilitado === null) primerDiaHabilitado = el;
         if (typeof state !== 'undefined' && state && state.fecha === dateStr) elASeleccionar = el;
         el.addEventListener('click', function() {
+          blNotaOcupada(null);
           var prevSel = grid.querySelector('.bl-cd.sel');
           if (prevSel) prevSel.classList.remove('sel');
           this.classList.add('sel');
@@ -5972,6 +6212,7 @@ function resetFlow() {
       grid.appendChild(el);
     }
 
+    blGlobitosMarco(grid);
     var final = elASeleccionar || primerDiaHabilitado;
     if (final) {
       final.classList.add('sel');
