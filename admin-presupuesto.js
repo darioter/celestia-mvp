@@ -289,7 +289,8 @@
       '<div class="pz-f"><label>Texto de presentación</label><textarea data-k="intro">' + esc(f.intro) + '</textarea></div>' +
       '<div class="pz-f"><label>Bebidas</label><input data-k="bebidas" value="' + esc(f.bebidas) + '"></div>' +
       '<div class="pz-f"><label>Notas (alergias, horarios, pedidos)</label><textarea data-k="notas" placeholder="Opcional">' + esc(f.notas) + '</textarea></div>' +
-      '<div class="pz-acc"><button type="button" class="pri" id="pz-print">🖨️ Imprimir / Guardar PDF</button><button type="button" id="pz-nuevo">Nuevo</button></div>';
+      '<div class="pz-acc"><button type="button" class="pri" id="pz-print">🖨️ Imprimir / Guardar PDF</button><button type="button" id="pz-nuevo">Nuevo</button></div>' +
+      '<div class="pz-acc"><button type="button" id="pz-subir">⬆ Subir menú al sitio e ingredientes</button></div>';
     root.querySelectorAll('[data-k]').forEach(function (el) {
       el.addEventListener('input', function () {
         var k = el.getAttribute('data-k');
@@ -328,6 +329,15 @@
       var a = v.split(':'), e = ESTILOS.filter(function (x) { return x.id === a[0]; })[0], m = e && e['m' + f.pasos][+a[1]];
       if (m) { f.platos = m.p.slice(); f.menuNombre = m.n; f.etiquetas = null; if (!f.platosB || f.platosB.length !== f.platos.length) f.platosB = f.platos.map(function () { return ''; }); }
       guardar(); form(); render();
+    });
+    $('#pz-subir').addEventListener('click', function () {
+      if (!window.pzSubirMenu) { alert('No se pudo cargar el módulo de subida. Recargá la página.'); return; }
+      var L = etq(), n = L.length, A = f.platos.slice(0, n), B = (f.platosB || []).slice(0, n);
+      var ops = [{ letra: 'A', nombre: f.menuNombre || '', platos: A }];
+      if (dos()) ops.push({ letra: 'B', nombre: f.modo === 'pasos' ? ((f.menuNombre || 'Menú') + ' · variante') : (f.menuNombreB || ''), platos: B.map(function (x, i) { return x || A[i] || ''; }) });
+      ops = ops.filter(function (o) { return o.platos.some(function (x) { return String(x).trim(); }); });
+      if (!ops.length) { alert('Primero cargá los platos del menú.'); return; }
+      window.pzSubirMenu({ pasos: +f.pasos, etiquetas: f.etiquetas && f.etiquetas.length ? f.etiquetas.slice() : null, opciones: ops, ocasion: f.ocasion, cliente: f.cliente, reservaId: f.reservaId });
     });
     $('#pz-print').addEventListener('click', function () { render(); prepararImpresion(); setTimeout(function () { window.print(); }, 80); });
     $('#pz-nuevo').addEventListener('click', function () { if (!confirm('¿Empezar un presupuesto nuevo? Se borra el borrador actual.')) return; f = JSON.parse(JSON.stringify(DEF)); nro = numero(); guardar(); form(); render(); });

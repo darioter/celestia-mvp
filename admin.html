@@ -3051,12 +3051,14 @@ const ingNorm = t => (t||'').toString().toLowerCase().normalize('NFD').replace(/
 function filtroIng(f, btn){ ING_FILTRO = f; document.querySelectorAll('[data-ingf]').forEach(b=>b.classList.toggle('active', b===btn)); renderIngredientes(); }
 async function cargarIngredientes(){
   document.getElementById('ing-tabla').innerHTML = '<div class="loading">Cargando ingredientes...</div>';
-  const [prod, prec, idx, res] = await Promise.all([
+  const [prod, prec, idx, res, msit] = await Promise.all([
     supa.from('canasta_productos').select('*').eq('activo', true),
     supa.from('canasta_precios').select('fecha,super,clave,sku,nombre,precio').order('fecha', { ascending: true }),
     supa.from('canasta_indice').select('*').order('fecha', { ascending: true }),
-    supa.from('reservas').select('id,ref,fecha,menu,estado,personas,lista_compras').not('lista_compras', 'is', null).neq('estado', 'cancelada')
+    supa.from('reservas').select('id,ref,fecha,menu,estado,personas,lista_compras').not('lista_compras', 'is', null).neq('estado', 'cancelada'),
+    supa.from('menus_sitio').select('nombre,estilo,pasos,ingredientes,created_at,publicado').order('created_at', { ascending: true })
   ]);
+  const menusSitio = (msit && msit.data) || [];
   const productos = prod.data || [], precios = prec.data || [], indices = idx.data || [], reservas = res.data || [];
   // Canasta: precio base (primera semana) y último por super/sku
   const porClave = {};
@@ -3086,13 +3088,25 @@ async function cargarIngredientes(){
       if (!o.categoria && sec.categoria) o.categoria = sec.categoria;
     }));
   });
+  // Menús subidos desde Presupuestos (menus_sitio): suman usos y precio de referencia de los ingredientes nuevos
+  const porClaveKey = {}; Object.keys(items).forEach(k => { const c = Object.values(porClave).find(c => ingNorm(c.nombre) === k); if (c) porClaveKey[c.clave] = k; });
+  menusSitio.forEach(m => (m.ingredientes || []).forEach(ig => {
+    const n = ingNorm(ig.nombre); if (!n) return;
+    let key = (ig.clave && porClaveKey[ig.clave]) || Object.keys(items).find(k => items[k].canasta && (n.includes(k) || k.includes(n))) || n;
+    const o = items[key] = items[key] || { nombre: ig.nombre, rubro: ingRubro(ig.clave, ig.nombre), canasta: false, usos: 0, menus: [], categoria: '', cantidades: [] };
+    o.usos++; o.menus.push({ fecha: (m.created_at || '').slice(0, 10), menu: m.nombre, ref: 'Presupuesto', personas: null });
+    if (!o.canasta && (ig.jumbo || ig.carrefour)) {
+      o.supers = o.supers || {};
+      ['jumbo', 'carrefour'].forEach(sp => { if (ig[sp] && !o.supers[sp]) o.supers[sp] = { base: ig[sp].precio, ult: ig[sp].precio, fecha: ig[sp].fecha, prod: ig[sp].nombre + ' · ref. al subir' }; });
+    }
+  }));
   ING_DATA = Object.values(items).sort((a,b) => (b.canasta - a.canasta) || (b.usos - a.usos) || a.nombre.localeCompare(b.nombre));
   const ultIdx = indices.length ? indices[indices.length - 1] : null;
   const nMenus = ING_DATA.filter(i => i.usos > 0).length;
   document.getElementById('ing-kpis').innerHTML =
     `<div class="ing-kpi gen"><small>Índice general · ajusta el sitio</small><b>${ultIdx ? (ultIdx.indice >= 1 ? '+' : '') + ((ultIdx.indice - 1) * 100).toFixed(1) + '%' : '—'}</b><span>${ultIdx ? 'vs. semana base · ' + new Date(ultIdx.fecha + 'T12:00:00').toLocaleDateString('es-AR', { day: 'numeric', month: 'short' }) : 'sin datos aún'}</span></div>` +
     `<div class="ing-kpi"><small>Con seguimiento</small><b>${Object.keys(porClave).length}</b><span>Jumbo + Carrefour, cada lunes</span></div>` +
-    `<div class="ing-kpi"><small>De tus menús</small><b>${nMenus}</b><span>${reservas.length} listas de compras</span></div>` +
+    `<div class="ing-kpi"><small>De tus menús</small><b>${nMenus}</b><span>${reservas.length} listas de compras${menusSitio.length ? ' · ' + menusSitio.length + ' de presupuestos' : ''}</span></div>` +
     `<div class="ing-kpi"><small>Semanas registradas</small><b>${indices.length}</b><span>historial de precios</span></div>`;
   renderIngredientes();
 }
@@ -3511,6 +3525,6 @@ async function estadoFiesta(id, estado) {
 }
 </script>
 <script src="/js/menus-ejemplo.js"></script>
-<script src="/admin-presupuesto.js"></script>
+<script src="/admin-presupuesto.js"></script><script src="/admin-menus-subir.js"></script>
 </body>
 </html>
