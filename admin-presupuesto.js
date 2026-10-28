@@ -108,6 +108,7 @@
     return r;
   }
   function aplicar(r) {
+    if (+r.pasos !== +f.pasos) { f.total = ''; f.totalRes = false; }
     f.opciones = r.opciones; f.modo = r.modo; f.pasos = r.pasos; f.etiquetas = r.etiquetas;
     f.platos = r.platos; f.platosB = r.platosB; f.estilo = '';
     if (r.menuNombre || r.opciones === 2) f.menuNombre = r.menuNombre; f.menuNombreB = r.menuNombreB;
@@ -293,7 +294,9 @@
       el.addEventListener('input', function () {
         var k = el.getAttribute('data-k');
         f[k] = el.type === 'checkbox' ? el.checked : el.value;
-        if (k === 'pasos') { f.platos = PASOS[f.pasos].map(function () { return ''; }); f.platosB = f.platos.slice(); f.etiquetas = null; f.estilo = ''; form(); }
+        if (k === 'total') f.totalRes = false;
+        if (k === 'pasos' || (f.totalRes && /^(personas|fecha|turno)$/.test(k))) { f.total = ''; f.totalRes = false; if (k !== 'pasos') { var ti = $('[data-k=total]'); if (ti) ti.value = ''; } }
+        if (k === 'pasos') { f.platos =PASOS[f.pasos].map(function () { return ''; }); f.platosB = f.platos.slice(); f.etiquetas = null; f.estilo = ''; form(); }
         guardar(); render();
       });
       if (el.tagName === 'SELECT' || el.type === 'checkbox' || el.type === 'date') el.addEventListener('change', function () { el.dispatchEvent(new Event('input')); });
@@ -350,9 +353,9 @@
         f.cliente = r.nombre || f.cliente; f.fecha = r.fecha.slice(0, 10); f.turno = r.turno || f.turno; f.personas = r.personas || f.personas;
         var m = String(r.menu || '').toLowerCase(), np = m.indexOf('7') >= 0 ? 7 : (m.indexOf('3') >= 0 ? 3 : 0);
         if (np && +f.pasos !== np) { f.pasos = np; f.platos = PASOS[np].map(function () { return ''; }); f.platosB = f.platos.slice(); f.etiquetas = null; }
-        if (r.total) f.total = String(r.total);
+        f.total = r.total ? String(r.total) : ''; f.totalRes = !!r.total;
         var s = sugLeer()[r.id], aviso = '';
-        if (s && s.texto) { var pr = parsear(s.texto); if (pr) { f.pegado = s.texto; aplicar(pr); if (np) f.pasos = np; aviso = '✓ Menú sugerido de esta reserva cargado · ' + resumen(pr).replace(/^✓ /, ''); } }
+        if (s && s.texto) { var pr = parsear(s.texto); if (pr) { f.pegado = s.texto; var t0 = f.total, tr0 = f.totalRes; aplicar(pr); if (np) { f.pasos = np; f.total = t0; f.totalRes = tr0; } aviso = '✓ Menú sugerido de esta reserva cargado · ' + resumen(pr).replace(/^✓ /, ''); } }
         guardar(); form(); render();
         if (aviso) { var mm = $('#pz-sug-msg'); if (mm) { mm.className = 'pz-msg ok'; mm.textContent = aviso; } }
       };
