@@ -94,7 +94,7 @@
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ model: 'claude-sonnet-5-5', max_tokens: 3000, messages: [{ role: 'user', content: prompt }] })
     }).then(function (r) { if (!r.ok) throw new Error('IA ' + r.status); return r.json(); }).then(function (data) {
-      var t = (data.content && data.content[0] && data.content[0].text) || '';
+      var t = ((data.content || []).filter(function (c) { return c && c.type === 'text'; })[0] || {}).text || '';
       t = t.replace(/```json\s*/g, '').replace(/```/g, '').replace(/[“”]/g, '"');
       var m = t.match(/\{[\s\S]*\}/); if (!m) throw new Error('Sin JSON');
       var j = JSON.parse(m[0]);

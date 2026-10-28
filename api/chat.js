@@ -32,6 +32,8 @@ export default async function handler(req) {
     });
 
     const data = await res.json();
+    // Los modelos nuevos pueden devolver bloques de razonamiento antes del texto: las páginas leen content[0].text.
+    if (Array.isArray(data.content)) data.content = data.content.filter(c => c && c.type === 'text');
 
     return new Response(JSON.stringify(data), {
       headers: {
