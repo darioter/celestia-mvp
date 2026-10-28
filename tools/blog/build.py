@@ -454,6 +454,41 @@ def indice():
     h += FOOT.format(caps=bi('Blog', 'Blog'))
     escribir('blog/index.html', h)
 
+def globo_hero():
+    """Globo tipo historia de Instagram en el hero de la home: lleva al blog y muestra la última nota."""
+    p = os.path.join(ROOT, 'index.html'); t = open(p, encoding='utf-8').read()
+    ini, fin = '<!--BLOG-GLOBO-START-->', '<!--BLOG-GLOBO-END-->'
+    a = sorted(ARTICULOS, key=lambda x: x['fecha'], reverse=True)[0]
+    css = ('<style>'
+      '#beta-landing .bl-glo{position:absolute;top:26px;right:52px;z-index:8;display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;color:#FAF6EF;font-family:"DM Sans",sans-serif}'
+      '#beta-landing .bl-glo-r{position:relative;width:78px;height:78px;border-radius:50%;padding:3px;display:block}'
+      '#beta-landing .bl-glo-r::before{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,#C9A84C,#E8C96B,#fff3c4,#E8C96B,#C9A84C);animation:blGloG 3.2s linear infinite}'
+      '#beta-landing .bl-glo-r i{position:relative;display:block;width:100%;height:100%;border-radius:50%;border:3px solid #0D1B2A;background:#1a2e42 center/cover no-repeat;box-shadow:0 10px 28px rgba(0,0,0,.4)}'
+      '#beta-landing .bl-glo-r b{position:absolute;right:-6px;top:-4px;z-index:2;background:#E8C96B;color:#0D1B2A;font:700 9.5px/1 "DM Sans",sans-serif;letter-spacing:.06em;text-transform:uppercase;padding:4px 7px;border-radius:999px;border:2px solid #0D1B2A;box-shadow:0 4px 10px rgba(0,0,0,.3)}'
+      '#beta-landing .bl-glo-l{font:600 12.5px "DM Sans",sans-serif;letter-spacing:.04em;background:rgba(13,27,42,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border:1px solid rgba(232,201,107,.45);padding:4px 11px;border-radius:999px}'
+      '#beta-landing .bl-glo-t{position:absolute;right:calc(100% + 12px);top:8px;width:230px;padding:11px 13px;border-radius:14px;background:rgba(13,27,42,.88);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(232,201,107,.4);font-size:12.5px;line-height:1.4;color:rgba(250,246,239,.85);opacity:0;transform:translateX(6px);transition:opacity .25s,transform .25s;pointer-events:none;text-align:left}'
+      '#beta-landing .bl-glo-t small{display:block;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#E8C96B;margin-bottom:3px}'
+      '#beta-landing .bl-glo:hover .bl-glo-t,#beta-landing .bl-glo:focus-visible .bl-glo-t{opacity:1;transform:none}'
+      '#beta-landing .bl-glo:hover .bl-glo-r i{transform:scale(1.04)}#beta-landing .bl-glo-r i{transition:transform .25s}'
+      '#beta-landing .bl-glo:focus-visible{outline:3px solid #E8C96B;outline-offset:4px;border-radius:14px}'
+      '@keyframes blGloG{to{transform:rotate(360deg)}}'
+      '@media(max-width:900px){#beta-landing .bl-glo{top:16px;right:16px}#beta-landing .bl-glo-r{width:62px;height:62px}#beta-landing .bl-glo-l{font-size:11.5px;padding:3px 9px}#beta-landing .bl-glo-t{display:none}}'
+      '@media(prefers-reduced-motion:reduce){#beta-landing .bl-glo-r::before{animation:none}}'
+      '</style>')
+    html_ = (f'<a class="bl-glo" href="/blog?utm_source=home&amp;utm_medium=globo_hero&amp;utm_campaign=blog" data-no-tr aria-label="Blog: {html.escape(a["es"]["titulo"])}">'
+             f'<span class="bl-glo-r"><i style="background-image:url(\'{U(a["img"],200,200)}\')"></i><b hidden data-f="{a["fecha"]}">{bi("Nuevo","New")}</b></span>'
+             f'<span class="bl-glo-l">✦ Blog</span>'
+             f'<span class="bl-glo-t"><small>{bi("Última nota","Latest note")}</small>{bi(a["es"]["titulo"], a["en"]["titulo"])}</span></a>')
+    js = "<script>(function(){var b=document.querySelector('#beta-landing .bl-glo b[data-f]');if(b&&Date.now()-new Date(b.getAttribute('data-f')+'T12:00:00')<1814400000)b.hidden=false;})();</script>"
+    bloque = ini + css + html_ + js + fin
+    if ini in t:
+        t = re.sub(re.escape(ini) + '.*?' + re.escape(fin), lambda m: bloque, t, flags=re.S)
+    else:
+        ancla = '<div class="bl-hero">'
+        assert t.count(ancla) == 1
+        t = t.replace(ancla, ancla + bloque)
+    open(p, 'w', encoding='utf-8').write(t)
+
 def franja_landing():
     p = os.path.join(ROOT, 'index.html'); t = open(p, encoding='utf-8').read()
     ini, fin = '<!--CAPSULAS-START-->', '<!--CAPSULAS-END-->'
@@ -512,5 +547,5 @@ def base_historias():
 
 if __name__ == '__main__':
     for a in ARTICULOS: articulo(a)
-    indice(); franja_landing(); sitemap(); base_historias()
+    indice(); franja_landing(); globo_hero(); sitemap(); base_historias()
     print('ok', len(ARTICULOS), 'cápsulas')
