@@ -164,7 +164,7 @@ Respondé SOLO un JSON válido, sin texto extra, con esta forma:
 {"nombre":"nombre del plato completo","usa":["ingredientes de la lista que usás"],"principal":{"nombre":"...","pasos":["3 o 4 pasos cortos, máx 110 caracteres cada uno"]},"salsa":{"nombre":"...","pasos":["3 pasos cortos"]},"guarnicion":{"nombre":"...","pasos":["3 pasos cortos"]},"toque":"un consejo de chef de una oración","emplatado":"cómo servirlo, una oración"}
 Español rioplatense con voseo, pasos en imperativo (salteá, sumá, cociná), temperaturas y tiempos concretos.`;
     try {
-      const r = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1200, messages: [{ role: 'user', content: pedido }] }) });
+      const r = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: 'claude-sonnet-5-5', max_tokens: 1200, messages: [{ role: 'user', content: pedido }] }) });
       const d = await r.json(); const t = d && d.content && d.content.map(c => c.text || '').join('').trim();
       if (!t) throw new Error((d && d.error && (d.error.message || d.error)) || 'sin respuesta');
       const j = JSON.parse(t.slice(t.indexOf('{'), t.lastIndexOf('}') + 1));

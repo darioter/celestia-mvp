@@ -92,7 +92,7 @@
       'Respondé SOLO con JSON válido, sin markdown: {"estilos":{"A":"italiana"},"ingredientes":[{"nombre":"","clave":null,"buscar":"","platos":["A1"]}]}';
     return fetch('/api/chat', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 3000, messages: [{ role: 'user', content: prompt }] })
+      body: JSON.stringify({ model: 'claude-sonnet-5-5', max_tokens: 3000, messages: [{ role: 'user', content: prompt }] })
     }).then(function (r) { if (!r.ok) throw new Error('IA ' + r.status); return r.json(); }).then(function (data) {
       var t = (data.content && data.content[0] && data.content[0].text) || '';
       t = t.replace(/```json\s*/g, '').replace(/```/g, '').replace(/[“”]/g, '"');

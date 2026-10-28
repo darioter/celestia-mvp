@@ -1099,7 +1099,7 @@ ${placas}
 
 Reglas: español rioplatense con voseo, primera persona, tono cálido y experto, sin exagerar. Primera línea con gancho fuerte (se corta a los 125 caracteres). Después 3 a 6 líneas cortas con lo que aprende quien mira, una invitación a guardar o compartir y una pregunta para comentarios. ${REEL.nota ? 'Mencioná que la nota completa está en chefprivado.ar/blog (link en la bio).' : ''} Cerrá con una línea suave invitando a reservar la fecha sin costo. Usá pocos emojis. Al final, en una línea aparte, entre 8 y 12 hashtags en español relevantes (incluí #chefprivado y #celestiachefprivado). Máximo 1200 caracteres. Devolvé solo el texto final, sin comillas ni explicaciones.`;
   try {
-    const r = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 900, messages: [{ role: 'user', content: pedido }] }) });
+    const r = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: 'claude-sonnet-5-5', max_tokens: 900, messages: [{ role: 'user', content: pedido }] }) });
     const d = await r.json(); const t = d && d.content && d.content.map(c => c.text || '').join('').trim();
     if (!t) throw new Error((d && d.error && (d.error.message || d.error)) || 'sin respuesta');
     document.getElementById('r-cap').value = t; capCont(); toast('Texto escrito con IA');

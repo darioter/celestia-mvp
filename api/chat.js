@@ -17,6 +17,9 @@ export default async function handler(req) {
 
   try {
     const body = await req.json();
+    // Modelos retirados por Anthropic → el vigente (así no se rompe ninguna página que todavía pida el viejo).
+    const VIGENTE = 'claude-sonnet-5-5';
+    if (!body.model || /^claude-(3|sonnet-4-2|opus-4-2|sonnet-4-0|opus-4-0)/.test(body.model)) body.model = VIGENTE;
 
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
