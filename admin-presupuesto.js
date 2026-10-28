@@ -38,11 +38,85 @@
   var DEF = {
     cliente: '', contacto: '', ocasion: '', fecha: '', turno: 'cena', personas: 8, pasos: 3,
     estilo: '', menuNombre: '', platos: ['', '', ''], total: '', desglose: true, validez: 7,
+    opciones: 1, modo: 'menus', menuNombreB: '', platosB: ['', '', ''], etiquetas: null, reservaId: '', pegado: '',
     intro: 'Gracias por pensar en Celestia para esta ocasión. Te comparto la propuesta: un menú diseñado para la fecha, cocinado y servido en tu casa.',
     notas: '', bebidas: 'Bebidas a cargo del anfitrión; sugerimos maridaje para cada paso.'
   };
-  var f = Object.assign({}, DEF);
-  try { var g = JSON.parse(localStorage.getItem(KEY) || 'null'); if (g) f = Object.assign({}, DEF, g); } catch (e) {}
+  var f = JSON.parse(JSON.stringify(DEF));
+  try { var g = JSON.parse(localStorage.getItem(KEY) || 'null'); if (g) f = Object.assign(JSON.parse(JSON.stringify(DEF)), g); } catch (e) {}
+
+  // ── Menús sugeridos: se pega el menú completo (1 o 2 opciones, 3 o 7 pasos) y se interpreta.
+  //    Queda guardado en este navegador junto a la reserva elegida (no toca la base).
+  var SUG_KEY = 'cel_menus_sugeridos';
+  function sugLeer() { try { return JSON.parse(localStorage.getItem(SUG_KEY) || '{}') || {}; } catch (e) { return {}; } }
+  function sugGuardar(id, texto) { if (!id) return; var s = sugLeer(); if (texto) s[id] = { texto: texto, t: Date.now() }; else delete s[id]; try { localStorage.setItem(SUG_KEY, JSON.stringify(s)); } catch (e) {} }
+  function etq() { var n = Math.max((f.platos || []).length, PASOS[f.pasos].length); return (f.etiquetas && f.etiquetas.length) ? f.etiquetas : PASOS[f.pasos].slice(0, n); }
+  function dos() { return +f.opciones === 2; }
+  function norm(s) { return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+  var PAL = /^(paso\s*\d+|entradas?( fria| caliente)?|principal(es)?|plato principal|plato fuerte|postres?|pre-? ?postre|bienvenida|snacks?|amuse|aperitivos?|intermedio|pastas?|fondo|sorbete|petit|primer|segundo|dulce|finger|canapes?|tapeo|antipasto|primo|secondo|dolce|ensalada|sopa|risotto|queso|quesos|cafe|pescado|carne|abrebocas|bocados?)\b/;
+  function cap(s) { s = String(s).trim(); return s.charAt(0).toUpperCase() + s.slice(1); }
+  function parsear(txt) {
+    var opts = [], cur = null, hint = null, alt = false, nombre0 = '';
+    var nueva = function (n) { cur = { nombre: n || '', items: [] }; opts.push(cur); };
+    String(txt || '').split(/\r?\n/).forEach(function (raw) {
+      var l = raw.replace(/[*_#`]+/g, '').replace(/^[\s>•·▪◦\-–—]+/, '').trim();
+      if (!l) return;
+      var n = norm(l), mp = n.match(/\b([37])\s*(pasos|tiempos|platos)\b/);
+      var oh = l.match(/^(opci[oó]n|alternativa|men[uú]|propuesta)\s+([ABab12]|uno|dos)(?=$|[\s:.\-–—)(])\s*[:.\-–—)]?\s*(.*)$/i);
+      if (oh) {
+        if (mp) hint = +mp[1];
+        nueva(oh[3].replace(/[(\[]?\b[37]\s*(pasos|tiempos)\b[)\]]?/ig, '').replace(/^[\s:·.\-–—|]+|[\s:·.\-–—|]+$/g, ''));
+        return;
+      }
+      if (/^(men[uú]|propuesta)\b/i.test(l) && l.indexOf(':') < 0 || (mp && l.split(/\s+/).length <= 6 && l.indexOf(':') < 0)) {
+        if (mp) hint = +mp[1];
+        var nm = l.replace(/^(men[uú]|propuesta)\s*(de\s*)?/i, '').replace(/\b[37]\s*(pasos|tiempos|platos)\b/ig, '').replace(/^[\s:·.\-–—|]+|[\s:·.\-–—|]+$/g, '');
+        if (nm && !cur) nombre0 = cap(nm);
+        return;
+      }
+      if (/\$\s*\d|\b(precio|total|por persona|valor|condiciones|incluye|seña)\b/i.test(n)) return;
+      if (!cur) nueva(nombre0);
+      l = l.replace(/^(\d{1,2}|[ivx]{1,4})\s*[.)°º:\-–—]\s*/i, '');
+      var last = cur.items[cur.items.length - 1];
+      var am = l.match(/^([abAB])\s*[).:\-]\s+(.*)$/);
+      if (am && last && last.solo) { if (!last.a) last.a = am[2]; else if (!last.b) { last.b = am[2]; alt = true; } return; }
+      var label = '', dish = l, k = l.indexOf(':');
+      if (k > 0) { var left = l.slice(0, k).trim(); if (left.length <= 32 && left.split(/\s+/).length <= 4) { label = left; dish = l.slice(k + 1).trim(); } }
+      if (!label) { var dm = l.match(/^(.{2,30}?)\s+[—–-]\s+(.+)$/); if (dm && PAL.test(norm(dm[1]))) { label = dm[1].trim(); dish = dm[2].trim(); } }
+      if (!label && PAL.test(n) && l.split(/\s+/).length <= 3) { label = l; dish = ''; }
+      if (label && /^paso\s*\d+$/i.test(label)) label = '';
+      if (!dish) { cur.items.push({ label: label, a: '', b: '', solo: true }); return; }
+      if (!label && last && last.solo && !last.b) { if (!last.a) last.a = dish; else { last.b = dish; alt = true; } return; }
+      var p = dish.split(/\s+(?:\/|\||ó|o bien)\s+/);
+      if (p.length > 1) alt = true;
+      cur.items.push({ label: label, a: p[0].trim(), b: (p[1] || '').trim() });
+    });
+    opts = opts.filter(function (o) { return o.items.some(function (i) { return i.a; }); });
+    opts.forEach(function (o) { o.items = o.items.filter(function (i) { return i.a; }); });
+    if (!opts.length) return null;
+    var A = opts[0], B = opts[1], r = { modo: 'menus', opciones: 1 };
+    if (B) { r.opciones = 2; } else if (alt) { r.opciones = 2; r.modo = 'pasos'; }
+    var n = Math.max(A.items.length, B ? B.items.length : 0);
+    r.pasos = hint || (n <= 3 ? 3 : 7);
+    var base = PASOS[r.pasos], conLabel = A.items.some(function (i) { return i.label; });
+    r.etiquetas = (!conLabel && n === base.length) ? null : Array.apply(null, Array(n)).map(function (_, i) {
+      var it = A.items[i] || (B && B.items[i]) || {}; return it.label ? cap(it.label) : (n === base.length ? base[i] : (base[i] || 'Paso ' + (i + 1)));
+    });
+    r.platos = Array.apply(null, Array(n)).map(function (_, i) { return (A.items[i] || {}).a || ''; });
+    r.platosB = Array.apply(null, Array(n)).map(function (_, i) { return B ? ((B.items[i] || {}).a || '') : ((A.items[i] || {}).b || ''); });
+    r.menuNombre = A.nombre || (B ? '' : nombre0); r.menuNombreB = B ? B.nombre : '';
+    return r;
+  }
+  function aplicar(r) {
+    f.opciones = r.opciones; f.modo = r.modo; f.pasos = r.pasos; f.etiquetas = r.etiquetas;
+    f.platos = r.platos; f.platosB = r.platosB; f.estilo = '';
+    if (r.menuNombre || r.opciones === 2) f.menuNombre = r.menuNombre; f.menuNombreB = r.menuNombreB;
+  }
+  function resumen(r) {
+    if (!r) return 'No encontré platos. Probá con una línea por paso, por ejemplo «Entrada: Burrata con tomates».';
+    var n = r.platos.length;
+    return '✓ ' + (r.opciones === 2 ? (r.modo === 'pasos' ? '1 menú con 2 opciones por paso' : '2 opciones de menú') : '1 menú') + ' · ' + n + ' paso' + (n > 1 ? 's' : '') + ' · tarifa de ' + r.pasos + ' pasos';
+  }
 
   function numero() { var d = new Date(); var p = function (n) { return String(n).padStart(2, '0'); }; return 'CEL-' + String(d.getFullYear()).slice(2) + p(d.getMonth() + 1) + p(d.getDate()) + '-' + p(d.getHours()) + p(d.getMinutes()); }
   var nro = numero();
@@ -78,6 +152,13 @@
     '#seccion-presupuestos .pz-acc button:hover{background:rgba(232,201,107,.12)}',
     '#seccion-presupuestos .pz-acc button:focus-visible{outline:3px solid #E8C96B;outline-offset:2px}',
     '#seccion-presupuestos .pz-acc .pri{background:linear-gradient(135deg,#C9A84C,#E8C96B);color:#0D1B2A;border:0}',
+    '#seccion-presupuestos .pz-sug{border:1px solid rgba(232,201,107,.55);background:rgba(232,201,107,.07);border-radius:14px;padding:12px 12px 10px;margin:4px 0 14px}',
+    '#seccion-presupuestos .pz-sug .pz-f{margin-bottom:8px}',
+    '#seccion-presupuestos .pz-sug textarea{min-height:150px;font:12.5px/1.5 ui-monospace,Menlo,Consolas,monospace}',
+    '#seccion-presupuestos .pz-sug .pz-acc{margin-top:0}',
+    '#seccion-presupuestos .pz-msg{font-size:12px;line-height:1.45;margin-top:8px;color:rgba(250,246,239,.85)}',
+    '#seccion-presupuestos .pz-msg.ok{color:#9fe0b0}#seccion-presupuestos .pz-msg.err{color:#ffb4a8}',
+    '#seccion-presupuestos .pz-sep{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#0D1B2A;background:#E8C96B;border-radius:6px;padding:4px 8px;margin:12px 0 8px;display:inline-block}',
     '#seccion-presupuestos .pz-prev{display:flex;flex-direction:column;align-items:center;gap:18px;overflow:hidden}',
     '#seccion-presupuestos .pz-scale{transform-origin:top center}',
     '@media(max-width:980px){#seccion-presupuestos .pz-wrap{grid-template-columns:1fr}#seccion-presupuestos .pz-form{position:relative;max-height:none}}',
@@ -104,6 +185,13 @@
     '.pz-menu div{display:grid;grid-template-columns:30mm 1fr;gap:4mm;align-items:baseline;padding-bottom:1.6mm;border-bottom:.2mm dashed #E6DBC5}',
     '.pz-menu span{font-size:7pt;letter-spacing:.16em;text-transform:uppercase;color:#a08a5c}',
     '.pz-menu b{font:400 10.5pt/1.35 "DM Serif Display",serif;color:#0D1B2A}',
+    '.pz-menu b i.o,.pz-cur b i.o{font:italic 400 .8em "DM Serif Display",serif;color:#a08a5c;margin:0 1.6mm}',
+    '.pz-ops{display:grid;grid-template-columns:1fr 1fr;gap:5mm}',
+    '.pz-op{border:.3mm solid #E3D7BF;border-radius:3mm;padding:3mm 4mm 2mm;background:#fffaf0}',
+    '.pz-op h4{margin:0 0 2mm;font:400 11pt/1.2 "DM Serif Display",serif;color:#0D1B2A}.pz-op h4 small{display:block;font:600 6.6pt "DM Sans",sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#a08a5c;margin-bottom:.8mm}',
+    '.pz-op .pz-menu div{grid-template-columns:1fr;gap:.3mm}',
+    '.pz-page.cmp .pz-op .pz-menu b{font-size:9.2pt}',
+    '.pz-in .opn{font-size:7.6pt;letter-spacing:.3em;text-transform:uppercase;color:#a08a5c;margin-top:2.5mm}',
     '.pz-row{display:grid;grid-template-columns:1.15fr 1fr;gap:6mm}',
     '.pz-inv{border:0.3mm solid #E3D7BF;border-radius:3mm;overflow:hidden;font-size:9pt}',
     '.pz-inv div{display:flex;justify-content:space-between;gap:4mm;padding:2.2mm 4mm;border-bottom:.2mm solid #EFE6D3}',
@@ -155,15 +243,33 @@
     }).join('');
   }
   function camposPlatos() {
-    return PASOS[f.pasos].map(function (paso, i) {
-      return '<div class="pz-f"><label>' + esc(paso) + '</label><input data-plato="' + i + '" value="' + esc(f.platos[i] || '') + '" placeholder="Plato"></div>';
+    var L = etq(), d = dos(), pp = f.modo === 'pasos';
+    var col = function (arr, attr) { return L.map(function (paso, i) {
+      return '<div class="pz-f"><label>' + esc(paso) + (d && pp ? (attr === 'data-plato' ? ' · opción A' : ' · opción B') : '') + '</label><input ' + attr + '="' + i + '" value="' + esc(arr[i] || '') + '" placeholder="Plato"></div>';
+    }).join(''); };
+    if (!d) return col(f.platos, 'data-plato');
+    if (pp) return L.map(function (paso, i) {
+      return '<div class="pz-f"><label>' + esc(paso) + '</label><input data-plato="' + i + '" value="' + esc(f.platos[i] || '') + '" placeholder="Opción A"><input data-platob="' + i + '" value="' + esc((f.platosB || [])[i] || '') + '" placeholder="Opción B" style="margin-top:4px"></div>';
     }).join('');
+    return '<span class="pz-sep">Opción A</span>' + col(f.platos, 'data-plato') +
+      '<span class="pz-sep">Opción B</span><div class="pz-f"><label>Nombre de la opción B</label><input data-k="menuNombreB" value="' + esc(f.menuNombreB) + '" placeholder="Ej.: Clásico de pastas"></div>' + col(f.platosB || [], 'data-platob');
+  }
+  function selOpciones() {
+    var v = dos() ? (f.modo === 'pasos' ? '2p' : '2m') : '1';
+    return '<div class="pz-f"><label>Opciones para el cliente</label><select id="pz-opc">' +
+      '<option value="1"' + (v === '1' ? ' selected' : '') + '>Un menú</option>' +
+      '<option value="2m"' + (v === '2m' ? ' selected' : '') + '>Dos menús completos (elige uno)</option>' +
+      '<option value="2p"' + (v === '2p' ? ' selected' : '') + '>Un menú con 2 opciones en cada paso</option></select></div>';
   }
   function form() {
     var root = $('#pz-form'); if (!root) return;
     root.innerHTML =
       '<h3>Presupuesto formal</h3><p class="pz-ay">Hoja A4 con la propuesta y la carta del menú. Se exporta a PDF desde «Imprimir».</p>' +
       '<div class="pz-f"><label>Cargar desde una reserva</label><select id="pz-res"><option value="">— Elegir reserva (opcional) —</option></select></div>' +
+      '<div class="pz-sug"><div class="pz-f"><label for="pz-pega">Menú sugerido · pegalo completo</label>' +
+      '<textarea id="pz-pega" spellcheck="false" placeholder="' + esc('Opción A — Mediterráneo\nEntrada: Burrata con tomates asados\nPrincipal: Sorrentinos de calabaza\nPostre: Tiramisú\n\nOpción B — Clásico\nEntrada: …\nPrincipal: …\nPostre: …') + '">' + esc(f.pegado) + '</textarea></div>' +
+      '<div class="pz-acc"><button type="button" class="pri" id="pz-leer">✦ Rellenar el presupuesto</button></div>' +
+      '<div class="pz-msg" id="pz-sug-msg">Una línea por paso. Sirve para 3 o 7 pasos, con una o dos opciones («Opción A / Opción B», o «Entrada: X / Y»). Si elegiste una reserva, queda guardado con ella.</div></div>' +
       '<div class="pz-f"><label>Para (cliente o empresa)</label><input data-k="cliente" value="' + esc(f.cliente) + '" placeholder="Ej.: Quintessentially Concierge"></div>' +
       '<div class="pz-f"><label>Contacto</label><input data-k="contacto" value="' + esc(f.contacto) + '" placeholder="Nombre, mail o teléfono"></div>' +
       '<div class="pz-f"><label>Ocasión (título de la carta)</label><input data-k="ocasion" value="' + esc(f.ocasion) + '" placeholder="Ej.: Cumpleaños de Ana"></div>' +
@@ -172,7 +278,8 @@
       '<div class="pz-2"><div class="pz-f"><label>Comensales</label><input type="number" min="2" max="40" data-k="personas" value="' + esc(f.personas) + '"></div>' +
       '<div class="pz-f"><label>Formato</label><select data-k="pasos"><option value="3"' + (+f.pasos === 3 ? ' selected' : '') + '>3 pasos</option><option value="7"' + (+f.pasos === 7 ? ' selected' : '') + '>7 pasos</option></select></div></div>' +
       '<div class="pz-f"><label>Menú de ejemplo (opcional)</label><select id="pz-est">' + opcionesEstilos() + '</select></div>' +
-      '<div class="pz-f"><label>Nombre del menú</label><input data-k="menuNombre" value="' + esc(f.menuNombre) + '" placeholder="Ej.: Mediterráneo de celebración"></div>' +
+      selOpciones() +
+      '<div class="pz-f"><label>' + (dos() && f.modo !== 'pasos' ? 'Nombre de la opción A' : 'Nombre del menú') + '</label><input data-k="menuNombre" value="' + esc(f.menuNombre) + '" placeholder="Ej.: Mediterráneo de celebración"></div>' +
       camposPlatos() +
       '<div class="pz-calc" id="pz-calc"></div>' +
       '<div class="pz-f"><label>Total a mostrar (vacío = tarifa del sitio)</label><input data-k="total" inputmode="numeric" value="' + esc(f.total) + '" placeholder="Ej.: 1054000"></div>' +
@@ -186,7 +293,7 @@
       el.addEventListener('input', function () {
         var k = el.getAttribute('data-k');
         f[k] = el.type === 'checkbox' ? el.checked : el.value;
-        if (k === 'pasos') { f.platos = PASOS[f.pasos].map(function () { return ''; }); f.estilo = ''; form(); }
+        if (k === 'pasos') { f.platos = PASOS[f.pasos].map(function () { return ''; }); f.platosB = f.platos.slice(); f.etiquetas = null; f.estilo = ''; form(); }
         guardar(); render();
       });
       if (el.tagName === 'SELECT' || el.type === 'checkbox' || el.type === 'date') el.addEventListener('change', function () { el.dispatchEvent(new Event('input')); });
@@ -194,14 +301,33 @@
     root.querySelectorAll('[data-plato]').forEach(function (el) {
       el.addEventListener('input', function () { f.platos[+el.getAttribute('data-plato')] = el.value; guardar(); render(); });
     });
+    root.querySelectorAll('[data-platob]').forEach(function (el) {
+      el.addEventListener('input', function () { if (!f.platosB) f.platosB = []; f.platosB[+el.getAttribute('data-platob')] = el.value; guardar(); render(); });
+    });
+    $('#pz-opc').addEventListener('change', function () {
+      f.opciones = this.value === '1' ? 1 : 2; f.modo = this.value === '2p' ? 'pasos' : 'menus';
+      if (!f.platosB || f.platosB.length !== f.platos.length) f.platosB = f.platos.map(function (_, i) { return (f.platosB || [])[i] || ''; });
+      guardar(); form(); render();
+    });
+    $('#pz-pega').addEventListener('input', function () { f.pegado = this.value; guardar(); });
+    $('#pz-leer').addEventListener('click', function () {
+      var msg = $('#pz-sug-msg'), r = parsear(f.pegado);
+      msg.className = 'pz-msg ' + (r ? 'ok' : 'err');
+      if (!r) { msg.textContent = resumen(r); return; }
+      aplicar(r);
+      if (f.reservaId) sugGuardar(f.reservaId, f.pegado);
+      guardar(); form(); render();
+      var m2 = $('#pz-sug-msg'); m2.className = 'pz-msg ok';
+      m2.textContent = resumen(r) + (f.reservaId ? ' · guardado con la reserva' : '') + '. Podés retocar cada plato abajo.';
+    });
     $('#pz-est').addEventListener('change', function () {
       var v = this.value; f.estilo = v; if (!v) { guardar(); return; }
       var a = v.split(':'), e = ESTILOS.filter(function (x) { return x.id === a[0]; })[0], m = e && e['m' + f.pasos][+a[1]];
-      if (m) { f.platos = m.p.slice(); f.menuNombre = m.n; }
+      if (m) { f.platos = m.p.slice(); f.menuNombre = m.n; f.etiquetas = null; if (!f.platosB || f.platosB.length !== f.platos.length) f.platosB = f.platos.map(function () { return ''; }); }
       guardar(); form(); render();
     });
     $('#pz-print').addEventListener('click', function () { render(); prepararImpresion(); setTimeout(function () { window.print(); }, 80); });
-    $('#pz-nuevo').addEventListener('click', function () { if (!confirm('¿Empezar un presupuesto nuevo? Se borra el borrador actual.')) return; f = Object.assign({}, DEF, { platos: ['', '', ''] }); nro = numero(); guardar(); form(); render(); });
+    $('#pz-nuevo').addEventListener('click', function () { if (!confirm('¿Empezar un presupuesto nuevo? Se borra el borrador actual.')) return; f = JSON.parse(JSON.stringify(DEF)); nro = numero(); guardar(); form(); render(); });
     cargarReservas();
   }
   function guardar() { try { localStorage.setItem(KEY, JSON.stringify(f)); } catch (e) {} }
@@ -213,15 +339,22 @@
     lista.then(function (rs) {
       var hoy = new Date().toISOString().slice(0, 10);
       rs = rs.filter(function (r) { return r.fecha && r.fecha.slice(0, 10) >= hoy; }).sort(function (a, b) { return a.fecha < b.fecha ? -1 : 1; });
+      var sug = sugLeer();
       sel.innerHTML = '<option value="">— Elegir reserva (opcional) —</option>' + rs.map(function (r) {
-        return '<option value="' + esc(r.id) + '">' + esc(r.fecha.slice(0, 10) + ' · ' + (r.turno || '') + ' · ' + (r.nombre || 'Sin nombre') + ' · ' + (r.personas || '?') + ' pers.') + '</option>';
+        return '<option value="' + esc(r.id) + '"' + (String(r.id) === String(f.reservaId) ? ' selected' : '') + '>' + esc((sug[r.id] ? '✦ ' : '') + r.fecha.slice(0, 10) + ' · ' + (r.turno || '') + ' · ' + (r.nombre || 'Sin nombre') + ' · ' + (r.personas || '?') + ' pers.' + (sug[r.id] ? ' · menú cargado' : '')) + '</option>';
       }).join('');
       sel.onchange = function () {
-        var r = rs.filter(function (x) { return String(x.id) === this.value; }, this)[0]; if (!r) return;
+        var r = rs.filter(function (x) { return String(x.id) === this.value; }, this)[0];
+        f.reservaId = r ? String(r.id) : '';
+        if (!r) { guardar(); return; }
         f.cliente = r.nombre || f.cliente; f.fecha = r.fecha.slice(0, 10); f.turno = r.turno || f.turno; f.personas = r.personas || f.personas;
-        var m = String(r.menu || '').toLowerCase(); if (m.indexOf('7') >= 0 && +f.pasos !== 7) { f.pasos = 7; f.platos = PASOS[7].map(function () { return ''; }); } else if (m.indexOf('3') >= 0 && +f.pasos !== 3) { f.pasos = 3; f.platos = ['', '', '']; }
+        var m = String(r.menu || '').toLowerCase(), np = m.indexOf('7') >= 0 ? 7 : (m.indexOf('3') >= 0 ? 3 : 0);
+        if (np && +f.pasos !== np) { f.pasos = np; f.platos = PASOS[np].map(function () { return ''; }); f.platosB = f.platos.slice(); f.etiquetas = null; }
         if (r.total) f.total = String(r.total);
+        var s = sugLeer()[r.id], aviso = '';
+        if (s && s.texto) { var pr = parsear(s.texto); if (pr) { f.pegado = s.texto; aplicar(pr); if (np) f.pasos = np; aviso = '✓ Menú sugerido de esta reserva cargado · ' + resumen(pr).replace(/^✓ /, ''); } }
         guardar(); form(); render();
+        if (aviso) { var mm = $('#pz-sug-msg'); if (mm) { mm.className = 'pz-msg ok'; mm.textContent = aviso; } }
       };
     }).catch(function () {});
   }
@@ -235,7 +368,17 @@
     if (calc) calc.innerHTML = 'Tarifa del sitio · ' + c.personas + ' pers. · ' + (c.finde ? 'finde (+10% servicio)' : 'semana') +
       '<br>Servicio ' + money(c.servicio) + ' · Asistentes ' + money(c.asist) + ' · Ingredientes ' + money(c.ingredientes) + '<br><b>Total ' + money(c.total) + '</b>' +
       (String(f.total).replace(/\D/g, '') ? ' · se muestra ' + money(total) : '');
-    var platosHTML = pasos.map(function (p, i) { return '<div><span>' + esc(p) + '</span><b>' + esc(f.platos[i] || '—') + '</b></div>'; }).join('');
+    var L = etq(), D = dos(), PP = D && f.modo === 'pasos', B = f.platosB || [];
+    var nomA = f.menuNombre || 'Opción A', nomB = f.menuNombreB || 'Opción B';
+    var lista = function (arr) { return L.map(function (p, i) { return '<div><span>' + esc(p) + '</span><b>' + esc(arr[i] || '—') + '</b></div>'; }).join(''); };
+    var platosHTML = PP ? L.map(function (p, i) {
+      return '<div><span>' + esc(p) + '</span><b>' + esc(f.platos[i] || '—') + (B[i] ? '<i class="o">o</i>' + esc(B[i]) : '') + '</b></div>';
+    }).join('') : lista(f.platos);
+    var menuHTML = (D && !PP) ?
+      '<div class="pz-ops"><div class="pz-op"><h4><small>Opción A</small>' + esc(nomA) + '</h4><div class="pz-menu">' + lista(f.platos) + '</div></div>' +
+      '<div class="pz-op"><h4><small>Opción B</small>' + esc(nomB) + '</h4><div class="pz-menu">' + lista(B) + '</div></div></div>' :
+      '<div class="pz-menu">' + platosHTML + '</div>';
+    var tituloMenu = (D && !PP) ? 'Dos opciones de ' + fmt : (f.menuNombre || ('Menú de ' + fmt));
     var manual = !!String(f.total).replace(/\D/g, '') && total !== c.total;
     var inv = (f.desglose && !manual ?
       '<div><span>Servicio del chef' + (c.finde ? ' (incluye 10% fin de semana)' : '') + '</span><span>' + money(c.servicio) + '</span></div>' +
@@ -243,15 +386,16 @@
       '<div><span>Ingredientes (estimado)</span><span>' + money(c.ingredientes) + '</span></div>' : '') +
       '<div class="t"><span>Total · ' + c.personas + ' personas<small>Servicio, asistentes e ingredientes incluidos</small></span><b>' + money(total) + '</b></div>';
     var p1 =
-      '<section class="pz-page' + ((pasos.length > 3 || f.notas) ? ' cmp' : '') + '">' +
+      '<section class="pz-page' + ((L.length > 3 || f.notas || D) ? ' cmp' : '') + '">' +
       '<header class="pz-hd"><div class="pz-brand"><div class="pz-logo"><b>CELESTIA</b><small>CHEF PRIVADO</small></div>' +
       '<div class="pz-nro">Propuesta <b>' + esc(nro) + '</b><br>' + esc(hoyLargo()) + '<br>Válida hasta el ' + esc(vence()) + '</div></div>' +
-      '<div class="pz-tit">Propuesta gastronómica<br><em>' + esc(f.menuNombre || ('Menú de ' + fmt)) + '</em></div></header>' +
+      '<div class="pz-tit">Propuesta gastronómica<br><em>' + esc(tituloMenu) + '</em></div></header>' +
       '<div class="pz-bd"><div class="pz-bd-in">' +
       '<div class="pz-meta"><div><span>Para</span><b>' + esc(f.cliente || '—') + '</b></div><div><span>Ocasión</span><b>' + esc(f.ocasion || '—') + '</b></div><div><span>Contacto</span><b>' + esc(f.contacto || '—') + '</b></div>' +
       '<div><span>Fecha</span><b>' + esc(fechaLarga(f.fecha)) + '</b></div><div><span>Turno</span><b>' + esc(turnoTxt) + '</b></div><div><span>Formato</span><b>' + esc(fmt + ' · ' + c.personas + ' personas') + '</b></div></div>' +
       '<p class="pz-intro">' + esc(f.intro) + '</p>' +
-      '<div class="pz-h2">El menú</div><div class="pz-menu">' + platosHTML + '</div>' +
+      '<div class="pz-h2">' + (D ? (PP ? 'El menú · dos opciones en cada paso' : 'Los menús · elegí una opción') : 'El menú') + '</div>' + menuHTML +
+      (D ? '<p class="pz-fine" style="margin-top:2mm">' + (PP ? 'Se elige una opción por paso, la misma para toda la mesa, hasta 15 días antes.' : 'Las dos opciones tienen el mismo valor. Se confirma una hasta 15 días antes del evento.') + '</p>' : '') +
       (f.notas ? '<p class="pz-fine" style="margin-top:3mm"><b>Notas:</b> ' + esc(f.notas) + '</p>' : '') +
       '<div class="pz-row"><div><div class="pz-h2">Inversión</div><div class="pz-inv">' + inv + '</div>' +
       '<p class="pz-pago"><b>Forma de pago:</b> seña del 50% para confirmar la fecha y saldo al inicio del servicio, por transferencia o MercadoPago. ' + esc(f.bebidas) + '</p></div>' +
@@ -263,17 +407,22 @@
       '</div></div>' +
       '<footer class="pz-ft"><div class="pz-firma"><b>Daro Castello</b>Chef · Celestia Chef Privado</div><div style="text-align:right">chefprivado.ar · +54 9 11 6041-0607<br>CABA y Gran Buenos Aires</div></footer>' +
       '</section>';
-    var n = pasos.length, gap = n > 3 ? '5mm' : '11mm', fs = n > 3 ? '12.5pt' : '16pt';
-    var p2 =
-      '<section class="pz-page pz-carta"><div class="pz-marco"><div class="pz-in">' +
-      '<span class="ks">✦ Menú ✦</span><div class="wm">CELESTIA</div>' +
-      '<div class="oc">' + esc(f.ocasion || f.menuNombre || 'Una noche especial') + '</div>' +
-      '<div class="fe">' + esc(f.fecha ? new Date(f.fecha + 'T12:00:00').toLocaleDateString('es-AR', { day: 'numeric', month: 'long', year: 'numeric' }) : '') + (f.menuNombre && f.ocasion ? ' · ' + esc(f.menuNombre) : '') + '</div>' +
-      '<div class="pz-orn">✦ ✦ ✦</div>' +
-      '<div class="pz-cur" style="--gap:' + gap + ';--fs:' + fs + '">' + platosHTML + '</div>' +
-      '<div class="pz-orn" style="margin:6mm 0 2mm">✦</div>' +
-      '<div class="pie"><b>Daro Castello</b>Chef privado · Buenos Aires</div>' +
-      '</div></div></section>';
+    var n = L.length, gap = n > 3 ? (PP ? '3.6mm' : '5mm') : (PP ? '8mm' : '11mm'), fs = n > 3 ? (PP ? '11pt' : '12.5pt') : (PP ? '13.5pt' : '16pt');
+    var fechaC = f.fecha ? new Date(f.fecha + 'T12:00:00').toLocaleDateString('es-AR', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+    var carta = function (cuerpo, nombre, etiqueta) {
+      return '<section class="pz-page pz-carta"><div class="pz-marco"><div class="pz-in">' +
+        '<span class="ks">✦ Menú ✦</span><div class="wm">CELESTIA</div>' +
+        '<div class="oc">' + esc(f.ocasion || nombre || 'Una noche especial') + '</div>' +
+        '<div class="fe">' + esc(fechaC) + (nombre && f.ocasion ? ' · ' + esc(nombre) : '') + '</div>' +
+        (etiqueta ? '<div class="opn">' + esc(etiqueta) + '</div>' : '') +
+        '<div class="pz-orn">✦ ✦ ✦</div>' +
+        '<div class="pz-cur" style="--gap:' + gap + ';--fs:' + fs + '">' + cuerpo + '</div>' +
+        '<div class="pz-orn" style="margin:6mm 0 2mm">✦</div>' +
+        '<div class="pie"><b>Daro Castello</b>Chef privado · Buenos Aires</div>' +
+        '</div></div></section>';
+    };
+    var p2 = (D && !PP) ? carta(lista(f.platos), f.menuNombre, 'Opción A') + carta(lista(B), f.menuNombreB, 'Opción B') :
+      carta(platosHTML, f.menuNombre, PP ? 'Una opción por paso' : '');
     doc.innerHTML = p1 + p2;
     ajustar(doc);
     escalar();
@@ -317,7 +466,9 @@
 
   function iniciar() {
     if (!$('#seccion-presupuestos')) return;
-    if (!f.platos || f.platos.length !== PASOS[f.pasos].length) f.platos = PASOS[f.pasos].map(function (_, i) { return (f.platos || [])[i] || ''; });
+    var L0 = (f.etiquetas && f.etiquetas.length) ? f.etiquetas : PASOS[f.pasos];
+    if (!f.platos || f.platos.length !== L0.length) f.platos = L0.map(function (_, i) { return (f.platos || [])[i] || ''; });
+    if (!f.platosB || f.platosB.length !== L0.length) f.platosB = L0.map(function (_, i) { return (f.platosB || [])[i] || ''; });
     form(); render();
     try {
       if (typeof supa !== 'undefined') supa.from('canasta_indice').select('indice').order('fecha', { ascending: false }).limit(1).then(function (r) {
