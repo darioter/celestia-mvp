@@ -1,6 +1,220 @@
 {
  "notas": [
   {
+   "slug": "osobuco-braseado-polenta-cremosa-gremolata",
+   "cat": "Carnes",
+   "icono": "🥩",
+   "titulo": "Osobuco braseado con polenta cremosa y gremolata",
+   "bajada": "La receta de Cocina 2 de la escuela: dos horas de braseado lento, una salsa que sale de la misma olla y una gremolata que corta la intensidad.",
+   "img": "https://images.pexels.com/photos/9919629/pexels-photo-9919629.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1920&fit=crop",
+   "img_sq": "https://images.pexels.com/photos/9919629/pexels-photo-9919629.jpeg?auto=compress&cs=tinysrgb&w=800&h=800&fit=crop",
+   "foto": "Pexels",
+   "url": "https://www.chefprivado.ar/blog/osobuco-braseado-polenta-cremosa-gremolata",
+   "tips": [
+    "El sellado no es para \"cerrar los jugos\" (eso es un mito): es para dorar. Ese dorado es el sabor que después levanta el vino al desglasar."
+   ],
+   "datos": [
+    "El braseado mejora de un día para el otro: el colágeno gelifica la salsa y los sabores se asientan. Es un plato ideal para dejar hecho antes de recibir."
+   ],
+   "secciones": [
+    {
+     "h2": "Ingredientes (2 porciones)",
+     "texto": "Osobuco · 2 piezas de unos 350 g"
+    },
+    {
+     "h2": "Paso a paso del braseado",
+     "texto": "Cortá todos los vegetales en macedonia (cubos chicos y parejos) y reservalos."
+    },
+    {
+     "h2": "La polenta cremosa",
+     "texto": "Para 2 porciones: 50 g de harina de maíz precocida, 200 cc de leche, 100 cc de crema, 1 diente de ajo hecho pasta, 4 g de perejil picado y 20 g de manteca."
+    },
+    {
+     "h2": "La gremolata",
+     "texto": "Es el toque fresco que equilibra un plato tan intenso: 50 g de perejil, 1 diente de ajo, 10 g de alcaparras, ralladura y jugo de 1 limón, 30 cc de aceite de oliva,…"
+    }
+   ]
+  },
+  {
+   "slug": "merengue-frances-suizo-e-italiano",
+   "cat": "Pastelería",
+   "icono": "🧁",
+   "titulo": "Merengue francés, suizo e italiano: cuál usar y cómo hacer cada uno",
+   "bajada": "Los tres merengues de la clase 3 de Pastelería: qué los diferencia, para qué sirve cada uno y los puntos de temperatura que no fallan.",
+   "img": "https://images.pexels.com/photos/5908033/pexels-photo-5908033.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1920&fit=crop",
+   "img_sq": "https://images.pexels.com/photos/5908033/pexels-photo-5908033.jpeg?auto=compress&cs=tinysrgb&w=800&h=800&fit=crop",
+   "foto": "Pexels",
+   "url": "https://www.chefprivado.ar/blog/merengue-frances-suizo-e-italiano",
+   "tips": [
+    "El secreto del italiano es la coordinación: las claras tienen que estar en su punto justo cuando el almíbar llega a temperatura. Si las batís antes, se pasan; si llegan tarde, el almíbar se enfría."
+   ],
+   "datos": [
+    "Para hornear, la proporción tiene que ser menos de 2 de azúcar por 1 de clara. Con más azúcar, el merengue queda húmedo y larga almíbar en el horno. Una vez secos, se guardan en un recipiente hermético para que no se humedezcan."
+   ],
+   "secciones": [
+    {
+     "h2": "Las reglas para cualquier merengue",
+     "texto": "Cero grasa: bowl y batidor limpios y secos, y ni una gota de yema."
+    },
+    {
+     "h2": "1. Merengue francés: el más simple",
+     "texto": "Se baten las claras a punto nieve, primero lento y después más rápido, y se agrega el azúcar en forma de lluvia, de a poco, hasta que esté completamente disuelta."
+    },
+    {
+     "h2": "2. Merengue suizo: a baño María",
+     "texto": "En la escuela: 2 claras y 120 g de azúcar."
+    },
+    {
+     "h2": "3. Merengue italiano: con almíbar",
+     "texto": "El más estable y brillante, ideal para decorar tortas y el lemon pie."
+    },
+    {
+     "h2": "Para hornear merengues",
+     "texto": "180 °C, poco tiempo · Merengue blando: el agua no llega a evaporarse"
+    }
+   ]
+  },
+  {
+   "slug": "empanadas-saltenas-con-llajua",
+   "cat": "Sabores de Latinoamérica",
+   "icono": "🌎",
+   "titulo": "Empanadas salteñas con llajua: la receta del NOA de la escuela",
+   "bajada": "Masa con grasa y salmuera, carne cortada a cuchillo, papa, huevo y verdeo, el repulgue de 16 a 19 pliegues y una llajua de tomate y locoto para acompañar.",
+   "img": "https://images.pexels.com/photos/8279711/pexels-photo-8279711.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1920&fit=crop",
+   "img_sq": "https://images.pexels.com/photos/8279711/pexels-photo-8279711.jpeg?auto=compress&cs=tinysrgb&w=800&h=800&fit=crop",
+   "foto": "Pexels",
+   "url": "https://www.chefprivado.ar/blog/empanadas-saltenas-con-llajua",
+   "tips": [
+    "El relleno tiene que estar frío para armar: si está caliente, derrite la grasa de la masa y la empanada se rompe o se abre en el horno."
+   ],
+   "datos": [
+    "Las empanadas se pueden armar y congelar crudas, separadas en una placa. Van directo del freezer al horno caliente, con unos minutos más de cocción."
+   ],
+   "secciones": [
+    {
+     "h2": "La masa (recado)",
+     "texto": "Harina 0000 · 200 g"
+    },
+    {
+     "h2": "El relleno",
+     "texto": "Roast beef cortado a cuchillo en cubos de 1 cm · 500 g"
+    },
+    {
+     "h2": "Armado y repulgue",
+     "texto": "Poné 1 o 2 cucharadas de relleno en el centro del disco, humedecé el borde con agua, cerrá en media luna y presioná suave para unir."
+    },
+    {
+     "h2": "La llajua",
+     "texto": "La salsa picante del NOA, de origen boliviano: 2 tomates maduros, 1 ají o locoto, 2 cucharadas de aceite de oliva y una pizca de sal."
+    }
+   ]
+  },
+  {
+   "slug": "espumantes-metodo-champenoise-y-charmat",
+   "cat": "Copa y maridaje",
+   "icono": "🍷",
+   "titulo": "Espumantes: champenoise o charmat, brut o extra brut y cómo leer la burbuja",
+   "bajada": "De la clase de Cata y maridaje: cómo se hace la burbuja, qué cambia entre los dos métodos, qué significa cada etiqueta de dulzor y cómo se cata un espumante.",
+   "img": "https://images.pexels.com/photos/3167288/pexels-photo-3167288.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1920&fit=crop",
+   "img_sq": "https://images.pexels.com/photos/3167288/pexels-photo-3167288.jpeg?auto=compress&cs=tinysrgb&w=800&h=800&fit=crop",
+   "foto": "Pexels",
+   "url": "https://www.chefprivado.ar/blog/espumantes-metodo-champenoise-y-charmat",
+   "tips": [
+    "Se sirve entre 6 y 8 °C, en copa alta y angosta (flauta): permite ver la burbuja y conserva el frío y la efervescencia. Serví poca cantidad por vez para que no se entibie."
+   ],
+   "datos": [
+    "Esta es la segunda nota de Copa y maridaje. La primera es cómo catar un vino en 3 pasos."
+   ],
+   "secciones": [
+    {
+     "h2": "Los dos métodos",
+     "texto": "Segunda fermentación · En cada botella"
+    },
+    {
+     "h2": "Brut, extra brut, dulce: qué dice la etiqueta",
+     "texto": "Después de la segunda fermentación el espumante queda seco."
+    },
+    {
+     "h2": "Champagne, Cava y Prosecco",
+     "texto": "Champagne: solo el de la región de Champagne, Francia."
+    },
+    {
+     "h2": "Cómo se cata un espumante",
+     "texto": "La burbuja: cuanto más fina, más ordenada (en rosario por el centro de la copa) y más persistente, mejor."
+    }
+   ]
+  },
+  {
+   "slug": "maridaje-vino-con-quesos-y-chocolate",
+   "cat": "Copa y maridaje",
+   "icono": "🍷",
+   "titulo": "Vino con quesos y con chocolate: el maridaje que parece fácil y no lo es",
+   "bajada": "Por qué muchos quesos van mejor con blancos que con tintos, cómo armar una tabla y qué cepa elegir para cada chocolate, según el cuadernillo de Cata y maridaje.",
+   "img": "https://images.pexels.com/photos/5250390/pexels-photo-5250390.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1920&fit=crop",
+   "img_sq": "https://images.pexels.com/photos/5250390/pexels-photo-5250390.jpeg?auto=compress&cs=tinysrgb&w=800&h=800&fit=crop",
+   "foto": "Pexels",
+   "url": "https://www.chefprivado.ar/blog/maridaje-vino-con-quesos-y-chocolate",
+   "tips": [
+    "Buscá aromas en común: frutales, tostados o especiados aparecen tanto en el vino como en el chocolate, y sirven para maridar por afinidad (parecidos) o por contraste (opuestos que se realzan)."
+   ],
+   "datos": [
+    "Los platos difíciles para cualquier vino, según el mismo cuadernillo: hojas verdes crudas, vinagretas, helados, chocolate, raíces y achicorias, y huevos."
+   ],
+   "secciones": [
+    {
+     "h2": "Vino y quesos: la sorpresa de los blancos",
+     "texto": "Siempre se pensó que el tinto es el vino del queso, y sin embargo la mayoría de los quesos marida mejor con blancos."
+    },
+    {
+     "h2": "Vino y chocolate: por qué es difícil",
+     "texto": "Durante mucho tiempo se los consideró enemigos, por dos motivos:"
+    }
+   ]
+  },
+  {
+   "slug": "como-catar-una-cerveza-y-maridarla",
+   "cat": "Copa y maridaje",
+   "icono": "🍷",
+   "titulo": "Cómo catar una cerveza (y con qué quesos y comidas servirla)",
+   "bajada": "Familias de sabor, temperatura de servicio, los 9 pasos de la cata, los defectos que delatan una cerveza mal hecha y las tres claves para maridarla.",
+   "img": "https://images.pexels.com/photos/13229769/pexels-photo-13229769.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1920&fit=crop",
+   "img_sq": "https://images.pexels.com/photos/13229769/pexels-photo-13229769.jpeg?auto=compress&cs=tinysrgb&w=800&h=800&fit=crop",
+   "foto": "Pexels",
+   "url": "https://www.chefprivado.ar/blog/como-catar-una-cerveza-y-maridarla",
+   "tips": [
+    "Si catás varias, el orden va de menor a mayor en alcohol, amargor, cuerpo y tostado. Entre una y otra, pan neutro o agua."
+   ],
+   "datos": [
+    "Esta es la tercera nota de Copa y maridaje, después de cómo catar un vino y los espumantes."
+   ],
+   "secciones": [
+    {
+     "h2": "Las familias de sabor",
+     "texto": "Para saber qué esperar de una cerveza, se la ubica en una familia: estilos que se parecen en color, aroma y sabor."
+    },
+    {
+     "h2": "A qué temperatura",
+     "texto": "Lagers (más secas y carbonatadas) · 4 a 10 °C"
+    },
+    {
+     "h2": "Los pasos de la cata",
+     "texto": "Mirá la botella: nivel de llenado, turbidez, sedimentos."
+    },
+    {
+     "h2": "Los defectos más comunes",
+     "texto": "Diacetilo · Manteca"
+    },
+    {
+     "h2": "Las tres claves para maridar",
+     "texto": "Gastronomía regional: lo que se come donde nace la cerveza."
+    },
+    {
+     "h2": "Cerveza y quesos",
+     "texto": "Blandos (untables, cremosos) · Baja intensidad: Lager o Hefeweizen"
+    }
+   ]
+  },
+  {
    "slug": "noquis-de-papa-receta-de-escuela",
    "cat": "Pasta fresca",
    "icono": "🍝",
