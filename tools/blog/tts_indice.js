@@ -51,7 +51,7 @@ function cargarNota(slug){var k=slug+(en()?':en':':es');if(cache[k])return Promi
   return fetch('/blog/'+slug).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(h){cache[k]=textos(h);return cache[k];});}
 function escuchar(b){var slug=b.getAttribute('data-slug');
   if(btn===b&&estado!=='stop'){estado==='play'?pausar():seguir();return;}
-  parar();btn=b;actual={slug:slug,titulo:(b.parentNode.querySelector('h3 '+(en()?'.b-en':'.b-es'))||{}).textContent||''};estado='carga';ui();
+  parar();btn=b;actual={slug:slug,titulo:((b.closest('.cp-card')||b.parentNode).querySelector('h3 '+(en()?'.b-en':'.b-es'))||{}).textContent||''};estado='carga';ui();
   var my=++tok;cargarNota(slug).then(function(c){if(my!==tok)return;cola=c;i=0;estado='play';S.cancel();decir();tr('blog_escuchar',{articulo:'/blog/'+slug,origen:'indice'});})
   .catch(function(){if(my!==tok)return;location.href='/blog/'+slug;});}
 document.querySelectorAll('.cp-esc').forEach(function(b){b.hidden=false;b.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();escuchar(b);});});

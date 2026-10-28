@@ -189,6 +189,89 @@ html.cel-pre body{visibility:hidden}
 @media(max-width:640px){.cp-tg{grid-template-columns:1fr 1fr;gap:10px}.cp-t{padding:14px 12px 12px}.cp-t small{font-size:12px}.cp-temas h2{font-size:27px}}
 @media(max-width:900px){.cp-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:640px){.cp-grid{grid-template-columns:1fr}.cp-top h1{font-size:34px}.cp-hero{min-height:380px}.cp-hero h1{font-size:31px}.cp-body h2{font-size:24px}.cp-nav a.cp-hide{display:none}.cp-hdr{padding:0 14px}.cp-body td:first-child{white-space:normal}}
+/* ════ Feed estilo Instagram ════ */
+.ig-prof{max-width:1100px;margin:0 auto;padding:44px 22px 18px}
+.ig-pin{display:grid;grid-template-columns:156px minmax(0,1fr);grid-template-rows:auto auto;column-gap:56px;row-gap:4px;align-items:end;max-width:860px;margin:0 auto}
+.ig-av{grid-row:1/3;align-self:center}
+.ig-bio{grid-column:2;align-self:start}
+.ig-av{flex:none;width:156px;height:156px;border-radius:50%;padding:4px;background:conic-gradient(from 210deg,var(--gd),var(--gdl),#f3e2a8,var(--gd));display:block}
+.ig-av img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:4px solid var(--cr);display:block;background:#1a2e42}
+.ig-pi{flex:1;min-width:0}
+.ig-un{display:flex;align-items:center;flex-wrap:wrap;gap:12px 16px}
+.ig-un .ig-user{font:500 21px 'DM Sans',sans-serif;color:var(--nv);display:inline-flex;align-items:center;gap:6px}
+.ig-un .ig-user svg{width:18px;height:18px}
+.ig-follow{display:inline-flex;align-items:center;gap:7px;background:var(--nv);color:var(--gdl);text-decoration:none;font:600 13.5px 'DM Sans',sans-serif;padding:8px 16px;border-radius:9px}
+.ig-follow.alt{background:#fff;color:var(--nv);border:1px solid var(--crd)}
+.ig-stats{display:flex;flex-wrap:wrap;gap:6px 30px;list-style:none;margin:16px 0 10px;font-size:15px;color:var(--nv)}.ig-stats li{white-space:nowrap}
+.ig-stats b{font-weight:600}
+.ig-bio h1{font-family:'DM Serif Display',serif;font-weight:400;font-size:24px;line-height:1.2;color:var(--nv);margin:0 0 4px}
+.ig-bio h1 em{color:#a08a5c}
+.ig-bio p{font-size:14.5px;line-height:1.55;color:var(--tx);max-width:520px}
+.ig-bio b{color:var(--nv);font-weight:600}
+.ig-hl{max-width:1100px;margin:22px auto 0!important;padding:4px 22px 18px!important;display:flex;flex-wrap:nowrap!important;justify-content:flex-start!important;gap:18px!important;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--crd);z-index:auto!important}
+.ig-hl::-webkit-scrollbar{display:none}
+.ig-hl .cp-chip,.ig-hl .ig-g{flex:none;display:flex;flex-direction:column;align-items:center;gap:7px;width:82px;background:none!important;border:0!important;box-shadow:none!important;padding:0!important;border-radius:0!important;font:500 12px/1.25 'DM Sans',sans-serif;color:var(--nv)!important;cursor:pointer;text-align:center}
+.ig-hl .ig-ring{width:72px;height:72px;border-radius:50%;padding:3px;background:var(--crd);display:block;transition:background .2s,transform .2s}
+.ig-hl .ig-ring i{display:flex;align-items:center;justify-content:center;width:100%;height:100%;border-radius:50%;border:3px solid var(--cr);background:#1a2e42 center/cover no-repeat;font-style:normal;font-size:24px;color:var(--gdl)}
+.ig-hl .ig-ring i.ic{background:var(--nv)}
+.ig-hl button:hover .ig-ring{transform:scale(1.05)}
+.ig-hl .on .ig-ring{background:conic-gradient(from 210deg,var(--gd),var(--gdl),#f3e2a8,var(--gd))}
+.ig-hl .on{font-weight:600!important}
+.ig-hl .lb{display:block;max-width:82px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ig-tabs{max-width:1100px;margin:0 auto;display:flex;justify-content:center;gap:46px;font:600 11.5px 'DM Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#a08a5c}
+.ig-tabs span{display:inline-flex;align-items:center;gap:7px;padding:14px 0;border-top:1px solid transparent;margin-top:-1px}
+.ig-tabs span.on{color:var(--nv);border-top-color:var(--nv)}
+.ig-vacio{grid-column:1/-1;text-align:center;padding:40px 10px;color:#8a7b62;font-size:15px}
+.cp-grid.ig-feed{max-width:1100px;grid-template-columns:repeat(3,minmax(0,1fr));gap:26px;align-items:start;padding-top:8px}
+.ig{background:#fff;border:1px solid var(--crd);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.ig.hide{display:none}
+.ig-h{display:flex;align-items:center;gap:10px;padding:11px 12px}
+.ig-h img{width:34px;height:34px;border-radius:50%;object-fit:cover;padding:2px;background:conic-gradient(var(--gd),var(--gdl),var(--gd))}
+.ig-h div{flex:1;min-width:0;line-height:1.2}
+.ig-h b{display:block;font:600 13.5px 'DM Sans',sans-serif;color:var(--nv)}
+.ig-h small{display:block;font-size:12px;color:#7d715f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ig-h .ig-k{font-size:11px;color:#a08a5c;letter-spacing:.06em;white-space:nowrap}
+.ig-img{display:block;aspect-ratio:4/5;background:#1a2e42 center/cover no-repeat;position:relative;text-decoration:none;overflow:hidden}
+.ig-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(13,27,42,.55),transparent 38%);opacity:.9}
+.ig-img .ig-ttl{position:absolute;left:16px;right:16px;bottom:14px;z-index:1;color:#fff;font-family:'DM Serif Display',serif;font-size:21px;line-height:1.15;text-shadow:0 2px 10px rgba(0,0,0,.35)}
+.ig-img .ig-pill{position:absolute;top:12px;right:12px;z-index:1;background:rgba(13,27,42,.62);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:#fff;font:600 11px 'DM Sans',sans-serif;border-radius:999px;padding:4px 9px}
+.ig-heart{position:absolute;left:50%;top:50%;z-index:2;width:90px;height:90px;margin:-45px 0 0 -45px;color:#fff;opacity:0;transform:scale(.4);pointer-events:none;filter:drop-shadow(0 4px 14px rgba(0,0,0,.35))}
+.ig-heart.go{animation:igHeart .9s ease both}
+@keyframes igHeart{0%{opacity:0;transform:scale(.4)}20%{opacity:1;transform:scale(1.1)}40%{transform:scale(.95)}70%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1)}}
+.ig-a{display:flex;align-items:center;gap:4px;padding:6px 8px 0}
+.ig-a button,.ig-a a.ig-b{width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;border:0;background:none;color:var(--nv);cursor:pointer;border-radius:10px;padding:0;text-decoration:none}
+.ig-a button:hover,.ig-a a.ig-b:hover{background:#f6f0e4}
+.ig-a svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ig-a .ig-like.on{color:#e0245e}.ig-a .ig-like.on svg{fill:currentColor;animation:cpPop .4s ease}
+.ig-a .ig-save.on svg{fill:currentColor}
+.ig-a .sp{flex:1}
+.ig-a .cp-esc{position:static!important;transform:none!important;width:auto!important;height:34px!important;min-height:34px;padding:3px 11px 3px 4px!important;margin-left:4px;border-radius:999px!important;border:1px solid var(--crd)!important;background:var(--cr)!important;gap:6px;font-size:12px!important}
+.ig-a .cp-esc.on{background:var(--gdl)!important;border-color:var(--gd)!important}
+.ig-c{padding:4px 14px 14px;font-size:14px;line-height:1.5;color:var(--tx)}
+.ig-likes{font-size:13px;font-weight:600;color:var(--nv);margin:2px 0 4px;min-height:0}
+.ig-c h3{display:inline;font:600 14px 'DM Sans',sans-serif;color:var(--nv)}
+.ig-c h3 a{text-decoration:none}
+.ig-c .ig-u{font-weight:600;color:var(--nv);margin-right:4px}
+.ig-c p{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-top:2px}
+.ig-c .ig-tags{display:block;color:#7b6420;font-size:13px;margin-top:4px}
+.ig-more{display:inline-block;margin-top:6px;color:#8a7b62;font-size:13.5px;text-decoration:none}
+.ig-more:hover{color:var(--nv)}
+.ig-c time{display:block;margin-top:6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#a99c86}
+.ig a:focus-visible,.ig button:focus-visible,.ig-hl button:focus-visible{outline:3px solid var(--gd);outline-offset:2px}
+.cp-rel .cp-grid.ig-feed{padding:0 0 70px}
+@media(max-width:1020px){.cp-grid.ig-feed{grid-template-columns:repeat(2,minmax(0,1fr))}.ig-pin{column-gap:34px}}
+@media(max-width:640px){
+ .ig-prof{padding:22px 16px 6px}.ig-pin{grid-template-columns:86px minmax(0,1fr);grid-template-rows:auto;gap:6px 20px;align-items:center}.ig-av{grid-row:auto}
+ .ig-av{width:86px;height:86px;padding:3px}.ig-av img{border-width:3px}
+ .ig-un .ig-user{font-size:17px}.ig-follow{padding:7px 12px;font-size:12.5px}
+ .ig-stats{gap:16px;margin:10px 0 0;font-size:13px}
+ .ig-bio{grid-column:1/-1;margin-top:10px}.ig-bio h1{font-size:20px}.ig-bio p{font-size:13.5px}
+ .ig-hl{padding:4px 16px 14px!important;gap:12px!important;margin-top:12px!important}
+ .ig-hl .cp-chip,.ig-hl .ig-g{width:68px}.ig-hl .ig-ring{width:62px;height:62px}.ig-hl .lb{max-width:68px;font-size:11px}
+ .cp-grid.ig-feed{grid-template-columns:1fr;gap:0;padding:0 0 60px}
+ .ig{border-radius:0;border-left:0;border-right:0;border-top:0}
+ .ig-tabs{gap:30px}
+}
 '''
 
 HEAD = '''<!doctype html>
@@ -228,11 +311,37 @@ else if(s==='x')window.open('https://twitter.com/intent/tweet?text='+encodeURICo
 else if(s==='copiar'){{(navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(function(){{x.querySelector('span').textContent=t('¡Copiado!','Copied!');}}).catch(function(){{prompt('',u);}});}}}});}});}})();</script>
 </body></html>'''
 
+SVG_LIKE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.3-9.3C1.4 7.9 3.6 4.5 7 4.5c2 0 3.6 1.1 5 3 1.4-1.9 3-3 5-3 3.4 0 5.6 3.4 4.3 6.7-1.8 4.7-9.3 9.3-9.3 9.3z"/></svg>'
+SVG_COM = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.7 16.4A9 9 0 1 0 17.3 20l3.7 1-1-3.6z"/></svg>'
+SVG_SHR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.5 3 10 13.5M21.5 3 15 21l-5-7.5L2.5 9z"/></svg>'
+SVG_SAVE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21 12 16l-7 5V4.5A1.5 1.5 0 0 1 6.5 3h11A1.5 1.5 0 0 1 19 4.5z"/></svg>'
+SVG_OK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#C9A84C" d="M12 1.5l2.6 1.9 3.2-.1 1 3 2.6 1.9-1 3 1 3-2.6 1.9-1 3-3.2-.1L12 22.5l-2.6-1.9-3.2.1-1-3-2.6-1.9 1-3-1-3 2.6-1.9 1-3 3.2.1z"/><path d="M8 12.2l2.6 2.6L16.2 9" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+
 def card(a):
-    c = CATS[a['cat']]
-    return (f'<a class="cp-card" data-cat="{a["cat"]}" href="/blog/{a["slug"]}"><div class="cp-card-img" style="background-image:url(\'{U(a["img"],640,400)}\')">'
-            f'<span>{c["icono"]} {bi(c["es"], c["en"])}</span></div><div class="cp-card-b"><h3>{bi(a["es"]["titulo"], a["en"]["titulo"])}</h3>'
-            f'<p>{bi(a["es"]["bajada"], a["en"]["bajada"])}</p><small>{bi(str(minutos(a["es"]["cuerpo"]))+" min de lectura", str(minutos(a["en"]["cuerpo"]))+" min read")}</small></div></a>')
+    c = CATS[a['cat']]; es, en = a['es'], a['en']; url = f'/blog/{a["slug"]}'
+    tag_es = '#' + re.sub(r'[^a-z0-9]', '', c['es'].lower().replace('á','a').replace('é','e').replace('í','i').replace('ó','o').replace('ú','u').replace('ñ','n'))
+    tag_en = '#' + re.sub(r'[^a-z0-9]', '', c['en'].lower())
+    tit = html.escape(es['titulo'])
+    return (f'<article class="cp-card ig" data-cat="{a["cat"]}" data-slug="{a["slug"]}">'
+            f'<header class="ig-h"><img src="/img/daro-avatar.webp" alt="" loading="lazy" width="34" height="34"><div><b>celestiachefprivado</b>'
+            f'<small>{c["icono"]} {bi(c["es"], c["en"])}</small></div><span class="ig-k">{bi(fecha_corta(a["fecha"],"es"), fecha_corta(a["fecha"],"en"))}</span></header>'
+            f'<a class="ig-img" href="{url}" style="background-image:url(\'{U(a["img"],720,900)}\')" aria-label="{tit}">'
+            f'<span class="ig-pill">{bi(str(minutos(es["cuerpo"]))+" min", str(minutos(en["cuerpo"]))+" min")}</span>'
+            f'<span class="ig-ttl" aria-hidden="true">{bi(es["titulo"], en["titulo"])}</span>'
+            f'<svg class="ig-heart" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 20.5s-7.5-4.6-9.3-9.3C1.4 7.9 3.6 4.5 7 4.5c2 0 3.6 1.1 5 3 1.4-1.9 3-3 5-3 3.4 0 5.6 3.4 4.3 6.7-1.8 4.7-9.3 9.3-9.3 9.3z"/></svg></a>'
+            f'<div class="ig-a"><button type="button" class="ig-like" aria-pressed="false" aria-label="Me gusta: {tit}">{SVG_LIKE}</button>'
+            f'<a class="ig-b" href="{url}#cp-int" aria-label="Opinar sobre: {tit}">{SVG_COM}</a>'
+            f'<button type="button" class="ig-shr" aria-label="Compartir: {tit}">{SVG_SHR}</button>'
+            f'<button type="button" class="cp-esc" data-slug="{a["slug"]}" hidden aria-pressed="false" aria-label="Escuchar la nota: {tit}"><i aria-hidden="true">▶</i><span>Escuchar</span></button>'
+            f'<span class="sp"></span><button type="button" class="ig-save" aria-pressed="false" aria-label="Guardar: {tit}">{SVG_SAVE}</button></div>'
+            f'<div class="ig-c"><div class="ig-likes" aria-live="polite"></div><span class="ig-u">celestiachefprivado</span>'
+            f'<h3><a href="{url}">{bi(es["titulo"], en["titulo"])}</a></h3>'
+            f'<p>{bi(es["bajada"], en["bajada"])}</p><span class="ig-tags">{bi(tag_es + " #escueladecocina #chefprivado", tag_en + " #culinaryschool #privatechef")}</span>'
+            f'<a class="ig-more" href="{url}">{bi("Leer la nota completa", "Read the full note")}</a></div></article>')
+
+def fecha_corta(f, lang):
+    y, m, d = map(int, f.split('-'))
+    return f'{d} {MESES[m-1][:3]}' if lang == 'es' else f'{MONTHS[m-1][:3]} {d}'
 
 NAV = dict(nav_caps=bi('Blog', 'Blog'), nav_home=bi('Inicio', 'Home'), nav_book=bi('Reservar →', 'Book →'))
 
@@ -282,37 +391,66 @@ def articulo(a):
         h += f'<p class="cp-cred">{bi("Foto de referencia", "Reference photo")}: <a href="https://www.pexels.com" target="_blank" rel="noopener">Pexels</a></p>'
     else:
         h += f'<p class="cp-cred">{bi("Foto de referencia", "Reference photo")}: {a["foto"]} · <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a></p>'
-    h += '<section class="cp-rel"><h3>' + bi('Seguí leyendo', 'Keep reading') + '</h3><div class="cp-grid">' + ''.join(card(x) for x in otros) + '</div></section>'
-    h += TTS_JS
+    h += '<section class="cp-rel"><h3>' + bi('Seguí leyendo', 'Keep reading') + '</h3><div class="cp-grid ig-feed">' + ''.join(card(x) for x in otros) + '</div></section>'
+    h += TTS_JS + IG_JS
     h += FOOT.format(caps=bi('Blog', 'Blog'))
     escribir(f'blog/{a["slug"]}/index.html', h)
+
+# Interacciones de los posts: me gusta (doble toque en la foto), guardar, compartir y filtro «Guardadas».
+# Todo queda en el navegador de cada lector (no hay contadores inventados).
+IG_JS = """<script>(function(){
+var H=document.documentElement;function T(es,en){return H.classList.contains('lang-en')?en:es;}
+function tr(ev,p){try{window.celTrack&&celTrack(ev,p||{});}catch(e){}}
+function lee(k){try{return JSON.parse(localStorage.getItem(k)||'[]')||[];}catch(e){return[];}}
+function graba(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+var likes=lee('cel_blog_likes'),guard=lee('cel_blog_guardadas');
+function pinta(c){var s=c.getAttribute('data-slug'),l=likes.indexOf(s)>=0,g=guard.indexOf(s)>=0,bl=c.querySelector('.ig-like'),bg=c.querySelector('.ig-save'),lk=c.querySelector('.ig-likes');
+ bl.classList.toggle('on',l);bl.setAttribute('aria-pressed',l);bg.classList.toggle('on',g);bg.setAttribute('aria-pressed',g);
+ if(lk)lk.innerHTML=l?'<span class="b-es">Te gusta esta nota</span><span class="b-en">You like this note</span>':'';}
+function like(c,forzar){var s=c.getAttribute('data-slug'),i=likes.indexOf(s);if(i>=0&&forzar)return;if(i>=0)likes.splice(i,1);else{likes.push(s);tr('blog_like',{articulo:'/blog/'+s});}graba('cel_blog_likes',likes);pinta(c);}
+document.querySelectorAll('.ig').forEach(function(c){var s=c.getAttribute('data-slug');pinta(c);
+ c.querySelector('.ig-like').addEventListener('click',function(){like(c);});
+ c.querySelector('.ig-save').addEventListener('click',function(){var i=guard.indexOf(s);if(i>=0)guard.splice(i,1);else{guard.push(s);tr('blog_guardar',{articulo:'/blog/'+s});}graba('cel_blog_guardadas',guard);pinta(c);cuenta();});
+ c.querySelector('.ig-shr').addEventListener('click',function(){var t=(c.querySelector('h3 .b-'+(H.classList.contains('lang-en')?'en':'es'))||{}).textContent||document.title,u=location.origin+'/blog/'+s+'?utm_source=compartir&utm_medium=feed&utm_campaign=blog';tr('blog_compartir',{articulo:'/blog/'+s,red:'feed'});
+  if(navigator.share)navigator.share({title:t,url:u}).catch(function(){});else window.open('https://api.whatsapp.com/send?text='+encodeURIComponent(t+' 👉 '+u),'_blank','noopener');});
+ var im=c.querySelector('.ig-img'),tm=0,hz=c.querySelector('.ig-heart');
+ im.addEventListener('click',function(e){if(e.ctrlKey||e.metaKey||e.shiftKey||e.button)return;var n=Date.now();if(n-tm<320){e.preventDefault();clearTimeout(im._t);like(c,true);hz.classList.remove('go');void hz.offsetWidth;hz.classList.add('go');tm=0;return;}tm=n;e.preventDefault();im._t=setTimeout(function(){location.href=im.getAttribute('href');},330);});
+});
+var g=document.querySelector('.ig-g'),feed=document.querySelector('.ig-feed'),vacio=null;
+function cuenta(){var n=document.querySelector('.ig-g .ig-n');if(n)n.textContent=guard.length?' ('+guard.length+')':'';}
+cuenta();
+if(g)g.addEventListener('click',function(){document.querySelectorAll('.ig-hl .cp-chip').forEach(function(x){x.classList.remove('on');});g.classList.add('on');
+ var n=0;document.querySelectorAll('.ig-feed .ig').forEach(function(c){var ok=guard.indexOf(c.getAttribute('data-slug'))>=0;c.classList.toggle('hide',!ok);if(ok)n++;});
+ if(!vacio){vacio=document.createElement('div');vacio.className='ig-vacio';feed.appendChild(vacio);}vacio.textContent=n?'':T('Todavía no guardaste notas. Tocá 🔖 en cualquier post para tenerla a mano.','You haven’t saved any notes yet. Tap 🔖 on any post to keep it handy.');vacio.style.display=n?'none':'';});
+document.querySelectorAll('.ig-hl .cp-chip').forEach(function(x){x.addEventListener('click',function(){if(g)g.classList.remove('on');if(vacio)vacio.style.display='none';});});
+})();</script>"""
 
 def indice():
     url = f'{SITE}/blog'
     h = HEAD.format(title='Blog · Lo que me enseñaron en la escuela de cocina | Celestia Chef Privado', title_en='Blog · What I learned at culinary school | Celestia Private Chef',
                     desc='Lo que me enseñaron en la escuela de cocina, contado por Daro Castello: cortes, salsas madre, técnicas y recetas fáciles con toques de chef.',
                     url=url, ogtype='website', ogimg=U(ARTICULOS[0]['img'], 1200, 630), css=CSS, ld='', **NAV)
-    h += ('<section class="cp-top"><span class="cp-k">✦ ' + bi('Blog', 'Blog') + '</span><h1>' +
-          bi('Lo que me enseñaron en la <em>escuela de cocina</em>', 'What I learned at <em>culinary school</em>') + '</h1><p>' +
-          bi('Trucos de escuela contados simple: cortes, salsas, técnicas y recetas fáciles con ese detalle que te hace ver como chef.',
-             'Culinary-school tricks made simple: cuts, sauces, techniques and easy recipes with that detail that makes you look like a chef.') + '</p></section>')
+    orden = sorted(ARTICULOS, key=lambda x: x['fecha'], reverse=True)
     usadas = [k for k in CATS if any(a['cat'] == k for a in ARTICULOS)]
-    h += '<div class="cp-chips"><button type="button" class="cp-chip on" data-cat="todas">' + bi('Todas', 'All') + '</button>' + ''.join(
-        f'<button type="button" class="cp-chip" data-cat="{k}">{CATS[k]["icono"]} {bi(CATS[k]["es"], CATS[k]["en"])}</button>' for k in usadas) + '</div>'
-    esc = lambda a: (f'<button type="button" class="cp-esc" data-slug="{a["slug"]}" hidden aria-pressed="false" aria-label="Escuchar la nota: {html.escape(a["es"]["titulo"])}">'
-                     '<i aria-hidden="true">▶</i><span>Escuchar</span></button>')
-    h += '<div class="cp-grid">' + ''.join(f'<div class="cp-cw">{card(a)}{esc(a)}</div>' for a in sorted(ARTICULOS, key=lambda x: x['fecha'], reverse=True)) + '</div>'
-    def tile(k):
-        c = CATS[k]; n = sum(1 for a in ARTICULOS if a['cat'] == k)
-        badge = bi(f'{n} nota' + ('s' if n != 1 else ''), f'{n} note' + ('s' if n != 1 else '')) if n else bi('Pronto', 'Soon')
-        attrs = f'type="button" class="cp-t" data-cat="{k}"' if n else 'type="button" class="cp-t pr" aria-disabled="true"'
-        return (f'<button {attrs}><em>{badge}</em><i aria-hidden="true">{c["icono"]}</i><b>{bi(c["es"], c["en"])}</b>'
-                f'<small>{bi(c.get("d_es",""), c.get("d_en",""))}</small></button>')
-    h += ('<section class="cp-temas" id="temas"><h2>' + bi('Explorá por tema', 'Explore by topic') + '</h2><p>' +
-          bi('Todo lo que aprendí en la escuela de cocina, ordenado para que vayas de lo básico a lo avanzado.',
-             'Everything I learned at culinary school, organized from the basics to the advanced.') + '</p><div class="cp-tg">' +
-          ''.join(tile(k) for k in CATS) + '</div></section>')
-    h += TTS_INDICE
+    # Perfil
+    h += ('<section class="ig-prof"><div class="ig-pin"><span class="ig-av"><img src="/img/daro-castello.webp" alt="Daro Castello, chef de Celestia" width="148" height="148"></span>'
+          '<div class="ig-pi"><div class="ig-un"><span class="ig-user">celestiachefprivado ' + SVG_OK + '</span>'
+          '<a class="ig-follow" href="https://www.instagram.com/celestiachefprivado/" target="_blank" rel="noopener">' + bi('Seguir en Instagram', 'Follow on Instagram') + '</a>'
+          '<a class="ig-follow alt" href="/">' + bi('Reservar', 'Book') + '</a></div>'
+          f'<ul class="ig-stats"><li><b>{len(ARTICULOS)}</b> {bi("notas","notes")}</li><li><b>{len(usadas)}</b> {bi("temas","topics")}</li><li><b>3 y 7</b> {bi("pasos","courses")}</li></ul></div>'
+          '<div class="ig-bio"><h1>' + bi('Lo que me enseñaron en la <em>escuela de cocina</em>', 'What I learned at <em>culinary school</em>') + '</h1><p><b>Daro Castello · ' + bi('Chef privado', 'Private chef') + '</b><br>' +
+          bi('Trucos de escuela contados simple: cortes, salsas, técnicas y recetas fáciles con ese detalle que te hace ver como chef. 📍 Buenos Aires',
+             'Culinary-school tricks made simple: cuts, sauces, techniques and easy recipes with that detail that makes you look like a chef. 📍 Buenos Aires') + '</p></div></div></section>')
+    # Destacadas (filtran por tema)
+    def ult(k): return next(a for a in orden if a['cat'] == k)
+    hl = ('<button type="button" class="cp-chip on" data-cat="todas"><span class="ig-ring"><i class="ic" aria-hidden="true">✦</i></span><span class="lb">' + bi('Todas', 'All') + '</span></button>' +
+          '<button type="button" class="ig-g"><span class="ig-ring"><i class="ic" aria-hidden="true">🔖</i></span><span class="lb">' + bi('Guardadas', 'Saved') + '<b class="ig-n"></b></span></button>' +
+          ''.join(f'<button type="button" class="cp-chip" data-cat="{k}" title="{html.escape(CATS[k]["es"])}"><span class="ig-ring"><i style="background-image:url(\'{U(ult(k)["img"],160,160)}\')" aria-hidden="true"></i></span>'
+                  f'<span class="lb">{bi(CATS[k]["es"], CATS[k]["en"])}</span></button>' for k in usadas))
+    h += '<nav class="cp-chips ig-hl" aria-label="' + 'Temas del blog' + '">' + hl + '</nav>'
+    h += '<div class="ig-tabs" aria-hidden="true"><span class="on">▦ ' + bi('Publicaciones', 'Posts') + '</span></div>'
+    h += '<div class="cp-grid ig-feed">' + ''.join(card(a) for a in orden) + '</div>'
+    h += TTS_INDICE + IG_JS
     h += FOOT.format(caps=bi('Blog', 'Blog'))
     escribir('blog/index.html', h)
 
