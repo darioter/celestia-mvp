@@ -387,7 +387,7 @@
       '<div><span>Servicio del chef' + (c.finde ? ' (incluye 10% fin de semana)' : '') + '</span><span>' + money(c.servicio) + '</span></div>' +
       '<div><span>' + (c.asistentes ? c.asistentes + ' asistente' + (c.asistentes > 1 ? 's' : '') + ' de servicio' : 'Asistentes de servicio') + '</span><span>' + money(c.asist) + '</span></div>' +
       '<div><span>Ingredientes (estimado)</span><span>' + money(c.ingredientes) + '</span></div>' : '') +
-      '<div class="t"><span>Total · ' + c.personas + ' personas<small>Servicio, asistentes e ingredientes incluidos</small></span><b>' + money(total) + '</b></div>';
+      '<div class="t"><span>Total · ' + c.personas + ' personas<small>Servicio, asistentes e ingredientes · No incluye IVA</small></span><b>' + money(total) + '</b></div>';
     var p1 =
       '<section class="pz-page' + ((L.length > 3 || f.notas || D) ? ' cmp' : '') + '">' +
       '<header class="pz-hd"><div class="pz-brand"><div class="pz-logo"><b>CELESTIA</b><small>CHEF PRIVADO</small></div>' +
@@ -403,7 +403,7 @@
       '<div class="pz-row"><div><div class="pz-h2">Inversión</div><div class="pz-inv">' + inv + '</div>' +
       '<p class="pz-pago"><b>Forma de pago:</b> seña del 50% para confirmar la fecha y saldo al inicio del servicio, por transferencia o MercadoPago. ' + esc(f.bebidas) + '</p></div>' +
       '<div><div class="pz-h2">Incluye</div><ul class="pz-lst"><li>Diseño del menú y compra de ingredientes</li><li>Preproducción y terminación en tu cocina</li><li>' + (c.asistentes ? c.asistentes + ' asistente' + (c.asistentes > 1 ? 's' : '') : 'Asistencia') + ' y servicio en mesa</li><li>Cocina limpia al terminar</li></ul>' +
-      '<div class="pz-h2" style="margin-top:4mm">No incluye</div><ul class="pz-lst no"><li>Bebidas</li><li>Vajilla, cristalería y mantelería (podemos cotizar alquiler)</li><li>Mobiliario y decoración</li></ul></div></div>' +
+      '<div class="pz-h2" style="margin-top:4mm">No incluye</div><ul class="pz-lst no"><li>IVA (los precios son sin IVA)</li><li>Bebidas</li><li>Vajilla, cristalería y mantelería (podemos cotizar alquiler)</li><li>Mobiliario y decoración</li></ul></div></div>' +
       '<div class="pz-h2">Condiciones</div>' +
       '<div class="pz-row"><table class="pz-can"><tr><td>Cancelación con más de 15 días</td><td>50%</td></tr><tr><td>Entre 15 y 10 días</td><td>60%</td></tr><tr><td>Entre 10 días y 72 horas</td><td>80%</td></tr><tr><td>Menos de 72 horas o el mismo día</td><td>100%</td></tr></table>' +
       '<p class="pz-fine" style="margin:0">La seña no es reembolsable y se toma a cuenta. La cantidad de invitados se confirma 10 días antes y el menú puede ajustarse hasta 15 días antes. Por fuerza mayor se reprograma de común acuerdo (valores actualizados por IPC). Alergias y restricciones: informarlas antes del evento. Si la cena es al aire libre, prever una alternativa techada. Términos completos en chefprivado.ar/terminos.</p></div>' +
