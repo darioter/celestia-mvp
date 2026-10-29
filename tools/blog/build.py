@@ -246,18 +246,20 @@ html.cel-pre body{visibility:hidden}
 .ig-q small{flex:none;font-size:12.5px;color:#8a7b62;min-width:70px;text-align:right}
 .ig.qhide{display:none}
 @media(max-width:640px){.ig-q{padding:0 16px;margin-top:12px}.ig-q small{display:none}}
-.ig-nube{max-width:1100px;margin:18px auto 6px;padding:0 22px}
-.ig-nube-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px}
-.ig-nube-h h2{font:400 22px 'DM Serif Display',serif;color:var(--nv);margin:0}
-.ig-nube-h small{font-size:12px;color:#8a7b62}
-.ig-nube-c{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px 14px;padding:16px 18px;background:#fff;border:1px solid var(--crd);border-radius:16px}
+.ig-nube{max-width:1100px;margin:14px auto 4px;padding:0 22px}
+.ig-nube-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+.ig-nube-h h2{font:600 11px 'DM Sans',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#a08a5c;margin:0}
+.ig-nube-h small{font-size:11.5px;color:#a99c86}
+.ig-nube-c{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 12px;padding:0}
+.ig-nube:not(.todo) .ig-t.x{display:none}
 .ig-t{border:0;background:none;cursor:pointer;padding:2px 4px;border-radius:8px;font-family:'DM Serif Display',serif;line-height:1.15;color:var(--nv);transition:color .15s,background .15s,transform .15s}
 .ig-t:hover{color:#8a6418;background:#faf3e3;transform:translateY(-1px)}
 .ig-t.on{background:var(--nv);color:var(--gdl)}
 .ig-t:focus-visible{outline:3px solid var(--gd);outline-offset:2px}
-.ig-t.s1{font-size:14px;color:#9a8d78}.ig-t.s2{font-size:17px;color:#6f6250}.ig-t.s3{font-size:21px}.ig-t.s4{font-size:27px;color:#8a6418}.ig-t.s5{font-size:34px;color:#8a6418}
+.ig-t.s1{font-size:13.5px;color:#9a8d78}.ig-t.s2{font-size:15px;color:#6f6250}.ig-t.s3{font-size:17px}.ig-t.s4{font-size:19.5px;color:#8a6418}.ig-t.s5{font-size:22px;color:#8a6418}
 .ig-nube-mas{display:none}
-@media(max-width:640px){.ig-nube:not(.todo) .ig-t.s1{display:none}.ig-nube:not(.todo) .ig-nube-mas{display:block;margin:8px auto 0;border:1px solid var(--crd);background:#fff;border-radius:999px;padding:7px 14px;font:600 12.5px 'DM Sans',sans-serif;color:var(--nv);cursor:pointer}.ig-nube{padding:0 16px}.ig-nube-c{gap:6px 10px;padding:12px}.ig-t.s4{font-size:23px}.ig-t.s5{font-size:28px}}
+.ig-nube:not(.todo) .ig-nube-mas{display:inline-block;border:0;background:none;padding:2px 4px;font:600 12.5px 'DM Sans',sans-serif;color:#8a6418;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+@media(max-width:640px){.ig-nube{padding:0 16px}.ig-nube-h small{display:none}.ig-nube-c{gap:0 10px}.ig-t.s4{font-size:18px}.ig-t.s5{font-size:20px}}
 .ig-tabs{max-width:1100px;margin:0 auto;display:flex;justify-content:center;gap:46px;font:600 11.5px 'DM Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#a08a5c}
 .ig-tabs span{display:inline-flex;align-items:center;gap:7px;padding:14px 0;border-top:1px solid transparent;margin-top:-1px}
 .ig-tabs span.on{color:var(--nv);border-top-color:var(--nv)}
@@ -536,11 +538,13 @@ def nube_html():
         n = sum(1 for d in qs if all(x in d for x in w))
         if not n: continue
         nivel = 1 + min(4, int(math.log2(1 + seed + n)))  # tamaño inicial (sin JS): Google + cantidad de notas
-        out.append(f'<button type="button" class="ig-t s{nivel}" data-q="{q}" data-seed="{seed}" data-n="{n}">{L(es_, en_)}</button>')
+        out.append((seed + n, f'<button type="button" class="ig-t s{nivel}" data-q="{q}" data-seed="{seed}" data-n="{n}">{L(es_, en_)}</button>'))
+    top = set(id(x) for x in sorted(out, key=lambda x: -x[0])[:12])
+    out = [b if id(x) in top else b.replace('class="ig-t ', 'class="ig-t x ') for x in out for b in [x[1]]]
     return ('<section class="ig-nube" aria-labelledby="ig-nube-t"><div class="ig-nube-h"><h2 id="ig-nube-t">' + L('Lo más buscado', 'Most searched') + '</h2>'
             '<small id="ig-nube-s">' + L('Según Google y lo que más leen, guardan y comparten los lectores', 'Based on Google and what readers read, save and share most') + '</small></div>'
-            '<div class="ig-nube-c" id="ig-nube-c">' + ''.join(out) + '</div>'
-            '<button type="button" class="ig-nube-mas" onclick="this.parentNode.classList.add(\'todo\')">' + L('Ver todos los temas', 'See all topics') + '</button></section>')
+            '<div class="ig-nube-c" id="ig-nube-c">' + ''.join(out) +
+            '<button type="button" class="ig-nube-mas" id="ig-nube-mas" onclick="this.closest(\'.ig-nube\').classList.add(\'todo\')">' + L('+ más temas', '+ more topics') + '</button></div></section>')
 
 NUBE_JS = """<script>(function(){
 var c=document.getElementById('ig-nube-c'),q=document.getElementById('ig-buscar');if(!c||!q)return;
@@ -559,9 +563,10 @@ function pintar(datos){
    var busq=0;B.forEach(function(x){if(nrm(x.t).indexOf(t)>=0)busq+=x.n;});
    return {b:b,w:(+b.getAttribute('data-seed')||0)+s/Math.sqrt(Math.max(1,ns.length))+busq*5,n:ns.length};});
  var orden=lista.slice().sort(function(a,b){return b.w-a.w;}),L=orden.length;
- orden.forEach(function(x,i){var r=i/L,niv=x.w<=0?1:r<.08?5:r<.22?4:r<.45?3:2;x.b.className='ig-t s'+niv;x.b.title=T(x.n+(x.n===1?' nota':' notas'),x.n+(x.n===1?' note':' notes'));});
+ orden.forEach(function(x,i){var r=i/L,niv=x.w<=0?1:r<.08?5:r<.22?4:r<.45?3:2;x.b.className='ig-t s'+niv+(i>=12?' x':'');x.b.title=T(x.n+(x.n===1?' nota':' notas'),x.n+(x.n===1?' note':' notes'));});
  // mezcla estable: grandes repartidos en la nube
  lista.sort(function(a,b){return (a.b.textContent.length*7+a.w)%5-(b.b.textContent.length*7+b.w)%5;}).forEach(function(x){c.appendChild(x.b);});
+ var mas=document.getElementById('ig-nube-mas');if(mas)c.appendChild(mas);
 }
 c.addEventListener('click',function(e){var b=e.target.closest('.ig-t');if(!b)return;q.value=b.textContent.trim();q.dispatchEvent(new Event('input'));
  [].forEach.call(c.querySelectorAll('.ig-t'),function(x){x.classList.toggle('on',x===b);});
