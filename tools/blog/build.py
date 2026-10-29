@@ -228,14 +228,14 @@ html.cel-pre body{visibility:hidden}
 .ig-bio b{color:var(--nv);font-weight:600}
 .ig-hl{max-width:1100px;margin:22px auto 0!important;padding:4px 22px 18px!important;display:flex;flex-wrap:nowrap!important;justify-content:flex-start!important;gap:18px!important;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--crd);z-index:auto!important}
 .ig-hl::-webkit-scrollbar{display:none}
-.ig-hl .cp-chip,.ig-hl .ig-g{flex:none;display:flex;flex-direction:column;align-items:center;gap:7px;width:82px;background:none!important;border:0!important;box-shadow:none!important;padding:0!important;border-radius:0!important;font:500 12px/1.25 'DM Sans',sans-serif;color:var(--nv)!important;cursor:pointer;text-align:center}
+.ig-hl .cp-chip,.ig-hl .ig-g{flex:none;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:7px;width:86px;background:none!important;border:0!important;box-shadow:none!important;padding:0!important;border-radius:0!important;font:500 12px/1.25 'DM Sans',sans-serif;color:var(--nv)!important;cursor:pointer;text-align:center}
 .ig-hl .ig-ring{width:72px;height:72px;border-radius:50%;padding:3px;background:var(--crd);display:block;transition:background .2s,transform .2s}
 .ig-hl .ig-ring i{display:flex;align-items:center;justify-content:center;width:100%;height:100%;border-radius:50%;border:3px solid var(--cr);background:#1a2e42 center/cover no-repeat;font-style:normal;font-size:24px;color:var(--gdl)}
 .ig-hl .ig-ring i.ic{background:var(--nv)}
 .ig-hl button:hover .ig-ring{transform:scale(1.05)}
 .ig-hl .on .ig-ring{background:conic-gradient(from 210deg,var(--gd),var(--gdl),#f3e2a8,var(--gd))}
 .ig-hl .on{font-weight:600!important}
-.ig-hl .lb{display:block;max-width:82px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ig-hl .lb{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;max-width:86px;min-height:2.5em;overflow:hidden;white-space:normal;overflow-wrap:break-word;hyphens:auto;line-height:1.25}
 .ig-q{max-width:1100px;margin:16px auto 0;padding:0 22px;display:flex;align-items:center;gap:12px}
 .ig-q label{flex:1;position:relative;display:block}
 .ig-q svg{position:absolute;left:14px;top:50%;width:18px;height:18px;margin-top:-9px;fill:none;stroke:#8a7b62;stroke-width:2;stroke-linecap:round;pointer-events:none}
@@ -327,7 +327,7 @@ html.cel-pre body{visibility:hidden}
  .ig-stats{gap:16px;margin:10px 0 0;font-size:13px}
  .ig-bio{grid-column:1/-1;margin-top:10px}.ig-bio h1{font-size:20px}.ig-bio p{font-size:13.5px}
  .ig-hl{padding:4px 16px 14px!important;gap:12px!important;margin-top:12px!important}
- .ig-hl .cp-chip,.ig-hl .ig-g{width:68px}.ig-hl .ig-ring{width:62px;height:62px}.ig-hl .lb{max-width:68px;font-size:11px}
+ .ig-hl .cp-chip,.ig-hl .ig-g{width:74px}.ig-hl .ig-ring{width:62px;height:62px}.ig-hl .lb{max-width:74px;font-size:11px}
  .cp-grid.ig-feed{grid-template-columns:1fr;gap:0;padding:0 0 60px}
  .ig{border-radius:0;border-left:0;border-right:0;border-top:0}
  .ig-tabs{gap:30px}
