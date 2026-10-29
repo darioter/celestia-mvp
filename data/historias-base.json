@@ -1,6 +1,215 @@
 {
  "notas": [
   {
+   "slug": "pate-a-choux-masa-bomba",
+   "cat": "Pastelería",
+   "icono": "🧁",
+   "titulo": "Pâte à choux (masa bomba): profiteroles, éclairs y Paris-Brest de una sola masa",
+   "bajada": "La masa de doble cocción de la clase 8 de Pastelería: por qué se infla, el punto justo del huevo y los horneados que no fallan.",
+   "img": "https://images.pexels.com/photos/13976570/pexels-photo-13976570.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1920&fit=crop",
+   "img_sq": "https://images.pexels.com/photos/13976570/pexels-photo-13976570.jpeg?auto=compress&cs=tinysrgb&w=800&h=800&fit=crop",
+   "foto": "Pexels",
+   "url": "https://www.chefprivado.ar/blog/pate-a-choux-masa-bomba",
+   "tips": [
+    "No pongas todos los huevos por receta: andá de a uno y mirá el punto. Un par de huevos más grandes cambian mucho la consistencia, y cada harina absorbe distinto. Masa muy firme da piezas pesadas; muy líquida, se desparrama."
+   ],
+   "datos": [
+    "Horneada y sin rellenar se conserva al menos cuatro días en la heladera, en un recipiente hermético, y también se congela. Rellená siempre a último momento: el relleno ablanda la masa. Para rellenos, mirá la crema pastelera y sus derivadas."
+   ],
+   "secciones": [
+    {
+     "h2": "Por qué se infla",
+     "texto": "En la hornalla se busca secar la mezcla: el calor revienta los gránulos de almidón de la harina y forman un engrudo que después absorbe más huevo."
+    },
+    {
+     "h2": "Ingredientes (la tanda de la escuela)",
+     "texto": "Agua · 450 cc"
+    },
+    {
+     "h2": "Paso a paso",
+     "texto": "Poné en una cacerola el agua, la manteca, la sal y el azúcar y llevá a ebullición."
+    },
+    {
+     "h2": "Las formas y su horno",
+     "texto": "Profiteroles · Esferas con boquilla lisa"
+    },
+    {
+     "h2": "Cómo saber si están cocidos",
+     "texto": "Sacá una pieza y dejala enfriar un par de minutos."
+    }
+   ]
+  },
+  {
+   "slug": "crema-pastelera-y-sus-derivadas",
+   "cat": "Pastelería",
+   "icono": "🧁",
+   "titulo": "Crema pastelera y sus derivadas: diplomata, mousseline, chiboust y frangipane",
+   "bajada": "La crema madre de la pastelería: la receta de la escuela, cómo no cortarla y las cuatro cremas que salen de ella.",
+   "img": "https://images.pexels.com/photos/33775651/pexels-photo-33775651/free-photo-of-whisk-in-action-with-creamy-custard.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1920&fit=crop",
+   "img_sq": "https://images.pexels.com/photos/33775651/pexels-photo-33775651/free-photo-of-whisk-in-action-with-creamy-custard.jpeg?auto=compress&cs=tinysrgb&w=800&h=800&fit=crop",
+   "foto": "Pexels",
+   "url": "https://www.chefprivado.ar/blog/crema-pastelera-y-sus-derivadas",
+   "tips": [
+    "Tiene que hervir: si el almidón no llega a hervor y a cocinarse un par de minutos, la crema queda con gusto a harina y se licúa al día siguiente."
+   ],
+   "datos": [
+    "Es una preparación muy delicada desde lo bacteriológico: no la guardes más de tres días en la heladera."
+   ],
+   "secciones": [
+    {
+     "h2": "Ingredientes",
+     "texto": "Leche · 500 cc"
+    },
+    {
+     "h2": "Paso a paso",
+     "texto": "Llevá a hervor la leche con la mitad del azúcar."
+    },
+    {
+     "h2": "Las derivadas",
+     "texto": "Diplomata · Pastelera + crema batida + sabor"
+    },
+    {
+     "h2": "Diplomata de café y chocolate",
+     "texto": "250 g de crema pastelera, 125 g de crema de leche, 100 g de chocolate cobertura negro y 1 cucharada de café instantáneo diluido."
+    },
+    {
+     "h2": "Mousseline de almendras",
+     "texto": "250 g de crema pastelera y 250 g de manteca, más praliné y una cucharada de esencia de vainilla."
+    },
+    {
+     "h2": "Para personalizarla",
+     "texto": "Parte de la leche por crema, para un resultado más cremoso."
+    }
+   ]
+  },
+  {
+   "slug": "causa-limena-receta",
+   "cat": "Sabores de Latinoamérica",
+   "icono": "🌎",
+   "titulo": "Causa limeña: la torre de papa amarilla y ají que se arma en un aro",
+   "bajada": "De la clase de Perú de Cocina Latinoamericana: puré de papa con ají amarillo y limón, relleno de pollo y un armado en capas que no se desarma.",
+   "img": "https://images.pexels.com/photos/28448382/pexels-photo-28448382/free-photo-of-colorful-peruvian-causa-rellena-dish-close-up.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1920&fit=crop",
+   "img_sq": "https://images.pexels.com/photos/28448382/pexels-photo-28448382/free-photo-of-colorful-peruvian-causa-rellena-dish-close-up.jpeg?auto=compress&cs=tinysrgb&w=800&h=800&fit=crop",
+   "foto": "Pexels",
+   "url": "https://www.chefprivado.ar/blog/causa-limena-receta",
+   "tips": [
+    "El relleno tiene que ser compacto, con la mayonesa justa: si queda húmedo, la torre se desliza al desmoldar."
+   ],
+   "datos": [
+    "Es un plato ideal para recibir: se arma antes y se sirve frío. Y con ceviche y lomo saltado es parte de la clase de Perú; mirá el ceviche peruano."
+   ],
+   "secciones": [
+    {
+     "h2": "Ingredientes",
+     "texto": "Papas amarillas · 4"
+    },
+    {
+     "h2": "Paso a paso",
+     "texto": "Hervé la pechuga de 15 a 20 minutos, enfriala y desmechala."
+    },
+    {
+     "h2": "El armado",
+     "texto": "En un aro de 8 a 10 cm, poné una capa de papa con ají."
+    }
+   ]
+  },
+  {
+   "slug": "arepas-reina-pepiada-y-arepa-de-huevo",
+   "cat": "Sabores de Latinoamérica",
+   "icono": "🌎",
+   "titulo": "Arepas: la reina pepiada venezolana y la arepa de huevo colombiana",
+   "bajada": "Dos arepas de la clase de Venezuela y Colombia: la masa de harina de maíz precocida, el relleno cremoso de pollo y palta, y la que se fríe dos veces con un huevo adentro.",
+   "img": "https://images.pexels.com/photos/29496092/pexels-photo-29496092/free-photo-of-delicious-arepas-with-chicken-filling-on-wooden-board.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1920&fit=crop",
+   "img_sq": "https://images.pexels.com/photos/29496092/pexels-photo-29496092/free-photo-of-delicious-arepas-with-chicken-filling-on-wooden-board.jpeg?auto=compress&cs=tinysrgb&w=800&h=800&fit=crop",
+   "foto": "Pexels",
+   "url": "https://www.chefprivado.ar/blog/arepas-reina-pepiada-y-arepa-de-huevo",
+   "tips": [
+    "Cascá cada huevo primero en una taza: así lo deslizás dentro de la arepa sin romper la yema."
+   ],
+   "datos": [],
+   "secciones": [
+    {
+     "h2": "La arepa venezolana (8 unidades)",
+     "texto": "Harina de maíz precocida blanca · 300 g"
+    },
+    {
+     "h2": "El relleno: reina pepiada",
+     "texto": "Una suprema de pollo, 1 palta, 1/2 cebolla morada, 30 g de mayonesa, el jugo de un limón (o dos limas), 1 diente de ajo, pimienta y, si querés, perejil o cilantro."
+    },
+    {
+     "h2": "La arepa de huevo colombiana",
+     "texto": "Masa: 220 g de harina de maíz precocida, 160 cc de agua, 50 g de manteca, 1 cucharadita de sal, 3 huevos (o uno por arepa) y aceite para freír."
+    }
+   ]
+  },
+  {
+   "slug": "feijoada-con-farofa",
+   "cat": "Sabores de Latinoamérica",
+   "icono": "🌎",
+   "titulo": "Feijoada con farofa y arroz brasileño: el plato de la clase de Brasil",
+   "bajada": "Porotos negros con cerdo, panceta y embutidos hasta quedar untuoso, la farofa de mandioca tostada con cebolla y el arroz blanco que los acompaña.",
+   "img": "https://images.pexels.com/photos/34234277/pexels-photo-34234277/free-photo-of-traditional-brazilian-feijoada-with-sides.png?auto=compress&cs=tinysrgb&w=1080&h=1920&fit=crop",
+   "img_sq": "https://images.pexels.com/photos/34234277/pexels-photo-34234277/free-photo-of-traditional-brazilian-feijoada-with-sides.png?auto=compress&cs=tinysrgb&w=800&h=800&fit=crop",
+   "foto": "Pexels",
+   "url": "https://www.chefprivado.ar/blog/feijoada-con-farofa",
+   "tips": [
+    "El punto: un guiso untuoso, con los porotos cremosos por dentro pero enteros. Si se desarman, se pasó de cocción."
+   ],
+   "datos": [
+    "Como todo guiso, la feijoada mejora de un día para el otro. Se sirve con la farofa por encima, el arroz al costado y gajos de naranja."
+   ],
+   "secciones": [
+    {
+     "h2": "Ingredientes de la feijoada",
+     "texto": "Bola de lomo de cerdo · 500 g"
+    },
+    {
+     "h2": "Paso a paso",
+     "texto": "Cortá la bola de lomo y la pierna en cubos de 3 cm, condimentalos con sal y pimienta en grano y dejalos 30 minutos."
+    },
+    {
+     "h2": "La farofa",
+     "texto": "1 cebolla grande en emincé, 20 cc de aceite de oliva, 30 g de manteca y 240 g de harina de mandioca."
+    },
+    {
+     "h2": "El arroz blanco brasileño",
+     "texto": "150 g de arroz, 1/2 cebolla y 1 diente de ajo picados, 60 cc de aceite, 225 cc de agua o caldo y, si querés, media hoja de laurel."
+    }
+   ]
+  },
+  {
+   "slug": "pescado-en-papillote-y-beurre-blanc",
+   "cat": "Del mar",
+   "icono": "🐟",
+   "titulo": "Pescado en papillote y pesca asada con beurre blanc: dos formas fáciles de la escuela",
+   "bajada": "De la clase de pescados de Cocina 2: el filet que se cocina en su propio vapor dentro de un paquete, y el asado al horno con la salsa de manteca más clásica de Francia.",
+   "img": "https://images.pexels.com/photos/37206697/pexels-photo-37206697/free-photo-of-delicious-turkish-grilled-fish-in-clay-dish.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1920&fit=crop",
+   "img_sq": "https://images.pexels.com/photos/37206697/pexels-photo-37206697/free-photo-of-delicious-turkish-grilled-fish-in-clay-dish.jpeg?auto=compress&cs=tinysrgb&w=800&h=800&fit=crop",
+   "foto": "Pexels",
+   "url": "https://www.chefprivado.ar/blog/pescado-en-papillote-y-beurre-blanc",
+   "tips": [
+    "Abrí el paquete en la mesa: sale todo el vapor aromático de golpe y es parte del plato.",
+    "La manteca tiene que estar bien fría y entrar de a poco: si la reducción hierve o la manteca se derrite de golpe, la salsa se corta y queda aceitosa."
+   ],
+   "datos": [
+    "Antes de cocinarlo, mirá cómo elegir pescado fresco: ojos brillantes, agallas rojas y olor a mar."
+   ],
+   "secciones": [
+    {
+     "h2": "Pescado en papillote",
+     "texto": "Pescado redondo · 1, fileteado, sin espinas ni piel"
+    },
+    {
+     "h2": "Pesca asada con beurre blanc",
+     "texto": "Un filet de pescado plano, sin piel, sobre una placa con 40 g de manteca en cubos, sal y pimienta: 6 minutos en el horno a 180 °C."
+    },
+    {
+     "h2": "El puré duquesa",
+     "texto": "La guarnición de la clase: puré de papa frío con una yema, pasado a manga con pico rizado, en formas sobre el plato, que se dora en el horno a 180 °C de 6 a 10…"
+    }
+   ]
+  },
+  {
    "slug": "osobuco-braseado-polenta-cremosa-gremolata",
    "cat": "Carnes",
    "icono": "🥩",

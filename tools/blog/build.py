@@ -26,6 +26,21 @@ def texto_plano(cuerpo):
         elif b[0] == 'tabla': out += [' '.join(r) for r in b[2]]
     return re.sub('<[^>]+>', '', ' '.join(out))
 
+def claves(a):
+    """Texto liviano para el buscador del blog: títulos, bajadas, tema, subtítulos, ingredientes y negritas (ES y EN)."""
+    import unicodedata
+    partes = [CATS[a['cat']]['es'], CATS[a['cat']]['en']]
+    for l in ('es', 'en'):
+        d = a[l]; partes += [d['titulo'], d['bajada']]
+        for b in d['cuerpo']:
+            if b[0] == 'h2': partes.append(b[1])
+            elif b[0] == 'tabla': partes += [r[0] for r in b[2]]
+            txt = b[1] if isinstance(b[1], str) else ' '.join(b[1]) if b[0] in ('ul', 'ol') else ''
+            partes += re.findall(r'<strong>(.*?)</strong>', txt)
+    t = re.sub('<[^>]+>', ' ', ' '.join(partes)).lower()
+    t = ''.join(c for c in unicodedata.normalize('NFD', t) if unicodedata.category(c) != 'Mn')
+    return html.escape(' '.join(dict.fromkeys(re.findall(r'[a-z0-9]+', t))), quote=True)
+
 def minutos(cuerpo):
     return max(2, round(len(texto_plano(cuerpo).split()) / 200))
 
@@ -221,6 +236,16 @@ html.cel-pre body{visibility:hidden}
 .ig-hl .on .ig-ring{background:conic-gradient(from 210deg,var(--gd),var(--gdl),#f3e2a8,var(--gd))}
 .ig-hl .on{font-weight:600!important}
 .ig-hl .lb{display:block;max-width:82px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ig-q{max-width:1100px;margin:16px auto 0;padding:0 22px;display:flex;align-items:center;gap:12px}
+.ig-q label{flex:1;position:relative;display:block}
+.ig-q svg{position:absolute;left:14px;top:50%;width:18px;height:18px;margin-top:-9px;fill:none;stroke:#8a7b62;stroke-width:2;stroke-linecap:round;pointer-events:none}
+.ig-q input{width:100%;box-sizing:border-box;border:1px solid var(--crd);background:#fff;border-radius:12px;padding:12px 40px 12px 42px;font:400 15px 'DM Sans',sans-serif;color:var(--nv);outline:none;-webkit-appearance:none;appearance:none}
+.ig-q input:focus{border-color:var(--gd);box-shadow:0 0 0 3px rgba(201,168,76,.2)}
+.ig-q input::-webkit-search-cancel-button{display:none}
+.ig-q .x{position:absolute;right:8px;top:50%;margin-top:-15px;width:30px;height:30px;border:0;border-radius:50%;background:#f3ead6;color:var(--nv);cursor:pointer;font-size:13px}
+.ig-q small{flex:none;font-size:12.5px;color:#8a7b62;min-width:70px;text-align:right}
+.ig.qhide{display:none}
+@media(max-width:640px){.ig-q{padding:0 16px;margin-top:12px}.ig-q small{display:none}}
 .ig-tabs{max-width:1100px;margin:0 auto;display:flex;justify-content:center;gap:46px;font:600 11.5px 'DM Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#a08a5c}
 .ig-tabs span{display:inline-flex;align-items:center;gap:7px;padding:14px 0;border-top:1px solid transparent;margin-top:-1px}
 .ig-tabs span.on{color:var(--nv);border-top-color:var(--nv)}
@@ -326,7 +351,7 @@ def card(a):
     tag_es = '#' + re.sub(r'[^a-z0-9]', '', c['es'].lower().replace('á','a').replace('é','e').replace('í','i').replace('ó','o').replace('ú','u').replace('ñ','n'))
     tag_en = '#' + re.sub(r'[^a-z0-9]', '', c['en'].lower())
     tit = html.escape(es['titulo'])
-    return (f'<article class="cp-card ig" data-cat="{a["cat"]}" data-slug="{a["slug"]}">'
+    return (f'<article class="cp-card ig" data-cat="{a["cat"]}" data-slug="{a["slug"]}" data-q="{claves(a)}">'
             f'<header class="ig-h"><img src="/img/daro-avatar.webp" alt="" loading="lazy" width="34" height="34"><div><b>celestiachefprivado</b>'
             f'<small>{c["icono"]} {bi(c["es"], c["en"])}</small></div><span class="ig-k">{bi(fecha_corta(a["fecha"],"es"), fecha_corta(a["fecha"],"en"))}</span></header>'
             f'<a class="ig-img" href="{url}" style="background-image:url(\'{U(a["img"],720,900)}\')" aria-label="{tit}">'
@@ -444,6 +469,18 @@ if(g)g.addEventListener('click',function(){document.querySelectorAll('.ig-hl .cp
  var n=0;document.querySelectorAll('.ig-feed .ig').forEach(function(c){var ok=guard.indexOf(c.getAttribute('data-slug'))>=0;c.classList.toggle('hide',!ok);if(ok)n++;});
  if(!vacio){vacio=document.createElement('div');vacio.className='ig-vacio';feed.appendChild(vacio);}vacio.textContent=n?'':T('Todavía no guardaste notas. Tocá 🔖 en cualquier post para tenerla a mano.','You haven’t saved any notes yet. Tap 🔖 on any post to keep it handy.');vacio.style.display=n?'none':'';});
 document.querySelectorAll('.ig-hl .cp-chip').forEach(function(x){x.addEventListener('click',function(){if(g)g.classList.remove('on');if(vacio)vacio.style.display='none';});});
+var q=document.getElementById('ig-buscar'),qx=document.getElementById('ig-bx'),qn=document.getElementById('ig-bn'),qv=null,qt=0;
+function nrm(s){return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
+function buscar(){var t=nrm(q.value).trim(),ps=t.split(' ').filter(Boolean),n=0,cards=document.querySelectorAll('.ig-feed .ig');
+ cards.forEach(function(c){var d=c.getAttribute('data-q')||'',ok=ps.every(function(w){return d.indexOf(w)>=0;});c.classList.toggle('qhide',!ok);if(ok&&!c.classList.contains('hide'))n++;});
+ qx.hidden=!t;qn.textContent=t?(n+' '+T(n===1?'nota':'notas',n===1?'note':'notes')):'';
+ if(!qv){qv=document.createElement('div');qv.className='ig-vacio';feed.appendChild(qv);}
+ qv.style.display=(t&&!n)?'':'none';qv.textContent=T('No encontré notas con «'+q.value.trim()+'». Probá con otra palabra o mirá los temas de arriba.','No notes found for “'+q.value.trim()+'”. Try another word or browse the topics above.');
+ clearTimeout(qt);if(t.length>2)qt=setTimeout(function(){tr('blog_buscar',{q:t,resultados:n});},1200);}
+if(q){q.addEventListener('input',function(){var on=document.querySelector('.ig-hl .on'),td=document.querySelector('.ig-hl .cp-chip[data-cat=todas]');if(q.value.trim()&&on&&on!==td&&td)td.click();buscar();});qx.addEventListener('click',function(){q.value='';buscar();q.focus();});
+ document.querySelectorAll('.ig-hl button').forEach(function(x){x.addEventListener('click',function(){setTimeout(buscar,0);});});
+ document.addEventListener('keydown',function(e){if(e.key==='/'&&document.activeElement!==q&&!/input|textarea/i.test((document.activeElement||{}).tagName||'')){e.preventDefault();q.focus();}});
+ try{var u=new URLSearchParams(location.search).get('q');if(u){q.value=u;buscar();}}catch(e){}}
 })();</script>"""
 
 def indice():
@@ -470,6 +507,9 @@ def indice():
           ''.join(f'<button type="button" class="cp-chip" data-cat="{k}" title="{html.escape(CATS[k]["es"])}"><span class="ig-ring"><i style="background-image:url(\'{U(ult(k)["img"],160,160)}\')" aria-hidden="true"></i></span>'
                   f'<span class="lb">{bi(CATS[k]["es"], CATS[k]["en"])}</span></button>' for k in usadas))
     h += '<nav class="cp-chips ig-hl" aria-label="' + 'Temas del blog' + '">' + hl + '</nav>'
+    h += ('<div class="ig-q" role="search"><label><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>'
+          '<input type="search" id="ig-buscar" autocomplete="off" placeholder="' + L('Buscar notas, recetas, técnicas…', 'Search notes, recipes, techniques…') + '" aria-label="' + L('Buscar en el blog', 'Search the blog') + '">'
+          '<button type="button" class="x" id="ig-bx" hidden aria-label="' + L('Borrar búsqueda', 'Clear search') + '">✕</button></label><small id="ig-bn" aria-live="polite"></small></div>')
     h += '<div class="ig-tabs" aria-hidden="true"><span class="on">▦ ' + bi('Publicaciones', 'Posts') + '</span></div>'
     h += '<div class="cp-grid ig-feed">' + ''.join(card(a) for a in orden) + '</div>'
     h += TTS_INDICE + IG_JS

@@ -51,6 +51,7 @@
 - [Ojo de bife: sellado, punto y reposo](https://www.chefprivado.ar/blog/ojo-de-bife-sellado-punto-reposo): Tres decisiones separan un bife común de uno de restaurante: cómo lo sellás, cuándo lo sacás y cuánto lo dejás descansar.
 
 ### Del mar
+- [Pescado en papillote y pesca asada con beurre blanc: dos formas fáciles de la escuela](https://www.chefprivado.ar/blog/pescado-en-papillote-y-beurre-blanc): De la clase de pescados de Cocina 2: el filet que se cocina en su propio vapor dentro de un paquete, y el asado al horno con la salsa de manteca más clásica de Francia.
 - [Cómo elegir pescado fresco (y entender qué estás comprando)](https://www.chefprivado.ar/blog/como-elegir-pescado-fresco): Las señales de frescura, la diferencia entre pescados redondos y planos, magros y grasos, y qué cocción le va a cada uno.
 
 ### Panadería en casa
@@ -59,6 +60,8 @@
 - [Pan casero: los 4 ingredientes y las etapas para que salga como de panadería](https://www.chefprivado.ar/blog/pan-casero-ingredientes-y-etapas): Harina, agua, sal y levadura. Qué hace cada uno, la receta del pan francés y los pasos que separan un pan denso de uno con corteza crocante y miga aireada.
 
 ### Pastelería
+- [Pâte à choux (masa bomba): profiteroles, éclairs y Paris-Brest de una sola masa](https://www.chefprivado.ar/blog/pate-a-choux-masa-bomba): La masa de doble cocción de la clase 8 de Pastelería: por qué se infla, el punto justo del huevo y los horneados que no fallan.
+- [Crema pastelera y sus derivadas: diplomata, mousseline, chiboust y frangipane](https://www.chefprivado.ar/blog/crema-pastelera-y-sus-derivadas): La crema madre de la pastelería: la receta de la escuela, cómo no cortarla y las cuatro cremas que salen de ella.
 - [Merengue francés, suizo e italiano: cuál usar y cómo hacer cada uno](https://www.chefprivado.ar/blog/merengue-frances-suizo-e-italiano): Los tres merengues de la clase 3 de Pastelería: qué los diferencia, para qué sirve cada uno y los puntos de temperatura que no fallan.
 - [Masas quebradas: sablée, brisée y sucrée sin misterio](https://www.chefprivado.ar/blog/masas-quebradas-sablee-brisee-y-sucree): La base de tartas, galletitas y tapas de alfajor. Qué las diferencia, las dos técnicas para hacerlas y las recetas de la escuela, con los errores que endurecen o cuartean una masa.
 - [El ABC de la pastelería: técnicas básicas para que todo te salga](https://www.chefprivado.ar/blog/abc-de-la-pasteleria-tecnicas-basicas): La pastelería no perdona la improvisación, pero tampoco es magia. Pesar, temperaturas, qué hace cada ingrediente y las grandes familias de masas y cremas que sostienen cualquier receta.
@@ -67,6 +70,9 @@
 - [Cómo armar un cóctel en casa: cuántos bocados por persona y cómo combinarlos](https://www.chefprivado.ar/blog/como-armar-un-coctel-en-casa-bocados): La regla del bocado, cuánto calcular según el tipo de reunión, cómo equilibrar fríos y calientes y qué dejar listo antes de que toque el timbre.
 
 ### Sabores de Latinoamérica
+- [Causa limeña: la torre de papa amarilla y ají que se arma en un aro](https://www.chefprivado.ar/blog/causa-limena-receta): De la clase de Perú de Cocina Latinoamericana: puré de papa con ají amarillo y limón, relleno de pollo y un armado en capas que no se desarma.
+- [Arepas: la reina pepiada venezolana y la arepa de huevo colombiana](https://www.chefprivado.ar/blog/arepas-reina-pepiada-y-arepa-de-huevo): Dos arepas de la clase de Venezuela y Colombia: la masa de harina de maíz precocida, el relleno cremoso de pollo y palta, y la que se fríe dos veces con un huevo adentro.
+- [Feijoada con farofa y arroz brasileño: el plato de la clase de Brasil](https://www.chefprivado.ar/blog/feijoada-con-farofa): Porotos negros con cerdo, panceta y embutidos hasta quedar untuoso, la farofa de mandioca tostada con cebolla y el arroz blanco que los acompaña.
 - [Empanadas salteñas con llajua: la receta del NOA de la escuela](https://www.chefprivado.ar/blog/empanadas-saltenas-con-llajua): Masa con grasa y salmuera, carne cortada a cuchillo, papa, huevo y verdeo, el repulgue de 16 a 19 pliegues y una llajua de tomate y locoto para acompañar.
 - [Ceviche peruano: la receta y los secretos para que no quede amargo](https://www.chefprivado.ar/blog/ceviche-peruano-receta-y-secretos): Qué pescado usar, cómo exprimir el limón, por qué se lava la cebolla y qué es la leche de tigre. Con camote y maíz cancha, como en Lima.
 
