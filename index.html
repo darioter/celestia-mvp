@@ -2937,11 +2937,13 @@ programar();
         <div class="mp2-q"><span class="mp2-qn">1</span><div><span class="mp2-qt">¿Para cuántas personas cocinamos?</span><span class="mp2-qs">Contá a todos los que comen en casa durante la semana.</span></div></div>
         <div class="mp2-opts mp2-3"><button type="button" class="mp2-o" onclick="selectMpFlow('pp','1-2')" id="mpf-pp-1-2"><span class="mp2-ppl"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></span><b>1 a 2</b><small>personas</small></button><button type="button" class="mp2-o" onclick="selectMpFlow('pp','3-4')" id="mpf-pp-3-4"><span class="mp2-ppl"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></span><b>3 a 4</b><small>personas</small></button><button type="button" class="mp2-o" onclick="selectMpFlow('pp','5-6')" id="mpf-pp-5-6"><span class="mp2-ppl mp2-ppl6"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></span><b>5 a 6</b><small>personas</small></button></div>
 
-        <div class="mp2-q"><span class="mp2-qn">2</span><div><span class="mp2-qt">¿Cuántas veces por semana?</span><span class="mp2-qs">Cada jornada cocino en tu casa y dejo todo listo para los días siguientes.</span></div></div>
+        <div class="mp2-q"><span class="mp2-qn">2</span><div><span class="mp2-qt">¿Cuántas veces por semana?</span><span class="mp2-qs">Cada jornada cocino en tu casa y dejo listas las comidas de los 3 días siguientes.</span></div></div>
         <div class="mp2-opts mp2-2">
-          <button type="button" class="mp2-o" onclick="selectMpFlow('jornadas','1')" id="mpf-jornadas-1"><b>1 jornada</b><small><span class="mp-hs" data-j="1">~8 hs</span> · mitad de semana</small><div class="mp2-week"><span class="">Lu</span><span class="">Ma</span><span class="on">Mi</span><span class="">Ju</span><span class="">Vi</span><span class="">Sá</span><span class="">Do</span></div></button>
-          <button type="button" class="mp2-o" onclick="selectMpFlow('jornadas','2')" id="mpf-jornadas-2"><span class="mp2-badge">Más elegido</span><b>2 jornadas</b><small><span class="mp-hs" data-j="2">~16 hs</span> · semana completa</small><div class="mp2-week"><span class="on">Lu</span><span class="">Ma</span><span class="">Mi</span><span class="on">Ju</span><span class="">Vi</span><span class="">Sá</span><span class="">Do</span></div></button>
+          <button type="button" class="mp2-o" onclick="selectMpFlow('jornadas','1')" id="mpf-jornadas-1"><b>1 jornada</b><small><span class="mp-hs" data-j="1">~8 hs</span> · cubre 3 días</small><div class="mp2-week"><span class="">Lu</span><span class="">Ma</span><span class="on">Mi</span><span class="cv">Ju</span><span class="cv">Vi</span><span class="">Sá</span><span class="">Do</span></div></button>
+          <button type="button" class="mp2-o" onclick="selectMpFlow('jornadas','2')" id="mpf-jornadas-2"><span class="mp2-badge">Más elegido</span><b>2 jornadas</b><small><span class="mp-hs" data-j="2">~16 hs</span> · cubre 6 días</small><div class="mp2-week"><span class="on">Lu</span><span class="cv">Ma</span><span class="cv">Mi</span><span class="on">Ju</span><span class="cv">Vi</span><span class="cv">Sá</span><span class="">Do</span></div></button>
+          <button type="button" class="mp2-o mp2-fijo" onclick="selectMpFlow('jornadas','fijo')" id="mpf-jornadas-fijo"><span class="mp2-fijo-t"><b>3 o más días · Chef de cabecera</b><small>Cocina en casa casi todos los días: es otra propuesta, porque me reserva la semana. La armamos a medida.</small></span><span class="mp2-fijo-c">A cotizar</span></button>
         </div>
+        <div class="mp2-leg"><span><i class="on"></i>Cocino en tu casa</span><span><i class="cv"></i>Días que quedan cubiertos</span></div>
 
         <div class="mp2-q"><span class="mp2-qn">3</span><div><span class="mp2-qt">¿Cuántas comidas por día te dejo listas?</span><span class="mp2-qs">Elegí una opción. Más comidas, más preparaciones: la jornada es más larga.</span></div></div>
         <div class="mp2-opts mp2-2">
@@ -2955,6 +2957,7 @@ programar();
         <div class="mp2-sum-b">
           <span class="mp2-sum-tg">✦ Tu semana con Celestia</span>
           <div class="mp2-sum-rows" id="mp2-sum-rows"></div>
+          <div class="mp2-tot" id="mp2-tot"></div>
           <div id="mpf-result"></div>
           <ol class="mp2-how"><li><b>Armamos el menú</b> de la semana por WhatsApp.</li><li><b>Cocino en tu casa</b> el día acordado.</li><li><b>Te quedan las comidas listas</b> para los días siguientes.</li></ol>
         </div>
@@ -5213,6 +5216,14 @@ const MP_HS = { basico: 8, completo: 12 };
 function mpHoras(jornadas, comidas) { return (parseInt(jornadas) || 1) * (MP_HS[comidas] || 8); }
 function mpJornadasLabel() { const h = mpHoras(mpState.jornadas, mpState.comidas); return mpState.jornadas === '1' ? `1 jornada (~${h}hs)` : `2 jornadas (~${h}hs en semana)`; }
 const MP_MULT = { '1-2': 0.8, '3-4': 1.0, '5-6': 1.25 };
+// Días que cubre cada jornada (lo cocinado dura ~3 días en heladera) y comidas por día
+const MP_DIAS = { '1': 3, '2': 6 };
+const MP_CPD = { basico: 2, completo: 5 };
+const MP_PPMAX = { '1-2': 2, '3-4': 4, '5-6': 6 };
+function mpTotales(pp, jornadas, comidas) {
+  const dias = MP_DIAS[jornadas] || 3, cpd = MP_CPD[comidas] || 2, max = MP_PPMAX[pp] || 4;
+  return { dias, cpd, comidas: dias * cpd, porcMin: dias * cpd * (max - 1), porcMax: dias * cpd * max };
+}
 
 function calcMpHonorario(pp, jornadas, comidas) {
   const base = MP_PRECIOS[jornadas][comidas];
@@ -5259,12 +5270,22 @@ function updateMpResult(elId, pp, jornadas, comidas) {
 
 // Flujo meal prep
 function selectMpFlow(param, valor) {
+  if (param === 'jornadas') {
+    mpState.fijo = valor === 'fijo';
+    const f = document.getElementById('mpf-jornadas-fijo');
+    if (f) { f.classList.toggle('on', mpState.fijo); f.setAttribute('aria-pressed', mpState.fijo ? 'true' : 'false'); }
+    if (mpState.fijo) {
+      ['1','2'].forEach(v => { const b = document.getElementById('mpf-jornadas-' + v); if (b) { b.classList.remove('on'); b.setAttribute('aria-pressed','false'); } });
+      if (typeof mp2Resumen === 'function') mp2Resumen();
+      return;
+    }
+  }
   mpState[param] = valor;
   const grupos = { pp: ['1-2','3-4','5-6'], jornadas: ['1','2'], comidas: ['basico','completo'] };
   grupos[param].forEach(v => {
     const btn = document.getElementById(`mpf-${param}-${v}`);
     if (!btn) return;
-    btn.classList.toggle('on', v === valor);
+    btn.classList.toggle('on', v === valor && !(param === 'jornadas' && mpState.fijo));
     btn.setAttribute('aria-pressed', v === valor ? 'true' : 'false');
   });
   updateMpResult('mpf-result', mpState.pp, mpState.jornadas, mpState.comidas);
@@ -5291,7 +5312,7 @@ function startMealPrep() {
 
   // Sync estado de los botones del flujo con el estado actual
   ['pp','jornadas','comidas'].forEach(param => {
-    selectMpFlow(param, mpState[param]);
+    selectMpFlow(param, param === 'jornadas' && mpState.fijo ? 'fijo' : mpState[param]);
   });
 
   mpGoTo(1);
@@ -5645,6 +5666,7 @@ function mpRenderResumen() {
     `*Chef:* Daro Castello\n` +
     `*Personas:* ${mpState.pp}\n` +
     `*Jornadas:* ${jornadasLabel}\n` +
+    `*Total:* ${mpTotales(mpState.pp, mpState.jornadas, mpState.comidas).comidas} comidas listas por semana\n` +
     `*Comidas incluidas:* ${MP_COMIDAS_LABEL[mpState.comidas]}\n` +
     `*Primera jornada:* ${fechaWA}\n` +
     `*Honorario:* ${fmt(hon)}\n` +
@@ -8095,6 +8117,17 @@ a.mc2-btn{display:block;text-align:center;text-decoration:none;box-sizing:border
 .mp2-week{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:10px;width:100%;max-width:240px}
 .mp2-week span{font-size:10px;padding:7px 0;border-radius:8px;background:#F5F0E6;color:#a39a8c;font-weight:500}
 .mp2-week span.on{background:#0D1B2A;color:#E8C96B;position:relative}
+.mp2-week span.cv,.mp2-leg i.cv{background:#EFE3C2;color:#7a5f1c}
+.mp2-leg{display:flex;gap:16px;flex-wrap:wrap;font-size:11px;color:#8a8070;margin:14px 0 30px;position:relative}
+.mp2-leg span{display:flex;align-items:center;gap:6px}.mp2-leg i{width:12px;height:12px;border-radius:4px;display:inline-block}.mp2-leg i.on{background:#0D1B2A}
+.mp2-fijo{grid-column:1/-1;flex-direction:row!important;justify-content:space-between;align-items:center!important;text-align:left!important;gap:16px;padding:16px 20px!important;border-style:dashed!important}
+.mp2-fijo.on{border-style:solid!important}
+.mp2-fijo-t{display:flex;flex-direction:column;gap:4px}.mp2-fijo-t b{font-size:15px!important}.mp2-fijo-t small{line-height:1.5}
+.mp2-fijo-c{flex:none;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#8a6418;border:1px solid rgba(201,168,76,.5);border-radius:999px;padding:5px 12px;margin-right:22px}
+.mp2-tot{background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:12px;padding:12px 14px;margin:0 0 14px}
+.mp2-tot .n{font-family:'DM Serif Display',serif;font-size:30px;color:#E8C96B;line-height:1}
+.mp2-tot .l{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(250,246,239,.55);margin-top:4px}
+.mp2-tot .d{font-size:12px;color:rgba(250,246,239,.7);margin-top:8px;line-height:1.5}
 .mp2-week span.on::before{content:'👨‍🍳';position:absolute;top:-15px;left:50%;transform:translateX(-50%);font-size:12px}
 .mp2-o.on .mp2-week span.on{background:linear-gradient(135deg,#C9A84C,#E8C96B);color:#0D1B2A}
 .mp2-meals{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-top:10px}
@@ -8138,9 +8171,26 @@ a.mc2-btn{display:block;text-align:center;text-decoration:none;box-sizing:border
 function mp2Resumen(){
   var el=document.getElementById('mp2-sum-rows');if(!el||typeof mpState==='undefined')return;
   var pp={'1-2':'1 a 2','3-4':'3 a 4','5-6':'5 a 6'}[mpState.pp]||mpState.pp;
-  var jor=mpState.jornadas==='1'?'1 jornada por semana':'2 jornadas por semana';
+  var fijo=!!mpState.fijo;
+  var jor=fijo?'3 o más días · a medida':(mpState.jornadas==='1'?'1 jornada · cubre 3 días':'2 jornadas · cubren 6 días');
   var com=mpState.comidas==='completo'?'5 por día · desayuno a postre':'2 por día · almuerzo y cena';
   el.innerHTML='<div><span>Personas</span><span>'+pp+'</span></div><div><span>Cocino</span><span>'+jor+'</span></div><div><span>Comidas</span><span>'+com+'</span></div>';
+  var tot=document.getElementById('mp2-tot'),res=document.getElementById('mpf-result'),nx=document.getElementById('mp-btn-next-1'),nxt=document.getElementById('i18n-mp-btn-next-1');
+  if(tot&&typeof mpTotales==='function'){
+    if(fijo){tot.innerHTML='<div class="n">Chef de cabecera</div><div class="l">Propuesta a medida</div><div class="d">Con 3 o más días por semana reservo tu semana para vos: armamos días, horarios y menús juntos y te paso una propuesta mensual.</div>';}
+    else{var t=mpTotales(mpState.pp,mpState.jornadas,mpState.comidas);
+      tot.innerHTML='<div class="n">'+t.comidas+' comidas</div><div class="l">Listas por semana</div><div class="d">'+t.cpd+' por día × '+t.dias+' días cubiertos · cada una para '+pp+' personas (≈ '+t.porcMin+' a '+t.porcMax+' porciones)</div>';}
+  }
+  if(res)res.style.display=fijo?'none':'';
+  if(nx&&nxt){if(fijo){nxt.textContent='Consultar por WhatsApp →';nx.setAttribute('onclick','mpConsultaFijo()');}else{nxt.textContent='Elegir fecha →';nx.setAttribute('onclick','mpGoTo(2)');}}
+  ['basico','completo'].forEach(function(c){var e=document.getElementById('mpf-pr-'+c);if(e&&fijo)e.textContent='A cotizar';});
+}
+function mpConsultaFijo(){
+  var pp={'1-2':'1 a 2','3-4':'3 a 4','5-6':'5 a 6'}[mpState.pp]||mpState.pp;
+  var com=mpState.comidas==='completo'?'5 comidas por día (desayuno a postre)':'2 comidas por día (almuerzo y cena)';
+  var txt='Hola Daro! Me interesa el Chef Semanal con 3 o más días por semana (chef de cabecera).\n*Personas:* '+pp+'\n*Comidas:* '+com+'\n¿Me pasás una propuesta?';
+  try{if(typeof celTrack==='function')celTrack('semanal_fijo_consulta');}catch(e){}
+  window.open('https://wa.me/5491160410607?text='+encodeURIComponent(txt),'_blank');
 }
 (function(){
   function decorar(){var m={'mp-screen-1':'✦ Paso 1 de 4 · Tu semana','mp-screen-2':'✦ Paso 2 de 4 · Fecha','mp-screen-3':'✦ Paso 3 de 4 · Datos','mp-screen-4':'✦ Paso 4 de 4 · Confirmar'};Object.keys(m).forEach(function(id){var s=document.getElementById(id);var h=s&&s.querySelector('.section-title');if(h)h.setAttribute('data-eyebrow',m[id]);});mp2Resumen();}
