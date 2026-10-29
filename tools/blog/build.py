@@ -29,7 +29,7 @@ def texto_plano(cuerpo):
 def claves(a):
     """Texto liviano para el buscador del blog: títulos, bajadas, tema, subtítulos, ingredientes y negritas (ES y EN)."""
     import unicodedata
-    partes = [a['cat'], CATS[a['cat']]['es'], CATS[a['cat']]['en'], CATS[a['cat']].get('d_es', ''), CATS[a['cat']].get('d_en', '')]
+    partes = [a['cat'], CATS[a['cat']]['es'], CATS[a['cat']]['en']]
     for l in ('es', 'en'):
         d = a[l]; partes += [d['titulo'], d['bajada']]
         for b in d['cuerpo']:
@@ -246,6 +246,18 @@ html.cel-pre body{visibility:hidden}
 .ig-q small{flex:none;font-size:12.5px;color:#8a7b62;min-width:70px;text-align:right}
 .ig.qhide{display:none}
 @media(max-width:640px){.ig-q{padding:0 16px;margin-top:12px}.ig-q small{display:none}}
+.ig-nube{max-width:1100px;margin:18px auto 6px;padding:0 22px}
+.ig-nube-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.ig-nube-h h2{font:400 22px 'DM Serif Display',serif;color:var(--nv);margin:0}
+.ig-nube-h small{font-size:12px;color:#8a7b62}
+.ig-nube-c{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px 14px;padding:16px 18px;background:#fff;border:1px solid var(--crd);border-radius:16px}
+.ig-t{border:0;background:none;cursor:pointer;padding:2px 4px;border-radius:8px;font-family:'DM Serif Display',serif;line-height:1.15;color:var(--nv);transition:color .15s,background .15s,transform .15s}
+.ig-t:hover{color:#8a6418;background:#faf3e3;transform:translateY(-1px)}
+.ig-t.on{background:var(--nv);color:var(--gdl)}
+.ig-t:focus-visible{outline:3px solid var(--gd);outline-offset:2px}
+.ig-t.s1{font-size:14px;color:#9a8d78}.ig-t.s2{font-size:17px;color:#6f6250}.ig-t.s3{font-size:21px}.ig-t.s4{font-size:27px;color:#8a6418}.ig-t.s5{font-size:34px;color:#8a6418}
+.ig-nube-mas{display:none}
+@media(max-width:640px){.ig-nube:not(.todo) .ig-t.s1{display:none}.ig-nube:not(.todo) .ig-nube-mas{display:block;margin:8px auto 0;border:1px solid var(--crd);background:#fff;border-radius:999px;padding:7px 14px;font:600 12.5px 'DM Sans',sans-serif;color:var(--nv);cursor:pointer}.ig-nube{padding:0 16px}.ig-nube-c{gap:6px 10px;padding:12px}.ig-t.s4{font-size:23px}.ig-t.s5{font-size:28px}}
 .ig-tabs{max-width:1100px;margin:0 auto;display:flex;justify-content:center;gap:46px;font:600 11.5px 'DM Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#a08a5c}
 .ig-tabs span{display:inline-flex;align-items:center;gap:7px;padding:14px 0;border-top:1px solid transparent;margin-top:-1px}
 .ig-tabs span.on{color:var(--nv);border-top-color:var(--nv)}
@@ -346,6 +358,11 @@ SVG_SHR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.5 3 10 13.5M
 SVG_SAVE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21 12 16l-7 5V4.5A1.5 1.5 0 0 1 6.5 3h11A1.5 1.5 0 0 1 19 4.5z"/></svg>'
 SVG_OK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#C9A84C" d="M12 1.5l2.6 1.9 3.2-.1 1 3 2.6 1.9-1 3 1 3-2.6 1.9-1 3-3.2-.1L12 22.5l-2.6-1.9-3.2.1-1-3-2.6-1.9 1-3-1-3 2.6-1.9 1-3 3.2.1z"/><path d="M8 12.2l2.6 2.6L16.2 9" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>'
 
+LOG_JS = "<script>(function(){if(!/chefprivado\\.ar$/.test(location.hostname))return;var U='https://qolpnuscpmzqeacshfvu.supabase.co/rest/v1/blog_eventos',K='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvbHBudXNjcG16cWVhY3NoZnZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NjQ3OTQsImV4cCI6MjA5MTM0MDc5NH0.BJOz5Gwkeb1NqID_gkGKD5YlymifMtOwaf8iQMaBCx8',lang=document.documentElement.classList.contains('lang-en')?'en':'es';function sl(p){var m=String(p||'').match(/\\/blog\\/([a-z0-9-]+)/);return m?m[1]:(/^[a-z0-9-]{3,120}$/.test(p||'')?p:null);}function log(t,s,q){try{fetch(U,{method:'POST',keepalive:true,headers:{apikey:K,Authorization:'Bearer '+K,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({tipo:t,slug:s||null,termino:q||null,lang:lang})}).catch(function(){});}catch(e){}}var M={blog_like:'like',blog_guardar:'guardar',blog_compartir:'compartir',blog_escuchar:'escuchar',blog_voto:'voto'},o=window.celTrack;window.celTrack=function(ev,p){p=p||{};try{if(M[ev])log(M[ev],sl(p.articulo));else if(ev==='blog_buscar'&&p.q)log('busqueda',null,String(p.q).slice(0,40));}catch(e){}if(o)return o.apply(this,arguments);};var b=document.querySelector('.cp-int[data-slug]');if(b){var s=b.getAttribute('data-slug'),k='cel_vista_'+s;try{if(!sessionStorage.getItem(k)){sessionStorage.setItem(k,'1');log('vista',s);}}catch(e){log('vista',s);}}})();</script>"
+
+def pie():
+    return FOOT.format(caps=bi('Blog', 'Blog')).replace('<script src="/js/analytics.js"></script>', '<script src="/js/analytics.js"></script>' + LOG_JS, 1)
+
 def card(a):
     c = CATS[a['cat']]; es, en = a['es'], a['en']; url = f'/blog/{a["slug"]}'
     tag_es = '#' + re.sub(r'[^a-z0-9]', '', c['es'].lower().replace('á','a').replace('é','e').replace('í','i').replace('ó','o').replace('ú','u').replace('ñ','n'))
@@ -439,7 +456,7 @@ def articulo(a):
         h += f'<p class="cp-cred">{bi("Foto de referencia", "Reference photo")}: {a["foto"]} · <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a></p>'
     h += '<section class="cp-rel"><h3>' + bi('Seguí leyendo', 'Keep reading') + '</h3><div class="cp-grid ig-feed">' + ''.join(card(x) for x in otros) + '</div></section>'
     h += TTS_JS + IG_JS
-    h += FOOT.format(caps=bi('Blog', 'Blog'))
+    h += pie()
     escribir(f'blog/{a["slug"]}/index.html', h)
 
 # Interacciones de los posts: me gusta (doble toque en la foto), guardar, compartir y filtro «Guardadas».
@@ -471,7 +488,7 @@ if(g)g.addEventListener('click',function(){document.querySelectorAll('.ig-hl .cp
 document.querySelectorAll('.ig-hl .cp-chip').forEach(function(x){x.addEventListener('click',function(){if(g)g.classList.remove('on');if(vacio)vacio.style.display='none';});});
 var q=document.getElementById('ig-buscar'),qx=document.getElementById('ig-bx'),qn=document.getElementById('ig-bn'),qv=null,qt=0;
 function nrm(s){return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
-function buscar(){var t=nrm(q.value).trim(),ps=t.split(' ').filter(Boolean),n=0,cards=document.querySelectorAll('.ig-feed .ig');
+function buscar(){var t=nrm(q.value).trim(),ps=t.split(' ').filter(function(w){return w&&['de','la','el','en','y','a','del','los','las','the','of','and','in'].indexOf(w)<0;}),n=0,cards=document.querySelectorAll('.ig-feed .ig');
  cards.forEach(function(c){var d=c.getAttribute('data-q')||'',ok=ps.every(function(w){return d.indexOf(w)>=0;});c.classList.toggle('qhide',!ok);if(ok&&!c.classList.contains('hide'))n++;});
  qx.hidden=!t;qn.textContent=t?(n+' '+T(n===1?'nota':'notas',n===1?'note':'notes')):'';
  if(!qv){qv=document.createElement('div');qv.className='ig-vacio';feed.appendChild(qv);}
@@ -481,6 +498,79 @@ if(q){q.addEventListener('input',function(){var on=document.querySelector('.ig-h
  document.querySelectorAll('.ig-hl button').forEach(function(x){x.addEventListener('click',function(){setTimeout(buscar,0);});});
  document.addEventListener('keydown',function(e){if(e.key==='/'&&document.activeElement!==q&&!/input|textarea/i.test((document.activeElement||{}).tagName||'')){e.preventDefault();q.focus();}});
  try{var u=new URLSearchParams(location.search).get('q');if(u){q.value=u;buscar();}}catch(e){}}
+})();</script>"""
+
+
+# ── Nube "Lo más buscado": cada término es una búsqueda del blog. Su tamaño sale de datos reales:
+#    búsquedas en Google (Search Console, 28 días al 27/10/2026) + lo que más leen, guardan, comparten y escuchan
+#    los lectores en el blog (tabla blog_eventos, últimos 90 días) + lo que más se busca en el buscador del blog.
+STOP = {'de', 'la', 'el', 'en', 'y', 'a', 'del', 'los', 'las', 'the', 'of', 'and', 'in'}
+NUBE = [  # (español, inglés, búsqueda, impresiones en Google)
+    ('Chef privado', 'Private chef', 'chef privado', 45), ('Ceviche', 'Ceviche', 'ceviche', 74),
+    ('Salsas madre', 'Mother sauces', 'salsas madre', 17), ('Masas quebradas', 'Shortcrust pastry', 'quebradas', 10),
+    ('Puré', 'Mashed potatoes', 'pure', 5), ('Sushi', 'Sushi', 'sushi', 4), ('Food cost', 'Food cost', 'food cost', 4),
+    ('Vino', 'Wine', 'vino', 2), ('Pan casero', 'Homemade bread', 'pan casero', 2), ('Menú degustación', 'Tasting menu', 'degustacion', 2),
+    ('Maridaje', 'Pairing', 'maridaje', 1), ('Prime cost', 'Prime cost', 'prime cost', 1), ('Punto de equilibrio', 'Break-even', 'equilibrio', 1),
+    ('Pasta fresca', 'Fresh pasta', 'pasta fresca', 0), ('Ñoquis', 'Gnocchi', 'noquis', 0), ('Risotto', 'Risotto', 'risotto', 0),
+    ('Merengue', 'Meringue', 'merengue', 0), ('Tiramisú', 'Tiramisu', 'tiramisu', 0), ('Mousse', 'Mousse', 'mousse', 0),
+    ('Masa bomba', 'Choux pastry', 'choux', 0), ('Crema pastelera', 'Pastry cream', 'crema pastelera', 0),
+    ('Focaccia', 'Focaccia', 'focaccia', 0), ('Medialunas', 'Croissants', 'medialunas', 0), ('Scones', 'Scones', 'scones', 0),
+    ('Empanadas', 'Empanadas', 'empanadas', 0), ('Arepas', 'Arepas', 'arepas', 0), ('Feijoada', 'Feijoada', 'feijoada', 0),
+    ('Causa limeña', 'Causa limeña', 'causa', 0), ('Lomo saltado', 'Lomo saltado', 'lomo saltado', 0), ('Osobuco', 'Osso buco', 'osobuco', 0),
+    ('Ojo de bife', 'Rib eye', 'ojo de bife', 0), ('Punto de la carne', 'Meat doneness', 'punto carne', 0), ('Pescado', 'Fish', 'pescado', 0),
+    ('Huevo', 'Eggs', 'huevo', 0), ('Especias', 'Spices', 'especias', 0), ('Emplatado', 'Plating', 'emplatar', 0),
+    ('Espumantes', 'Sparkling wine', 'espumantes', 0), ('Cerveza', 'Beer', 'cerveza', 0), ('Quesos', 'Cheese', 'quesos', 0),
+    ('Nutrición', 'Nutrition', 'nutricion', 0), ('Vegetariano', 'Vegetarian', 'vegetariana', 0), ('Etiquetas', 'Food labels', 'etiqueta', 0),
+    ('Chef semanal', 'Weekly chef', 'chef semanal', 0), ('Cóctel en casa', 'Cocktail party', 'coctel', 0), ('Poner la mesa', 'Table setting', 'mesa', 0),
+    ('Cocina francesa', 'French cooking', 'francesa', 0), ('Manipulación de alimentos', 'Food safety', 'manipulacion', 0),
+]
+
+def nube_html():
+    import math
+    qs = [claves(a) for a in ARTICULOS]
+    out = []
+    for es_, en_, q, seed in NUBE:
+        import unicodedata
+        lab = ''.join(c for c in unicodedata.normalize('NFD', L(es_, en_).lower()) if unicodedata.category(c) != 'Mn')
+        w = [x for x in re.findall(r'[a-z0-9]+', lab) if x not in STOP]
+        n = sum(1 for d in qs if all(x in d for x in w))
+        if not n: continue
+        nivel = 1 + min(4, int(math.log2(1 + seed + n)))  # tamaño inicial (sin JS): Google + cantidad de notas
+        out.append(f'<button type="button" class="ig-t s{nivel}" data-q="{q}" data-seed="{seed}" data-n="{n}">{L(es_, en_)}</button>')
+    return ('<section class="ig-nube" aria-labelledby="ig-nube-t"><div class="ig-nube-h"><h2 id="ig-nube-t">' + L('Lo más buscado', 'Most searched') + '</h2>'
+            '<small id="ig-nube-s">' + L('Según Google y lo que más leen, guardan y comparten los lectores', 'Based on Google and what readers read, save and share most') + '</small></div>'
+            '<div class="ig-nube-c" id="ig-nube-c">' + ''.join(out) + '</div>'
+            '<button type="button" class="ig-nube-mas" onclick="this.parentNode.classList.add(\'todo\')">' + L('Ver todos los temas', 'See all topics') + '</button></section>')
+
+NUBE_JS = """<script>(function(){
+var c=document.getElementById('ig-nube-c'),q=document.getElementById('ig-buscar');if(!c||!q)return;
+var H=document.documentElement;function T(es,en){return H.classList.contains('lang-en')?en:es;}
+function nrm(s){return (s||'').toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g,'');}
+var cards=[].slice.call(document.querySelectorAll('.ig-feed .ig'));
+var STOP={de:1,la:1,el:1,en:1,y:1,a:1,del:1,los:1,las:1,the:1,of:1,and:1,'in':1};
+function notas(term){var w=nrm(term).split(/[^a-z0-9]+/).filter(function(x){return x&&!STOP[x];});return cards.filter(function(k){var d=k.getAttribute('data-q')||'';return w.every(function(x){return d.indexOf(x)>=0;});});}
+function pintar(datos){
+ var N=(datos&&datos.notas)||{},B=(datos&&datos.busquedas)||[],P={vista:1,like:3,guardar:3,compartir:4,escuchar:2,voto:2};
+ function pts(slug){var o=N[slug]||{},t=0;for(var k in o)t+=(P[k]||1)*o[k];return t;}
+ var bs=c.querySelectorAll('.ig-t'),ya={};
+ [].forEach.call(bs,function(b){ya[b.getAttribute('data-q')]=1;});
+ B.forEach(function(x){var t=nrm(x.t).trim();if(!t||ya[t]||!notas(t).length)return;ya[t]=1;var b=document.createElement('button');b.type='button';b.className='ig-t';b.setAttribute('data-q',t);b.setAttribute('data-seed','0');b.textContent=x.t.charAt(0).toUpperCase()+x.t.slice(1);c.appendChild(b);});
+ var lista=[].map.call(c.querySelectorAll('.ig-t'),function(b){var t=b.textContent,ns=notas(t),s=0;ns.forEach(function(k){s+=pts(k.getAttribute('data-slug'));});
+   var busq=0;B.forEach(function(x){if(nrm(x.t).indexOf(t)>=0)busq+=x.n;});
+   return {b:b,w:(+b.getAttribute('data-seed')||0)+s/Math.sqrt(Math.max(1,ns.length))+busq*5,n:ns.length};});
+ var orden=lista.slice().sort(function(a,b){return b.w-a.w;}),L=orden.length;
+ orden.forEach(function(x,i){var r=i/L,niv=x.w<=0?1:r<.08?5:r<.22?4:r<.45?3:2;x.b.className='ig-t s'+niv;x.b.title=T(x.n+(x.n===1?' nota':' notas'),x.n+(x.n===1?' note':' notes'));});
+ // mezcla estable: grandes repartidos en la nube
+ lista.sort(function(a,b){return (a.b.textContent.length*7+a.w)%5-(b.b.textContent.length*7+b.w)%5;}).forEach(function(x){c.appendChild(x.b);});
+}
+c.addEventListener('click',function(e){var b=e.target.closest('.ig-t');if(!b)return;q.value=b.textContent.trim();q.dispatchEvent(new Event('input'));
+ [].forEach.call(c.querySelectorAll('.ig-t'),function(x){x.classList.toggle('on',x===b);});
+ var f=document.querySelector('.ig-tabs');if(f)f.scrollIntoView({behavior:'smooth',block:'start'});
+ try{window.celTrack&&celTrack('blog_buscar',{q:nrm(b.textContent.trim()),resultados:notas(b.textContent).length,origen:'nube'});}catch(_){}});
+q.addEventListener('input',function(){if(!q.value)[].forEach.call(c.querySelectorAll('.ig-t'),function(x){x.classList.remove('on');});});
+pintar(null);
+try{fetch('https://qolpnuscpmzqeacshfvu.supabase.co/rest/v1/rpc/blog_nube',{method:'POST',headers:{apikey:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvbHBudXNjcG16cWVhY3NoZnZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NjQ3OTQsImV4cCI6MjA5MTM0MDc5NH0.BJOz5Gwkeb1NqID_gkGKD5YlymifMtOwaf8iQMaBCx8',Authorization:'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvbHBudXNjcG16cWVhY3NoZnZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NjQ3OTQsImV4cCI6MjA5MTM0MDc5NH0.BJOz5Gwkeb1NqID_gkGKD5YlymifMtOwaf8iQMaBCx8','Content-Type':'application/json'},body:'{"dias":90}'})
+ .then(function(r){return r.ok?r.json():null;}).then(function(d){if(d)pintar(d);}).catch(function(){});}catch(e){}
 })();</script>"""
 
 def indice():
@@ -510,10 +600,11 @@ def indice():
     h += ('<div class="ig-q" role="search"><label><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>'
           '<input type="search" id="ig-buscar" autocomplete="off" placeholder="' + L('Buscar notas, recetas, técnicas…', 'Search notes, recipes, techniques…') + '" aria-label="' + L('Buscar en el blog', 'Search the blog') + '">'
           '<button type="button" class="x" id="ig-bx" hidden aria-label="' + L('Borrar búsqueda', 'Clear search') + '">✕</button></label><small id="ig-bn" aria-live="polite"></small></div>')
+    h += nube_html()
     h += '<div class="ig-tabs" aria-hidden="true"><span class="on">▦ ' + bi('Publicaciones', 'Posts') + '</span></div>'
     h += '<div class="cp-grid ig-feed">' + ''.join(card(a) for a in orden) + '</div>'
-    h += TTS_INDICE + IG_JS
-    h += FOOT.format(caps=bi('Blog', 'Blog'))
+    h += TTS_INDICE + IG_JS + NUBE_JS
+    h += pie()
     escribir('blog/index.html', h)
 
 def globo_hero():
