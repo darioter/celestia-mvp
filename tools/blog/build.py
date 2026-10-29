@@ -48,7 +48,10 @@ def bloques(cuerpo, lang):
 TTS_JS = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tts.js'), encoding='utf-8').read()
 TTS_INDICE = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tts_indice.js'), encoding='utf-8').read()
 
+LANG = 'es'  # 'en' genera las páginas /en/... solo en inglés
+def L(es, en): return en if LANG == 'en' else es
 def bi(es, en, tag='span'):
+    if LANG == 'en': return f'<{tag} class="b-en" lang="en">{en}</{tag}>'
     return f'<{tag} class="b-es">{es}</{tag}><{tag} class="b-en" lang="en">{en}</{tag}>'
 
 CSS = r'''
@@ -280,6 +283,7 @@ HEAD = '''<!doctype html>
 <title>{title}</title>
 <meta name="description" content="{desc}">
 <link rel="canonical" href="{url}">
+{alt}
 <meta property="og:type" content="{ogtype}"><meta property="og:title" content="{title}"><meta property="og:description" content="{desc}"><meta property="og:url" content="{url}"><meta property="og:image" content="{ogimg}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta property="og:locale" content="es_AR"><meta property="og:site_name" content="Celestia · Chef Privado">
 <link rel="icon" href="/favicom.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -345,22 +349,39 @@ def fecha_corta(f, lang):
 
 NAV = dict(nav_caps=bi('Blog', 'Blog'), nav_home=bi('Inicio', 'Home'), nav_book=bi('Reservar →', 'Book →'))
 
+def alternos(ruta):
+    """hreflang: misma página en español (ruta) y en inglés (/en + ruta)."""
+    es_u = SITE + ruta; en_u = SITE + '/en' + (ruta if ruta != '/' else '')
+    return (f'<link rel="alternate" hreflang="es" href="{es_u}"><link rel="alternate" hreflang="en" href="{en_u}">'
+            f'<link rel="alternate" hreflang="x-default" href="{es_u}">')
+
+def a_ingles(h, ruta):
+    """Ajusta una página generada para servirla en /en: idioma fijo, enlaces internos y locale."""
+    h = h.replace('<html lang="es"', f'<html lang="en" class="lang-en" data-lang-fijo="en" data-alt-es="{ruta}"', 1)
+    h = h.replace('content="es_AR"', 'content="en_US"')
+    h = re.sub(r'href="/blog(?=[/"#?])', 'href="/en/blog', h)
+    h = h.replace('href="/"', 'href="/en"')
+    return h
+
 def escribir(rel, contenido):
+    if LANG == 'en':
+        ruta = '/' + rel[:-len('index.html')].rstrip('/')
+        contenido = a_ingles(contenido, ruta); rel = 'en/' + rel
     p = os.path.join(ROOT, rel); os.makedirs(os.path.dirname(p), exist_ok=True)
     open(p, 'w', encoding='utf-8').write(contenido)
 
 def articulo(a):
     es, en, c = a['es'], a['en'], CATS[a['cat']]
-    url = f'{SITE}/blog/{a["slug"]}'
+    url = SITE + L('', '/en') + f'/blog/{a["slug"]}'
     ld = '<script type="application/ld+json">' + json.dumps({
-        "@context": "https://schema.org", "@type": "Article", "headline": es['titulo'], "description": es['bajada'],
-        "image": U(a['img'], 1200, 630), "datePublished": a['fecha'], "inLanguage": "es-AR",
+        "@context": "https://schema.org", "@type": "Article", "headline": L(es['titulo'], en['titulo']), "description": L(es['bajada'], en['bajada']),
+        "image": U(a['img'], 1200, 630), "datePublished": a['fecha'], "inLanguage": L("es-AR", "en"),
         "author": {"@type": "Person", "name": "Daro Castello"},
         "publisher": {"@type": "Organization", "name": "Celestia Chef Privado", "url": SITE},
         "mainEntityOfPage": url}, ensure_ascii=False) + '</script>'
     otros = [x for x in ARTICULOS if x['slug'] != a['slug']][:3]
-    h = HEAD.format(title=html.escape(es['titulo'] + ' · Blog Celestia'), title_en=html.escape(en['titulo'] + ' · Celestia Blog'),
-                    desc=html.escape(es['bajada']), url=url, ogtype='article', ogimg=U(a['img'], 1200, 630), css=CSS, ld=ld, **NAV)
+    h = HEAD.format(title=html.escape(L(es['titulo'] + ' · Blog Celestia', en['titulo'] + ' · Celestia Blog')), title_en=html.escape(en['titulo'] + ' · Celestia Blog'),
+                    desc=html.escape(L(es['bajada'], en['bajada'])), url=url, alt=alternos(f'/blog/{a["slug"]}'), ogtype='article', ogimg=U(a['img'], 1200, 630), css=CSS, ld=ld, **NAV)
     h += (f'<section class="cp-hero" style="background-image:url(\'{U(a["img"],1800,900)}\')"><a class="cp-volver" href="/blog"><b>←</b>{bi("Todas las notas","All notes")}</a><div class="cp-hero-in">'
           f'<a class="cp-k" href="/blog" style="text-decoration:none">✦ {bi("Blog","Blog")} · {c["icono"]} {bi(c["es"], c["en"])}</a>'
           f'<h1>{bi(es["titulo"], en["titulo"])}</h1><p class="cp-baj">{bi(es["bajada"], en["bajada"])}</p>'
@@ -426,10 +447,11 @@ document.querySelectorAll('.ig-hl .cp-chip').forEach(function(x){x.addEventListe
 })();</script>"""
 
 def indice():
-    url = f'{SITE}/blog'
-    h = HEAD.format(title='Blog · Lo que me enseñaron en la escuela de cocina | Celestia Chef Privado', title_en='Blog · What I learned at culinary school | Celestia Private Chef',
-                    desc='Lo que me enseñaron en la escuela de cocina, contado por Daro Castello: cortes, salsas madre, técnicas y recetas fáciles con toques de chef.',
-                    url=url, ogtype='website', ogimg=U(ARTICULOS[0]['img'], 1200, 630), css=CSS, ld='', **NAV)
+    url = SITE + L('', '/en') + '/blog'
+    h = HEAD.format(title=L('Blog · Lo que me enseñaron en la escuela de cocina | Celestia Chef Privado', 'Blog · What I learned at culinary school | Celestia Private Chef in Buenos Aires'), title_en='Blog · What I learned at culinary school | Celestia Private Chef',
+                    desc=L('Lo que me enseñaron en la escuela de cocina, contado por Daro Castello: cortes, salsas madre, técnicas y recetas fáciles con toques de chef.',
+                           'What I learned at culinary school, told by private chef Daro Castello in Buenos Aires: knife cuts, mother sauces, techniques and easy recipes with a chef\'s touch.'),
+                    url=url, alt=alternos('/blog'), ogtype='website', ogimg=U(ARTICULOS[0]['img'], 1200, 630), css=CSS, ld='', **NAV)
     orden = sorted(ARTICULOS, key=lambda x: x['fecha'], reverse=True)
     usadas = [k for k in CATS if any(a['cat'] == k for a in ARTICULOS)]
     # Perfil
@@ -566,7 +588,133 @@ def base_historias():
     p = os.path.join(ROOT, 'data', 'historias-base.json'); os.makedirs(os.path.dirname(p), exist_ok=True)
     open(p, 'w', encoding='utf-8').write(json.dumps({'notas': notas}, ensure_ascii=False, indent=1))
 
+# ── Home en inglés (/en): mismo index.html con el texto estático ya traducido (diccionario de js/i18n.js),
+#    así lo leen en inglés los buscadores y los asistentes de IA que no ejecutan JavaScript.
+#    Lo dinámico (calendario, reserva, precios) lo sigue traduciendo i18n.js con el idioma fijo en inglés.
+def _dic_i18n():
+    t = open(os.path.join(ROOT, 'js', 'i18n.js'), encoding='utf-8').read()
+    i = t.index('var D=') + 6; j = t.index(';\nvar MES', i)
+    return json.loads(t[i:j])
+
+def _tr_factory(D):
+    MES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre']
+    MON = ['January','February','March','April','May','June','July','August','September','October','November','December']
+    RX = [
+        (r'^(\d+) personas?$', lambda m: m[1] + (' guest' if m[1] == '1' else ' guests')),
+        (r'^(\d+) a (\d+) personas$', lambda m: f'{m[1]} to {m[2]} guests'),
+        (r'^(\d+) pasos$', lambda m: m[1] + ' courses'),
+        (r'^Menú (\d+) · (\d+) pasos$', lambda m: f'Menu {m[1]} · {m[2]} courses'),
+        (r'^desde (\$[\d.,]+)$', lambda m: 'from ' + m[1]),
+        (r'^~?(\$[\d.,]+) por persona$', lambda m: '~' + m[1] + ' per person'),
+    ]
+    def tr(s):
+        if s is None: return None
+        s = re.sub(r'\s+', ' ', s).strip()
+        if not s: return None
+        if s in D: return D[s]
+        for rx, f in RX:
+            m = re.match(rx, s, re.I)
+            if m: return f(m)
+        p = re.match(r'^([^0-9A-Za-zÁÉÍÓÚáéíóúÑñ¿¡$~+(“"]+)(.+)$', s)
+        if p:
+            r2 = tr(p[2])
+            if r2 is not None: return p[1] + r2
+        if ' · ' in s:
+            parts = s.split(' · '); out = [tr(x) for x in parts]
+            if any(x is not None for x in out): return ' · '.join(o if o is not None else x for o, x in zip(out, parts))
+        return None
+    return tr
+
+def _traducir_html(src, tr):
+    from html.parser import HTMLParser
+    import html as H
+    lineas = src.split('\n'); base = [0]
+    for ln in lineas[:-1]: base.append(base[-1] + len(ln) + 1)
+    VOID = {'area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr'}
+    RAW = {'script','style','noscript','textarea','title'}
+    cambios = []
+    class P(HTMLParser):
+        def __init__(s_):
+            super().__init__(convert_charrefs=True); s_.pila = []
+        def off(s_):
+            l, c = s_.getpos(); return base[l - 1] + c
+        def salta(s_):
+            return any(t in RAW or nt for t, nt in s_.pila)
+        def handle_starttag(s_, tag, attrs):
+            d = dict(attrs); nt = 'data-no-tr' in d
+            if not s_.salta() and not nt:
+                raw = s_.get_starttag_text(); nuevo = raw
+                for a in ('placeholder', 'aria-label', 'title', 'alt', 'data-eyebrow'):
+                    v = d.get(a)
+                    if v and '${' not in v and "'+" not in v:
+                        r = tr(H.unescape(v))
+                        if r is not None:
+                            nuevo = re.sub(r'(\s' + re.escape(a) + r'=)(["\'])' + re.escape(v) + r'\2', lambda m: m[1] + m[2] + H.escape(r, quote=True) + m[2], nuevo, count=1)
+                if nuevo != raw: cambios.append((s_.off(), len(raw), nuevo))
+            if tag not in VOID: s_.pila.append((tag, nt))
+        def handle_startendtag(s_, tag, attrs):
+            s_.handle_starttag(tag, attrs)
+            if tag not in VOID and s_.pila and s_.pila[-1][0] == tag: s_.pila.pop()
+        def handle_endtag(s_, tag):
+            for k in range(len(s_.pila) - 1, -1, -1):
+                if s_.pila[k][0] == tag: del s_.pila[k:]; break
+        def handle_data(s_, data):
+            if s_.salta() or not data.strip(): return
+            o = s_.off(); k = src.find('<', o); raw = src[o:(k if k >= 0 else len(src))]
+            if '${' in raw or "'+" in raw or H.unescape(raw) != data: return
+            r = tr(data)
+            if r is None: return
+            lead = re.match(r'^\s*', raw)[0]; trail = re.search(r'\s*$', raw)[0]
+            cambios.append((o, len(raw), lead + H.escape(r, quote=False) + trail))
+    pr = P(); pr.feed(src); pr.close()
+    out = src
+    for o, n, nuevo in sorted(cambios, key=lambda x: -x[0]):
+        out = out[:o] + nuevo + out[o + n:]
+    return out, len(cambios)
+
+def home_en():
+    p = os.path.join(ROOT, 'index.html'); t = open(p, encoding='utf-8').read()
+    # hreflang en la home en español (idempotente)
+    ini, fin = '<!--HREFLANG-START-->', '<!--HREFLANG-END-->'
+    bloque = ini + alternos('/') + fin
+    if ini in t: t = re.sub(re.escape(ini) + '.*?' + re.escape(fin), lambda m: bloque, t, flags=re.S)
+    else:
+        a = '<link rel="canonical" href="https://www.chefprivado.ar/">'; assert t.count(a) == 1; t = t.replace(a, a + '\n' + bloque)
+    open(p, 'w', encoding='utf-8').write(t)
+    en, n = _traducir_html(t, _tr_factory(_dic_i18n()))
+    TIT = 'Private Chef in Buenos Aires · Celestia | Daro Castello'
+    DES = 'Private dining experiences at your home in Buenos Aires. 3- and 7-course tasting menus designed and cooked by chef Daro Castello in CABA and Greater Buenos Aires. Book your date.'
+    OGD = 'Fine dining at your home, designed and cooked by private chef Daro Castello. 3- and 7-course menus in Buenos Aires.'
+    reps = [
+        (r'<html lang="es">', '<html lang="en" class="lang-en" data-lang-fijo="en" data-alt-es="/">'),
+        (r'<title>Chef Privado en Buenos Aires · Celestia \| Daro Castello</title>', f'<title>{TIT}</title>'),
+        (r'<meta name="description" content="[^"]*">', f'<meta name="description" content="{DES}">'),
+        (r'<link rel="canonical" href="https://www.chefprivado.ar/">', '<link rel="canonical" href="https://www.chefprivado.ar/en">'),
+        (r'<meta property="og:url" content="https://www.chefprivado.ar/">', '<meta property="og:url" content="https://www.chefprivado.ar/en">'),
+        (r'<meta property="og:title" content="[^"]*">', '<meta property="og:title" content="Private Chef in Buenos Aires · Celestia">'),
+        (r'<meta property="og:description" content="[^"]*">', f'<meta property="og:description" content="{OGD}">'),
+        (r'<meta property="og:locale" content="es_AR">', '<meta property="og:locale" content="en_US">'),
+        (r'<meta name="twitter:title" content="[^"]*">', '<meta name="twitter:title" content="Private Chef in Buenos Aires · Celestia">'),
+        (r'<meta name="twitter:description" content="[^"]*">', f'<meta name="twitter:description" content="{OGD}">'),
+        (r'<meta name="keywords" content="[^"]*">', '<meta name="keywords" content="private chef Buenos Aires, personal chef Buenos Aires, private dinner at home Buenos Aires, tasting menu at home, chef for events Buenos Aires, private chef Argentina">'),
+    ]
+    for a, b in reps:
+        en, k = re.subn(a, lambda m: b, en, count=1); assert k == 1, a
+    en = re.sub(r'href="/blog(?=[/"#?])', 'href="/en/blog', en)
+    en = en.replace('href="/"', 'href="/en"')
+    os.makedirs(os.path.join(ROOT, 'en'), exist_ok=True)
+    open(os.path.join(ROOT, 'en', 'index.html'), 'w', encoding='utf-8').write(en)
+    return n
+
+
 if __name__ == '__main__':
     for a in ARTICULOS: articulo(a)
-    indice(); franja_landing(); globo_hero(); llms(); sitemap(); base_historias()
+    indice(); franja_landing(); globo_hero(); llms()
+    LANG = 'en'
+    NAV.update(nav_caps=bi('Blog', 'Blog'), nav_home=bi('Inicio', 'Home'), nav_book=bi('Reservar →', 'Book →'))
+    for a in ARTICULOS: articulo(a)
+    indice()
+    LANG = 'es'
+    print('home en inglés:', home_en(), 'textos traducidos')
+    sitemap(); base_historias()
     print('ok', len(ARTICULOS), 'cápsulas')

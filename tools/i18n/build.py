@@ -111,6 +111,7 @@ function apply(l){
   document.querySelectorAll('[data-cel-lang]').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-cel-lang')===lang);b.setAttribute('aria-pressed',b.getAttribute('data-cel-lang')===lang?'true':'false');});
 }
 function inicial(){
+  var fx=document.documentElement.getAttribute('data-lang-fijo');if(fx==='en'||fx==='es')return fx;
   try{var s=localStorage.getItem('celestia_idioma');if(s==='en'||s==='es')return s;}catch(e){}
   if(/bot|crawl|spider|slurp|google|bing|yandex|baidu|duckduck|facebookexternalhit|embedly|preview|headless/i.test(navigator.userAgent||''))return 'es';
   var nav=(navigator.language||'es').toLowerCase();
@@ -120,7 +121,7 @@ window.celSetLang=function(l){try{localStorage.setItem('celestia_idioma',l);}cat
 window.celLang=function(){return lang;};
 window.celTr=tr;
 function init(){
-  document.querySelectorAll('[data-cel-lang]').forEach(function(b){b.addEventListener('click',function(e){e.preventDefault();window.celSetLang(b.getAttribute('data-cel-lang'));});});
+  document.querySelectorAll('[data-cel-lang]').forEach(function(b){b.addEventListener('click',function(e){e.preventDefault();var l=b.getAttribute('data-cel-lang'),alt=document.documentElement.getAttribute('data-alt-'+l);if(alt&&l!==lang){try{localStorage.setItem('celestia_idioma',l);}catch(_){}location.href=alt+location.hash;return;}window.celSetLang(l);});});
   apply(inicial());
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
