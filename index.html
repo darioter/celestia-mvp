@@ -2960,17 +2960,18 @@ programar();
         </div>
         </div>
         <div id="mp2-q-mise" hidden>
-        <div class="mp2-q"><span class="mp2-qn">2</span><div><span class="mp2-qt">¿Para cuántos días te dejo la mise en place?</span><span class="mp2-qs">Todo se prepara en una jornada y se conserva en heladera, listo para que cocines en minutos.</span></div></div>
-        <div class="mp2-opts mp2-3">
-          <button type="button" class="mp2-o" id="mpm-dias-3" onclick="mpMise('dias','3')"><b>3 días</b><small>media semana</small></button>
-          <button type="button" class="mp2-o" id="mpm-dias-5" onclick="mpMise('dias','5')"><span class="mp2-badge">Más elegido</span><b>5 días</b><small>de lunes a viernes</small></button>
-          <button type="button" class="mp2-o" id="mpm-dias-7" onclick="mpMise('dias','7')"><b>7 días</b><small>semana completa</small></button>
+        <div class="mp2-q"><span class="mp2-qn">2</span><div><span class="mp2-qt">¿Cuántas jornadas de mise en place?</span><span class="mp2-qs">Se cobra por jornada: en ese tiempo te dejo preparado todo lo que se pueda. Abajo ves cuánto rinde, aproximado.</span></div></div>
+        <div class="mp2-opts mp2-4">
+          <button type="button" class="mp2-o" id="mpm-jor-05" onclick="mpMise('jor','0.5')"><b>Media jornada</b><small>~4 hs de trabajo</small><span class="mp2-spec"><em id="mpm-pr-05"></em><span class="mpm-rinde" data-j="0.5"></span></span></button>
+          <button type="button" class="mp2-o" id="mpm-jor-1" onclick="mpMise('jor','1')"><span class="mp2-badge">Más elegido</span><b>1 jornada</b><small>~8 hs de trabajo</small><span class="mp2-spec"><em id="mpm-pr-1"></em><span class="mpm-rinde" data-j="1"></span></span></button>
+          <button type="button" class="mp2-o" id="mpm-jor-2" onclick="mpMise('jor','2')"><b>2 jornadas</b><small>~16 hs de trabajo</small><span class="mp2-spec"><em id="mpm-pr-2"></em><span class="mpm-rinde" data-j="2"></span></span></button>
+          <button type="button" class="mp2-o" id="mpm-jor-3" onclick="mpMise('jor','3')"><b>3 jornadas</b><small>~24 hs de trabajo</small><span class="mp2-spec"><em id="mpm-pr-3"></em><span class="mpm-rinde" data-j="3"></span></span></button>
         </div>
-        <div class="mp2-q"><span class="mp2-qn">3</span><div><span class="mp2-qt">¿Qué querés que te deje preparado?</span><span class="mp2-qs">Marcá todo lo que necesites. El calculador suma las horas de trabajo.</span></div></div>
+        <div class="mp2-q"><span class="mp2-qn">3</span><div><span class="mp2-qt">¿En qué me enfoco?</span><span class="mp2-qs">Marcá lo que necesitás. No cambia el precio: reparto las horas de la jornada entre lo que elijas.</span></div></div>
         <div class="mp2-opts mp2-2 mp2-chk" id="mpm-items"></div>
         <div class="mp2-q"><span class="mp2-qn">4</span><div><span class="mp2-qt">¿Quién hace las compras?</span><span class="mp2-qs">Los ingredientes se pagan aparte, al costo, con ticket.</span></div></div>
         <div class="mp2-opts mp2-2">
-          <button type="button" class="mp2-o" id="mpm-compras-chef" onclick="mpMise('compras','chef')"><b>Las hago yo</b><small>Mercado y proveedores · suma ~1,5 hs</small></button>
+          <button type="button" class="mp2-o" id="mpm-compras-chef" onclick="mpMise('compras','chef')"><b>Las hago yo</b><small>Mercado y proveedores · + $37.500</small></button>
           <button type="button" class="mp2-o" id="mpm-compras-cliente" onclick="mpMise('compras','cliente')"><b>Las hacés vos</b><small>Me dejás todo en casa antes de la jornada</small></button>
         </div>
         </div>
@@ -5224,7 +5225,7 @@ const mpState = {
   pp: '3-4',
   jornadas: '2',
   comidas: 'completo',
-  modo: 'comidas', mDias: '5', mItems: ['verd','prot','fond','gran','env'], mCompras: 'chef',
+  modo: 'comidas', mJor: '1', mItems: ['verd','prot','fond','gran','env'], mCompras: 'chef',
   fecha: null,
   nombre: '', tel: '', email: '', dir: '', notas: ''
 };
@@ -5235,25 +5236,26 @@ let mpCalYear, mpCalMonth;
 // Honorario por jornada (3-4 personas); se multiplica por la cantidad de jornadas
 const MP_PJ = { basico: 200000, completo: 300000 };
 const MP_JMAX = 4;
-// ── Mise en place: horas por día cubierto (3-4 personas) para cada bloque
+// ── Mise en place: se cobra por jornada. Las horas se reparten entre lo elegido y se estima cuánto rinde.
 const MP_HORA = 25000;
 const MISE = {
-  verd: { i: '🥕', t: 'Verduras', d: 'Lavadas, cortadas y blanqueadas', h: 0.5 },
-  prot: { i: '🥩', t: 'Proteínas', d: 'Porcionadas y marinadas', h: 0.3 },
-  fond: { i: '🍲', t: 'Fondos y salsas base', d: 'Caldos, salsas y aderezos', h: 0.3 },
-  gran: { i: '🍚', t: 'Granos y legumbres', d: 'Arroz, quinoa, legumbres cocidas', h: 0.2 },
-  masa: { i: '🥖', t: 'Masas y panificados', d: 'Masas, tartas, pan, rebozados', h: 0.4 },
-  env:  { i: '🏷️', t: 'Envasado y etiquetado', d: 'Con fecha y uso, ordenado en heladera', h: 0.2 }
+  verd: { i: '🥕', t: 'Verduras', d: 'Lavadas, cortadas y blanqueadas', h: 0.5, r: 2, u: 'kg' },
+  prot: { i: '🥩', t: 'Proteínas', d: 'Porcionadas y marinadas', h: 0.3, r: 3, u: 'kg' },
+  fond: { i: '🍲', t: 'Fondos y salsas base', d: 'Caldos, salsas y aderezos', h: 0.3, r: 2.5, u: 'preparaciones' },
+  gran: { i: '🍚', t: 'Granos y legumbres', d: 'Arroz, quinoa, legumbres cocidas', h: 0.2, r: 2, u: 'kg cocidos' },
+  masa: { i: '🥖', t: 'Masas y panificados', d: 'Masas, tartas, pan, rebozados', h: 0.4, r: 1, u: 'preparaciones' },
+  env:  { i: '🏷️', t: 'Envasado y etiquetado', d: 'Con fecha y uso, ordenado en heladera', h: 0.2, r: 0, u: '' }
 };
 const MISE_PP = { '1-2': 0.75, '3-4': 1, '5-6': 1.3 };
-function miseCalc() {
-  const dias = parseInt(mpState.mDias) || 5, f = MISE_PP[mpState.pp] || 1;
-  const filas = mpState.mItems.map(k => [MISE[k].t, MISE[k].h * dias * f]);
-  filas.push(['Puesta en marcha y limpieza', 1]);
-  if (mpState.mCompras === 'chef') filas.push(['Compras', 1.5]);
-  let horas = filas.reduce((a, r) => a + r[1], 0);
-  horas = Math.max(4, Math.ceil(horas * 2) / 2);
-  return { dias, filas, horas, jornadas: Math.ceil(horas / 10), precio: Math.round(horas * MP_HORA / 5000) * 5000 };
+const MISE_COMPRAS = 37500;
+function miseCalc(jor) {
+  const j = parseFloat(jor || mpState.mJor) || 1, horas = j * 8, util = horas - 1;
+  const suma = mpState.mItems.reduce((a, k) => a + MISE[k].h, 0) || 1;
+  const rinde = mpState.mItems.filter(k => MISE[k].r).map(k => { const h = util * MISE[k].h / suma; return [MISE[k].t, Math.max(1, Math.round(h * MISE[k].r)), MISE[k].u]; });
+  const d = util / (suma * (MISE_PP[mpState.pp] || 1));
+  const dMin = Math.max(1, Math.floor(d)), dMax = Math.max(dMin + 1, Math.round(d + 0.5));
+  const precio = Math.round(horas * MP_HORA) + (mpState.mCompras === 'chef' ? MISE_COMPRAS * Math.ceil(j) : 0);
+  return { jor: j, horas, rinde, dMin, dMax, precio, jornadas: Math.max(1, Math.ceil(j)) };
 }
 function mpHonorarioActual() {
   return mpState.modo === 'mise' ? miseCalc().precio : calcMpHonorario(mpState.pp, mpState.jornadas, mpState.comidas);
@@ -5272,21 +5274,22 @@ function mpModo(m) {
   if (m === 'mise') mpMise(); else selectMpFlow('comidas', mpState.comidas);
 }
 function mpMise(param, valor) {
-  if (param === 'dias') mpState.mDias = valor;
+  if (param === 'jor') mpState.mJor = valor;
   if (param === 'compras') mpState.mCompras = valor;
   if (param === 'item') { const i = mpState.mItems.indexOf(valor); if (i >= 0) { if (mpState.mItems.length > 1) mpState.mItems.splice(i, 1); } else mpState.mItems.push(valor); }
   const box = document.getElementById('mpm-items');
   if (box && !box.children.length) box.innerHTML = Object.keys(MISE).map(k => `<button type="button" class="mp2-o" id="mpm-item-${k}" onclick="mpMise('item','${k}')"><i>${MISE[k].i}</i><span><b>${MISE[k].t}</b><small>${MISE[k].d}</small></span><span class="mh"></span></button>`).join('');
-  const f = (MISE_PP[mpState.pp] || 1) * (parseInt(mpState.mDias) || 5);
-  Object.keys(MISE).forEach(k => { const b = document.getElementById('mpm-item-' + k); if (!b) return; const on = mpState.mItems.includes(k); b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); const h = b.querySelector('.mh'); if (h) h.textContent = '+' + (Math.round(MISE[k].h * f * 10) / 10).toString().replace('.', ',') + ' hs'; });
-  ['3','5','7'].forEach(v => { const b = document.getElementById('mpm-dias-' + v); if (b) b.classList.toggle('on', v === mpState.mDias); });
+  Object.keys(MISE).forEach(k => { const b = document.getElementById('mpm-item-' + k); if (!b) return; const on = mpState.mItems.includes(k); b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); const h = b.querySelector('.mh'); if (h) h.textContent = ''; });
+  ['0.5','1','2','3'].forEach(v => { const id = v.replace('.', ''), b = document.getElementById('mpm-jor-' + id); if (b) { b.classList.toggle('on', v === mpState.mJor); b.setAttribute('aria-pressed', v === mpState.mJor ? 'true' : 'false'); }
+    const c = miseCalc(v), pr = document.getElementById('mpm-pr-' + id); if (pr) pr.textContent = '$' + c.precio.toLocaleString('es-AR');
+    const r = document.querySelector('.mpm-rinde[data-j="' + v + '"]'); if (r) r.textContent = 'rinde ~' + c.dMin + ' a ' + c.dMax + ' días'; });
   ['chef','cliente'].forEach(v => { const b = document.getElementById('mpm-compras-' + v); if (b) b.classList.toggle('on', v === mpState.mCompras); });
   if (typeof mp2Resumen === 'function') mp2Resumen();
 }
 // Horas por jornada según comidas (5 preparaciones llevan una jornada más larga)
 const MP_HS = { basico: 8, completo: 12 };
 function mpHoras(jornadas, comidas) { return (parseInt(jornadas) || 1) * (MP_HS[comidas] || 8); }
-function mpJornadasLabel() { if (mpState.modo === 'mise') { const c = miseCalc(); return `Mise en place para ${c.dias} días (~${c.horas.toString().replace('.', ',')} hs${c.jornadas > 1 ? ' en ' + c.jornadas + ' jornadas' : ''})`; } const h = mpHoras(mpState.jornadas, mpState.comidas); return mpState.jornadas === '1' ? `1 jornada (~${h}hs)` : `${mpState.jornadas} jornadas (~${h}hs en semana)`; }
+function mpJornadasLabel() { if (mpState.modo === 'mise') { const c = miseCalc(); return `Mise en place · ${c.jor === 0.5 ? 'media jornada' : c.jor === 1 ? '1 jornada' : c.jor + ' jornadas'} (~${c.horas} hs, rinde ~${c.dMin} a ${c.dMax} días)`; } const h = mpHoras(mpState.jornadas, mpState.comidas); return mpState.jornadas === '1' ? `1 jornada (~${h}hs)` : `${mpState.jornadas} jornadas (~${h}hs en semana)`; }
 const MP_MULT = { '1-2': 0.8, '3-4': 1.0, '5-6': 1.25 };
 // Cada jornada deja listas las comidas del día siguiente y comidas por día
 
@@ -5482,7 +5485,7 @@ async function mpConfirmarReserva() {
 
   const payload = {
     ref, tipo: 'semanal', fecha: mpState.fecha, turno: 'almuerzo', estado: 'reservada',
-    menu: mpState.modo === 'mise' ? `Chef Semanal · Mise en place · ${mpState.pp}p · ${mpState.mDias} días · ${mpState.mItems.join('+')}` : `Chef Semanal · ${mpState.pp}p · ${mpState.jornadas}j · ${mpState.comidas}`,
+    menu: mpState.modo === 'mise' ? `Chef Semanal · Mise en place · ${mpState.pp}p · ${mpState.mJor}j · ${mpState.mItems.join('+')}` : `Chef Semanal · ${mpState.pp}p · ${mpState.jornadas}j · ${mpState.comidas}`,
     personas: parseInt(mpState.pp) || 0,
     nombre: mpState.nombre, tel: mpState.tel, email: mpState.email, dir: mpState.dir,
     notas: mpState.notas || '',
@@ -8169,6 +8172,7 @@ a.mc2-btn{display:block;text-align:center;text-decoration:none;box-sizing:border
 .mp2-chk .mp2-o i{font-style:normal;font-size:22px;flex:none}
 .mp2-chk .mp2-o b{font-size:15px}.mp2-chk .mp2-o small{display:block;line-height:1.4}
 .mp2-chk .mp2-o .mh{margin-left:auto;font-size:11px;color:#8a6418;white-space:nowrap;padding-right:26px}
+.mpm-rinde{display:block;font-size:11px;color:#8a8070;margin-top:2px}
 .mp2-tot table{width:100%;border-collapse:collapse;margin-top:10px;font-size:12px}
 .mp2-tot td{padding:4px 0;color:rgba(250,246,239,.7);border-top:1px solid rgba(250,246,239,.07)}.mp2-tot td:last-child{text-align:right;color:#FAF6EF;white-space:nowrap}
 .mp2-q{display:flex;gap:14px;align-items:flex-start;margin:30px 0 14px}
@@ -8266,9 +8270,10 @@ function mp2Resumen(){
   var how=document.querySelector('.mp2-how');if(how){if(!how.dataset.orig)how.dataset.orig=how.innerHTML;how.innerHTML=mpState.modo==='mise'?'<li><b>Definimos qué vas a cocinar</b> en la semana por WhatsApp.</li><li><b>Preparo todo en tu casa</b> el día acordado.</li><li><b>Cocinás en minutos</b> con todo cortado, porcionado y etiquetado.</li>':how.dataset.orig;}
   if(mpState.modo==='mise'&&typeof miseCalc==='function'){
     var c=miseCalc(),fmt=function(n){return '$'+n.toLocaleString('es-AR');},hs=function(h){return (Math.round(h*10)/10).toString().replace('.',',')+' hs';};
-    el.innerHTML='<div><span>Personas</span><span>'+pp+'</span></div><div><span>Servicio</span><span>Mise en place</span></div><div><span>Cubre</span><span>'+c.dias+' días</span></div>';
-    var tt=document.getElementById('mp2-tot');if(tt)tt.innerHTML='<div class="n">~'+hs(c.horas)+'</div><div class="l">De trabajo'+(c.jornadas>1?' · en '+c.jornadas+' jornadas':' · en 1 jornada')+'</div><table>'+c.filas.map(function(r){return '<tr><td>'+r[0]+'</td><td>'+hs(r[1])+'</td></tr>';}).join('')+'</table>';
-    var rr=document.getElementById('mpf-result');if(rr){rr.style.display='';rr.innerHTML='<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;"><span style="font-size:13px;color:rgba(250,246,239,0.6);">Honorario</span><span style="font-family:\'DM Serif Display\',serif;font-size:28px;color:var(--gold-light);">'+fmt(c.precio)+'</span></div><div style="font-size:12px;color:rgba(250,246,239,0.4);text-align:right;margin-bottom:12px;">'+fmt(MP_HORA)+' por hora · mínimo 4 hs</div><div style="font-size:12px;color:rgba(250,246,239,0.4);font-style:italic;line-height:1.6;">Ingredientes y envases aparte, al costo. Las horas son estimadas: ajustamos con el menú definitivo.</div>';}
+    var jl=c.jor===0.5?'Media jornada · 4 hs':(c.jor===1?'1 jornada · 8 hs':c.jor+' jornadas · '+c.horas+' hs');
+    el.innerHTML='<div><span>Personas</span><span>'+pp+'</span></div><div><span>Servicio</span><span>Mise en place</span></div><div><span>Jornadas</span><span>'+jl+'</span></div>';
+    var tt=document.getElementById('mp2-tot');if(tt)tt.innerHTML='<div class="n">~'+c.dMin+' a '+c.dMax+' días</div><div class="l">Rinde aproximado</div><div class="d">Lo que te dejo preparado, estimado:</div><table>'+c.rinde.map(function(r){return '<tr><td>'+r[0]+'</td><td>~'+r[1]+' '+r[2]+'</td></tr>';}).join('')+'</table>';
+    var rr=document.getElementById('mpf-result');if(rr){rr.style.display='';rr.innerHTML='<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;"><span style="font-size:13px;color:rgba(250,246,239,0.6);">Honorario</span><span style="font-family:\'DM Serif Display\',serif;font-size:28px;color:var(--gold-light);">'+fmt(c.precio)+'</span></div><div style="font-size:12px;color:rgba(250,246,239,0.4);text-align:right;margin-bottom:12px;">'+(c.jor===0.5?'4 hs':c.horas+' hs')+' de trabajo'+(mpState.mCompras==='chef'?' · compras incluidas':'')+'</div><div style="font-size:12px;color:rgba(250,246,239,0.4);font-style:italic;line-height:1.6;">Ingredientes y envases aparte, al costo. El rinde es estimado: depende de los cortes y las recetas que elijas.</div>';}
     var nx0=document.getElementById('mp-btn-next-1'),nxt0=document.getElementById('i18n-mp-btn-next-1');if(nx0&&nxt0){nxt0.textContent='Elegir fecha →';nx0.setAttribute('onclick','mpGoTo(2)');}
     return;
   }
