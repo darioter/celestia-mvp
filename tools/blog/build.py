@@ -29,7 +29,7 @@ def texto_plano(cuerpo):
 def claves(a):
     """Texto liviano para el buscador del blog: títulos, bajadas, tema, subtítulos, ingredientes y negritas (ES y EN)."""
     import unicodedata
-    partes = [CATS[a['cat']]['es'], CATS[a['cat']]['en']]
+    partes = [a['cat'], CATS[a['cat']]['es'], CATS[a['cat']]['en'], CATS[a['cat']].get('d_es', ''), CATS[a['cat']].get('d_en', '')]
     for l in ('es', 'en'):
         d = a[l]; partes += [d['titulo'], d['bajada']]
         for b in d['cuerpo']:
