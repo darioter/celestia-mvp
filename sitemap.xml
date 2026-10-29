@@ -67,6 +67,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.chefprivado.ar/blog/alimentacion-vegetariana-tipos-y-nutrientes</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://www.chefprivado.ar/blog/analisis-foda-para-un-restaurante</loc>
     <lastmod>2026-10-29</lastmod>
     <changefreq>monthly</changefreq>
@@ -134,6 +140,12 @@
   </url>
   <url>
     <loc>https://www.chefprivado.ar/blog/como-funciona-un-chef-semanal</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.chefprivado.ar/blog/como-leer-una-etiqueta-nutricional</loc>
     <lastmod>2026-10-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -223,6 +235,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.chefprivado.ar/blog/guias-alimentarias-argentina-10-mensajes</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://www.chefprivado.ar/blog/ingenieria-de-menu-como-se-arma-una-carta</loc>
     <lastmod>2026-10-29</lastmod>
     <changefreq>monthly</changefreq>
@@ -236,6 +254,12 @@
   </url>
   <url>
     <loc>https://www.chefprivado.ar/blog/lo-que-no-sabes-del-huevo</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.chefprivado.ar/blog/lomo-saltado-receta-peruana</loc>
     <lastmod>2026-10-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -278,6 +302,12 @@
   </url>
   <url>
     <loc>https://www.chefprivado.ar/blog/mitos-y-verdades-de-como-se-come-el-sushi</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.chefprivado.ar/blog/mousses-las-4-bases-y-mousse-de-chocolate</loc>
     <lastmod>2026-10-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -379,6 +409,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.chefprivado.ar/blog/tiramisu-receta-de-escuela</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://www.chefprivado.ar/en</loc>
     <lastmod>2026-10-29</lastmod>
     <changefreq>weekly</changefreq>
@@ -392,6 +428,12 @@
   </url>
   <url>
     <loc>https://www.chefprivado.ar/en/blog/abc-de-la-pasteleria-tecnicas-basicas</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.chefprivado.ar/en/blog/alimentacion-vegetariana-tipos-y-nutrientes</loc>
     <lastmod>2026-10-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
@@ -464,6 +506,12 @@
   </url>
   <url>
     <loc>https://www.chefprivado.ar/en/blog/como-funciona-un-chef-semanal</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.chefprivado.ar/en/blog/como-leer-una-etiqueta-nutricional</loc>
     <lastmod>2026-10-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
@@ -553,6 +601,12 @@
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>https://www.chefprivado.ar/en/blog/guias-alimentarias-argentina-10-mensajes</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://www.chefprivado.ar/en/blog/ingenieria-de-menu-como-se-arma-una-carta</loc>
     <lastmod>2026-10-29</lastmod>
     <changefreq>monthly</changefreq>
@@ -566,6 +620,12 @@
   </url>
   <url>
     <loc>https://www.chefprivado.ar/en/blog/lo-que-no-sabes-del-huevo</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.chefprivado.ar/en/blog/lomo-saltado-receta-peruana</loc>
     <lastmod>2026-10-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
@@ -608,6 +668,12 @@
   </url>
   <url>
     <loc>https://www.chefprivado.ar/en/blog/mitos-y-verdades-de-como-se-come-el-sushi</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.chefprivado.ar/en/blog/mousses-las-4-bases-y-mousse-de-chocolate</loc>
     <lastmod>2026-10-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
@@ -704,6 +770,12 @@
   </url>
   <url>
     <loc>https://www.chefprivado.ar/en/blog/tecnicas-basicas-de-sushi</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.chefprivado.ar/en/blog/tiramisu-receta-de-escuela</loc>
     <lastmod>2026-10-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>

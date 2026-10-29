@@ -62,6 +62,8 @@
 ### Pastelería
 - [Pâte à choux (masa bomba): profiteroles, éclairs y Paris-Brest de una sola masa](https://www.chefprivado.ar/blog/pate-a-choux-masa-bomba): La masa de doble cocción de la clase 8 de Pastelería: por qué se infla, el punto justo del huevo y los horneados que no fallan.
 - [Crema pastelera y sus derivadas: diplomata, mousseline, chiboust y frangipane](https://www.chefprivado.ar/blog/crema-pastelera-y-sus-derivadas): La crema madre de la pastelería: la receta de la escuela, cómo no cortarla y las cuatro cremas que salen de ella.
+- [Tiramisú de escuela: vainillas caseras, almíbar de café y mousse de mascarpone](https://www.chefprivado.ar/blog/tiramisu-receta-de-escuela): El tiramisú de la clase 5 de Pastelería, armado en aro: las vainillas que se hacen en casa, el almíbar con licor y la mousse con pâte à bombe.
+- [Mousses: las 4 bases de pastelería y la mousse de chocolate de la escuela](https://www.chefprivado.ar/blog/mousses-las-4-bases-y-mousse-de-chocolate): Pâte à bombe, crema inglesa, sabayón o merengue italiano: cuál elegir según el sabor, cuánta gelatina lleva y la receta de mousse de chocolate en copa.
 - [Merengue francés, suizo e italiano: cuál usar y cómo hacer cada uno](https://www.chefprivado.ar/blog/merengue-frances-suizo-e-italiano): Los tres merengues de la clase 3 de Pastelería: qué los diferencia, para qué sirve cada uno y los puntos de temperatura que no fallan.
 - [Masas quebradas: sablée, brisée y sucrée sin misterio](https://www.chefprivado.ar/blog/masas-quebradas-sablee-brisee-y-sucree): La base de tartas, galletitas y tapas de alfajor. Qué las diferencia, las dos técnicas para hacerlas y las recetas de la escuela, con los errores que endurecen o cuartean una masa.
 - [El ABC de la pastelería: técnicas básicas para que todo te salga](https://www.chefprivado.ar/blog/abc-de-la-pasteleria-tecnicas-basicas): La pastelería no perdona la improvisación, pero tampoco es magia. Pesar, temperaturas, qué hace cada ingrediente y las grandes familias de masas y cremas que sostienen cualquier receta.
@@ -73,6 +75,7 @@
 - [Causa limeña: la torre de papa amarilla y ají que se arma en un aro](https://www.chefprivado.ar/blog/causa-limena-receta): De la clase de Perú de Cocina Latinoamericana: puré de papa con ají amarillo y limón, relleno de pollo y un armado en capas que no se desarma.
 - [Arepas: la reina pepiada venezolana y la arepa de huevo colombiana](https://www.chefprivado.ar/blog/arepas-reina-pepiada-y-arepa-de-huevo): Dos arepas de la clase de Venezuela y Colombia: la masa de harina de maíz precocida, el relleno cremoso de pollo y palta, y la que se fríe dos veces con un huevo adentro.
 - [Feijoada con farofa y arroz brasileño: el plato de la clase de Brasil](https://www.chefprivado.ar/blog/feijoada-con-farofa): Porotos negros con cerdo, panceta y embutidos hasta quedar untuoso, la farofa de mandioca tostada con cebolla y el arroz blanco que los acompaña.
+- [Lomo saltado: el salteado peruano al wok, con papas fritas y arroz graneado](https://www.chefprivado.ar/blog/lomo-saltado-receta-peruana): De la primera clase de Perú: carne sellada a fuego fuerte, cebolla y tomate en gajos, soja y ají amarillo, papas con doble fritura y un arroz graneado al lado.
 - [Empanadas salteñas con llajua: la receta del NOA de la escuela](https://www.chefprivado.ar/blog/empanadas-saltenas-con-llajua): Masa con grasa y salmuera, carne cortada a cuchillo, papa, huevo y verdeo, el repulgue de 16 a 19 pliegues y una llajua de tomate y locoto para acompañar.
 - [Ceviche peruano: la receta y los secretos para que no quede amargo](https://www.chefprivado.ar/blog/ceviche-peruano-receta-y-secretos): Qué pescado usar, cómo exprimir el limón, por qué se lava la cebolla y qué es la leche de tigre. Con camote y maíz cancha, como en Lima.
 
@@ -96,6 +99,9 @@
 - [Cómo catar un vino en 3 pasos (y qué servir con cada plato)](https://www.chefprivado.ar/blog/como-catar-un-vino-y-maridar): Vista, nariz y boca: cómo se cata, a qué temperatura va cada vino y las reglas de maridaje que usan los sommeliers, sin vueltas.
 
 ### Comer bien
+- [Cómo leer una etiqueta: porción, calorías y qué significan light, sin y sin agregado](https://www.chefprivado.ar/blog/como-leer-una-etiqueta-nutricional): Lo que dice el Código Alimentario Argentino sobre el rótulo de los alimentos envasados, explicado para usarlo en el supermercado.
+- [Comer bien en 10 mensajes: las Guías Alimentarias para la Población Argentina](https://www.chefprivado.ar/blog/guias-alimentarias-argentina-10-mensajes): Las cuatro leyes de la alimentación y los diez mensajes de las guías oficiales, con las cantidades concretas: agua, verduras, sal, lácteos, carnes, aceite y alcohol.
+- [Alimentación vegetariana: tipos y los 5 nutrientes que hay que cuidar](https://www.chefprivado.ar/blog/alimentacion-vegetariana-tipos-y-nutrientes): De vegano a flexitariano, qué come cada uno, y cómo cubrir hierro, calcio, vitamina B12, omega 3 y proteínas sin carne, según la materia de Nutrición.
 - [Mitos de la alimentación: 10 frases que escuchás siempre (y qué hay de cierto)](https://www.chefprivado.ar/blog/mitos-de-la-alimentacion): La espinaca que da fuerza, la fruta de postre que engorda, la miel más sana que el azúcar. Lo que dice la nutrición sobre los mitos de siempre.
 
 ### Cocina segura

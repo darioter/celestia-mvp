@@ -210,6 +210,200 @@
    ]
   },
   {
+   "slug": "como-leer-una-etiqueta-nutricional",
+   "cat": "Comer bien",
+   "icono": "🥗",
+   "titulo": "Cómo leer una etiqueta: porción, calorías y qué significan light, sin y sin agregado",
+   "bajada": "Lo que dice el Código Alimentario Argentino sobre el rótulo de los alimentos envasados, explicado para usarlo en el supermercado.",
+   "img": "https://images.pexels.com/photos/6644254/pexels-photo-6644254.png?auto=compress&cs=tinysrgb&w=1080&h=1920&fit=crop",
+   "img_sq": "https://images.pexels.com/photos/6644254/pexels-photo-6644254.png?auto=compress&cs=tinysrgb&w=800&h=800&fit=crop",
+   "foto": "Pexels",
+   "url": "https://www.chefprivado.ar/blog/como-leer-una-etiqueta-nutricional",
+   "tips": [
+    "Antes de comparar dos productos, mirá si la porción es la misma. Una marca puede declarar 30 g y otra 50 g, y así parecer más liviana."
+   ],
+   "datos": [
+    "Las Guías Alimentarias recomiendan leer la etiqueta sobre todo en fiambres, embutidos, caldos, sopas y conservas, por su alto contenido de sodio. Mirá las guías en 10 mensajes."
+   ],
+   "secciones": [
+    {
+     "h2": "Lo que tiene que decir sí o sí",
+     "texto": "Denominación de venta: el nombre que dice qué es realmente el producto."
+    },
+    {
+     "h2": "La tabla nutricional: dos datos clave",
+     "texto": "La porción: la cantidad que normalmente come una persona sana en una vez, con su equivalente en medida casera (una taza, dos galletitas)."
+    },
+    {
+     "h2": "Light, sin y sin agregado: no es lo mismo",
+     "texto": "Light, reducido, liviano · Tiene al menos 25 % menos de algo (calorías, azúcares, grasas, grasas saturadas, colesterol o sodio) que el producto común"
+    },
+    {
+     "h2": "Fortificado y enriquecido",
+     "texto": "Fortificado: se le sumaron nutrientes por encima de lo que tiene naturalmente el alimento (entre el 20 y el 100 % de lo recomendado por día)."
+    }
+   ]
+  },
+  {
+   "slug": "guias-alimentarias-argentina-10-mensajes",
+   "cat": "Comer bien",
+   "icono": "🥗",
+   "titulo": "Comer bien en 10 mensajes: las Guías Alimentarias para la Población Argentina",
+   "bajada": "Las cuatro leyes de la alimentación y los diez mensajes de las guías oficiales, con las cantidades concretas: agua, verduras, sal, lácteos, carnes, aceite y alcohol.",
+   "img": "https://images.pexels.com/photos/5966432/pexels-photo-5966432.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1920&fit=crop",
+   "img_sq": "https://images.pexels.com/photos/5966432/pexels-photo-5966432.jpeg?auto=compress&cs=tinysrgb&w=800&h=800&fit=crop",
+   "foto": "Pexels",
+   "url": "https://www.chefprivado.ar/blog/guias-alimentarias-argentina-10-mensajes",
+   "tips": [
+    "Para la sal, la cocina de chef ayuda: hierbas frescas, cítricos, especias, ajo y un buen fondo dan sabor sin necesitar tanto salero. Mirá la guía de especias y hierbas."
+   ],
+   "datos": [
+    "Cuando cursé, el cuadernillo aclaraba que las Guías estaban en proceso de renovación; estos son los mensajes vigentes en ese momento. Para un caso particular (una enfermedad, un embarazo, un deportista), la referencia es siempre un profesional de la nutrición."
+   ],
+   "secciones": [
+    {
+     "h2": "Las 4 leyes de la alimentación",
+     "texto": "Cantidad · Que alcance para cubrir la energía que el cuerpo necesita"
+    },
+    {
+     "h2": "Los 10 mensajes de las Guías",
+     "texto": "Comer de todos los grupos y moverse: 4 comidas al día y al menos 30 minutos de actividad física."
+    }
+   ]
+  },
+  {
+   "slug": "alimentacion-vegetariana-tipos-y-nutrientes",
+   "cat": "Comer bien",
+   "icono": "🥗",
+   "titulo": "Alimentación vegetariana: tipos y los 5 nutrientes que hay que cuidar",
+   "bajada": "De vegano a flexitariano, qué come cada uno, y cómo cubrir hierro, calcio, vitamina B12, omega 3 y proteínas sin carne, según la materia de Nutrición.",
+   "img": "https://images.pexels.com/photos/30108000/pexels-photo-30108000/free-photo-of-colorful-fresh-salad-bowl-with-mixed-legumes-and-vegetables.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1920&fit=crop",
+   "img_sq": "https://images.pexels.com/photos/30108000/pexels-photo-30108000/free-photo-of-colorful-fresh-salad-bowl-with-mixed-legumes-and-vegetables.jpeg?auto=compress&cs=tinysrgb&w=800&h=800&fit=crop",
+   "foto": "Pexels",
+   "url": "https://www.chefprivado.ar/blog/alimentacion-vegetariana-tipos-y-nutrientes",
+   "tips": [
+    "Un truco de cocina para el hierro vegetal: sumá un cítrico o un vegetal con vitamina C al plato de legumbres. Un chorrito de limón sobre las lentejas no es solo sabor."
+   ],
+   "datos": [
+    "Los menús de Celestia se adaptan a vegetarianos y veganos. Con estos criterios, cada paso queda completo y no con huecos."
+   ],
+   "secciones": [
+    {
+     "h2": "Los tipos",
+     "texto": "Vegano o vegetariano estricto · Solo alimentos de origen vegetal."
+    },
+    {
+     "h2": "Los 5 nutrientes a cuidar",
+     "texto": "Hierro: el riesgo de anemia es parecido al de quien come carne, porque la mayoría del hierro que todos consumimos es del tipo vegetal (no hemo)."
+    },
+    {
+     "h2": "Los grupos de la alimentación vegetariana",
+     "texto": "Cereales, preferentemente integrales: arroz integral, avena, quinoa, trigo, centeno."
+    }
+   ]
+  },
+  {
+   "slug": "lomo-saltado-receta-peruana",
+   "cat": "Sabores de Latinoamérica",
+   "icono": "🌎",
+   "titulo": "Lomo saltado: el salteado peruano al wok, con papas fritas y arroz graneado",
+   "bajada": "De la primera clase de Perú: carne sellada a fuego fuerte, cebolla y tomate en gajos, soja y ají amarillo, papas con doble fritura y un arroz graneado al lado.",
+   "img": "https://images.pexels.com/photos/28503593/pexels-photo-28503593/free-photo-of-delicious-peruvian-lomo-saltado-with-fries.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1920&fit=crop",
+   "img_sq": "https://images.pexels.com/photos/28503593/pexels-photo-28503593/free-photo-of-delicious-peruvian-lomo-saltado-with-fries.jpeg?auto=compress&cs=tinysrgb&w=800&h=800&fit=crop",
+   "foto": "Pexels",
+   "url": "https://www.chefprivado.ar/blog/lomo-saltado-receta-peruana",
+   "tips": [
+    "Sellá la carne en tandas chicas. Si llenás el wok, baja la temperatura, la carne larga jugo y en vez de saltearse se hierve."
+   ],
+   "datos": [
+    "Es de la misma clase que el ceviche y la papa a la huancaína. Mirá también la causa limeña, que usa el mismo ají amarillo."
+   ],
+   "secciones": [
+    {
+     "h2": "Ingredientes",
+     "texto": "Lomo · 300 g, en tiras"
+    },
+    {
+     "h2": "Paso a paso",
+     "texto": "Cortá la carne en tiras, el tomate en gajos, la cebolla en gajos del mismo tamaño, picá el ajo y rallá el jengibre."
+    },
+    {
+     "h2": "El arroz graneado",
+     "texto": "100 g de arroz largo fino lavado 4 veces, 1 diente de ajo machacado, 10 cc de aceite y agua del mismo peso que el arroz después de lavado."
+    },
+    {
+     "h2": "Para servir",
+     "texto": "Un timbal de arroz a un costado, las papas mezcladas con el salteado y hojas de cilantro por encima."
+    }
+   ]
+  },
+  {
+   "slug": "tiramisu-receta-de-escuela",
+   "cat": "Pastelería",
+   "icono": "🧁",
+   "titulo": "Tiramisú de escuela: vainillas caseras, almíbar de café y mousse de mascarpone",
+   "bajada": "El tiramisú de la clase 5 de Pastelería, armado en aro: las vainillas que se hacen en casa, el almíbar con licor y la mousse con pâte à bombe.",
+   "img": "https://images.pexels.com/photos/10169991/pexels-photo-10169991.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1920&fit=crop",
+   "img_sq": "https://images.pexels.com/photos/10169991/pexels-photo-10169991.jpeg?auto=compress&cs=tinysrgb&w=800&h=800&fit=crop",
+   "foto": "Pexels",
+   "url": "https://www.chefprivado.ar/blog/tiramisu-receta-de-escuela",
+   "tips": [
+    "El almíbar a 118 °C cocina las yemas: por eso la mousse es segura y más estable que la de huevos crudos. Si querés que tome cuerpo más rápido o aguante fuera de la heladera, sumá 10 g de gelatina hidratada."
+   ],
+   "datos": [
+    "Un tiramisú mejora de un día para el otro: las vainillas terminan de absorber el café. Es uno de los postres de mis menús italianos."
+   ],
+   "secciones": [
+    {
+     "h2": "1. Las vainillas (biscuit a la cuchara)",
+     "texto": "180 g de azúcar, 6 claras, 6 yemas, 1 cucharada de esencia de vainilla, 180 g de harina 0000 y 50 g de azúcar para espolvorear."
+    },
+    {
+     "h2": "2. El almíbar de café",
+     "texto": "100 g de azúcar y 200 g de agua para un almíbar liviano."
+    },
+    {
+     "h2": "3. La mousse de mascarpone",
+     "texto": "180 g de azúcar, 50 g de agua, 2 huevos, 3 yemas, 300 g de mascarpone y 150 g de crema de leche."
+    },
+    {
+     "h2": "El armado",
+     "texto": "Forrá un aro de 18 cm con film por fuera y poné adentro un disco de cartón y un acetato."
+    }
+   ]
+  },
+  {
+   "slug": "mousses-las-4-bases-y-mousse-de-chocolate",
+   "cat": "Pastelería",
+   "icono": "🧁",
+   "titulo": "Mousses: las 4 bases de pastelería y la mousse de chocolate de la escuela",
+   "bajada": "Pâte à bombe, crema inglesa, sabayón o merengue italiano: cuál elegir según el sabor, cuánta gelatina lleva y la receta de mousse de chocolate en copa.",
+   "img": "https://images.pexels.com/photos/3026810/pexels-photo-3026810.jpeg?auto=compress&cs=tinysrgb&w=1080&h=1920&fit=crop",
+   "img_sq": "https://images.pexels.com/photos/3026810/pexels-photo-3026810.jpeg?auto=compress&cs=tinysrgb&w=800&h=800&fit=crop",
+   "foto": "Pexels",
+   "url": "https://www.chefprivado.ar/blog/mousses-las-4-bases-y-mousse-de-chocolate",
+   "tips": [
+    "El chocolate tiene que estar tibio, no caliente: si está caliente derrite la crema y la mousse pierde el aire; si está frío, se forman grumitos de chocolate."
+   ],
+   "datos": [
+    "Con la misma base de pâte à bombe se hace la mousse del tiramisú. Y para dominar el almíbar, mirá los tres merengues."
+   ],
+   "secciones": [
+    {
+     "h2": "Las 4 bases",
+     "texto": "Pâte à bombe (yemas con almíbar a 121 °C) · 1 parte de base por 2 de crema a 3/4"
+    },
+    {
+     "h2": "¿Cuánta gelatina?",
+     "texto": "Si la mousse va en copa, puede no llevar."
+    },
+    {
+     "h2": "Mousse de chocolate en copa",
+     "texto": "Huevo · 1"
+    }
+   ]
+  },
+  {
    "slug": "osobuco-braseado-polenta-cremosa-gremolata",
    "cat": "Carnes",
    "icono": "🥩",
