@@ -489,6 +489,27 @@ def globo_hero():
         t = t.replace(ancla, ancla + bloque)
     open(p, 'w', encoding='utf-8').write(t)
 
+def llms():
+    """llms.txt: resumen para asistentes de IA. Conserva la cabecera escrita a mano y regenera FAQ y notas del blog."""
+    p = os.path.join(ROOT, 'llms.txt'); t = open(p, encoding='utf-8').read()
+    cab = t.split('\n## Preguntas frecuentes')[0].rstrip() + '\n'
+    faq = [
+        ('¿Cuánto cuesta un chef privado en Buenos Aires con Celestia?', 'Menú de 3 pasos desde $480.000 y menú de 7 pasos desde $720.000 para 2 personas, todo incluido (servicio, asistentes e ingredientes). El valor crece según la cantidad de comensales; fines de semana +10% sobre el servicio. Detalle en https://www.chefprivado.ar/blog/cuanto-cuesta-un-chef-privado-en-buenos-aires'),
+        ('¿Qué incluye el servicio?', 'Diseño del menú, compra de ingredientes, preproducción en la cocina de Daro, terminación y emplatado en la casa del cliente, servicio en mesa con asistentes y la cocina limpia al terminar. No incluye bebidas ni vajilla (se puede cotizar alquiler).'),
+        ('¿Para cuántas personas?', 'De 2 a 12 personas con reserva online. Más de 12 se trata como evento a medida, con una reunión previa.'),
+        ('¿Con cuánta anticipación hay que reservar?', 'Mínimo 48 horas. Las fechas de fin de semana y fiestas se ocupan antes.'),
+        ('¿En qué zonas trabaja?', 'CABA y Gran Buenos Aires, con traslado incluido. Resto del país con traslado a cotizar.'),
+        ('¿Cómo se reserva y se paga?', 'Online en chefprivado.ar, sin crear cuenta. Se confirma con una seña por transferencia y el resto se abona el día del servicio.'),
+        ('¿Quién cocina?', 'Daro Castello, chef formado en la Escuela Argentina de Gastronomía (EAG). Cocina él en cada servicio.'),
+    ]
+    out = cab + '\n## Preguntas frecuentes\n' + ''.join(f'- **{q}** {a}\n' for q, a in faq)
+    out += '\n## Notas del blog (técnicas de escuela de cocina, recetas y gestión gastronómica)\n'
+    for k, c in CATS.items():
+        notas = sorted([a for a in ARTICULOS if a['cat'] == k], key=lambda x: x['fecha'], reverse=True)
+        if not notas: continue
+        out += f'\n### {c["es"]}\n' + ''.join(f'- [{a["es"]["titulo"]}]({SITE}/blog/{a["slug"]}): {a["es"]["bajada"]}\n' for a in notas)
+    open(p, 'w', encoding='utf-8').write(out)
+
 def franja_landing():
     p = os.path.join(ROOT, 'index.html'); t = open(p, encoding='utf-8').read()
     ini, fin = '<!--CAPSULAS-START-->', '<!--CAPSULAS-END-->'
@@ -547,5 +568,5 @@ def base_historias():
 
 if __name__ == '__main__':
     for a in ARTICULOS: articulo(a)
-    indice(); franja_landing(); globo_hero(); sitemap(); base_historias()
+    indice(); franja_landing(); globo_hero(); llms(); sitemap(); base_historias()
     print('ok', len(ARTICULOS), 'cápsulas')

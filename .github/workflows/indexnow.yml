@@ -1,0 +1,58 @@
+name: IndexNow
+# Avisa a Bing (y a los buscadores que usan IndexNow) qué páginas cambiaron en cada push a main,
+# así las notas nuevas del blog llegan rápido a los resultados y a los asistentes de IA que buscan con Bing.
+on:
+  push:
+    branches: [main]
+    paths: ['**.html', 'sitemap.xml', 'llms.txt']
+  workflow_dispatch:
+    inputs:
+      todo:
+        description: 'Enviar todas las URLs del sitemap'
+        type: boolean
+        default: false
+jobs:
+  avisar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Esperar el deploy de Vercel
+        run: sleep 150
+      - name: Enviar URLs a IndexNow
+        env:
+          KEY: 9b85ac51e9e5cb2ba059d857edb4cfed
+          TODO: ${{ github.event.inputs.todo }}
+        run: |
+          python3 - <<'PY'
+          import os, re, json, subprocess, urllib.request
+          SITE = 'https://www.chefprivado.ar'
+          sm = open('sitemap.xml', encoding='utf-8').read()
+          todas = re.findall(r'<loc>(.*?)</loc>', sm)
+          if os.environ.get('TODO') == 'true':
+              urls = todas
+          else:
+              try:
+                  cambios = subprocess.check_output(['git', 'diff', '--name-only', 'HEAD~1', 'HEAD'], text=True).split()
+              except Exception:
+                  cambios = []
+              urls = set()
+              for f in cambios:
+                  if f == 'llms.txt':
+                      urls.add(SITE + '/llms.txt'); continue
+                  if not f.endswith('index.html') or f.startswith(('ARCHIVOS', 'admin')): continue
+                  ruta = '/' + f[:-len('index.html')].rstrip('/')
+                  u = SITE + (ruta if ruta != '/' else '/')
+                  if u in todas or u.rstrip('/') in [x.rstrip('/') for x in todas]:
+                      urls.add(u)
+              urls = sorted(urls)
+          print('URLs:', len(urls)); [print(' ', u) for u in urls]
+          if not urls: raise SystemExit(0)
+          body = json.dumps({'host': 'www.chefprivado.ar', 'key': os.environ['KEY'], 'keyLocation': SITE + '/' + os.environ['KEY'] + '.txt', 'urlList': urls}).encode()
+          req = urllib.request.Request('https://api.indexnow.org/indexnow', data=body, headers={'Content-Type': 'application/json; charset=utf-8'})
+          try:
+              r = urllib.request.urlopen(req, timeout=30); print('IndexNow:', r.status)
+          except urllib.error.HTTPError as e:
+              print('IndexNow:', e.code, e.read()[:300]); raise SystemExit(e.code not in (200, 202))
+          PY
