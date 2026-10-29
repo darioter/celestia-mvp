@@ -194,7 +194,25 @@ html.cel-pre body{visibility:hidden}
 .ig-nube-c{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 12px;padding:0}
 .ig-nube:not(.todo) .ig-t.x{display:none}
 .ig-t{border:0;background:none;cursor:pointer;padding:2px 4px;border-radius:8px;font-family:'DM Serif Display',serif;line-height:1.15;color:var(--nv);transition:color .15s,background .15s,transform .15s}
-.ig-t:hover{color:#8a6418;background:#faf3e3;transform:translateY(-1px)}
+.ig-t{position:relative}
+.ig-t::after{content:'';position:absolute;left:4px;right:4px;bottom:0;height:1.5px;background:linear-gradient(90deg,var(--gd),var(--gdl));transform:scaleX(0);transform-origin:left;transition:transform .25s ease}
+.ig-t:hover{color:#8a6418;background:#faf3e3;transform:translateY(-2px)}
+.ig-t:hover::after{transform:scaleX(1)}
+/* entrada escalonada, como los chips y globitos del sitio */
+.ig-nube.anim .ig-t{opacity:0;transform:translateY(8px) scale(.92)}
+.ig-nube.anim.in .ig-t{animation:nbIn .5s cubic-bezier(.2,1.4,.4,1) both;animation-delay:calc(var(--i,0) * 45ms)}
+@keyframes nbIn{from{opacity:0;transform:translateY(8px) scale(.92)}to{opacity:1;transform:none}}
+/* los más buscados flotan apenas y brillan en dorado */
+.ig-nube.in .ig-t.s5,.ig-nube.in .ig-t.s4{background-image:linear-gradient(100deg,#8a6418 0%,#8a6418 40%,#E8C96B 50%,#8a6418 60%,#8a6418 100%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.ig-nube.in .ig-t.s5{animation:nbIn .5s cubic-bezier(.2,1.4,.4,1) both,nbFloat 4.5s ease-in-out infinite,nbShine 6s linear infinite;animation-delay:calc(var(--i,0) * 45ms),calc(var(--i,0) * 45ms + .6s),calc(var(--i,0) * 300ms)}
+.ig-nube.in .ig-t.s4{animation:nbIn .5s cubic-bezier(.2,1.4,.4,1) both,nbShine 7s linear infinite;animation-delay:calc(var(--i,0) * 45ms),calc(var(--i,0) * 350ms)}
+.ig-nube.in .ig-t.s5:hover,.ig-nube.in .ig-t.s4:hover{-webkit-text-fill-color:#8a6418;background-image:none;background-color:#faf3e3}
+.ig-t.on,.ig-nube.in .ig-t.on{-webkit-text-fill-color:var(--gdl);background-image:none;background-color:var(--nv)}
+@keyframes nbFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes nbShine{0%,70%{background-position:100% 0}100%{background-position:-150% 0}}
+.ig-nube-h h2 i{display:inline-block;font-style:normal;color:var(--gd);margin-right:5px;animation:nbTw 3s ease-in-out infinite}
+@keyframes nbTw{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.25) rotate(20deg);opacity:1}}
+@media(prefers-reduced-motion:reduce){.ig-nube .ig-t,.ig-nube-h h2 i{animation:none!important;opacity:1!important;transform:none!important}}
 .ig-t.on{background:var(--nv);color:var(--gdl)}
 .ig-t:focus-visible{outline:3px solid var(--gd);outline-offset:2px}
 .ig-t.s1{font-size:13.5px;color:#9a8d78}.ig-t.s2{font-size:15px;color:#6f6250}.ig-t.s3{font-size:17px}.ig-t.s4{font-size:19.5px;color:#8a6418}.ig-t.s5{font-size:22px;color:#8a6418}

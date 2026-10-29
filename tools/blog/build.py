@@ -253,7 +253,25 @@ html.cel-pre body{visibility:hidden}
 .ig-nube-c{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 12px;padding:0}
 .ig-nube:not(.todo) .ig-t.x{display:none}
 .ig-t{border:0;background:none;cursor:pointer;padding:2px 4px;border-radius:8px;font-family:'DM Serif Display',serif;line-height:1.15;color:var(--nv);transition:color .15s,background .15s,transform .15s}
-.ig-t:hover{color:#8a6418;background:#faf3e3;transform:translateY(-1px)}
+.ig-t{position:relative}
+.ig-t::after{content:'';position:absolute;left:4px;right:4px;bottom:0;height:1.5px;background:linear-gradient(90deg,var(--gd),var(--gdl));transform:scaleX(0);transform-origin:left;transition:transform .25s ease}
+.ig-t:hover{color:#8a6418;background:#faf3e3;transform:translateY(-2px)}
+.ig-t:hover::after{transform:scaleX(1)}
+/* entrada escalonada, como los chips y globitos del sitio */
+.ig-nube.anim .ig-t{opacity:0;transform:translateY(8px) scale(.92)}
+.ig-nube.anim.in .ig-t{animation:nbIn .5s cubic-bezier(.2,1.4,.4,1) both;animation-delay:calc(var(--i,0) * 45ms)}
+@keyframes nbIn{from{opacity:0;transform:translateY(8px) scale(.92)}to{opacity:1;transform:none}}
+/* los más buscados flotan apenas y brillan en dorado */
+.ig-nube.in .ig-t.s5,.ig-nube.in .ig-t.s4{background-image:linear-gradient(100deg,#8a6418 0%,#8a6418 40%,#E8C96B 50%,#8a6418 60%,#8a6418 100%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.ig-nube.in .ig-t.s5{animation:nbIn .5s cubic-bezier(.2,1.4,.4,1) both,nbFloat 4.5s ease-in-out infinite,nbShine 6s linear infinite;animation-delay:calc(var(--i,0) * 45ms),calc(var(--i,0) * 45ms + .6s),calc(var(--i,0) * 300ms)}
+.ig-nube.in .ig-t.s4{animation:nbIn .5s cubic-bezier(.2,1.4,.4,1) both,nbShine 7s linear infinite;animation-delay:calc(var(--i,0) * 45ms),calc(var(--i,0) * 350ms)}
+.ig-nube.in .ig-t.s5:hover,.ig-nube.in .ig-t.s4:hover{-webkit-text-fill-color:#8a6418;background-image:none;background-color:#faf3e3}
+.ig-t.on,.ig-nube.in .ig-t.on{-webkit-text-fill-color:var(--gdl);background-image:none;background-color:var(--nv)}
+@keyframes nbFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes nbShine{0%,70%{background-position:100% 0}100%{background-position:-150% 0}}
+.ig-nube-h h2 i{display:inline-block;font-style:normal;color:var(--gd);margin-right:5px;animation:nbTw 3s ease-in-out infinite}
+@keyframes nbTw{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.25) rotate(20deg);opacity:1}}
+@media(prefers-reduced-motion:reduce){.ig-nube .ig-t,.ig-nube-h h2 i{animation:none!important;opacity:1!important;transform:none!important}}
 .ig-t.on{background:var(--nv);color:var(--gdl)}
 .ig-t:focus-visible{outline:3px solid var(--gd);outline-offset:2px}
 .ig-t.s1{font-size:13.5px;color:#9a8d78}.ig-t.s2{font-size:15px;color:#6f6250}.ig-t.s3{font-size:17px}.ig-t.s4{font-size:19.5px;color:#8a6418}.ig-t.s5{font-size:22px;color:#8a6418}
@@ -541,7 +559,7 @@ def nube_html():
         out.append((seed + n, f'<button type="button" class="ig-t s{nivel}" data-q="{q}" data-seed="{seed}" data-n="{n}">{L(es_, en_)}</button>'))
     top = set(id(x) for x in sorted(out, key=lambda x: -x[0])[:12])
     out = [b if id(x) in top else b.replace('class="ig-t ', 'class="ig-t x ') for x in out for b in [x[1]]]
-    return ('<section class="ig-nube" aria-labelledby="ig-nube-t"><div class="ig-nube-h"><h2 id="ig-nube-t">' + L('Lo más buscado', 'Most searched') + '</h2>'
+    return ('<section class="ig-nube" aria-labelledby="ig-nube-t"><div class="ig-nube-h"><h2 id="ig-nube-t"><i aria-hidden="true">✦</i>' + L('Lo más buscado', 'Most searched') + '</h2>'
             '<small id="ig-nube-s">' + L('Según Google y lo que más leen, guardan y comparten los lectores', 'Based on Google and what readers read, save and share most') + '</small></div>'
             '<div class="ig-nube-c" id="ig-nube-c">' + ''.join(out) +
             '<button type="button" class="ig-nube-mas" id="ig-nube-mas" onclick="this.closest(\'.ig-nube\').classList.add(\'todo\')">' + L('+ más temas', '+ more topics') + '</button></div></section>')
@@ -567,12 +585,18 @@ function pintar(datos){
  // mezcla estable: grandes repartidos en la nube
  lista.sort(function(a,b){return (a.b.textContent.length*7+a.w)%5-(b.b.textContent.length*7+b.w)%5;}).forEach(function(x){c.appendChild(x.b);});
  var mas=document.getElementById('ig-nube-mas');if(mas)c.appendChild(mas);
+ [].forEach.call(c.querySelectorAll('.ig-t'),function(b,i){b.style.setProperty('--i',i);});
 }
 c.addEventListener('click',function(e){var b=e.target.closest('.ig-t');if(!b)return;q.value=b.textContent.trim();q.dispatchEvent(new Event('input'));
  [].forEach.call(c.querySelectorAll('.ig-t'),function(x){x.classList.toggle('on',x===b);});
  var f=document.querySelector('.ig-tabs');if(f)f.scrollIntoView({behavior:'smooth',block:'start'});
  try{window.celTrack&&celTrack('blog_buscar',{q:nrm(b.textContent.trim()),resultados:notas(b.textContent).length,origen:'nube'});}catch(_){}});
 q.addEventListener('input',function(){if(!q.value)[].forEach.call(c.querySelectorAll('.ig-t'),function(x){x.classList.remove('on');});});
+var sec=c.closest('.ig-nube');
+if(sec&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&'IntersectionObserver' in window){sec.classList.add('anim');
+ var io=new IntersectionObserver(function(es){if(es[0].isIntersecting){sec.classList.add('in');io.disconnect();}},{threshold:.2});io.observe(sec);}
+else if(sec)sec.classList.add('in');
+document.getElementById('ig-nube-mas')&&document.getElementById('ig-nube-mas').addEventListener('click',function(){[].forEach.call(c.querySelectorAll('.ig-t.x'),function(b,i){b.style.setProperty('--i',i);b.style.animation='none';void b.offsetWidth;b.style.animation='';});});
 pintar(null);
 try{fetch('https://qolpnuscpmzqeacshfvu.supabase.co/rest/v1/rpc/blog_nube',{method:'POST',headers:{apikey:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvbHBudXNjcG16cWVhY3NoZnZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NjQ3OTQsImV4cCI6MjA5MTM0MDc5NH0.BJOz5Gwkeb1NqID_gkGKD5YlymifMtOwaf8iQMaBCx8',Authorization:'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvbHBudXNjcG16cWVhY3NoZnZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NjQ3OTQsImV4cCI6MjA5MTM0MDc5NH0.BJOz5Gwkeb1NqID_gkGKD5YlymifMtOwaf8iQMaBCx8','Content-Type':'application/json'},body:'{"dias":90}'})
  .then(function(r){return r.ok?r.json():null;}).then(function(d){if(d)pintar(d);}).catch(function(){});}catch(e){}
