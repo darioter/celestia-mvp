@@ -169,6 +169,18 @@ html.cel-pre body{visibility:hidden}
 .ig-bio b{color:var(--nv);font-weight:600}
 .ig-hl{max-width:1100px;margin:22px auto 0!important;padding:4px 22px 18px!important;display:flex;flex-wrap:nowrap!important;justify-content:flex-start!important;gap:18px!important;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--crd);z-index:auto!important}
 .ig-hl::-webkit-scrollbar{display:none}
+.ig-hlw{position:relative;max-width:1100px;margin:0 auto}
+.ig-hlw .ig-hl{scroll-behavior:smooth;cursor:grab}
+.ig-hlw .ig-hl.drag{cursor:grabbing;scroll-behavior:auto;user-select:none}
+.ig-hlw::before,.ig-hlw::after{content:'';position:absolute;top:22px;bottom:18px;width:46px;pointer-events:none;z-index:1;opacity:0;transition:opacity .2s}
+.ig-hlw::before{left:0;background:linear-gradient(90deg,var(--cr),rgba(250,246,239,0))}
+.ig-hlw::after{right:0;background:linear-gradient(270deg,var(--cr),rgba(250,246,239,0))}
+.ig-hlw.izq::before,.ig-hlw.der::after{opacity:1}
+.ig-ar{position:absolute;top:44px;z-index:2;width:38px;height:38px;border-radius:50%;border:1px solid var(--crd);background:#fff;color:var(--nv);font:400 24px/1 'DM Sans',sans-serif;cursor:pointer;box-shadow:0 6px 16px rgba(13,27,42,.12);display:flex;align-items:center;justify-content:center;padding:0 0 3px;transition:transform .15s,border-color .15s}
+.ig-ar:hover{border-color:var(--gd);transform:scale(1.08)}
+.ig-ar:focus-visible{outline:3px solid var(--gd);outline-offset:2px}
+.ig-ar-l{left:6px}.ig-ar-r{right:6px}
+@media(hover:none){.ig-ar{display:none!important}}
 .ig-hl .cp-chip,.ig-hl .ig-g{flex:none;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:7px;width:86px;background:none!important;border:0!important;box-shadow:none!important;padding:0!important;border-radius:0!important;font:500 12px/1.25 'DM Sans',sans-serif;color:var(--nv)!important;cursor:pointer;text-align:center}
 .ig-hl .ig-ring{width:72px;height:72px;border-radius:50%;padding:3px;background:var(--crd);display:block;transition:background .2s,transform .2s}
 .ig-hl .ig-ring i{display:flex;align-items:center;justify-content:center;width:100%;height:100%;border-radius:50%;border:3px solid var(--cr);background:#1a2e42 center/cover no-repeat;font-style:normal;font-size:24px;color:var(--gdl)}
@@ -367,6 +379,17 @@ if(g)g.addEventListener('click',function(){document.querySelectorAll('.ig-hl .cp
  var n=0;document.querySelectorAll('.ig-feed .ig').forEach(function(c){var ok=guard.indexOf(c.getAttribute('data-slug'))>=0;c.classList.toggle('hide',!ok);if(ok)n++;});
  if(!vacio){vacio=document.createElement('div');vacio.className='ig-vacio';feed.appendChild(vacio);}vacio.textContent=n?'':T('Todavía no guardaste notas. Tocá 🔖 en cualquier post para tenerla a mano.','You haven’t saved any notes yet. Tap 🔖 on any post to keep it handy.');vacio.style.display=n?'none':'';});
 document.querySelectorAll('.ig-hl .cp-chip').forEach(function(x){x.addEventListener('click',function(){if(g)g.classList.remove('on');if(vacio)vacio.style.display='none';});});
+(function(){var w=document.querySelector('.ig-hlw');if(!w)return;var n=w.querySelector('.ig-hl'),l=w.querySelector('.ig-ar-l'),r=w.querySelector('.ig-ar-r');
+ function upd(){var max=n.scrollWidth-n.clientWidth-2,a=n.scrollLeft>2,b=n.scrollLeft<max;l.hidden=!a;r.hidden=!b;w.classList.toggle('izq',a);w.classList.toggle('der',b);}
+ l.addEventListener('click',function(){n.scrollBy({left:-n.clientWidth*.7});});r.addEventListener('click',function(){n.scrollBy({left:n.clientWidth*.7});});
+ n.addEventListener('scroll',upd,{passive:true});addEventListener('resize',upd);upd();
+ n.addEventListener('wheel',function(e){if(Math.abs(e.deltaY)<=Math.abs(e.deltaX))return;var max=n.scrollWidth-n.clientWidth;if((e.deltaY<0&&n.scrollLeft<=0)||(e.deltaY>0&&n.scrollLeft>=max-1))return;e.preventDefault();n.style.scrollBehavior='auto';n.scrollLeft+=e.deltaY;n.style.scrollBehavior='';},{passive:false});
+ var x0=0,s0=0,mov=false,abajo=false;
+ n.addEventListener('pointerdown',function(e){if(e.pointerType!=='mouse'||e.button)return;abajo=true;mov=false;x0=e.clientX;s0=n.scrollLeft;});
+ addEventListener('pointermove',function(e){if(!abajo)return;var d=e.clientX-x0;if(!mov&&Math.abs(d)>5){mov=true;n.classList.add('drag');}if(mov)n.scrollLeft=s0-d;});
+ addEventListener('pointerup',function(){if(!abajo)return;abajo=false;setTimeout(function(){n.classList.remove('drag');},0);});
+ n.addEventListener('click',function(e){if(mov){e.preventDefault();e.stopPropagation();mov=false;}},true);
+})();
 var q=document.getElementById('ig-buscar'),qx=document.getElementById('ig-bx'),qn=document.getElementById('ig-bn'),qv=null,qt=0;
 function nrm(s){return (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');}
 function buscar(){var t=nrm(q.value).trim(),ps=t.split(' ').filter(function(w){return w&&['de','la','el','en','y','a','del','los','las','the','of','and','in'].indexOf(w)<0;}),n=0,cards=document.querySelectorAll('.ig-feed .ig');
