@@ -2932,11 +2932,17 @@ programar();
     <h2 class="section-title">Armá tu semana</h2>
     <p class="section-sub">Tres elecciones y listo: cocino en tu casa y te quedan las comidas resueltas para la semana.</p>
 
+    <div class="mp2-modo" role="group" aria-label="Tipo de servicio">
+      <button type="button" class="mp2-mo on" id="mp-modo-comidas" onclick="mpModo('comidas')"><i>🍱</i><span><b>Comidas listas</b><small>Cocino y te dejo los platos terminados</small></span></button>
+      <button type="button" class="mp2-mo" id="mp-modo-mise" onclick="mpModo('mise')"><span class="mp2-new">Nuevo</span><i>🔪</i><span><b>Mise en place</b><small>Te dejo todo cortado, porcionado y listo para cocinar</small></span></button>
+    </div>
+
     <div class="mp2">
       <div class="mp2-cfg">
         <div class="mp2-q"><span class="mp2-qn">1</span><div><span class="mp2-qt">¿Para cuántas personas cocinamos?</span><span class="mp2-qs">Contá a todos los que comen en casa durante la semana.</span></div></div>
         <div class="mp2-opts mp2-3"><button type="button" class="mp2-o" onclick="selectMpFlow('pp','1-2')" id="mpf-pp-1-2"><span class="mp2-ppl"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></span><b>1 a 2</b><small>personas</small></button><button type="button" class="mp2-o" onclick="selectMpFlow('pp','3-4')" id="mpf-pp-3-4"><span class="mp2-ppl"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></span><b>3 a 4</b><small>personas</small></button><button type="button" class="mp2-o" onclick="selectMpFlow('pp','5-6')" id="mpf-pp-5-6"><span class="mp2-ppl mp2-ppl6"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></span><b>5 a 6</b><small>personas</small></button></div>
 
+        <div id="mp2-q-comidas">
         <div class="mp2-q"><span class="mp2-qn">2</span><div><span class="mp2-qt">¿Cuántas veces por semana?</span><span class="mp2-qs">Cada jornada cocino en tu casa y dejo listas las comidas del día siguiente. Podés contratar de 1 a 4 jornadas.</span></div></div>
         <div class="mp2-opts mp2-4">
           <button type="button" class="mp2-o" onclick="selectMpFlow('jornadas','1')" id="mpf-jornadas-1"><b>1 jornada</b><small><span class="mp-hs" data-j="1">~8 hs</span> · cubre 1 día</small><div class="mp2-week"><span class="">Lu</span><span class="">Ma</span><span class="on">Mi</span><span class="cv">Ju</span><span class="">Vi</span><span class="">Sá</span><span class="">Do</span></div></button>
@@ -2951,6 +2957,22 @@ programar();
         <div class="mp2-opts mp2-2">
           <button type="button" class="mp2-o" onclick="selectMpFlow('comidas','basico')" id="mpf-comidas-basico"><span class="mp2-k">Esencial</span><b>2 comidas por día</b><small>Almuerzo y cena</small><div class="mp2-meals"><span title="Almuerzo"><i>🥗</i><small>Almuerzo</small></span><span title="Cena"><i>🍽️</i><small>Cena</small></span></div><span class="mp2-spec"><span>⏱ ~8 hs por jornada</span><em id="mpf-pr-basico"></em></span></button>
           <button type="button" class="mp2-o" onclick="selectMpFlow('comidas','completo')" id="mpf-comidas-completo"><span class="mp2-k">Día completo</span><b>5 comidas por día</b><small>Desayuno, almuerzo, merienda, cena y postre</small><div class="mp2-meals"><span title="Desayuno"><i>☕</i><small>Desayuno</small></span><span title="Almuerzo"><i>🥗</i><small>Almuerzo</small></span><span title="Merienda"><i>🍪</i><small>Merienda</small></span><span title="Cena"><i>🍽️</i><small>Cena</small></span><span title="Postre"><i>🍰</i><small>Postre</small></span></div><span class="mp2-spec"><span>⏱ ~12 hs por jornada</span><em id="mpf-pr-completo"></em></span></button>
+        </div>
+        </div>
+        <div id="mp2-q-mise" hidden>
+        <div class="mp2-q"><span class="mp2-qn">2</span><div><span class="mp2-qt">¿Para cuántos días te dejo la mise en place?</span><span class="mp2-qs">Todo se prepara en una jornada y se conserva en heladera, listo para que cocines en minutos.</span></div></div>
+        <div class="mp2-opts mp2-3">
+          <button type="button" class="mp2-o" id="mpm-dias-3" onclick="mpMise('dias','3')"><b>3 días</b><small>media semana</small></button>
+          <button type="button" class="mp2-o" id="mpm-dias-5" onclick="mpMise('dias','5')"><span class="mp2-badge">Más elegido</span><b>5 días</b><small>de lunes a viernes</small></button>
+          <button type="button" class="mp2-o" id="mpm-dias-7" onclick="mpMise('dias','7')"><b>7 días</b><small>semana completa</small></button>
+        </div>
+        <div class="mp2-q"><span class="mp2-qn">3</span><div><span class="mp2-qt">¿Qué querés que te deje preparado?</span><span class="mp2-qs">Marcá todo lo que necesites. El calculador suma las horas de trabajo.</span></div></div>
+        <div class="mp2-opts mp2-2 mp2-chk" id="mpm-items"></div>
+        <div class="mp2-q"><span class="mp2-qn">4</span><div><span class="mp2-qt">¿Quién hace las compras?</span><span class="mp2-qs">Los ingredientes se pagan aparte, al costo, con ticket.</span></div></div>
+        <div class="mp2-opts mp2-2">
+          <button type="button" class="mp2-o" id="mpm-compras-chef" onclick="mpMise('compras','chef')"><b>Las hago yo</b><small>Mercado y proveedores · suma ~1,5 hs</small></button>
+          <button type="button" class="mp2-o" id="mpm-compras-cliente" onclick="mpMise('compras','cliente')"><b>Las hacés vos</b><small>Me dejás todo en casa antes de la jornada</small></button>
+        </div>
         </div>
       </div>
 
@@ -5202,6 +5224,7 @@ const mpState = {
   pp: '3-4',
   jornadas: '2',
   comidas: 'completo',
+  modo: 'comidas', mDias: '5', mItems: ['verd','prot','fond','gran','env'], mCompras: 'chef',
   fecha: null,
   nombre: '', tel: '', email: '', dir: '', notas: ''
 };
@@ -5212,10 +5235,58 @@ let mpCalYear, mpCalMonth;
 // Honorario por jornada (3-4 personas); se multiplica por la cantidad de jornadas
 const MP_PJ = { basico: 200000, completo: 300000 };
 const MP_JMAX = 4;
+// ── Mise en place: horas por día cubierto (3-4 personas) para cada bloque
+const MP_HORA = 25000;
+const MISE = {
+  verd: { i: '🥕', t: 'Verduras', d: 'Lavadas, cortadas y blanqueadas', h: 0.5 },
+  prot: { i: '🥩', t: 'Proteínas', d: 'Porcionadas y marinadas', h: 0.3 },
+  fond: { i: '🍲', t: 'Fondos y salsas base', d: 'Caldos, salsas y aderezos', h: 0.3 },
+  gran: { i: '🍚', t: 'Granos y legumbres', d: 'Arroz, quinoa, legumbres cocidas', h: 0.2 },
+  masa: { i: '🥖', t: 'Masas y panificados', d: 'Masas, tartas, pan, rebozados', h: 0.4 },
+  env:  { i: '🏷️', t: 'Envasado y etiquetado', d: 'Con fecha y uso, ordenado en heladera', h: 0.2 }
+};
+const MISE_PP = { '1-2': 0.75, '3-4': 1, '5-6': 1.3 };
+function miseCalc() {
+  const dias = parseInt(mpState.mDias) || 5, f = MISE_PP[mpState.pp] || 1;
+  const filas = mpState.mItems.map(k => [MISE[k].t, MISE[k].h * dias * f]);
+  filas.push(['Puesta en marcha y limpieza', 1]);
+  if (mpState.mCompras === 'chef') filas.push(['Compras', 1.5]);
+  let horas = filas.reduce((a, r) => a + r[1], 0);
+  horas = Math.max(4, Math.ceil(horas * 2) / 2);
+  return { dias, filas, horas, jornadas: Math.ceil(horas / 10), precio: Math.round(horas * MP_HORA / 5000) * 5000 };
+}
+function mpHonorarioActual() {
+  return mpState.modo === 'mise' ? miseCalc().precio : calcMpHonorario(mpState.pp, mpState.jornadas, mpState.comidas);
+}
+function mpComidasLabel() {
+  return mpState.modo === 'mise' ? 'Mise en place: ' + mpState.mItems.map(k => MISE[k].t.toLowerCase()).join(', ') + (mpState.mCompras === 'chef' ? ' · compras incluidas' : ' · compra el cliente') : MP_COMIDAS_LABEL[mpState.comidas];
+}
+function mpModo(m) {
+  mpState.modo = m;
+  ['comidas','mise'].forEach(x => { const b = document.getElementById('mp-modo-' + x); if (b) { b.classList.toggle('on', x === m); b.setAttribute('aria-pressed', x === m ? 'true' : 'false'); } });
+  const qc = document.getElementById('mp2-q-comidas'), qm = document.getElementById('mp2-q-mise');
+  if (qc) qc.hidden = m === 'mise'; if (qm) qm.hidden = m !== 'mise';
+  const t = document.querySelector('#mp-screen-1 .section-title'), st = document.querySelector('#mp-screen-1 .section-sub');
+  if (t) t.textContent = m === 'mise' ? 'Armá tu mise en place' : 'Armá tu semana';
+  if (st) st.textContent = m === 'mise' ? 'Vos cocinás, yo te dejo todo listo: cortado, porcionado, con fondos y salsas base. Calculá el costo al instante.' : 'Tres elecciones y listo: cocino en tu casa y te quedan las comidas resueltas para la semana.';
+  if (m === 'mise') mpMise(); else selectMpFlow('comidas', mpState.comidas);
+}
+function mpMise(param, valor) {
+  if (param === 'dias') mpState.mDias = valor;
+  if (param === 'compras') mpState.mCompras = valor;
+  if (param === 'item') { const i = mpState.mItems.indexOf(valor); if (i >= 0) { if (mpState.mItems.length > 1) mpState.mItems.splice(i, 1); } else mpState.mItems.push(valor); }
+  const box = document.getElementById('mpm-items');
+  if (box && !box.children.length) box.innerHTML = Object.keys(MISE).map(k => `<button type="button" class="mp2-o" id="mpm-item-${k}" onclick="mpMise('item','${k}')"><i>${MISE[k].i}</i><span><b>${MISE[k].t}</b><small>${MISE[k].d}</small></span><span class="mh"></span></button>`).join('');
+  const f = (MISE_PP[mpState.pp] || 1) * (parseInt(mpState.mDias) || 5);
+  Object.keys(MISE).forEach(k => { const b = document.getElementById('mpm-item-' + k); if (!b) return; const on = mpState.mItems.includes(k); b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); const h = b.querySelector('.mh'); if (h) h.textContent = '+' + (Math.round(MISE[k].h * f * 10) / 10).toString().replace('.', ',') + ' hs'; });
+  ['3','5','7'].forEach(v => { const b = document.getElementById('mpm-dias-' + v); if (b) b.classList.toggle('on', v === mpState.mDias); });
+  ['chef','cliente'].forEach(v => { const b = document.getElementById('mpm-compras-' + v); if (b) b.classList.toggle('on', v === mpState.mCompras); });
+  if (typeof mp2Resumen === 'function') mp2Resumen();
+}
 // Horas por jornada según comidas (5 preparaciones llevan una jornada más larga)
 const MP_HS = { basico: 8, completo: 12 };
 function mpHoras(jornadas, comidas) { return (parseInt(jornadas) || 1) * (MP_HS[comidas] || 8); }
-function mpJornadasLabel() { const h = mpHoras(mpState.jornadas, mpState.comidas); return mpState.jornadas === '1' ? `1 jornada (~${h}hs)` : `${mpState.jornadas} jornadas (~${h}hs en semana)`; }
+function mpJornadasLabel() { if (mpState.modo === 'mise') { const c = miseCalc(); return `Mise en place para ${c.dias} días (~${c.horas.toString().replace('.', ',')} hs${c.jornadas > 1 ? ' en ' + c.jornadas + ' jornadas' : ''})`; } const h = mpHoras(mpState.jornadas, mpState.comidas); return mpState.jornadas === '1' ? `1 jornada (~${h}hs)` : `${mpState.jornadas} jornadas (~${h}hs en semana)`; }
 const MP_MULT = { '1-2': 0.8, '3-4': 1.0, '5-6': 1.25 };
 // Cada jornada deja listas las comidas del día siguiente y comidas por día
 
@@ -5293,6 +5364,7 @@ function selectMpFlow(param, valor) {
   // Horas y precio visibles en cada opción
   document.querySelectorAll('.mp-hs').forEach(el => { el.textContent = '~' + mpHoras(el.getAttribute('data-j'), mpState.comidas) + ' hs'; });
   ['basico','completo'].forEach(c => { const el = document.getElementById('mpf-pr-' + c); if (el) el.textContent = '$' + calcMpHonorario(mpState.pp, mpState.jornadas, c).toLocaleString('es-AR'); });
+  if (mpState.modo === 'mise' && param === 'pp') { mpMise(); return; }
   if (typeof mp2Resumen === 'function') mp2Resumen();
 }
 
@@ -5399,7 +5471,7 @@ async function mpConfirmarReserva() {
 
   const sesion = _leerSesionLocal(); // puede ser null: reserva como invitado
 
-  const hon = calcMpHonorario(mpState.pp, mpState.jornadas, mpState.comidas);
+  const hon = mpHonorarioActual();
   const senia_cliente = Math.round(hon * 0.5);
   const saldo_cliente = hon - senia_cliente;
   const comision_app = Math.round(hon * 0.3);
@@ -5410,16 +5482,16 @@ async function mpConfirmarReserva() {
 
   const payload = {
     ref, tipo: 'semanal', fecha: mpState.fecha, turno: 'almuerzo', estado: 'reservada',
-    menu: `Chef Semanal · ${mpState.pp}p · ${mpState.jornadas}j · ${mpState.comidas}`,
+    menu: mpState.modo === 'mise' ? `Chef Semanal · Mise en place · ${mpState.pp}p · ${mpState.mDias} días · ${mpState.mItems.join('+')}` : `Chef Semanal · ${mpState.pp}p · ${mpState.jornadas}j · ${mpState.comidas}`,
     personas: parseInt(mpState.pp) || 0,
     nombre: mpState.nombre, tel: mpState.tel, email: mpState.email, dir: mpState.dir,
     notas: mpState.notas || '',
-    ocasion: `Jornadas: ${mpState.jornadas} · Comidas: ${mpState.comidas}`,
+    ocasion: mpState.modo === 'mise' ? `${mpJornadasLabel()} · ${mpComidasLabel()}` : `Jornadas: ${mpState.jornadas} · Comidas: ${mpState.comidas}`,
     honorario: hon, ingredientes: 0, total: hon,
     senia_monto: senia_cliente, saldo_monto: saldo_cliente,
     comision_app, pago_chef_inicial: adelanto_chef, pago_chef_final: saldo_chef,
     retencion_pct: 30,
-    jornadas: parseInt(mpState.jornadas) || 1,
+    jornadas: mpState.modo === 'mise' ? miseCalc().jornadas : (parseInt(mpState.jornadas) || 1),
     dia_semana: mpState.dia_semana || '', frecuencia: mpState.comidas || ''
   };
 
@@ -5618,7 +5690,7 @@ function mpRenderResumen() {
   mpState.dir = document.getElementById('mp-dir').value.trim();
   mpState.notas = document.getElementById('mp-notas').value.trim();
 
-  const hon = calcMpHonorario(mpState.pp, mpState.jornadas, mpState.comidas);
+  const hon = mpHonorarioActual();
   const fmt = n => '$' + n.toLocaleString('es-AR');
   const fecha = new Date(mpState.fecha + 'T12:00:00');
   const fechaStr = fecha.toLocaleDateString('es-AR', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
@@ -5639,8 +5711,8 @@ function mpRenderResumen() {
       <div class="resumen-val">${jornadasLabel}</div>
     </div>
     <div class="resumen-row">
-      <div class="resumen-label">Comidas</div>
-      <div class="resumen-val">${MP_COMIDAS_LABEL[mpState.comidas]}</div>
+      <div class="resumen-label">${mpState.modo === 'mise' ? 'Incluye' : 'Comidas'}</div>
+      <div class="resumen-val">${mpComidasLabel()}</div>
     </div>
     <div class="resumen-row">
       <div class="resumen-label">Primera jornada</div>
@@ -5667,8 +5739,7 @@ function mpRenderResumen() {
     `*Chef:* Daro Castello\n` +
     `*Personas:* ${mpState.pp}\n` +
     `*Jornadas:* ${jornadasLabel}\n` +
-    `*Total:* ${mpTotales(mpState.pp, mpState.jornadas, mpState.comidas).comidas} comidas listas por semana\n` +
-    `*Comidas incluidas:* ${MP_COMIDAS_LABEL[mpState.comidas]}\n` +
+    (mpState.modo === 'mise' ? `*Servicio:* ${mpComidasLabel()}\n` : `*Total:* ${mpTotales(mpState.pp, mpState.jornadas, mpState.comidas).comidas} comidas listas por semana\n*Comidas incluidas:* ${MP_COMIDAS_LABEL[mpState.comidas]}\n`) +
     `*Primera jornada:* ${fechaWA}\n` +
     `*Honorario:* ${fmt(hon)}\n` +
     `*Direccion:* ${mpState.dir}\n\n` +
@@ -8086,6 +8157,20 @@ a.mc2-btn{display:block;text-align:center;text-decoration:none;box-sizing:border
 </script><style id="viandas-css">
 #mp-content{max-width:1120px!important}
 .mp2{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:36px;align-items:start}
+.mp2-modo{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:720px;margin:0 0 6px}
+.mp2-mo{position:relative;display:flex;align-items:center;gap:12px;text-align:left;background:#fff;border:1.5px solid #E8E0D5;border-radius:16px;padding:14px 16px;cursor:pointer;font-family:'DM Sans',sans-serif;color:#0D1B2A;transition:all .2s}
+.mp2-mo:hover{border-color:#C9A84C}
+.mp2-mo i{font-style:normal;font-size:22px;width:42px;height:42px;border-radius:50%;background:#F5F0E6;display:flex;align-items:center;justify-content:center;flex:none}
+.mp2-mo b{display:block;font-family:'DM Serif Display',serif;font-weight:400;font-size:18px}
+.mp2-mo small{display:block;font-size:12px;color:#8a8070;line-height:1.4;margin-top:2px}
+.mp2-mo.on{background:#0D1B2A;border-color:#0D1B2A;color:#FAF6EF}.mp2-mo.on b{color:#E8C96B}.mp2-mo.on small{color:rgba(250,246,239,.65)}.mp2-mo.on i{background:rgba(201,168,76,.2)}
+.mp2-new{position:absolute;top:-9px;right:14px;background:#C9A84C;color:#0D1B2A;font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:3px 9px;border-radius:999px;font-weight:600}
+.mp2-chk .mp2-o{flex-direction:row;align-items:center;text-align:left;gap:12px;padding:14px 16px}
+.mp2-chk .mp2-o i{font-style:normal;font-size:22px;flex:none}
+.mp2-chk .mp2-o b{font-size:15px}.mp2-chk .mp2-o small{display:block;line-height:1.4}
+.mp2-chk .mp2-o .mh{margin-left:auto;font-size:11px;color:#8a6418;white-space:nowrap;padding-right:26px}
+.mp2-tot table{width:100%;border-collapse:collapse;margin-top:10px;font-size:12px}
+.mp2-tot td{padding:4px 0;color:rgba(250,246,239,.7);border-top:1px solid rgba(250,246,239,.07)}.mp2-tot td:last-child{text-align:right;color:#FAF6EF;white-space:nowrap}
 .mp2-q{display:flex;gap:14px;align-items:flex-start;margin:30px 0 14px}
 .mp2-q:first-child{margin-top:4px}
 .mp2-qn{flex:0 0 34px;height:34px;border-radius:50%;background:#0D1B2A;color:#E8C96B;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:17px;box-shadow:0 0 0 4px rgba(201,168,76,.15)}
@@ -8158,6 +8243,7 @@ a.mc2-btn{display:block;text-align:center;text-decoration:none;box-sizing:border
 .mp2-note{margin-top:26px;background:#fff;border:1px solid #E8E0D5;border-left:3px solid #C9A84C;border-radius:12px;padding:14px 18px;font-size:13px;color:#6B5F4F;line-height:1.6}
 @media(max-width:980px){
   .mp2{grid-template-columns:1fr;gap:26px}
+  .mp2-modo{grid-template-columns:1fr}
   .mp2-sum{position:relative;top:0}
 }
 @media(max-width:600px){
@@ -8177,6 +8263,15 @@ a.mc2-btn{display:block;text-align:center;text-decoration:none;box-sizing:border
 function mp2Resumen(){
   var el=document.getElementById('mp2-sum-rows');if(!el||typeof mpState==='undefined')return;
   var pp={'1-2':'1 a 2','3-4':'3 a 4','5-6':'5 a 6'}[mpState.pp]||mpState.pp;
+  var how=document.querySelector('.mp2-how');if(how){if(!how.dataset.orig)how.dataset.orig=how.innerHTML;how.innerHTML=mpState.modo==='mise'?'<li><b>Definimos qué vas a cocinar</b> en la semana por WhatsApp.</li><li><b>Preparo todo en tu casa</b> el día acordado.</li><li><b>Cocinás en minutos</b> con todo cortado, porcionado y etiquetado.</li>':how.dataset.orig;}
+  if(mpState.modo==='mise'&&typeof miseCalc==='function'){
+    var c=miseCalc(),fmt=function(n){return '$'+n.toLocaleString('es-AR');},hs=function(h){return (Math.round(h*10)/10).toString().replace('.',',')+' hs';};
+    el.innerHTML='<div><span>Personas</span><span>'+pp+'</span></div><div><span>Servicio</span><span>Mise en place</span></div><div><span>Cubre</span><span>'+c.dias+' días</span></div>';
+    var tt=document.getElementById('mp2-tot');if(tt)tt.innerHTML='<div class="n">~'+hs(c.horas)+'</div><div class="l">De trabajo'+(c.jornadas>1?' · en '+c.jornadas+' jornadas':' · en 1 jornada')+'</div><table>'+c.filas.map(function(r){return '<tr><td>'+r[0]+'</td><td>'+hs(r[1])+'</td></tr>';}).join('')+'</table>';
+    var rr=document.getElementById('mpf-result');if(rr){rr.style.display='';rr.innerHTML='<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;"><span style="font-size:13px;color:rgba(250,246,239,0.6);">Honorario</span><span style="font-family:\'DM Serif Display\',serif;font-size:28px;color:var(--gold-light);">'+fmt(c.precio)+'</span></div><div style="font-size:12px;color:rgba(250,246,239,0.4);text-align:right;margin-bottom:12px;">'+fmt(MP_HORA)+' por hora · mínimo 4 hs</div><div style="font-size:12px;color:rgba(250,246,239,0.4);font-style:italic;line-height:1.6;">Ingredientes y envases aparte, al costo. Las horas son estimadas: ajustamos con el menú definitivo.</div>';}
+    var nx0=document.getElementById('mp-btn-next-1'),nxt0=document.getElementById('i18n-mp-btn-next-1');if(nx0&&nxt0){nxt0.textContent='Elegir fecha →';nx0.setAttribute('onclick','mpGoTo(2)');}
+    return;
+  }
   var fijo=!!mpState.fijo;
   var jn=parseInt(mpState.jornadas)||1;var jor=fijo?'5 días o más · a medida':(jn===1?'1 jornada · cubre 1 día':jn+' jornadas · cubren '+jn+' días');
   var com=mpState.comidas==='completo'?'5 por día · desayuno a postre':'2 por día · almuerzo y cena';
