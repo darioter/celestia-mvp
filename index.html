@@ -2967,9 +2967,9 @@ programar();
           <button type="button" class="mp2-o" id="mpm-jor-2" onclick="mpMise('jor','2')"><b>2 jornadas</b><small>~16 hs de trabajo</small><span class="mp2-spec"><em id="mpm-pr-2"></em><span class="mpm-rinde" data-j="2"></span></span></button>
           <button type="button" class="mp2-o" id="mpm-jor-3" onclick="mpMise('jor','3')"><b>3 jornadas</b><small>~24 hs de trabajo</small><span class="mp2-spec"><em id="mpm-pr-3"></em><span class="mpm-rinde" data-j="3"></span></span></button>
         </div>
-        <div class="mp2-q"><span class="mp2-qn">3</span><div><span class="mp2-qt">¿En qué me enfoco?</span><span class="mp2-qs">Marcá lo que necesitás. No cambia el precio: reparto las horas de la jornada entre lo que elijas.</span></div></div>
+        <div class="mp2-q"><span class="mp2-qn">3</span><div><span class="mp2-qt">¿En qué me enfoco?</span><span class="mp2-qs">Marcá lo que necesitás. No cambia el precio: reparto las horas de la jornada entre lo que elijas. Si la carne o el pollo vienen sin picar, sumá ~2 hs (y hace falta picadora).</span></div></div>
         <div class="mp2-opts mp2-2 mp2-chk" id="mpm-items"></div>
-        <div class="mp2-q"><span class="mp2-qn">4</span><div><span class="mp2-qt">¿Quién hace las compras?</span><span class="mp2-qs">Los ingredientes se pagan aparte, al costo, con ticket.</span></div></div>
+        <div class="mp2-q"><span class="mp2-qn">4</span><div><span class="mp2-qt">¿Quién hace las compras?</span><span class="mp2-qs">Los ingredientes y los insumos de envasado (bolsas zip, separadores, papel, etiquetas) se pagan aparte, al costo, con ticket.</span></div></div>
         <div class="mp2-opts mp2-2">
           <button type="button" class="mp2-o" id="mpm-compras-chef" onclick="mpMise('compras','chef')"><b>Las hago yo</b><small>Mercado y proveedores · + $37.500</small></button>
           <button type="button" class="mp2-o" id="mpm-compras-cliente" onclick="mpMise('compras','cliente')"><b>Las hacés vos</b><small>Me dejás todo en casa antes de la jornada</small></button>
@@ -5239,8 +5239,10 @@ const MP_JMAX = 4;
 // ── Mise en place: se cobra por jornada. Las horas se reparten entre lo elegido y se estima cuánto rinde.
 const MP_HORA = 25000;
 const MISE = {
-  verd: { i: '🥕', t: 'Verduras', d: 'Lavadas, cortadas y blanqueadas', h: 0.5, r: 2, u: 'kg' },
-  prot: { i: '🥩', t: 'Proteínas', d: 'Porcionadas y marinadas', h: 0.3, r: 3, u: 'kg' },
+  // r = rendimiento por hora, calibrado con pedidos reales (ej.: 7 kg de verdura en ~2,3 hs; 8 kg de hamburguesas en ~1,8 hs)
+  verd: { i: '🥕', t: 'Verduras', d: 'Peladas, cortadas, blanqueadas y embolsadas', h: 0.5, r: 3, u: 'kg' },
+  prot: { i: '🥩', t: 'Proteínas', d: 'Despinadas, porcionadas y marinadas', h: 0.3, r: 3.5, u: 'kg' },
+  form: { i: '🍔', t: 'Hamburguesas y milanesas', d: 'Formadas o empanadas, separadas y listas para el freezer', h: 0.35, r: 4, u: 'kg' },
   fond: { i: '🍲', t: 'Fondos y salsas base', d: 'Caldos, salsas y aderezos', h: 0.3, r: 2.5, u: 'preparaciones' },
   gran: { i: '🍚', t: 'Granos y legumbres', d: 'Arroz, quinoa, legumbres cocidas', h: 0.2, r: 2, u: 'kg cocidos' },
   masa: { i: '🥖', t: 'Masas y panificados', d: 'Masas, tartas, pan, rebozados', h: 0.4, r: 1, u: 'preparaciones' },
