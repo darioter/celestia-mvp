@@ -1,6 +1,58 @@
 {
  "notas": [
   {
+   "slug": "recetas-de-halloween-tipicas",
+   "cat": "Recetas con toque de chef",
+   "icono": "🍳",
+   "titulo": "Recetas de Halloween: tarta de zapallo, manzanas acarameladas y bocados para la noche de brujas",
+   "bajada": "Las recetas típicas de Halloween explicadas con técnica de chef: pumpkin pie, sopa en calabaza, semillas tostadas, manzanas de caramelo, momias de hojaldre, dedos de bruja y fantasmas de merengue.",
+   "img": "https://images.unsplash.com/photo-1643298873932-1572f1e6c99f?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1643298873932-1572f1e6c99f?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Billy Mangino",
+   "url": "https://www.chefprivado.ar/blog/recetas-de-halloween-tipicas",
+   "tips": [
+    "El zapallo, siempre asado y nunca hervido. Hervido junta agua y el relleno queda aguado y sin sabor; asado se concentra y se carameliza. Si igual lo ves húmedo, escurrilo en un colador 20 minutos."
+   ],
+   "datos": [
+    "Sin termómetro, tirá una gota de caramelo en agua fría: tiene que quedar dura y quebrarse como vidrio. Si se dobla, le falta.",
+    "Después de Halloween vienen el 1 y 2 de noviembre, Todos los Santos y el Día de Muertos. En México se celebra con pan de muerto, un pan dulce de azahar decorado con \"huesos\" de masa, que se lleva a los altares."
+   ],
+   "secciones": [
+    {
+     "h2": "1. Pumpkin pie: la tarta de zapallo",
+     "texto": "El postre más típico de la temporada."
+    },
+    {
+     "h2": "2. Sopa crema de calabaza servida en la calabaza",
+     "texto": "El plato salado de la noche."
+    },
+    {
+     "h2": "3. Semillas de calabaza tostadas",
+     "texto": "Nada se tira: las semillas que salen al vaciar el zapallo son un snack crocante."
+    },
+    {
+     "h2": "4. Manzanas acarameladas",
+     "texto": "Las manzanas de caramelo rojo y brillante, como las de la feria."
+    },
+    {
+     "h2": "5. Momias de salchicha en hojaldre",
+     "texto": "El bocado que más éxito tiene con chicos y grandes."
+    },
+    {
+     "h2": "6. Dedos de bruja",
+     "texto": "Galletitas de manteca con forma de dedo y una almendra como uña."
+    },
+    {
+     "h2": "7. Fantasmas de merengue",
+     "texto": "Con un merengue suizo firme (3 claras y 180 g de azúcar calentados a 60 °C y batidos hasta que se enfríen), formá con manga gotas altas sobre papel manteca."
+    },
+    {
+     "h2": "Un menú de Halloween para recibir",
+     "texto": "Al llegar · Momias de hojaldre y semillas de calabaza tostadas"
+    }
+   ]
+  },
+  {
    "slug": "pate-a-choux-masa-bomba",
    "cat": "Pastelería",
    "icono": "🧁",
