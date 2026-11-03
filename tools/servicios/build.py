@@ -16,10 +16,11 @@ RECARGO = float(re.search(r'const RECARGO_FINDE = ([\d.]+)', IDX).group(1))
 def asist(p): return 2 if p >= 9 else (1 if p >= 3 else 0)
 def total(menu, p, finde=False):
     s, i = tarifa(menu); return round(s[p] * (1 + RECARGO if finde else 1)) + i[p] + asist(p) * VALOR_ASIST
-mp = re.search(r"const MP_PRECIOS = \{\s*'1': \{ basico: (\d+), completo: (\d+) \},\s*'2': \{ basico: (\d+), completo: (\d+) \}", IDX)
-MP = {'1': {'basico': int(mp.group(1)), 'completo': int(mp.group(2))}, '2': {'basico': int(mp.group(3)), 'completo': int(mp.group(4))}}
+mp = re.search(r"const MP_PJ = \{ basico: (\d+), completo: (\d+) \}", IDX)
+MP_PJ = {'basico': int(mp.group(1)), 'completo': int(mp.group(2))}
+COMPRAS = int(re.search(r'const MP_COMPRAS = (\d+)', IDX).group(1))
 MULT = {'1-2': .8, '3-4': 1.0, '5-6': 1.25}
-def mpp(pp, j, c): return round(MP[j][c] * MULT[pp] / 1000) * 1000
+def mpp(pp, j, c='basico'): return round(MP_PJ[c] * int(j) * MULT[pp] / 1000) * 1000
 f = lambda n: '$' + f'{n:,}'.replace(',', '.')
 
 EXTRA_CSS = r'''
@@ -88,10 +89,9 @@ def tabla_exp(menu):
 def tabla_mp():
     filas = ''
     for pp, lab, lab_en in (('1-2', '1 a 2 personas', '1–2 people'), ('3-4', '3 a 4 personas', '3–4 people'), ('5-6', '5 a 6 personas', '5–6 people')):
-        filas += f'<tr><td>{bi(lab, lab_en)}</td><td>{f(mpp(pp,"1","basico"))}</td><td>{f(mpp(pp,"1","completo"))}</td><td>{f(mpp(pp,"2","basico"))}</td><td>{f(mpp(pp,"2","completo"))}</td></tr>'
-    return ('<div class="sv-tw"><table><thead><tr><th>' + bi('Personas', 'People') + '</th><th>' + bi('1 jornada · 2 comidas/día', '1 session · 2 meals/day') + '</th><th>' +
-            bi('1 jornada · 5 comidas/día', '1 session · 5 meals/day') + '</th><th>' + bi('2 jornadas · 2 comidas/día', '2 sessions · 2 meals/day') + '</th><th>' +
-            bi('2 jornadas · 5 comidas/día', '2 sessions · 5 meals/day') + '</th></tr></thead><tbody>' + filas + '</tbody></table></div>')
+        filas += f'<tr><td>{bi(lab, lab_en)}</td><td>{f(mpp(pp,"1"))}</td><td>{f(mpp(pp,"2"))}</td></tr>'
+    return ('<div class="sv-tw"><table><thead><tr><th>' + bi('Personas', 'People') + '</th><th>' + bi('1 jornada · ~4 días de comida', '1 session · ~4 days of food') + '</th><th>' +
+            bi('2 jornadas · toda la semana', '2 sessions · the whole week') + '</th></tr></thead><tbody>' + filas + '</tbody></table></div>')
 
 PAGES = [
  dict(slug='cena-romantica-en-casa', img='/img/svc-3pasos.webp', menu=1,
@@ -148,28 +148,32 @@ PAGES = [
        ('¿Cómo se paga?','How do I pay?','Una seña por transferencia reserva la fecha y el resto se abona el día del servicio.','A deposit by bank transfer secures the date and the rest is paid on the day.')]),
  dict(slug='chef-semanal', img='/img/svc-viandas.webp', menu=None,
   title='Chef semanal a domicilio en Buenos Aires · comidas de la semana | Celestia', title_en='Weekly private chef in Buenos Aires · your week of meals | Celestia',
-  desc='Chef semanal a domicilio en CABA y GBA: cocino en tu casa y te dejo las comidas de la semana listas, fraccionadas y etiquetadas. 2 o 5 comidas por día. Desde ' + f(mpp('1-2','1','basico')) + ' por jornada.',
+  desc='Chef semanal a domicilio en CABA y GBA: cocino en tu casa entre 10 y 12 preparaciones por jornada y te dejo comida para unos 4 días, refrigerada y congelada. Desde ' + f(mpp('1-2','1')) + ' por jornada.',
   k=('Chef semanal · CABA y GBA', 'Weekly chef · Buenos Aires'),
   h1=('Tu semana resuelta: <em>comida casera de chef, lista en tu heladera.</em>', 'Your week sorted: <em>chef-made home food, ready in your fridge.</em>'),
-  sub=('Cocino en tu casa una o dos veces por semana y te dejo almuerzos, cenas o el día completo, fraccionado y etiquetado, con un menú pensado para tu familia.',
-       'I cook at your home once or twice a week and leave lunches, dinners or the whole day ready, portioned and labeled, with a menu designed for your family.'),
-  precio=(f(mpp('1-2','1','basico')), 'por jornada · desde', 'per session · from'),
+  sub=('Cocino en tu casa una o dos veces por semana: en cada jornada preparo entre 10 y 12 platos y te dejo comida para unos 4 días, refrigerada y congelada, con un menú pensado para vos.',
+       'I cook at your home once or twice a week: each session I make 10 to 12 dishes and leave food for about 4 days, refrigerated and frozen, with a menu designed for you.'),
+  precio=(f(mpp('1-2','1')), 'por jornada · desde', 'per session · from'),
   cta=('/?reservar=semanal', 'Armar mi semana →', 'Plan my week →'),
   wa='Hola Daro, quiero consultar por el servicio de chef semanal.',
-  inc=[('📋','Menú semanal a medida','A tailored weekly menu','Lo armamos por WhatsApp con gustos, rutinas y restricciones.','We plan it on WhatsApp around tastes, routines and dietary needs.'),
-       ('⏱','Jornadas de 8 o 12 horas','8 or 12-hour sessions','2 comidas por día (~8 hs) o 5 comidas por día (~12 hs).','2 meals a day (~8 hrs) or 5 meals a day (~12 hrs).'),
-       ('📦','Fraccionado y etiquetado','Portioned and labeled','Todo listo para calentar y servir durante la semana.','Everything ready to heat and serve all week.'),
-       ('🥗','Equilibrado y casero','Balanced and homemade','Cocina de verdad, sin ultraprocesados.','Real cooking, no ultra-processed food.'),
-       ('👨‍👩‍👧','De 1 a 6 personas','For 1 to 6 people','Ideal para familias, parejas o personas con poco tiempo.','Ideal for families, couples or busy people.'),
-       ('🛒','Ingredientes','Ingredients','Se coordinan junto al menú antes de la primera jornada.','They are coordinated with the menu before the first session.')],
-  pasos=[('Configurás','You set it up','Personas, jornadas y comidas por día.','People, sessions and meals per day.'),('Armamos el menú','We plan the menu','Por WhatsApp, con tus gustos y rutinas.','On WhatsApp, around your tastes and routines.'),
-         ('Cocino en tu casa','I cook at your home','El día acordado en el calendario.','On the day booked on the calendar.'),('Comés rico toda la semana','Eat well all week','Todo listo para calentar.','Everything ready to heat.')],
+  inc=[('📋','Menú a medida','A tailored menu','Gustos, restricciones y cantidad de comensales. Para deportistas, coordinado con su nutricionista.','Tastes, restrictions and number of people. For athletes, coordinated with their nutritionist.'),
+       ('⏱','Jornadas de 6–7 horas','6–7 hour sessions','En tu cocina, una o dos veces por semana.','In your kitchen, once or twice a week.'),
+       ('🍲','10 a 12 preparaciones','10 to 12 dishes','Principales, guarniciones y opciones dulces en cada jornada.','Mains, sides and sweet options every session.'),
+       ('❄️','Para unos 4 días','For about 4 days','Parte refrigerado y parte congelado, fraccionado y etiquetado.','Part refrigerated and part frozen, portioned and labeled.'),
+       ('🧽','Cocina ordenada','Kitchen left tidy','Organizo y limpio antes de irme.','I tidy up and clean before leaving.'),
+       ('🛒','Compras','Shopping','Si las hago yo, + ' + f(COMPRAS) + ' por jornada. Ingredientes al costo, con ticket.','If I do it, + ' + f(COMPRAS) + ' per session. Ingredients at cost, with receipt.')],
+  pasos_h=('Así funciona', 'How it works'),
+  pasos=[('Planificación y menú','Planning and menu','Consulto gustos, restricciones y cantidad de comensales. Si trabajo para deportistas, coordino los menús con sus nutricionistas.','I ask about tastes, restrictions and how many people eat. For athletes, I coordinate the menus with their nutritionists.'),
+         ('Producción en domicilio','Cooking at your home','Trabajo unas 6–7 horas por jornada y elaboro entre 10 y 12 preparaciones: principales, guarniciones y opciones dulces.','I work about 6–7 hours per session and make 10 to 12 dishes: mains, sides and sweet options.'),
+         ('Entrega y conservación','Delivery and storage','Dejo comidas para unos cuatro días, algunas refrigeradas y otras congeladas. Organizo la cocina y limpio antes de irme.','I leave food for about four days, some refrigerated and some frozen. I tidy the kitchen and clean up before leaving.')],
   precios_h=('Valores por jornada','Prices per session'), tabla=tabla_mp,
-  nota=('Honorario del servicio. Los ingredientes se coordinan aparte junto al menú definitivo.', 'Service fee. Ingredients are coordinated separately with the final menu.'),
+  nota=('Honorario del servicio. Compras: + ' + f(COMPRAS) + ' por jornada si las hago yo. Ingredientes aparte, al costo. Viáticos según la ubicación: se definen después, al confirmar la dirección.',
+        'Service fee. Shopping: + ' + f(COMPRAS) + ' per session if I do it. Ingredients at cost. Travel depends on the location and is set afterwards, once the address is confirmed.'),
   ejemplo=None,
-  faq=[('¿Qué diferencia hay entre 2 y 5 comidas por día?','What is the difference between 2 and 5 meals a day?','Con 2 comidas te dejo almuerzo y cena (~8 hs de jornada). Con 5 sumo desayuno, merienda y postre (~12 hs).','With 2 meals I leave lunch and dinner (~8-hr session). With 5 I add breakfast, afternoon snack and dessert (~12 hrs).'),
-       ('¿Qué días cocinás?','Which days do you cook?','Elegís el día en el calendario. Con 2 jornadas, una a principio y otra a mitad de semana.','You pick the day on the calendar. With 2 sessions, one early and one mid-week.'),
-       ('¿Cómo se conserva la comida?','How is the food stored?','Te la dejo fraccionada y etiquetada, con indicaciones de qué va a la heladera y qué conviene congelar para el final de la semana.','I leave it portioned and labeled, noting what goes in the fridge and what is best frozen for later in the week.'),
+  faq=[('¿Para cuántos días me alcanza una jornada?','How many days does one session cover?','Una jornada deja comida para unos 4 días. Con 2 jornadas por semana cubrís la semana completa.','One session leaves food for about 4 days. With 2 sessions a week you cover the whole week.'),
+       ('¿Cómo se conserva la comida?','How is the food stored?','Parte va a la heladera y parte al freezer, fraccionado y etiquetado, con indicaciones de cómo regenerar cada plato.','Part goes in the fridge and part in the freezer, portioned and labeled, with reheating instructions for each dish.'),
+       ('¿Trabajás con deportistas o dietas especiales?','Do you work with athletes or special diets?','Sí. Puedo coordinar los menús con tu nutricionista y respetar restricciones y alergias.','Yes. I can coordinate the menus with your nutritionist and respect restrictions and allergies.'),
+       ('¿Cuánto cuestan los viáticos?','How much is travel?','Dependen de la ubicación. Los definimos después, cuando confirmamos la dirección.','It depends on the location. We set it afterwards, once the address is confirmed.'),
        ('¿Necesito estar en casa?','Do I need to be home?','No necesariamente: alcanza con coordinar el acceso a la cocina.','Not necessarily: we just need to coordinate access to the kitchen.')]),
  dict(slug='eventos-corporativos', img='/img/svc-corporativos.webp', menu=None,
   title='Chef para eventos corporativos y celebraciones en Buenos Aires | Celestia', title_en='Private chef for corporate events and celebrations in Buenos Aires | Celestia',
@@ -206,7 +210,7 @@ def pagina(P):
           {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Celestia", "item": SITE + "/"}, {"@type": "ListItem", "position": 2, "name": P['k'][0].split(' · ')[0], "item": url}]}]
     if P['menu']:
         ld[0]["offers"] = {"@type": "Offer", "priceCurrency": "ARS", "price": str(total(P['menu'], 2)), "description": "Desde, para 2 personas, todo incluido"}
-    head = HEAD.format(title=P['title'], title_en=P['title_en'], desc=P['desc'], url=url, ogtype='website', ogimg=SITE + '/img/og/' + {'cena-romantica-en-casa':'cena-romantica','menu-degustacion-7-pasos':'degustacion','chef-semanal':'chef-semanal','eventos-corporativos':'eventos'}[P['slug']] + '.jpg',
+    head = HEAD.format(alt='', title=P['title'], title_en=P['title_en'], desc=P['desc'], url=url, ogtype='website', ogimg=SITE + '/img/og/' + {'cena-romantica-en-casa':'cena-romantica','menu-degustacion-7-pasos':'degustacion','chef-semanal':'chef-semanal','eventos-corporativos':'eventos'}[P['slug']] + '.jpg',
                        css=CSS + EXTRA_CSS, ld=''.join(f'<script type="application/ld+json">{json.dumps(x, ensure_ascii=False)}</script>' for x in ld),
                        nav_caps=bi('Blog', 'Blog'), nav_home=bi('Inicio', 'Home'), nav_book=bi('Reservar →', 'Book →'))
     wa = WA + quote(P['wa'])
@@ -219,7 +223,7 @@ def pagina(P):
     h += '<main class="sv-wrap">'
     h += ('<section class="sv-sec"><span class="cp-k">✦ ' + bi('Qué incluye', "What's included") + '</span><h2>' + bi('Todo resuelto, de principio a fin', 'Everything handled, start to finish') + '</h2><div class="sv-inc">' +
           ''.join(f'<div><i>{ic}</i><b>{bi(t, te)}</b><span>{bi(d, de)}</span></div>' for ic, t, te, d, de in P['inc']) + '</div></section>')
-    h += ('<section class="sv-sec"><span class="cp-k">✦ ' + bi('Cómo funciona', 'How it works') + '</span><h2>' + bi('Cuatro pasos y listo', 'Four steps and done') + '</h2><div class="sv-steps">' +
+    h += ('<section class="sv-sec"><span class="cp-k">✦ ' + bi('Cómo funciona', 'How it works') + '</span><h2>' + bi(*P.get('pasos_h', ('Cuatro pasos y listo', 'Four steps and done'))) + '</h2><div class="sv-steps">' +
           ''.join(f'<div><b>{bi(t, te)}</b>{bi(d, de)}</div>' for t, te, d, de in P['pasos']) + '</div></section>')
     if P['tabla']:
         h += f'<section class="sv-sec"><span class="cp-k">✦ {bi("Valores", "Pricing")}</span><h2>{bi(*P["precios_h"])}</h2>' + P['tabla']() + f'<p class="sv-note">{bi(*P["nota"])}</p></section>'
