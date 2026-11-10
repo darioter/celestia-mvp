@@ -77,6 +77,9 @@ const SUPA = { url: 'https://qolpnuscpmzqeacshfvu.supabase.co', key: 'eyJhbGciOi
 const WA = '5491160410607';
 const Q = new URLSearchParams(location.search);
 const PED = { p: (Q.get('p') || '').slice(0, 40), r: (Q.get('r') || '').slice(0, 40), n: (Q.get('n') || '').slice(0, 60), f: (Q.get('f') || '').slice(0, 10), t: (Q.get('t') || '').slice(0, 80) };
+// Link corto: chefprivado.ar/e/<número del presupuesto sin guiones> → se buscan los datos del pedido
+const CORTO = (location.pathname.match(/^\/e\/(\d{8,14})\/?$/) || [])[1];
+if (CORTO) PED.p = 'CEL-' + CORTO.slice(0, 6) + '-' + CORTO.slice(6);
 const f$ = n => '$' + Math.round(n).toLocaleString('es-AR');
 const esc = v => String(v == null ? '' : v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const fechaLarga = f => /^\d{4}-\d{2}-\d{2}$/.test(f) ? new Date(f + 'T12:00:00').toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' }) : '';
@@ -84,9 +87,14 @@ const KEY = 'cel_extras_' + (PED.p || PED.r || 'x');
 let cart = {}; try { cart = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) {}
 let filtro = 'tinto', enviado = false;
 const guardar = () => { try { localStorage.setItem(KEY, JSON.stringify(cart)); } catch (e) {} };
+function pintarPed() {
 document.getElementById('ped').innerHTML = (PED.n ? '<span>Para <b>' + esc(PED.n) + '</b></span>' : '') + (PED.t ? '<span><b>' + esc(PED.t) + '</b></span>' : '') +
   (PED.f ? '<span>Entrega: <b>' + esc(fechaLarga(PED.f)) + '</b></span>' : '') + (PED.p || PED.r ? '<span>Pedido <b>' + esc(PED.p || PED.r) + '</b></span>' : '');
 if (!PED.p && !PED.r) document.getElementById('ped').innerHTML = '<span>Este link sirve para sumar extras a un pedido. Si no tenés uno, <a href="/cajas#bebidas" style="color:#E8C96A">mirá las cajas</a>.</span>';
+}
+pintarPed();
+if (CORTO) fetch(SUPA.url + '/rest/v1/rpc/extras_info', { method: 'POST', headers: { apikey: SUPA.key, Authorization: 'Bearer ' + SUPA.key, 'Content-Type': 'application/json' }, body: JSON.stringify({ p_nro: PED.p }) })
+  .then(r => r.ok ? r.json() : null).then(j => { if (!j) return; PED.n = PED.n || j.n || ''; PED.f = PED.f || (j.f || '').slice(0, 10); PED.t = PED.t || j.t || ''; PED.r = PED.r || j.r || ''; pintarPed(); const nm = document.getElementById('x-nom'); if (nm && !nm.value) nm.value = PED.n; }).catch(() => {});
 function pintar() {
   document.getElementById('chips').innerHTML = Object.keys(BEB_CATS).map(k => `<button type="button" class="bch${k === filtro ? ' on' : ''}" data-c="${k}">${BEB_CATS[k][0]} ${BEB_CATS[k][1]}<small>${BEBIDAS.filter(b => b.cat === k).length}</small></button>`).join('');
   document.getElementById('grid').innerHTML = BEBIDAS.filter(b => b.cat === filtro).map(b => {

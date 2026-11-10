@@ -247,14 +247,7 @@
   // ── Mensaje para mandar junto al PDF (se arma con los datos del presupuesto)
   var ALIAS_PAGO = 'daro.chef';
   // Link de extras asociado a este presupuesto (y a la reserva, si ya se marcó la fecha): lo que pidan llega vinculado.
-  function linkExtras() {
-    var q = ['p=' + encodeURIComponent(nro)];
-    if (f.reservaRef) q.push('r=' + encodeURIComponent(f.reservaRef));
-    var pri = String(f.cliente || '').trim(); if (pri) q.push('n=' + encodeURIComponent(pri));
-    if (f.fecha) q.push('f=' + f.fecha);
-    q.push('t=' + encodeURIComponent(tituloMsg()));
-    return 'https://www.chefprivado.ar/extras?' + q.join('&');
-  }
+  function linkExtras() { return 'www.chefprivado.ar/e/' + String(nro).replace(/\D/g, ''); }
   function tituloMsg() {
     if (f.servicio === 'exp') return f.menuNombre || ('Menú de ' + f.pasos + ' pasos');
     try { return calcAlt().titulo; } catch (e) { return 'Propuesta'; }
@@ -556,15 +549,15 @@
     mt.value = f.msgManual && f.msgTexto ? f.msgTexto : mensaje();
     mt.addEventListener('input', function () { f.msgManual = true; f.msgTexto = mt.value; guardar(); });
     $('#pz-regen').addEventListener('click', function () { f.msgManual = false; f.msgTexto = ''; mt.value = mensaje(); guardar(); });
-    $('#pz-copiar').addEventListener('click', function () {
+    $('#pz-copiar').addEventListener('click', function () { guardarBase(true);
       var st = $('#pz-msg-st'), ok = function () { st.className = 'pz-msg ok'; st.textContent = '✓ Copiado. Pegalo en WhatsApp o en el mail, y adjuntá el PDF.'; };
       try { navigator.clipboard.writeText(mt.value).then(ok, function () { mt.select(); document.execCommand('copy'); ok(); }); } catch (e) { mt.select(); document.execCommand('copy'); ok(); }
     });
-    $('#pz-wa').addEventListener('click', function () {
+    $('#pz-wa').addEventListener('click', function () { guardarBase(true);
       var d = String(f.contacto || '').replace(/[^\d]/g, ''); if (d.startsWith('0')) d = d.slice(1); if (d && !d.startsWith('54')) d = '549' + d.replace(/^15/, '');
       window.open('https://wa.me/' + (d.length >= 10 ? d : '') + '?text=' + encodeURIComponent(mt.value), '_blank');
     });
-    $('#pz-mail').addEventListener('click', function () {
+    $('#pz-mail').addEventListener('click', function () { guardarBase(true);
       var em = (String(f.contacto || '').match(/[^\s,;]+@[^\s,;]+/) || [''])[0];
       location.href = 'mailto:' + em + '?subject=' + encodeURIComponent('Presupuesto Celestia · ' + tituloMsg() + ' · ' + nro) + '&body=' + encodeURIComponent(mt.value);
     });
@@ -632,7 +625,7 @@
     var go = function () {
       estadoGuardado('Guardando…');
       var fila = { nro: nro, servicio: f.servicio || 'exp', cliente: f.cliente || null, contacto: f.contacto || null, fecha: f.fecha || null,
-        total: totalActual(), reserva_id: f.reservaId || null, datos: f, updated_at: new Date().toISOString() };
+        total: totalActual(), reserva_id: f.reservaId || null, datos: Object.assign({}, f, { _titulo: tituloMsg() }), updated_at: new Date().toISOString() };
       return supa.from('presupuestos').upsert(fila, { onConflict: 'nro' }).then(function (r) {
         if (r.error) { estadoGuardado('No se pudo guardar: ' + r.error.message, false); return; }
         estadoGuardado('✓ Guardado · ' + new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }), true);

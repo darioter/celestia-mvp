@@ -180,6 +180,10 @@
     {
       "source": "/admin-historias",
       "destination": "/admin-historias.html"
+    },
+    {
+      "source": "/e/:code",
+      "destination": "/extras/index.html"
     }
   ]
 }
