@@ -241,7 +241,7 @@
       '<div class="pz-h2">Condiciones</div><p class="pz-fine" style="margin:0">' + esc(r.cond) + ' La seña no es reembolsable y se toma a cuenta; por fuerza mayor se reprograma de común acuerdo. Alergias y restricciones: informarlas al confirmar. Términos completos en chefprivado.ar/terminos.</p>' +
       '</div></div>' +
       '<footer class="pz-ft"><div class="pz-firma"><b>Daro Castello</b>Chef · Celestia Chef Privado</div><div style="text-align:right">chefprivado.ar · +54 9 11 6041-0607<br>CABA y Gran Buenos Aires</div></footer></section>';
-    ajustar(doc); escalar();
+    ajustar(doc); escalar(); reajustar(doc);
   }
 
   // ── Marcar la fecha: crea (o actualiza) una reserva desde el admin, sin que el cliente reserve en el sitio.
@@ -687,6 +687,7 @@
     doc.innerHTML = p1 + p2;
     ajustar(doc);
     escalar();
+    reajustar(doc);
   }
   function prepararImpresion() {
     var r = document.getElementById('pz-print-root');
@@ -716,8 +717,10 @@
     var bd = doc.querySelector('.pz-bd'), inn = doc.querySelector('.pz-bd-in'); if (!bd || !inn) return;
     var set = function (z) { inn.style.transform = z < 1 ? 'scale(' + z + ')' : ''; inn.style.width = z < 1 ? (100 / z) + '%' : ''; };
     var z = 1; set(1);
-    while (inn.getBoundingClientRect().height > bd.getBoundingClientRect().height - 1 && z > 0.7) { z = Math.round((z - 0.02) * 100) / 100; set(z); }
+    while (inn.getBoundingClientRect().height > bd.getBoundingClientRect().height - 10 && z > 0.6) { z = Math.round((z - 0.02) * 100) / 100; set(z); }
   }
+  // Las tipografías pueden terminar de cargar después del primer cálculo: se vuelve a ajustar para que no se corte el texto.
+  function reajustar(doc) { setTimeout(function () { ajustar(doc); escalar(); }, 250); try { document.fonts.ready.then(function () { ajustar(doc); escalar(); }); } catch (e) {} }
   function escalar() {
     var prev = $('#pz-prev'), doc = $('#pz-doc'); if (!prev || !doc) return;
     var w = prev.clientWidth, a4 = 210 * 96 / 25.4, s = Math.min(1, (w - 8) / a4);
