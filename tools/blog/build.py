@@ -81,6 +81,10 @@ html.cel-pre body{visibility:hidden}
 .cp-nav{display:flex;align-items:center;gap:18px}
 .cp-nav a{color:rgba(250,246,239,.7);text-decoration:none;font-size:13px}
 .cp-nav a:hover{color:#fff}
+.cp-nav a.cp-ni{display:inline-flex;align-items:center;gap:6px;padding:8px 10px;border-radius:999px;font-weight:500;color:rgba(250,246,239,.78);transition:color .2s,background .2s}
+.cp-nav a.cp-ni:hover{background:rgba(201,168,76,.12);color:#FAF6EF}
+.cp-nav a.cp-ni svg{color:#E8C96B;flex:none}
+.cp-nav{gap:10px}
 .cp-nav .cp-cta{background:linear-gradient(135deg,var(--gd),var(--gdl));color:var(--nv);font-weight:600;padding:9px 16px;border-radius:999px}
 .cp-lang{display:flex;align-items:center;gap:3px}
 .cp-lang button{background:none;border:0;color:rgba(250,246,239,.45);font:500 11px 'DM Sans',sans-serif;letter-spacing:.1em;cursor:pointer;padding:4px}
@@ -362,7 +366,7 @@ HEAD = '''<!doctype html>
 {ld}
 </head><body data-no-tr>
 <header class="cp-hdr"><a href="/" aria-label="Celestia Chef Privado"><img src="/img/img-d316320d6b.webp" alt="Celestia Chef Privado"></a>
-<nav class="cp-nav"><a href="/blog" class="cp-hide">{nav_caps}</a><a href="/" class="cp-hide">{nav_home}</a><div class="cp-lang"><button type="button" data-cel-lang="es">ES</button><span>|</span><button type="button" data-cel-lang="en">EN</button></div><a href="/" class="cp-cta">{nav_book}</a></nav></header>
+<nav class="cp-nav"><a href="/blog" class="cp-hide cp-ni"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 5.5h6a3.5 3.5 0 0 1 3.5 3.5v11a3 3 0 0 0-3-3H2.5z"/><path d="M21.5 5.5h-6A3.5 3.5 0 0 0 12 9v11a3 3 0 0 1 3-3h6.5z"/></svg>{nav_caps}</a><a href="/" class="cp-hide cp-ni"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 11 12 4l8.5 7"/><path d="M5.5 9.5v10h13v-10M10 19.5v-5h4v5"/></svg>{nav_home}</a><div class="cp-lang"><button type="button" data-cel-lang="es">ES</button><span>|</span><button type="button" data-cel-lang="en">EN</button></div><a href="/" class="cp-cta">{nav_book}</a></nav></header>
 '''
 FOOT = '''<footer class="cp-ftr"><a href="/">chefprivado.ar</a>·<a href="/blog">{caps}</a>·<a href="https://www.instagram.com/celestiachefprivado/" target="_blank" rel="noopener">Instagram</a><div style="margin-top:8px">Celestia · Chef Privado · Buenos Aires © 2026</div></footer>
 <script src="/js/i18n.js"></script><script src="/js/analytics.js"></script><script src="/js/wa-flotante.js?v=1" defer></script>
