@@ -181,7 +181,7 @@
       r.incluye = ['Elaboración artesanal el día anterior o el mismo día', 'Cada preparación en su envase, lista para regenerar', 'Guía impresa para regenerar y servir', 'Entrega refrigerada en la franja elegida'];
       r.noIncluye = ['Bebidas', 'Vajilla y servicio en mesa', 'IVA (los precios son sin IVA)'];
       r.pago = 'seña del 50% para confirmar el pedido y saldo antes de la entrega, por transferencia o MercadoPago.';
-      r.cond = 'Pedidos con al menos 48 horas de anticipación (fechas especiales según su cierre). Cambios de cantidades hasta 72 horas antes. Conservar refrigerado y consumir dentro de las 48 horas.';
+      r.cond = 'Pedidos con al menos 48 horas de anticipación (fechas especiales según su cierre). Para fechas especiales (Acción de Gracias, Navidad, Año Nuevo) la seña tiene que estar acreditada con al menos 72 horas de anticipación: hay productos que se encargan con tiempo, como el pavo. Si se confirma después, no se garantiza la totalidad de los ingredientes; si alguno no se consigue, te propongo un reemplazo equivalente antes de cocinar. Cambios de cantidades hasta 72 horas antes. Conservar refrigerado y consumir dentro de las 48 horas.';
     } else {
       r.titulo = f.ocasion || 'Propuesta a medida'; r.formato = f.personas ? f.personas + ' personas' : '—'; r.personas = f.personas ? f.personas + ' personas' : '';
       r.incluye = ['Diseño de la propuesta a medida', 'Producción y coordinación con Celestia'];

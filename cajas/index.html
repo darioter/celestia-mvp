@@ -545,7 +545,7 @@ section{padding:70px 0}
     <details><summary>¿Cómo llega la comida?</summary><p>Elaborada para tu evento con producto fresco, enfriada rápido y envasada en recipientes aptos para horno o para servir. No es al vacío ni congelada: está pensada para regenerar en tu horno o servir fría, según cada plato, y queda como recién hecha.</p></details>
     <details><summary>¿Cómo se regenera?</summary><p>Precalentás el horno a 180 °C, sacás las tapas y calentás solo lo que va caliente, entre 8 y 20 minutos según el plato. Lo frío lo sacás de la heladera 20 minutos antes. Tenés la guía de cada caja más arriba, en <a href="#regenerar">Cómo regenerar tu caja</a>, y además viene impresa.</p></details>
     <details><summary>¿Cuánto dura en la heladera?</summary><p>Está pensada para consumir el mismo día del evento. Guardala en la heladera apenas la recibís y sacá lo que va frío 20 minutos antes de servir.</p></details>
-    <details><summary>¿Cómo se paga?</summary><p>Con una seña del 50% por transferencia para confirmar el pedido. El resto lo abonás al recibirlo, por transferencia o en efectivo.</p></details>
+    <details><summary>¿Cómo se paga?</summary><p>Con una seña del 50% por transferencia para confirmar el pedido. El resto lo abonás al recibirlo, por transferencia o en efectivo. Para fechas especiales (Acción de Gracias, Navidad, Año Nuevo) la seña tiene que estar acreditada con al menos 72 horas de anticipación: hay productos que se encargan con tiempo, como el pavo. Si se confirma después, no se garantiza la totalidad de los ingredientes; si alguno no se consigue, te propongo un reemplazo equivalente antes de cocinar.</p></details>
     <details><summary>¿A qué zonas llegan?</summary><p>CABA y GBA. El costo de envío depende de tu código postal y lo ves antes de confirmar. Si estás fuera de la zona, hacé igual el pedido y te escribo para ver si llego y cuánto cuesta.</p></details>
     <details><summary>¿Tienen opciones sin TACC, vegetarianas o para alergias?</summary><p>Contámelo en las notas del pedido y adapto lo que se pueda. Para celiaquía estricta, escribime antes de pedir: la cocina no es libre de gluten.</p></details>
     <details><summary>¿Puedo cambiar o cancelar el pedido?</summary><p>Podés cambiar el menú o la cantidad de personas hasta 72 horas antes de la entrega. La seña confirma tu fecha y no es reembolsable, porque la mercadería se compra para tu pedido.</p></details>
@@ -559,6 +559,7 @@ section{padding:70px 0}
 
 <script>
 /* ═════════ CONFIGURACIÓN: ocasiones, cajas, precios y zonas (editar acá) ═════════ */
+const AVISO_ESPECIALES = 'Para fechas especiales (Acción de Gracias, Navidad, Año Nuevo) la seña tiene que estar acreditada con al menos 72 horas de anticipación: hay productos que se encargan con tiempo, como el pavo. Si se confirma después, no se garantiza la totalidad de los ingredientes; si alguno no se consigue, te propongo un reemplazo equivalente antes de cocinar.';
 const ANTICIPACION_HORAS = 48;           // pedidos comunes: mínimo 48 h antes de la entrega
 const FRANJAS = ['10 a 13 h', '16 a 19 h'];
 const OCASIONES = {
@@ -712,7 +713,7 @@ function pintarOcasiones() {
   const temp = ks.filter(temporada).map(k => OCASIONES[k].nombre);
   if (temp.length) document.getElementById('hero-k').textContent = '✦ Cajas Celestia · ' + (temp.length > 1 ? temp.slice(0, -1).join(', ') + ' y ' + temp[temp.length - 1] : temp[0]) + ' con cupos limitados';
   document.getElementById('faq-cierre').textContent = 'Con al menos ' + ANTICIPACION_HORAS + ' horas de anticipación, así tu caja se elabora con producto fresco comprado para tu pedido.' +
-    (ks.filter(temporada).length ? ' Para las fiestas: ' + ks.filter(temporada).map(k => OCASIONES[k].nombre + ' hasta el ' + fechaLarga(OCASIONES[k].cierre)).join('; ') + ', o hasta completar los cupos.' : '');
+    (ks.filter(temporada).length ? ' Para las fiestas: ' + ks.filter(temporada).map(k => OCASIONES[k].nombre + ' hasta el ' + fechaLarga(OCASIONES[k].cierre)).join('; ') + ', o hasta completar los cupos. ' + AVISO_ESPECIALES : '');
 }
 let calMes = null;
 const MESES_DN = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
@@ -891,6 +892,7 @@ function pintarRes() {
     <div class="ln"><span>Envío${t.z && t.z.z !== 'fuera' ? ' · ' + t.z.nombre : ''}</span><span>${envioTxt(t)}</span></div>
     <div class="tot"><span>Total</span><b>${f$(t.tot)}</b></div>
     <div class="sena">Seña para confirmar (50%): <b style="color:#E8C96A">${f$(t.sena)}</b> · el resto al recibir</div>
+    ${st.ocasion && temporada(st.ocasion) ? `<div class="sena" style="font-size:12px;line-height:1.45;opacity:.85">⚠️ ${AVISO_ESPECIALES}</div>` : ''}
     <button type="button" class="btn" id="b-conf" ${fal.length ? 'disabled' : ''}>Confirmar pedido</button>
     <div class="err" id="err">${fal.length && st.carrito.length ? 'Falta: ' + fal.join(', ') + '.' : ''}</div>
     <div class="confia"><span>🔒 Seña por transferencia, sin tarjeta</span><span>🗓️ Cambios hasta 72 h antes</span><span>❄️ Llega fría, lista para la heladera</span><span>💬 Te confirmo por WhatsApp</span></div>`;
