@@ -53,6 +53,14 @@ async function conocimiento() {
   const anon = SUPA_ANON;
   const d3 = num((home.match(/cel-desde" data-m="1">([^<]+)</) || [])[1]) || 480000;
   const d7 = num((home.match(/cel-desde" data-m="2">([^<]+)</) || [])[1]) || 720000;
+  /* tabla exacta de 3 y 7 pasos (misma cuenta que el calculador de la home: servicio + asistentes + ingredientes × índice) */
+  let tablaExp = '';
+  try {
+    const TF = obj(home, 'const TARIFAS = {'), VA = num((home.match(/const VALOR_ASISTENTE = (\d+)/) || [])[1]) || 100000, RF = parseFloat((home.match(/const RECARGO_FINDE = ([\d.]+)/) || [])[1]) || 0.1;
+    let idx = 1; try { const j = await (await fetch(SUPA_URL + '/rest/v1/canasta_indice?select=indice&order=fecha.desc&limit=1', { headers: { apikey: SUPA_ANON, Authorization: 'Bearer ' + SUPA_ANON } })).json(); const x = j && j[0] && +j[0].indice; if (x > 0.5 && x < 3) idx = x; } catch (e) {}
+    const tot = (m, p, finde) => { const t = TF[m], sv = t.servicio[p] != null ? t.servicio[p] : t.servicio[12] + (p - 12) * t.servicioExtraPP, ig = t.ingredientes[p] != null ? t.ingredientes[p] : t.ingredientes[12] + (p - 12) * t.ingredientesExtraPP; const as = p >= 9 ? 2 : (p >= 3 ? 1 : 0); return Math.round(sv * (finde ? 1 + RF : 1)) + as * VA + Math.round(ig * idx / 1000) * 1000; };
+    tablaExp = [1, 2].filter(m => TF[m]).map(m => '- ' + (m === 1 ? '3 pasos' : '7 pasos') + ' (total todo incluido · entre semana / fin de semana): ' + [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(p => p + ' pers. ' + fmt(tot(m, p, false)) + ' / ' + fmt(tot(m, p, true))).join('; ')).join('\n');
+  } catch (e) {}
   const CAJAS = arr(cj, 'const CAJAS = ['), MERC = arr(cj, 'const MERCADITO = ['), OC = obj(cj, 'const OCASIONES = {');
   const hoyK = new Date(Date.now() - 3 * 3600e3).toISOString().slice(0, 10);
   const ocTxt = Object.keys(OC).map(k => { const o = OC[k]; if (o.fecha && o.fecha < hoyK) return ''; return '- ' + o.nombre + (o.fecha ? ' (entrega ' + o.fecha + ', pedidos hasta ' + o.cierre + ')' : '') + (o.franjas ? ', franjas ' + o.franjas.join(' / ') : ''); }).filter(Boolean).join('\n');
@@ -69,6 +77,8 @@ async function conocimiento() {
 SERVICIOS (precios vigentes, no inventes otros):
 - *Experiencia de 3 pasos en casa*: entrada, principal y postre. Desde ${fmt(d3)} para 2 personas, todo incluido (compras, cocina, servicio, asistentes, ingredientes y limpieza). De 2 a 12 personas. Fin de semana (vie noche, sáb, dom) cuesta algo más que entre semana (lun a vie mediodía). Calculador y menús de ejemplo: ${SITE}/?reservar=3
 - *Degustación de 7 pasos*: menú completo del bocado de bienvenida al postre. Desde ${fmt(d7)} para 2 personas, todo incluido. ${SITE}/?reservar=7
+- Precio exacto por cantidad de personas (incluye servicio, asistentes e ingredientes; entre semana = lunes a viernes mediodía; fin de semana = viernes noche, sábado y domingo). Usalo para dar el total que pidan; aclarando que puede variar algo según el menú final:
+${tablaExp}
 - Hay 11 estilos de cocina y 110 menús de ejemplo para inspirarse; el menú final se arma con el cliente según gustos y restricciones.
 - *Chef semanal*: Daro cocina en la casa ~6–7 hs por jornada, 10 a 12 preparaciones y comida para ~4 días (refrigerada y congelada); ordena y limpia. Desde $160.000 por jornada (1 a 2 personas; sube con más personas). Compras: las puede hacer Daro ($60.000 por jornada) o el cliente. Ingredientes aparte; viáticos según ubicación. 3 jornadas o más por semana = "chef de cabecera", propuesta mensual a medida. No incluye nutricionista (si es deportista, Daro coordina con el suyo; honorarios aparte). ${SITE}/?reservar=semanal
 - *Mise en place*: deja todo cortado, porcionado y listo para cocinar. $25.000 la hora: media jornada (4 hs) $100.000, jornada (8 hs) $200.000. ${SITE}/?reservar=semanal
