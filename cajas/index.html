@@ -562,6 +562,7 @@ section{padding:70px 0}
 const ANTICIPACION_HORAS = 48;           // pedidos comunes: mínimo 48 h antes de la entrega
 const FRANJAS = ['10 a 13 h', '16 a 19 h'];
 const OCASIONES = {
+  thanksgiving: { nombre: 'Thanksgiving', img: 'photo-1574672280600-4accfa5b6f98', icono: '🦃', sub: 'Acción de Gracias · 26 de noviembre', fecha: '2026-11-26', cierre: '2026-11-20', franjas: ['12 a 15 h', '15 a 17 h'] },
   navidad:    { nombre: 'Navidad',        img: 'photo-1640331703778-9aac4d988e26', icono: '🎄', sub: 'Nochebuena · 24 de diciembre', fecha: '2026-12-24', cierre: '2026-12-21', franjas: ['9 a 13 h', '13 a 17 h'] },
   anio_nuevo: { nombre: 'Año Nuevo',      img: 'photo-1608416026650-66b4e0c0c301', icono: '🥂', sub: 'Fin de año · 31 de diciembre', fecha: '2026-12-31', cierre: '2026-12-28', franjas: ['9 a 13 h', '13 a 17 h'] },
   romantica:  { nombre: 'Cena romántica', img: 'photo-1529521001454-2cf987c34008', icono: '❤️', sub: 'Aniversario, San Valentín o porque sí' },
@@ -573,6 +574,13 @@ const SENIA = 0.5;
 /* Cajas: tipo 'pp' = precio por persona (elegís personas) · tipo 'fijo' = opciones con precio cerrado.
    ocasiones: en cuáles aparece. */
 const CAJAS = [
+  { id: 'thanksgiving', grupo: 'Cenas completas', nombre: 'Thanksgiving at Home', tag: 'La cena tradicional americana', img: 'photo-1574672280600-4accfa5b6f98', tipo: 'fijo',
+    opciones: [{ label: 'Para 4 · con sobras para el viernes', personas: 4, precio: 480000 }, { label: 'Para 6 a 8', personas: 8, precio: 640000 }],
+    ocasiones: ['thanksgiving'], lead: 'Una mesa para cuatro. Una tradición para compartir. Recuerdos que continúan mañana. Pavo entero para trinchar en la mesa y cada preparación en su propio envase, con su historia y cómo servirla.',
+    menu: [['Protagonista', 'Pavo entero al horno con manteca de salvia, tomillo y romero · Gravy de sus jugos'],
+           ['Guarniciones', 'Stuffing de pan y hierbas · Puré de papas a la manteca · Cazuela de batatas con pecanes · Green bean casserole: chauchas en crema de hongos y cebolla crocante · Cranberry sauce con naranja · Dinner rolls tibios'],
+           ['Postres', 'Pumpkin pie con crema batida · Apple pie de doble masa'],
+           ['Incluye', 'Cada plato en su envase con una tarjeta y la guía para regenerar · Tarjeta del día después: el turkey sandwich del viernes']] },
   { id: 'cena-tradicion', grupo: 'Cenas completas', nombre: 'Cena Tradición', tag: 'Los clásicos de las fiestas', img: 'photo-1601118964938-228a89955311', tipo: 'pp', pp: 39000, personas: [4, 6, 8, 10],
     ocasiones: ['navidad', 'anio_nuevo'], lead: 'La mesa de las fiestas argentinas, hecha como en un restaurante.',
     menu: [['Entradas', 'Vitel toné de peceto con salsa atonnata casera · Pionono salado de jamón crudo, rúcula y queso crema'],
@@ -1034,6 +1042,14 @@ function bump() { const f = document.getElementById('flot'); f.classList.remove(
 const F = 'frio', H = 'horno', A = 'armar';
 const ICO = { frio: '❄️', horno: '🔥', armar: '🥄' };
 const REGENERAR = [
+  { k: 'thanksgiving', n: 'Thanksgiving at Home', it: [
+    [H, 'Pavo entero', 'Tapado con aluminio y un chorrito de caldo en la fuente. Destapá los últimos 10 minutos para que la piel vuelva a estar crocante. Tiene que llegar a 74 °C en el centro.', '160 °C · 45-60 min'],
+    [H, 'Gravy', 'En olla a fuego bajo, revolviendo. Si espesó, aflojalo con un poco de caldo.', 'Olla · 5 min'],
+    [H, 'Stuffing, batatas y chauchas', 'En sus fuentes, tapados; destapá al final para que gratinen. La cebolla crocante va arriba al servir.', '180 °C · 20-25 min'],
+    [H, 'Puré de papas', 'En olla con un chorrito de leche y un poco de manteca, revolviendo.', 'Olla · 5-8 min'],
+    [F, 'Cranberry sauce', 'Se sirve fría o a temperatura ambiente, junto al pavo.', 'Frío'],
+    [H, 'Dinner rolls', 'Unos minutos, para servirlos tibios con manteca.', '180 °C · 4 min'],
+    [A, 'Pumpkin pie y apple pie', 'La de calabaza, fría con la crema batida; la de manzana, tibia unos minutos en el horno.', 'Frío / 160 °C · 10 min'] ] },
   { k: 'cena-tradicion', n: 'Cena Tradición', it: [
     [F, 'Vitel toné', 'Sacalo 20 minutos antes y napá con la salsa al servir.', 'Frío'],
     [F, 'Pionono salado', 'Cortá en porciones con cuchillo húmedo.', 'Frío'],
