@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Extras para tu pedido · Celestia Chef Privado</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Sumá bebidas a tu pedido Celestia: llegan frías junto con tu caja o tu servicio.">
+<link rel="icon" href="/favicom.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--nv:#0D1B2A;--gd:#C9A84C;--gdl:#E8C96A;--cr:#FAF6EF;--crd:#EDE6D8;--tx:#2a2a3a;--mut:#6b6b6b}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--cr);color:var(--tx);font-family:'DM Sans',sans-serif;line-height:1.55}
+.hdr{background:var(--nv);height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 24px}
+.hdr img{height:30px}
+.hdr a{color:rgba(250,246,239,.75);font-size:13px;text-decoration:none}
+.top{background:var(--nv);color:var(--cr);padding:34px 24px 40px}
+.wrap{max-width:1080px;margin:0 auto}
+.k{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--gdl)}
+h1{font-family:'DM Serif Display',serif;font-weight:400;font-size:clamp(30px,5vw,46px);line-height:1.1;margin-top:8px}
+h1 em{color:var(--gdl)}
+.top p{color:rgba(250,246,239,.8);margin-top:10px;max-width:640px}
+.ped{display:inline-flex;gap:14px;flex-wrap:wrap;margin-top:16px;background:rgba(250,246,239,.08);border:1px solid rgba(232,201,106,.35);border-radius:14px;padding:10px 16px;font-size:13.5px}
+.ped b{color:var(--gdl);font-weight:600}
+.main{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:24px;padding:28px 24px 60px}
+.bchips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.bch{border:1px solid var(--crd);background:#fff;color:var(--nv);border-radius:999px;padding:8px 14px;font:600 13px 'DM Sans',sans-serif;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.bch small{font-weight:500;color:var(--mut)}
+.bch.on{background:var(--nv);color:var(--cr);border-color:var(--nv)}.bch.on small{color:var(--gdl)}
+.bgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:12px}
+.bi{background:#fff;border:1px solid var(--crd);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.bi.en{border-color:var(--gd);box-shadow:0 0 0 2px rgba(201,168,76,.25)}
+.bph{height:140px;display:flex;align-items:center;justify-content:center;font-size:44px}
+.bph img{max-height:100%;max-width:100%;object-fit:contain}
+.btx{flex:1;display:flex;flex-direction:column;gap:2px}.btx b{font-size:14px;color:var(--nv);line-height:1.25}.btx small{font-size:12px;color:var(--mut)}.btx strong{font-size:16px;color:var(--nv);margin-top:4px}
+.add{border:1.5px solid var(--gd);background:#fff;color:var(--nv);border-radius:999px;padding:9px 12px;font:600 13.5px 'DM Sans',sans-serif;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.add span{width:22px;height:22px;border-radius:50%;background:var(--gd);display:inline-flex;align-items:center;justify-content:center}
+.qty{display:flex;align-items:center;justify-content:space-between;border:1.5px solid var(--gd);border-radius:999px;background:#fff}
+.qty button{width:34px;height:34px;border:0;background:none;font-size:18px;cursor:pointer;color:var(--nv)}
+.qty span{font-weight:600}
+.res{position:sticky;top:16px;align-self:start;background:var(--nv);color:var(--cr);border-radius:18px;padding:20px}
+.res h3{font-family:'DM Serif Display',serif;font-weight:400;font-size:22px;margin-bottom:10px}
+.ln{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;padding:6px 0;border-bottom:1px solid rgba(250,246,239,.1)}
+.ln span:first-child{color:rgba(250,246,239,.8)}
+.tot{display:flex;justify-content:space-between;align-items:baseline;margin:12px 0 4px}.tot b{font-family:'DM Serif Display',serif;font-size:28px;color:var(--gdl);font-weight:400}
+.res small{display:block;font-size:12px;color:rgba(250,246,239,.6);line-height:1.45}
+.res label{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--gdl);margin:12px 0 4px}
+.res input,.res textarea{width:100%;background:#0a1622;border:1px solid rgba(232,201,106,.3);border-radius:10px;color:var(--cr);font:inherit;font-size:14px;padding:10px}
+.btn{width:100%;margin-top:14px;border:0;border-radius:999px;padding:13px;background:linear-gradient(135deg,var(--gdl),var(--gd));color:var(--nv);font:700 15px 'DM Sans',sans-serif;cursor:pointer}
+.btn:disabled{opacity:.45;cursor:default}
+.err{color:#ffb4a8;font-size:12.5px;margin-top:8px}
+.ok{text-align:center;padding:30px 10px}.ok h3{margin-bottom:8px}.ok p{font-size:14px;color:rgba(250,246,239,.85);margin-top:8px}
+.ok a{display:inline-block;margin-top:14px;background:#25D366;color:#fff;border-radius:999px;padding:11px 18px;text-decoration:none;font-weight:600}
+.leg{font-size:12px;color:var(--mut);margin-top:14px}
+@media(max-width:860px){.main{grid-template-columns:1fr}.res{position:static}}
+@media(max-width:600px){.bgrid{grid-template-columns:1fr 1fr}.top{padding:26px 16px 30px}.main{padding:20px 16px 40px}}
+</style>
+</head><body>
+<header class="hdr"><a href="/"><img src="/img/img-d316320d6b.webp" alt="Celestia Chef Privado"></a><a href="https://wa.me/5491160410607" target="_blank" rel="noopener">¿Dudas? WhatsApp</a></header>
+<section class="top"><div class="wrap">
+  <span class="k">✦ Extras para tu pedido</span>
+  <h1>Sumá las bebidas <em>y te las llevo frías</em></h1>
+  <p>Elegí lo que quieras: viaja junto con tu pedido, sin compra mínima ni costo de envío extra. Se suma al saldo y lo abonás junto con él.</p>
+  <div class="ped" id="ped"></div>
+</div></section>
+<div class="wrap main">
+  <div>
+    <div class="bchips" id="chips"></div>
+    <div class="bgrid" id="grid"></div>
+    <p class="leg">Venta de bebidas alcohólicas solo a mayores de 18 años. Si algún producto falta, te ofrezco uno equivalente antes de la entrega.</p>
+  </div>
+  <aside class="res" id="res"></aside>
+</div>
+<script src="/js/bebidas.js?v=1"></script>
+<script>
+const SUPA = { url: 'https://qolpnuscpmzqeacshfvu.supabase.co', key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvbHBudXNjcG16cWVhY3NoZnZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NjQ3OTQsImV4cCI6MjA5MTM0MDc5NH0.BJOz5Gwkeb1NqID_gkGKD5YlymifMtOwaf8iQMaBCx8' };
+const WA = '5491160410607';
+const Q = new URLSearchParams(location.search);
+const PED = { p: (Q.get('p') || '').slice(0, 40), r: (Q.get('r') || '').slice(0, 40), n: (Q.get('n') || '').slice(0, 60), f: (Q.get('f') || '').slice(0, 10), t: (Q.get('t') || '').slice(0, 80) };
+const f$ = n => '$' + Math.round(n).toLocaleString('es-AR');
+const esc = v => String(v == null ? '' : v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const fechaLarga = f => /^\d{4}-\d{2}-\d{2}$/.test(f) ? new Date(f + 'T12:00:00').toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' }) : '';
+const KEY = 'cel_extras_' + (PED.p || PED.r || 'x');
+let cart = {}; try { cart = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) {}
+let filtro = 'tinto', enviado = false;
+const guardar = () => { try { localStorage.setItem(KEY, JSON.stringify(cart)); } catch (e) {} };
+document.getElementById('ped').innerHTML = (PED.n ? '<span>Para <b>' + esc(PED.n) + '</b></span>' : '') + (PED.t ? '<span><b>' + esc(PED.t) + '</b></span>' : '') +
+  (PED.f ? '<span>Entrega: <b>' + esc(fechaLarga(PED.f)) + '</b></span>' : '') + (PED.p || PED.r ? '<span>Pedido <b>' + esc(PED.p || PED.r) + '</b></span>' : '');
+if (!PED.p && !PED.r) document.getElementById('ped').innerHTML = '<span>Este link sirve para sumar extras a un pedido. Si no tenés uno, <a href="/cajas#bebidas" style="color:#E8C96A">mirá las cajas</a>.</span>';
+function pintar() {
+  document.getElementById('chips').innerHTML = Object.keys(BEB_CATS).map(k => `<button type="button" class="bch${k === filtro ? ' on' : ''}" data-c="${k}">${BEB_CATS[k][0]} ${BEB_CATS[k][1]}<small>${BEBIDAS.filter(b => b.cat === k).length}</small></button>`).join('');
+  document.getElementById('grid').innerHTML = BEBIDAS.filter(b => b.cat === filtro).map(b => {
+    const n = cart[b.id] || 0;
+    return `<div class="bi${n ? ' en' : ''}"><div class="bph"><img src="${b.img}" alt="${esc(b.nombre)}" loading="lazy" onerror="this.replaceWith(document.createTextNode('${BEB_CATS[b.cat][0]}'))"></div>
+      <div class="btx"><b>${esc(b.nombre)}</b><small>${esc(b.det)}</small><strong>${f$(b.precio)}</strong></div>
+      ${n ? `<div class="qty"><button type="button" data-m="${b.id}" data-d="-1" aria-label="Quitar">−</button><span>${n}</span><button type="button" data-m="${b.id}" data-d="1" aria-label="Sumar">+</button></div>`
+          : `<button type="button" class="add" data-m="${b.id}" data-d="1">Agregar <span>+</span></button>`}</div>`;
+  }).join('');
+  pintarRes();
+}
+function items() { return Object.keys(cart).filter(id => cart[id] > 0).map(id => { const b = BEBIDAS.find(x => x.id === id); return b && { id, nombre: b.nombre, variante: b.det, cant: cart[id], precio: b.precio, subtotal: b.precio * cart[id] }; }).filter(Boolean); }
+function pintarRes() {
+  if (enviado) return;
+  const it = items(), tot = it.reduce((a, x) => a + x.subtotal, 0);
+  const v = id => { const el = document.getElementById(id); return el ? el.value : ''; };
+  const nom = v('x-nom') || PED.n, tel = v('x-tel'), nota = v('x-not');
+  document.getElementById('res').innerHTML = '<h3>Tus extras</h3>' +
+    (it.length ? it.map(x => `<div class="ln"><span>${x.cant} × ${esc(x.nombre)}</span><span>${f$(x.subtotal)}</span></div>`).join('') : '<small>Todavía no sumaste nada. Elegí del catálogo.</small>') +
+    '<div class="tot"><span>Total extras</span><b>' + f$(tot) + '</b></div><small>Viaja con tu pedido. Se suma al saldo y lo abonás junto con él: no hace falta otra seña.</small>' +
+    '<label for="x-nom">Tu nombre</label><input id="x-nom" value="' + esc(nom) + '" autocomplete="name">' +
+    '<label for="x-tel">WhatsApp</label><input id="x-tel" value="' + esc(tel) + '" inputmode="tel" autocomplete="tel" placeholder="11 2345-6789">' +
+    '<label for="x-not">Notas (opcional)</label><textarea id="x-not" rows="2" placeholder="Ej.: el espumante bien frío">' + esc(nota) + '</textarea>' +
+    '<button type="button" class="btn" id="x-ok"' + (it.length ? '' : ' disabled') + '>Sumar a mi pedido</button><div class="err" id="x-err"></div>';
+  document.getElementById('x-ok').onclick = enviar;
+}
+document.addEventListener('click', e => {
+  const c = e.target.closest('[data-c]'); if (c) { filtro = c.dataset.c; pintar(); return; }
+  const m = e.target.closest('[data-m]'); if (m) {
+    const keep = ['x-nom', 'x-tel', 'x-not'].map(id => (document.getElementById(id) || {}).value || '');
+    cart[m.dataset.m] = Math.max(0, (cart[m.dataset.m] || 0) + (+m.dataset.d)); if (!cart[m.dataset.m]) delete cart[m.dataset.m]; guardar(); pintar();
+    ['x-nom', 'x-tel', 'x-not'].forEach((id, i) => { const el = document.getElementById(id); if (el && keep[i]) el.value = keep[i]; });
+  }
+});
+async function enviar() {
+  const it = items(); if (!it.length) return;
+  const nom = document.getElementById('x-nom').value.trim(), tel = document.getElementById('x-tel').value.trim(), nota = document.getElementById('x-not').value.trim();
+  const err = document.getElementById('x-err');
+  if (!nom || tel.replace(/\D/g, '').length < 8) { err.textContent = 'Completá tu nombre y tu WhatsApp.'; return; }
+  const b = document.getElementById('x-ok'); b.disabled = true; b.textContent = 'Enviando…';
+  const ref = 'EX-' + Date.now().toString(36).toUpperCase(), tot = it.reduce((a, x) => a + x.subtotal, 0);
+  const vinc = 'Extras del pedido ' + (PED.p || '—') + (PED.r ? ' · reserva ' + PED.r : '') + (PED.t ? ' · ' + PED.t : '');
+  const row = { ref, ocasion: 'extras', entrega_fecha: /^\d{4}-\d{2}-\d{2}$/.test(PED.f) ? PED.f : null, entrega_franja: 'Con el pedido', items: it, subtotal: tot, envio: 0, total: tot, senia_monto: 0,
+    nombre: nom, tel, email: '', dir: '', zona: 'Con el pedido', notas: vinc + (nota ? ' · ' + nota : ''), estado: 'pendiente' };
+  try {
+    const r = await fetch(SUPA.url + '/rest/v1/pedidos_cajas', { method: 'POST', headers: { apikey: SUPA.key, Authorization: 'Bearer ' + SUPA.key, 'Content-Type': 'application/json', Prefer: 'return=minimal' }, body: JSON.stringify(row) });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+  } catch (e) {
+    b.disabled = false; b.textContent = 'Sumar a mi pedido';
+    err.innerHTML = 'No pudimos guardarlo. <a style="color:#E8C96A" target="_blank" rel="noopener" href="https://wa.me/' + WA + '?text=' + encodeURIComponent('Hola Daro! Quiero sumar a mi pedido ' + (PED.p || PED.r) + ': ' + it.map(x => x.cant + '× ' + x.nombre).join(', ')) + '">Mandámelo por WhatsApp</a>.';
+    return;
+  }
+  try { fetch('/api/notify', { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ref, tipo: 'cajas', menu: '🍷 ' + vinc + ' · ' + it.map(x => x.cant + '× ' + x.nombre + ' (' + x.variante + ')').join(' + '),
+    fecha: row.entrega_fecha, turno: 'Con el pedido', nombre: nom, tel, notas: nota, honorario: tot, ingredientes: 0, total: tot }) }); } catch (e) {}
+  enviado = true; cart = {}; guardar();
+  const msg = 'Hola Daro! Sumé extras a mi pedido ' + (PED.p || PED.r) + ' (' + ref + '): ' + it.map(x => x.cant + '× ' + x.nombre).join(', ') + '. Total ' + f$(tot) + '.';
+  document.getElementById('res').innerHTML = '<div class="ok"><h3>✓ ¡Listo, ' + esc(nom.split(' ')[0]) + '!</h3><p>Tus extras quedaron sumados a tu pedido' + (PED.p ? ' <b>' + esc(PED.p) + '</b>' : '') + '.</p><p>Total extras: <b>' + f$(tot) + '</b>, se suma al saldo.</p><a target="_blank" rel="noopener" href="https://wa.me/' + WA + '?text=' + encodeURIComponent(msg) + '">Avisarle a Daro por WhatsApp</a></div>';
+  pintar();
+}
+pintar();
+</script>
+</body></html>

@@ -245,7 +245,16 @@
   }
 
   // ── Mensaje para mandar junto al PDF (se arma con los datos del presupuesto)
-  var ALIAS_PAGO = 'daro.chef', LINK_BEBIDAS = 'https://www.chefprivado.ar/cajas#bebidas';
+  var ALIAS_PAGO = 'daro.chef';
+  // Link de extras asociado a este presupuesto (y a la reserva, si ya se marcó la fecha): lo que pidan llega vinculado.
+  function linkExtras() {
+    var q = ['p=' + encodeURIComponent(nro)];
+    if (f.reservaRef) q.push('r=' + encodeURIComponent(f.reservaRef));
+    var pri = String(f.cliente || '').trim(); if (pri) q.push('n=' + encodeURIComponent(pri));
+    if (f.fecha) q.push('f=' + f.fecha);
+    q.push('t=' + encodeURIComponent(tituloMsg()));
+    return 'https://www.chefprivado.ar/extras?' + q.join('&');
+  }
   function tituloMsg() {
     if (f.servicio === 'exp') return f.menuNombre || ('Menú de ' + f.pasos + ' pasos');
     try { return calcAlt().titulo; } catch (e) { return 'Propuesta'; }
@@ -279,7 +288,7 @@
     L.push('*Total: ' + money(total) + '*' + (f.servicio === 'exp' ? ' (servicio, asistentes e ingredientes).' : '.'));
     L.push(pago + ' Te adjunto el PDF con el detalle; el presupuesto es válido por ' + (parseInt(f.validez, 10) || 7) + ' días.');
     L.push('*Seña (50%): ' + money(Math.round(total * 0.5)) + '*\nTransferencia al alias *' + ALIAS_PAGO + '*. Cuando la hagas, mandame el comprobante y la fecha queda confirmada.');
-    if (f.servicio !== 'semanal' && f.servicio !== 'mise') L.push('Si querés sumar bebidas (vinos, espumantes, aperitivos, gaseosas y aguas), las ves acá y te las llevo frías junto con el pedido: ' + LINK_BEBIDAS);
+    if (f.servicio !== 'semanal' && f.servicio !== 'mise') L.push('Si querés sumar bebidas (vinos, espumantes, aperitivos, gaseosas y aguas), elegilas en este link y te las llevo frías junto con el pedido, sin compra mínima; se suman al saldo: ' + linkExtras());
     L.push('Cualquier ajuste lo vemos sin problema. ¡Gracias por pensar en Celestia!\nDaro · Celestia Chef Privado');
     return L.join('\n\n');
   }
@@ -310,7 +319,7 @@
       datos.ref = 'ADM-' + Date.now().toString(36).toUpperCase(); datos.estado = 'reservada';
       datos.notas = 'Cargada desde el admin (pedido por WhatsApp). Presupuesto ' + nro + (f.notas ? ' · ' + f.notas : '');
       return supa.from('reservas').insert(datos).select('id').single().then(function (x) {
-        if (x.error) throw x.error; f.reservaId = String(x.data.id); guardar(); guardarBase(true);
+        if (x.error) throw x.error; f.reservaId = String(x.data.id); f.reservaRef = datos.ref; guardar(); guardarBase(true);
         var ok = '✓ Fecha marcada: ' + fechaLarga(f.fecha) + ' · ' + turno + ' (' + datos.ref + '). Ya aparece en Reservas y queda ocupada en el calendario del sitio.';
         form(); render(); say(ok, true); msg = $('#pz-mf-msg'); if (msg) { msg.className = 'pz-msg ok'; msg.textContent = ok; }
       });
@@ -560,7 +569,7 @@
       location.href = 'mailto:' + em + '?subject=' + encodeURIComponent('Presupuesto Celestia · ' + tituloMsg() + ' · ' + nro) + '&body=' + encodeURIComponent(mt.value);
     });
     $('#pz-dup').addEventListener('click', function () { nro = numero(); f.nro = nro; f.reservaId = ''; guardar(); form(); render(); estadoGuardado('Copia nueva ' + nro + ' (sin reserva vinculada).', true); });
-    $('#pz-marcar').addEventListener('click', function () { f.reservaId = ''; guardar(); marcarFecha(); });
+    $('#pz-marcar').addEventListener('click', function () { f.reservaId = ''; f.reservaRef = ''; guardar(); marcarFecha(); });
     if ($('#pz-actualizar')) $('#pz-actualizar').addEventListener('click', marcarFecha);
     $('#pz-print').addEventListener('click', function () { render(); prepararImpresion(); setTimeout(function () { window.print(); }, 80); });
     $('#pz-nuevo').addEventListener('click', function () { if (!confirm('¿Empezar un presupuesto nuevo? Se borra el borrador actual.')) return; var sv = f.servicio; f = JSON.parse(JSON.stringify(DEF)); f.servicio = sv; f.intro = INTRO[sv] || f.intro; nro = numero(); f.nro = nro; try { localStorage.setItem(KEY, JSON.stringify(f)); } catch (e) {} form(); render(); });
@@ -664,7 +673,7 @@
       }).join('');
       sel.onchange = function () {
         var r = rs.filter(function (x) { return String(x.id) === this.value; }, this)[0];
-        f.reservaId = r ? String(r.id) : '';
+        f.reservaId = r ? String(r.id) : ''; f.reservaRef = r ? (r.ref || '') : '';
         if (!r) { guardar(); return; }
         f.cliente = r.nombre || f.cliente; f.fecha = r.fecha.slice(0, 10); f.turno = r.turno || f.turno; f.personas = r.personas || f.personas;
         if (f.servicio !== 'exp') { f.total = r.total ? String(r.total) : ''; guardar(); form(); render(); return; }

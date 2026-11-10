@@ -572,6 +572,7 @@ section{padding:70px 0}
 <div class="flot" id="flot"><span id="flot-t"></span><button type="button" class="btn" id="flot-b">🛒 Ver carrito</button></div>
 <footer class="ftr"><a href="/">chefprivado.ar</a>·<a href="/blog">Blog</a>·<a href="/terminos">Términos</a>·<a href="https://www.instagram.com/celestiachefprivado/" target="_blank" rel="noopener">Instagram</a><div style="margin-top:8px">Celestia · Chef Privado · Buenos Aires © 2026</div></footer>
 
+<script src="/js/bebidas.js?v=1"></script>
 <script>
 /* ═════════ CONFIGURACIÓN: ocasiones, cajas, precios y zonas (editar acá) ═════════ */
 const AVISO_ESPECIALES = 'Para fechas especiales (Acción de Gracias, Navidad, Año Nuevo) la seña tiene que estar acreditada con al menos 72 horas de anticipación: hay productos que se encargan con tiempo, como el pavo. Si se confirma después, no se garantiza la totalidad de los ingredientes; si alguno no se consigue, te propongo un reemplazo equivalente antes de cocinar.';
@@ -659,62 +660,6 @@ const MERCADITO = [
   { id: 'm-scones', img: 'photo-1611337854278-d50f443c3a03', ic: '🥐', nombre: 'Scones de queso', det: '12 unidades, para tibiar', precio: 18000 },
   { id: 'm-garrapinada', img: 'photo-1648473546534-a1941a4ae9a3', ic: '🥜', nombre: 'Garrapiñada', det: '250 g', precio: 8000, ocasiones: ['navidad', 'anio_nuevo'] }
 ];
-/* Almacén de bebidas: precios de góndola (Jumbo, relevados el 10/11/2026) + margen por compra, frío y entrega.
-   precio = costo × (1 + BEB_MARGEN), redondeado hacia arriba a $500. Para actualizar, cambiá 'costo'. */
-const BEB_MARGEN = 0.20;
-const BEB_CATS = { tinto: ['🍷', 'Tintos'], blanco: ['🥂', 'Blancos y rosados'], espumante: ['🍾', 'Espumantes'], aperitivo: ['🍸', 'Aperitivos y destilados'], cerveza: ['🍺', 'Cervezas'], gaseosa: ['🥤', 'Gaseosas'], agua: ['💧', 'Aguas y saborizadas'], jugo: ['🧃', 'Jugos'] };
-const BEBIDAS = [
-  { id: "b-10006", cat: "tinto", nombre: "Luigi Bosca Malbec", det: "750 ml", costo: 32750, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/685481-400-400/p.jpg" },
-  { id: "b-24299", cat: "tinto", nombre: "Saint Felicien Malbec", det: "750 ml", costo: 18050, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/188725-400-400/p.jpg" },
-  { id: "b-40285", cat: "tinto", nombre: "Rutini Cabernet Malbec", det: "750 ml", costo: 32800, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/204710-400-400/p.jpg" },
-  { id: "b-144834", cat: "tinto", nombre: "El Enemigo Malbec", det: "750 ml", costo: 35250, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/766857-400-400/p.jpg" },
-  { id: "b-10698", cat: "tinto", nombre: "Trumpeter Malbec", det: "750 ml", costo: 11500, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/180222-400-400/p.jpg" },
-  { id: "b-3361", cat: "tinto", nombre: "Saurus Malbec", det: "750 ml", costo: 16850, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/716997-400-400/p.jpg" },
-  { id: "b-12691", cat: "tinto", nombre: "Graffigna Malbec", det: "750 ml", costo: 11600, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/180757-400-400/p.jpg" },
-  { id: "b-14041", cat: "tinto", nombre: "Alma Mora Malbec", det: "750 ml", costo: 8204, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/581070-400-400/p.jpg" },
-  { id: "b-247365", cat: "blanco", nombre: "Rutini Chardonnay", det: "750 ml", costo: 30300, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/427768-400-400/p.jpg" },
-  { id: "b-238811", cat: "blanco", nombre: "Colomé Torrontés", det: "750 ml", costo: 28800, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/766860-400-400/p.jpg" },
-  { id: "b-198760", cat: "blanco", nombre: "Lagarde Chardonnay", det: "750 ml", costo: 15900, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/766855-400-400/p.jpg" },
-  { id: "b-10650", cat: "blanco", nombre: "Trumpeter Chardonnay", det: "750 ml", costo: 11500, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/766834-400-400/p.jpg" },
-  { id: "b-405858", cat: "blanco", nombre: "Benjamín Sauvignon Blanc", det: "750 ml", costo: 7200, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/801524-400-400/p.jpg" },
-  { id: "b-3086784", cat: "blanco", nombre: "Luigi Bosca Rosé", det: "750 ml", costo: 35000, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/915230-400-400/p.jpg" },
-  { id: "b-243481", cat: "espumante", nombre: "Baron B Extra Brut", det: "750 ml", costo: 38840, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/596396-400-400/p.jpg" },
-  { id: "b-322229", cat: "espumante", nombre: "Chandon Brut Nature", det: "750 ml", costo: 23200, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/793073-400-400/p.jpg" },
-  { id: "b-322226", cat: "espumante", nombre: "Chandon Extra Brut", det: "750 ml", costo: 21820, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/793070-400-400/p.jpg" },
-  { id: "b-322220", cat: "espumante", nombre: "Chandon Délice", det: "750 ml", costo: 19710, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/793064-400-400/p.jpg" },
-  { id: "b-405984", cat: "espumante", nombre: "Norton Cosecha Especial Extra Brut", det: "750 ml", costo: 14500, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/824480-400-400/p.jpg" },
-  { id: "b-148860", cat: "aperitivo", nombre: "Gin Bombay Sapphire", det: "750 ml", costo: 48150, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/793689-400-400/p.jpg" },
-  { id: "b-2719", cat: "aperitivo", nombre: "Whisky Johnnie Walker Red Label", det: "750 ml", costo: 47700, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/791050-400-400/p.jpg" },
-  { id: "b-21259", cat: "aperitivo", nombre: "Gin Beefeater", det: "700 ml", costo: 37800, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/578840-400-400/p.jpg" },
-  { id: "b-318125", cat: "aperitivo", nombre: "Fernet Branca", det: "750 ml", costo: 21000, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/617349-400-400/p.jpg" },
-  { id: "b-1362208", cat: "aperitivo", nombre: "Campari", det: "750 ml", costo: 16700, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/829514-400-400/p.jpg" },
-  { id: "b-167713", cat: "aperitivo", nombre: "Cynar", det: "750 ml", costo: 16650, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/603006-400-400/p.jpg" },
-  { id: "b-26841", cat: "aperitivo", nombre: "Aperol", det: "750 ml", costo: 16600, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/602973-400-400/p.jpg" },
-  { id: "b-3088863", cat: "aperitivo", nombre: "Martini Rosso", det: "995 ml", costo: 12050, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/922120-400-400/p.jpg" },
-  { id: "b-41494", cat: "aperitivo", nombre: "Cinzano Rosso", det: "950 ml", costo: 11100, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/602984-400-400/p.jpg" },
-  { id: "b-167929", cat: "aperitivo", nombre: "Gancia", det: "950 ml", costo: 11000, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/788221-400-400/p.jpg" },
-  { id: "b-20555", cat: "cerveza", nombre: "Corona", det: "710 ml", costo: 7748, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/890502-400-400/p.jpg" },
-  { id: "b-10923", cat: "cerveza", nombre: "Patagonia Amber Lager", det: "730 ml", costo: 7300, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/890494-400-400/p.jpg" },
-  { id: "b-167840", cat: "cerveza", nombre: "Heineken", det: "1 litro", costo: 7300, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/579428-400-400/p.jpg" },
-  { id: "b-3087397", cat: "cerveza", nombre: "Stella Artois Pure Gold", det: "Lata 473 ml", costo: 4300, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/917619-400-400/p.jpg" },
-  { id: "b-243721", cat: "cerveza", nombre: "Quilmes Clásica", det: "Lata 473 ml", costo: 2700, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/907543-400-400/p.jpg" },
-  { id: "b-246613", cat: "gaseosa", nombre: "Coca-Cola", det: "2,25 litros", costo: 6100, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/783070-400-400/p.jpg" },
-  { id: "b-18976", cat: "gaseosa", nombre: "Coca-Cola Zero", det: "2,25 litros", costo: 6100, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/799920-400-400/p.jpg" },
-  { id: "b-247620", cat: "gaseosa", nombre: "Sprite", det: "2,25 litros", costo: 6100, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/791803-400-400/p.jpg" },
-  { id: "b-247632", cat: "gaseosa", nombre: "Fanta Naranja", det: "2,25 litros", costo: 6100, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/893230-400-400/p.jpg" },
-  { id: "b-247614", cat: "gaseosa", nombre: "Pepsi", det: "2 litros", costo: 4400, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/907125-400-400/p.jpg" },
-  { id: "b-247596", cat: "gaseosa", nombre: "Paso de los Toros Pomelo", det: "1,5 litros", costo: 3950, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/907124-400-400/p.jpg" },
-  { id: "b-6144", cat: "gaseosa", nombre: "Tónica Schweppes", det: "354 ml", costo: 2700, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/926761-400-400/p.jpg" },
-  { id: "b-277199", cat: "agua", nombre: "Aquarius Pera", det: "2,2 litros", costo: 4100, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/783097-400-400/p.jpg" },
-  { id: "b-1368855", cat: "agua", nombre: "H2OH! Limoneto", det: "2 litros", costo: 3500, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/843708-400-400/p.jpg" },
-  { id: "b-238851", cat: "agua", nombre: "Agua con gas Glaciar", det: "1,5 litros", costo: 3350, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/544763-400-400/p.jpg" },
-  { id: "b-1361817", cat: "agua", nombre: "Levité Pomelo Rosado", det: "1,5 litros", costo: 3300, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/827972-400-400/p.jpg" },
-  { id: "b-3072427", cat: "agua", nombre: "Levité Limonada", det: "1,5 litros", costo: 3300, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/875888-400-400/p.jpg" },
-  { id: "b-406060", cat: "agua", nombre: "Agua sin gas Villavicencio", det: "1,5 litros", costo: 3100, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/924033-400-400/p.jpg" },
-  { id: "b-348111", cat: "jugo", nombre: "Cepita Naranja", det: "1 litro", costo: 3450, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/921811-400-400/p.jpg" },
-  { id: "b-19714", cat: "jugo", nombre: "Cepita Multifruta", det: "1 litro", costo: 3450, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/921797-400-400/p.jpg" },
-  { id: "b-3065443", cat: "jugo", nombre: "Jugo exprimido de naranja Fruggina", det: "250 ml", costo: 3400, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/852227-400-400/p.jpg" }
-].map(b => Object.assign(b, { precio: Math.ceil(b.costo * (1 + BEB_MARGEN) / 500) * 500 }));
 MERCADITO.push(...BEBIDAS);
 let BEB_FILTRO = 'tinto';
 /* Envío por código postal (parte numérica). Zona 1: CABA · Zona 2: GBA cercano · Zona 3: GBA más lejos */
