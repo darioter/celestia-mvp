@@ -124,6 +124,8 @@
   // ── Otros servicios: chef semanal, mise en place, cajas y personalizado (mismas tarifas que el sitio)
   var SERVICIOS = { exp: 'Experiencia de 3 o 7 pasos', semanal: 'Chef semanal', mise: 'Mise en place', caja: 'Caja Celestia', libre: 'Personalizado' };
   var MP_PJ = 200000, MP_MULT = { '1-2': 0.8, '3-4': 1.0, '5-6': 1.25 }, MP_HORA = 25000, COMPRAS = 60000;
+  // Ingredientes estimados por jornada de chef semanal (10–12 preparaciones, comida para ~4 días). Se ajusta con el índice de la canasta.
+  var ING_SEM = { '1-2': 110000, '3-4': 180000, '5-6': 240000 };
   var PP_TXT = { '1-2': '1 a 2 personas', '3-4': '3 a 4 personas', '5-6': '5 a 6 personas' };
   var MISE = { verd: ['Verduras', 'Peladas, cortadas, blanqueadas y embolsadas'], prot: ['Proteínas', 'Despinadas, porcionadas y marinadas'],
     form: ['Hamburguesas y milanesas', 'Formadas o empanadas, separadas y listas para el freezer'], fond: ['Fondos y salsas base', 'Caldos, salsas y aderezos'],
@@ -146,13 +148,15 @@
       var j = parseInt(f.sjor, 10) || 1, hon = Math.round(MP_PJ * j * (MP_MULT[f.spp] || 1) / 1000) * 1000;
       r.titulo = 'Chef semanal'; r.formato = j + (j > 1 ? ' jornadas' : ' jornada') + ' · ' + PP_TXT[f.spp]; r.personas = PP_TXT[f.spp];
       r.items.push(['Servicio de chef · ' + j + (j > 1 ? ' jornadas' : ' jornada') + ' de ~6–7 hs · ' + (10 * j) + ' a ' + (12 * j) + ' preparaciones', hon]);
-      if (f.compras) r.items.push(['Compras de mercado y proveedores · ' + j + ' × ' + money(COMPRAS), COMPRAS * j]);
+      if (f.compras) r.items.push(['Servicio de compras (tiempo de mercado y proveedores) · ' + j + ' × ' + money(COMPRAS), COMPRAS * j]);
+      var ing = Math.round(ING_SEM[f.spp] * j * IDX / 1000) * 1000;
+      if (f.ingEst !== false) r.items.push(['Ingredientes estimados · ' + (10 * j) + ' a ' + (12 * j) + ' preparaciones (al costo, con ticket)', ing]);
       r.menuTit = 'Así funciona';
-      r.menu = [['Planificación y menú', 'Gustos, restricciones y cantidad de comensales. Para deportistas, coordinado con su nutricionista.'],
+      r.menu = [['Planificación y menú', 'Gustos, restricciones y cantidad de comensales. Para deportistas, coordino los menús con su nutricionista (sus honorarios no están incluidos).'],
         ['Producción en domicilio', '~6–7 horas por jornada y entre 10 y 12 preparaciones: principales, guarniciones y opciones dulces.'],
         ['Entrega y conservación', 'Comida para ' + (j > 1 ? 'toda la semana' : 'unos cuatro días') + ', parte refrigerada y parte congelada. Cocina ordenada y limpia al terminar.']];
       r.incluye = ['Diseño del menú semanal', 'Producción en tu cocina', 'Fraccionado y etiquetado', f.compras ? 'Compras de mercado y proveedores' : 'Lista de compras para que la hagas vos', 'Cocina limpia al terminar'];
-      r.noIncluye = ['Ingredientes (al costo, con ticket)', 'Viáticos: según la ubicación, se definen después', 'Envases y recipientes para freezer', 'IVA (los precios son sin IVA)'];
+      r.noIncluye = [f.ingEst !== false ? 'Diferencia de ingredientes: el estimado se ajusta al menú y se cobra al costo, con ticket' : 'Ingredientes (al costo, con ticket)', 'Honorarios de nutricionista', 'Viáticos: según la ubicación, se definen después', 'Envases y recipientes para freezer', 'IVA (los precios son sin IVA)'];
       r.cond = 'Las jornadas se coordinan con al menos 48 horas de anticipación. El menú se cierra antes de cada jornada; cambios de fecha con 24 horas de aviso.';
     } else if (f.servicio === 'mise') {
       var jm = parseFloat(f.mjor) || 1, hs = jm * 8, honm = Math.round(hs * MP_HORA);
@@ -199,7 +203,8 @@
       h += f.servicio === 'semanal' ? '<div class="pz-f"><label>Jornadas</label>' + sel('sjor', [['1', '1 jornada'], ['2', '2 jornadas'], ['3', '3 jornadas'], ['4', '4 jornadas']], f.sjor) + '</div></div>'
         : '<div class="pz-f"><label>Duración</label>' + sel('mjor', [['0.5', 'Media jornada (4 hs)'], ['1', '1 jornada (8 hs)'], ['2', '2 jornadas'], ['3', '3 jornadas']], f.mjor) + '</div></div>';
       if (f.servicio === 'mise') h += '<div class="pz-f"><label>Qué preparo</label>' + Object.keys(MISE).map(function (k) { return '<label class="pz-chk" style="margin:0 0 4px"><input type="checkbox" data-mi="' + k + '"' + ((f.mitems || []).indexOf(k) >= 0 ? ' checked' : '') + '> ' + esc(MISE[k][0]) + '</label>'; }).join('') + '</div>';
-      h += '<label class="pz-chk"><input type="checkbox" data-k="compras"' + (f.compras ? ' checked' : '') + '> Hago yo las compras (+ ' + money(COMPRAS) + ' por jornada)</label>';
+      h += '<label class="pz-chk"><input type="checkbox" data-k="compras"' + (f.compras ? ' checked' : '') + '> Hago yo las compras (+ ' + money(COMPRAS) + ' por jornada, solo mi tiempo)</label>';
+      if (f.servicio === 'semanal') h += '<label class="pz-chk"><input type="checkbox" data-k="ingEst"' + (f.ingEst !== false ? ' checked' : '') + '> Sumar ingredientes estimados (' + money(Math.round(ING_SEM[f.spp] * IDX / 1000) * 1000) + ' por jornada)</label>';
     }
     if (f.servicio === 'caja') {
       var c = cajaSel();
@@ -229,7 +234,7 @@
       '<p class="pz-intro">' + esc(f.intro) + (r.lead ? ' ' + esc(r.lead) : '') + '</p>' + menu +
       (f.notas ? '<p class="pz-fine" style="margin-top:3mm"><b>Notas:</b> ' + esc(f.notas) + '</p>' : '') +
       '<div class="pz-row"><div><div class="pz-h2">Detalle</div><div class="pz-inv">' + filas +
-      '<div class="t"><span>Total' + (r.personas ? ' · ' + esc(r.personas) : '') + '<small>' + (f.servicio === 'semanal' || f.servicio === 'mise' ? 'Ingredientes y viáticos aparte' : 'No incluye IVA') + '</small></span><b>' + money(r.total) + '</b></div></div>' +
+      '<div class="t"><span>Total' + (r.personas ? ' · ' + esc(r.personas) : '') + '<small>' + (f.servicio === 'semanal' ? (f.ingEst !== false ? 'Con ingredientes estimados · viáticos aparte' : 'Ingredientes y viáticos aparte') : f.servicio === 'mise' ? 'Ingredientes y viáticos aparte' : 'No incluye IVA') + '</small></span><b>' + money(r.total) + '</b></div></div>' +
       '<p class="pz-pago"><b>Forma de pago:</b> ' + esc(r.pago) + '</p></div>' +
       '<div><div class="pz-h2">Incluye</div><ul class="pz-lst">' + r.incluye.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' +
       '<div class="pz-h2" style="margin-top:4mm">No incluye</div><ul class="pz-lst no">' + r.noIncluye.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div></div>' +
@@ -479,7 +484,7 @@
         f[k] = el.type === 'checkbox' ? el.checked : el.value;
         if (k === 'total') f.totalRes = false;
         if (k === 'servicio') { f.total = ''; f.intro = INTRO[f.servicio] || f.intro; guardar(); form(); render(); return; }
-        if (f.servicio !== 'exp' && /^(caja|cajaOp|spp|sjor|mjor|compras|envio)$/.test(k)) { if (k === 'caja') f.cajaOp = 0; guardar(); form(); render(); return; }
+        if (f.servicio !== 'exp' && /^(caja|cajaOp|spp|sjor|mjor|compras|envio|ingEst)$/.test(k)) { if (k === 'caja') f.cajaOp = 0; guardar(); form(); render(); return; }
         if (k === 'pasos' || (f.totalRes && /^(personas|fecha|turno)$/.test(k))) { f.total = ''; f.totalRes = false; if (k !== 'pasos') { var ti = $('[data-k=total]'); if (ti) ti.value = ''; } }
         if (k === 'pasos') { f.platos =PASOS[f.pasos].map(function () { return ''; }); f.platosB = f.platos.slice(); f.etiquetas = null; f.estilo = ''; form(); }
         guardar(); render();

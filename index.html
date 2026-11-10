@@ -2423,7 +2423,7 @@ programar();
             </div>
             <div>
               <div id="i18n-semanal-p1-t" style="font-size:14px;font-weight:500;color:var(--navy);margin-bottom:4px;">Planificación y menú</div>
-              <div id="i18n-semanal-p1-d" style="font-size:13px;color:var(--text-mid);font-weight:300;line-height:1.6;">Consulto gustos, restricciones y cantidad de comensales. Si trabajo para deportistas, coordino los menús con sus nutricionistas.</div>
+              <div id="i18n-semanal-p1-d" style="font-size:13px;color:var(--text-mid);font-weight:300;line-height:1.6;">Consulto gustos, restricciones y cantidad de comensales. Si trabajo para deportistas, coordino los menús con sus nutricionistas (sus honorarios no están incluidos).</div>
             </div>
           </div>
           <div style="display:flex;gap:16px;align-items:flex-start;">
@@ -2953,7 +2953,7 @@ programar();
 
         <div class="mp2-q"><span class="mp2-qn">3</span><div><span class="mp2-qt">¿Quién hace las compras?</span><span class="mp2-qs">Los ingredientes se pagan aparte, al costo, con ticket. Los viáticos dependen de la ubicación y se definen después, cuando confirmamos la dirección.</span></div></div>
         <div class="mp2-opts mp2-2">
-          <button type="button" class="mp2-o" id="mpf-compras-chef" onclick="mpSetCompras('chef')"><b>Las hago yo</b><small>Mercado y proveedores · + $60.000 por jornada</small></button>
+          <button type="button" class="mp2-o" id="mpf-compras-chef" onclick="mpSetCompras('chef')"><b>Las hago yo</b><small>Mi tiempo de mercado y proveedores · + $60.000 por jornada</small></button>
           <button type="button" class="mp2-o" id="mpf-compras-cliente" onclick="mpSetCompras('cliente')"><b>Las hacés vos</b><small>Me dejás todo en casa antes de la jornada</small></button>
         </div>
         </div>
@@ -2982,7 +2982,7 @@ programar();
           <div class="mp2-sum-rows" id="mp2-sum-rows"></div>
           <div class="mp2-tot" id="mp2-tot"></div>
           <div id="mpf-result"></div>
-          <ol class="mp2-how"><li><b>Planificación y menú:</b> gustos, restricciones y cuántos comen. Si sos deportista, lo coordino con tu nutricionista.</li><li><b>Producción en tu casa:</b> ~6–7 hs por jornada y entre 10 y 12 preparaciones.</li><li><b>Entrega y conservación:</b> comida para ~4 días, refrigerada y congelada. Ordeno y limpio antes de irme.</li></ol>
+          <ol class="mp2-how"><li><b>Planificación y menú:</b> gustos, restricciones y cuántos comen. Si sos deportista, lo coordino con tu nutricionista (sus honorarios no están incluidos).</li><li><b>Producción en tu casa:</b> ~6–7 hs por jornada y entre 10 y 12 preparaciones.</li><li><b>Entrega y conservación:</b> comida para ~4 días, refrigerada y congelada. Ordeno y limpio antes de irme.</li></ol>
         </div>
       </aside>
     </div>
@@ -5263,6 +5263,9 @@ function mpHonorarioActual() {
 // Compras: se cobran por jornada (en los dos modos). Viáticos: según ubicación, se definen después.
 const MP_COMPRAS = 60000;
 function mpComprasMonto(jornadas) { return mpState.mCompras === 'chef' ? MP_COMPRAS * (parseInt(jornadas || mpState.jornadas) || 1) : 0; }
+// Ingredientes estimados por jornada (10–12 preparaciones, comida para ~4 días), ajustados por el índice de la canasta.
+const MP_ING = { '1-2': 110000, '3-4': 180000, '5-6': 240000 };
+function mpIngEst(pp, jornadas) { const idx = (window.CEL_IDX > 0.5 && window.CEL_IDX < 3) ? window.CEL_IDX : 1; return Math.round((MP_ING[pp] || 180000) * (parseInt(jornadas) || 1) * idx / 1000) * 1000; }
 function mpPreps(jornadas) { const j = parseInt(jornadas) || 1; return { min: 10 * j, max: 12 * j, dias: j >= 2 ? 'toda la semana' : '~4 días' }; }
 function mpSetCompras(v) {
   mpState.mCompras = v;
@@ -5349,7 +5352,8 @@ function updateMpResult(elId, pp, jornadas, comidas) {
       <span style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--gold-light);">${fmt(hon + comp)}</span>
     </div>
     <div style="font-size:12px;color:rgba(250,246,239,0.4);text-align:right;margin-bottom:12px;">${hs} · ${pr.min} a ${pr.max} preparaciones${comp ? ` · servicio ${fmt(hon)} + compras ${fmt(comp)}` : ''}</div>
-    <div style="font-size:12px;color:rgba(250,246,239,0.4);font-style:italic;line-height:1.6;">Ingredientes aparte, al costo, coordinados junto al menú. Viáticos según la ubicación: se definen después, al confirmar la dirección.</div>`;
+    <div style="display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;color:rgba(250,246,239,0.7);margin:-4px 0 10px;"><span>+ Ingredientes estimados</span><span>~${fmt(mpIngEst(pp, jornadas))}</span></div>
+    <div style="font-size:12px;color:rgba(250,246,239,0.4);font-style:italic;line-height:1.6;">Los ingredientes se pagan al costo, con ticket: el estimado se ajusta al menú. Viáticos según la ubicación: se definen después, al confirmar la dirección.</div>`;
 }
 
 // Flujo meal prep
@@ -6608,7 +6612,7 @@ var I18N = {
     semanal_p: 'Daro cocina en tu casa, deja todo fraccionado, etiquetado y listo para regenerar. Desayunos, almuerzos, meriendas, cenas y postres — variados y de calidad, sin que tengas que mover un dedo.',
     semanal_btn: 'Solicitar chef semanal →',
     btn_volver_inicio: '← Volver al inicio',
-    semanal_p1_t: 'Planificación y menú', semanal_p1_d: 'Consulto gustos, restricciones y cantidad de comensales. Si trabajo para deportistas, coordino los menús con sus nutricionistas.',
+    semanal_p1_t: 'Planificación y menú', semanal_p1_d: 'Consulto gustos, restricciones y cantidad de comensales. Si trabajo para deportistas, coordino los menús con sus nutricionistas (sus honorarios no están incluidos).',
     semanal_p2_t: 'Producción en domicilio', semanal_p2_d: 'Trabajo unas 6–7 horas por jornada y elaboro entre 10 y 12 preparaciones: principales, guarniciones y opciones dulces.',
     semanal_p3_t: 'Entrega y conservación', semanal_p3_d: 'Dejo comidas para unos cuatro días, algunas refrigeradas y otras congeladas. Organizo la cocina y limpio antes de irme.',
     semanal_porciones_t: '10 a 12 preparaciones por jornada', semanal_porciones_d: 'Comida para unos 4 días. Compras: + $60.000 por jornada si las hago yo. Viáticos según la ubicación, a definir después.',
@@ -6747,7 +6751,7 @@ var I18N = {
     semanal_h3: 'One or two sessions that get your whole week covered',
     semanal_p: 'Your chef cooks at your home, leaves everything portioned, labelled and ready to reheat. Breakfasts, lunches, snacks, dinners and desserts — varied and high quality, without lifting a finger.',
     semanal_btn: 'Request weekly chef →',
-    semanal_p1_t: 'Planning and menu', semanal_p1_d: 'I ask about tastes, dietary restrictions and how many people eat. For athletes, I can coordinate the menus with their nutritionists.',
+    semanal_p1_t: 'Planning and menu', semanal_p1_d: 'I ask about tastes, dietary restrictions and how many people eat. For athletes, I can coordinate the menus with their nutritionists (their fees are not included).',
     semanal_p2_t: 'Cooking at your home', semanal_p2_d: 'I work about 6–7 hours per session and make 10 to 12 dishes: mains, sides and sweet options.',
     semanal_p3_t: 'Delivery and storage', semanal_p3_d: 'I leave food for about four days, some refrigerated and some frozen. I tidy the kitchen and clean up before leaving.',
     semanal_porciones_t: '10 to 12 dishes per session', semanal_porciones_d: 'Food for about 4 days. Shopping: + $60,000 per session if I do it. Travel depends on the location and is set afterwards.',
@@ -6863,7 +6867,7 @@ var I18N = {
     semanal_h3: 'Uma ou duas jornadas que deixam a semana toda pronta',
     semanal_p: 'O chef cozinha na sua casa, deixa tudo porcionado, rotulado e pronto para aquecer. Cafés da manhã, almoços, lanches, jantares e sobremesas — variados e de qualidade, sem você mover um dedo.',
     semanal_btn: 'Solicitar chef semanal →',
-    semanal_p1_t: 'Planejamento e menu', semanal_p1_d: 'Consulto gostos, restrições e número de pessoas. Para atletas, coordeno os menus com seus nutricionistas.',
+    semanal_p1_t: 'Planejamento e menu', semanal_p1_d: 'Consulto gostos, restrições e número de pessoas. Para atletas, coordeno os menus com seus nutricionistas (seus honorários não estão incluídos).',
     semanal_p2_t: 'Produção em domicílio', semanal_p2_d: 'Trabalho cerca de 6–7 horas por jornada e preparo de 10 a 12 receitas: pratos principais, acompanhamentos e doces.',
     semanal_p3_t: 'Entrega e conservação', semanal_p3_d: 'Deixo comida para uns quatro dias, parte refrigerada e parte congelada. Organizo a cozinha e limpo antes de sair.',
     semanal_porciones_t: '10 a 12 preparações por jornada', semanal_porciones_d: 'Comida para uns 4 dias. Compras: + $60.000 por jornada se eu fizer. Deslocamento conforme a localização, definido depois.',
