@@ -177,7 +177,7 @@
       var env = sub >= ENVIO_GRATIS ? 0 : (ENVIO[f.envio] || 0);
       r.envio = ['Envío · ' + (ENVIO_TXT[f.envio] || 'CABA') + (env ? '' : ' (sin cargo)'), env];
       r.menuTit = 'El menú'; r.menu = c ? (c.menu || []) : [];
-      if (c && c.lead) r.lead = c.lead;
+      if (c && c.lead) r.lead = String(c.lead).replace('{mesa}', (o && o.mesa) || ('para ' + ((o && o.personas) || '') + ' personas'));
       r.incluye = ['Elaboración artesanal el día anterior o el mismo día', 'Cada preparación en su envase, lista para regenerar', 'Guía impresa para regenerar y servir', 'Entrega refrigerada en la franja elegida'];
       r.noIncluye = ['Bebidas', 'Vajilla y servicio en mesa', 'IVA (los precios son sin IVA)'];
       r.pago = 'seña del 50% para confirmar el pedido y saldo antes de la entrega, por transferencia o MercadoPago.';
