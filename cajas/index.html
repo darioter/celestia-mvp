@@ -295,6 +295,13 @@ section{padding:70px 0}
 @media(max-width:900px){.hx-vis{max-width:340px;aspect-ratio:4/4.4}}
 @media(max-width:600px){.merc{grid-template-columns:1fr 1fr;gap:10px}.mi .tx{padding:10px}.mi .tx b{font-size:16.5px}.mi .tx small{font-size:11.5px}.mi .pr{font-size:12.5px;padding:4px 9px;top:8px;left:8px}.mi .badge{top:8px;right:8px;font-size:9.5px}.mi-add,.mi .qty.on{margin:8px}.mi-add{padding:8px 10px;font-size:13px}.mi .qty.on span{font-size:12px}.mi .qty.on button{width:34px;height:34px}}
 
+/* Bebidas con el mismo marco que el mercadito */
+.bmi .ph{background:radial-gradient(circle at 50% 36%,#fff 0%,#f7f0e2 52%,#eadcbd 100%)}
+.bmi .ph img{object-fit:contain;padding:44px 18% 74px;mix-blend-mode:multiply}
+.bmi .ph::after{background:linear-gradient(180deg,rgba(13,27,42,0) 58%,rgba(13,27,42,.9) 100%)}
+.bmi .bico{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:64px;font-style:normal;padding-bottom:40px}
+@media(max-width:600px){.bmi .ph img{padding:36px 16% 62px}}
+
 /* Hero a pantalla completa con la mesa y la caja */
 .hero.hxf{position:relative;min-height:calc(100svh - 64px);display:flex;align-items:center;background:var(--nv);overflow:hidden;padding:0}
 .hxf-bg{position:absolute;inset:-40px;background:url('/img/cajas/hero-mesa.webp') center/cover;filter:blur(28px) brightness(.45) saturate(1.1);transform:scale(1.1)}
@@ -500,7 +507,7 @@ section{padding:70px 0}
 
   <div class="cat-h" id="bebidas"><h3>Almacén de bebidas</h3><span class="sub" style="margin:0">Vinos, espumantes, aperitivos, cervezas, gaseosas y aguas. Llegan frías junto con tu caja.</span></div>
   <div class="bchips" id="beb-chips"></div>
-  <div class="bgrid" id="beb"></div>
+  <div class="merc" id="beb"></div>
   <p class="sub" style="font-size:12px;margin:10px 0 0">Venta de bebidas alcohólicas solo a mayores de 18 años. Precios sujetos a disponibilidad: si alguna falta, te ofrezco una equivalente.</p>
 </div></section>
 
@@ -825,10 +832,13 @@ function pintarBebidas() {
   ch.innerHTML = Object.keys(BEB_CATS).map(k => `<button type="button" class="bch${k === BEB_FILTRO ? ' on' : ''}" data-bcat="${k}">${BEB_CATS[k][0]} ${BEB_CATS[k][1]}<small>${BEBIDAS.filter(b => b.cat === k).length}</small></button>`).join('');
   g.innerHTML = BEBIDAS.filter(b => b.cat === BEB_FILTRO).map(b => {
     const it = st.carrito.find(x => x.id === b.id), n = it ? it.cant : 0;
-    return `<div class="bi${n ? ' en' : ''}"><div class="bph"><img src="${b.img}" alt="${b.nombre}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'${BEB_CATS[b.cat][0]}'}))"></div>
-      <div class="btx"><b>${b.nombre}</b><small>${b.det}</small><strong>${f$(b.precio)}</strong></div>
-      ${n ? `<div class="qty on"><button type="button" data-m="${b.id}" data-d="-1" aria-label="Quitar">−</button><span>${n}</span><button type="button" data-m="${b.id}" data-d="1" aria-label="Sumar">+</button></div>`
-          : `<button type="button" class="mi-add" data-m="${b.id}" data-d="1">Agregar <span>+</span></button>`}</div>`;
+    return `<div class="mi bmi${n ? ' en' : ''}">
+      <div class="ph"><img src="${b.img}" alt="${b.nombre}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('i'),{className:'bico',textContent:'${BEB_CATS[b.cat][0]}'}))">
+        <span class="pr">${f$(b.precio)}</span>
+        <div class="tx"><b>${b.nombre}</b><small>${b.det}</small></div></div>
+      ${n ? `<div class="qty on"><button type="button" data-m="${b.id}" data-d="-1" aria-label="Quitar">−</button><span>${n} en tu pedido</span><button type="button" data-m="${b.id}" data-d="1" aria-label="Sumar">+</button></div>`
+          : `<button type="button" class="mi-add" data-m="${b.id}" data-d="1">Agregar <span>+</span></button>`}
+    </div>`;
   }).join('');
 }
 document.addEventListener('click', e => {
