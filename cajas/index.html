@@ -710,9 +710,9 @@ function pintarOcasiones() {
     return `<button type="button" class="fz${st.ocasion === k ? ' on' : ''}${ab ? '' : ' cerrada'}" data-k="${k}" ${ab ? '' : 'disabled'} style="--bg:url('${U(o.img, 600, 600)}')"><i>${o.icono}</i><b>${o.nombre}</b><small>${o.sub}</small>${temporada(k) ? `<span class="cierre">${ab ? 'Pedidos hasta el ' + o.cierre.slice(8, 10) + '/' + o.cierre.slice(5, 7) : 'Pedidos cerrados'}</span>` : ''}</button>`;
   }).join('');
   const temp = ks.filter(temporada).map(k => OCASIONES[k].nombre);
-  if (temp.length) document.getElementById('hero-k').textContent = '✦ Cajas Celestia · ' + temp.join(' y ') + ' con cupos limitados';
+  if (temp.length) document.getElementById('hero-k').textContent = '✦ Cajas Celestia · ' + (temp.length > 1 ? temp.slice(0, -1).join(', ') + ' y ' + temp[temp.length - 1] : temp[0]) + ' con cupos limitados';
   document.getElementById('faq-cierre').textContent = 'Con al menos ' + ANTICIPACION_HORAS + ' horas de anticipación, así tu caja se elabora con producto fresco comprado para tu pedido.' +
-    (ks.filter(temporada).length ? ' Para las fiestas: ' + ks.filter(temporada).map(k => OCASIONES[k].nombre + ' hasta el ' + fechaLarga(OCASIONES[k].cierre)).join(' y ') + ', o hasta completar los cupos.' : '');
+    (ks.filter(temporada).length ? ' Para las fiestas: ' + ks.filter(temporada).map(k => OCASIONES[k].nombre + ' hasta el ' + fechaLarga(OCASIONES[k].cierre)).join('; ') + ', o hasta completar los cupos.' : '');
 }
 let calMes = null;
 const MESES_DN = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
