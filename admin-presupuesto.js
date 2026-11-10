@@ -241,8 +241,46 @@
       '<div class="pz-h2">Condiciones</div><p class="pz-fine" style="margin:0">' + esc(r.cond) + ' La seña no es reembolsable y se toma a cuenta; por fuerza mayor se reprograma de común acuerdo. Alergias y restricciones: informarlas al confirmar. Términos completos en chefprivado.ar/terminos.</p>' +
       '</div></div>' +
       '<footer class="pz-ft"><div class="pz-firma"><b>Daro Castello</b>Chef · Celestia Chef Privado</div><div style="text-align:right">chefprivado.ar · +54 9 11 6041-0607<br>CABA y Gran Buenos Aires</div></footer></section>';
-    ajustar(doc); escalar(); reajustar(doc);
+    ajustar(doc); escalar(); reajustar(doc); refrescarMensaje();
   }
+
+  // ── Mensaje para mandar junto al PDF (se arma con los datos del presupuesto)
+  function tituloMsg() {
+    if (f.servicio === 'exp') return f.menuNombre || ('Menú de ' + f.pasos + ' pasos');
+    try { return calcAlt().titulo; } catch (e) { return 'Propuesta'; }
+  }
+  function mensaje() {
+    var pri = String(f.cliente || '').trim().split(/\s+/)[0] || '';
+    var fecha = f.fecha ? new Date(f.fecha + 'T12:00:00').toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' }) : '';
+    var L = [], total, pago;
+    L.push('¡Hola' + (pri ? ' ' + pri : '') + '! Te paso el presupuesto de *' + tituloMsg() + '*' + (fecha ? ' para el ' + fecha : '') + (f.ocasion ? ' (' + f.ocasion + ')' : '') + '.');
+    if (f.servicio === 'exp') {
+      var c = calcular(f); total = String(f.total).replace(/\D/g, '') ? +String(f.total).replace(/\D/g, '') : c.total;
+      L.push('Es una experiencia de ' + f.pasos + ' pasos para ' + c.personas + ' personas: diseño el menú, hago las compras, preparo todo en mi cocina y lo termino y sirvo en tu casa' + (c.asistentes ? ', con ' + c.asistentes + ' asistente' + (c.asistentes > 1 ? 's' : '') : '') + '. La cocina queda limpia al terminar.');
+      pago = 'Para reservar la fecha pedimos una seña del 50%; el saldo se abona al inicio del servicio.';
+    } else {
+      var r = calcAlt(); total = r.total; pago = 'Para confirmar pedimos una seña del 50% ' + (f.servicio === 'caja' ? 'y el saldo antes de la entrega.' : 'y el saldo el día del servicio.');
+      if (f.servicio === 'caja' && f.caja === 'thanksgiving') {
+        var op = (cajaOps(cajaSel())[+f.cajaOp] || {});
+        L.push('Respetamos la cena tradicional completa: el pavo entero, para presentarlo y trincharlo en la mesa, con el gravy, el stuffing, las guarniciones, los pancitos y las dos tartas (pumpkin pie y apple pie). Cada preparación llega en su envase, con una tarjeta y la guía para regenerarla.');
+        L.push('Un detalle importante: al ser un pavo entero, la producción es abundante. Lo más probable es que, además de la cena' + (op.mesa ? ' ' + op.mesa : '') + ', les quede comida para el día siguiente, como en la tradición americana del turkey sandwich del viernes (va la tarjeta con la receta). Por eso el valor no se compara con una cena porcionada: es el banquete completo de Thanksgiving.');
+        L.push('Hay ingredientes que se encargan con anticipación, como el pavo, así que la seña tiene que estar acreditada al menos 72 horas antes.');
+      } else if (f.servicio === 'caja') {
+        L.push((r.lead ? r.lead + ' ' : '') + 'Llega refrigerada, cada preparación en su envase y con la guía para regenerar y servir.');
+      } else if (f.servicio === 'semanal') {
+        var j = parseInt(f.sjor, 10) || 1;
+        L.push('Cocino en tu casa ' + (j > 1 ? j + ' jornadas' : '1 jornada') + ' de unas 6–7 horas: entre ' + 10 * j + ' y ' + 12 * j + ' preparaciones (principales, guarniciones y opciones dulces) y te dejo comida para ' + (j > 1 ? 'toda la semana' : 'unos cuatro días') + ', parte refrigerada y parte congelada. Ordeno la cocina y limpio antes de irme.');
+        L.push('Los ingredientes ' + (f.ingEst !== false ? 'figuran como estimado y ' : '') + 'se pagan al costo, con ticket. Los viáticos dependen de la ubicación y los definimos cuando confirmemos la dirección.');
+      } else if (f.servicio === 'mise') {
+        L.push('Preparo en tu cocina todo lo que necesitás para cocinar la semana: cortado, porcionado, envasado y etiquetado. Los ingredientes se pagan al costo, con ticket, y los viáticos los definimos según la ubicación.');
+      }
+    }
+    L.push('*Total: ' + money(total) + '*' + (f.servicio === 'exp' ? ' (servicio, asistentes e ingredientes).' : '.'));
+    L.push(pago + ' Te adjunto el PDF con el detalle; el presupuesto es válido por ' + (parseInt(f.validez, 10) || 7) + ' días.');
+    L.push('Cualquier ajuste lo vemos sin problema. ¡Gracias por pensar en Celestia!\nDaro · Celestia Chef Privado');
+    return L.join('\n\n');
+  }
+  function refrescarMensaje() { var mt = $('#pz-msg'); if (mt && !f.msgManual) mt.value = mensaje(); }
 
   // ── Marcar la fecha: crea (o actualiza) una reserva desde el admin, sin que el cliente reserve en el sitio.
   function marcarFecha() {
@@ -440,7 +478,10 @@
       '<div class="pz-mf"><b>📌 Pedido por WhatsApp</b><span>Completá cliente y fecha, y marcala: queda reservada sin que el cliente reserve en el sitio.</span><button type="button" id="pz-marcar">Marcar la fecha (sin reserva del cliente)</button>' + (f.reservaId ? '<button type="button" id="pz-actualizar" style="background:transparent;border:1px solid rgba(232,201,107,.6);color:#FAF6EF">Actualizar la reserva elegida</button>' : '') + '<div class="pz-msg" id="pz-mf-msg"></div></div>' +
       (f.servicio !== 'exp' ? formComun() : formExp()) +
       '<div class="pz-acc"><button type="button" class="pri" id="pz-print">🖨️ Imprimir / Guardar PDF</button><button type="button" id="pz-nuevo">Nuevo</button></div>' +
-      (f.servicio === 'exp' ? '<div class="pz-acc"><button type="button" id="pz-subir">⬆ Subir menú al sitio e ingredientes</button></div>' : '');
+      (f.servicio === 'exp' ? '<div class="pz-acc"><button type="button" id="pz-subir">⬆ Subir menú al sitio e ingredientes</button></div>' : '') +
+      '<div class="pz-sug" style="margin-top:16px"><div class="pz-f"><label for="pz-msg">Mensaje para mandar (WhatsApp o mail)</label><textarea id="pz-msg" style="min-height:220px;font:13px/1.5 \'DM Sans\',sans-serif"></textarea></div>' +
+      '<div class="pz-acc" style="margin-top:0"><button type="button" class="pri" id="pz-copiar">📋 Copiar</button><button type="button" id="pz-wa">WhatsApp</button><button type="button" id="pz-mail">Mail</button><button type="button" id="pz-regen" title="Volver a armar el texto con los datos actuales">↺</button></div>' +
+      '<div class="pz-msg" id="pz-msg-st">Se arma solo con los datos del presupuesto; podés editarlo antes de copiar.</div></div>';
     function formExp() { return '' +
       '<div class="pz-sug"><div class="pz-f"><label for="pz-pega">Menú sugerido · pegalo completo</label>' +
       '<textarea id="pz-pega" spellcheck="false" placeholder="' + esc('Opción A — Mediterráneo\nEntrada: Burrata con tomates asados\nPrincipal: Sorrentinos de calabaza\nPostre: Tiramisú\n\nOpción B — Clásico\nEntrada: …\nPrincipal: …\nPostre: …') + '">' + esc(f.pegado) + '</textarea></div>' +
@@ -499,6 +540,22 @@
     });
     if ($('#pz-xmas')) $('#pz-xmas').addEventListener('click', function () { f.extras.push({ d: '', m: '' }); guardar(); form(); render(); });
     listaGuardados();
+    var mt = $('#pz-msg');
+    mt.value = f.msgManual && f.msgTexto ? f.msgTexto : mensaje();
+    mt.addEventListener('input', function () { f.msgManual = true; f.msgTexto = mt.value; guardar(); });
+    $('#pz-regen').addEventListener('click', function () { f.msgManual = false; f.msgTexto = ''; mt.value = mensaje(); guardar(); });
+    $('#pz-copiar').addEventListener('click', function () {
+      var st = $('#pz-msg-st'), ok = function () { st.className = 'pz-msg ok'; st.textContent = '✓ Copiado. Pegalo en WhatsApp o en el mail, y adjuntá el PDF.'; };
+      try { navigator.clipboard.writeText(mt.value).then(ok, function () { mt.select(); document.execCommand('copy'); ok(); }); } catch (e) { mt.select(); document.execCommand('copy'); ok(); }
+    });
+    $('#pz-wa').addEventListener('click', function () {
+      var d = String(f.contacto || '').replace(/[^\d]/g, ''); if (d.startsWith('0')) d = d.slice(1); if (d && !d.startsWith('54')) d = '549' + d.replace(/^15/, '');
+      window.open('https://wa.me/' + (d.length >= 10 ? d : '') + '?text=' + encodeURIComponent(mt.value), '_blank');
+    });
+    $('#pz-mail').addEventListener('click', function () {
+      var em = (String(f.contacto || '').match(/[^\s,;]+@[^\s,;]+/) || [''])[0];
+      location.href = 'mailto:' + em + '?subject=' + encodeURIComponent('Presupuesto Celestia · ' + tituloMsg() + ' · ' + nro) + '&body=' + encodeURIComponent(mt.value);
+    });
     $('#pz-dup').addEventListener('click', function () { nro = numero(); f.nro = nro; f.reservaId = ''; guardar(); form(); render(); estadoGuardado('Copia nueva ' + nro + ' (sin reserva vinculada).', true); });
     $('#pz-marcar').addEventListener('click', function () { f.reservaId = ''; guardar(); marcarFecha(); });
     if ($('#pz-actualizar')) $('#pz-actualizar').addEventListener('click', marcarFecha);
@@ -685,6 +742,7 @@
     var p2 = (D && !PP) ? carta(lista(f.platos), f.menuNombre, 'Opción A') + carta(lista(B), f.menuNombreB, 'Opción B') :
       carta(platosHTML, f.menuNombre, PP ? 'Una opción por paso' : '');
     doc.innerHTML = p1 + p2;
+    refrescarMensaje();
     ajustar(doc);
     escalar();
     reajustar(doc);
