@@ -93,6 +93,102 @@ def tabla_mp():
     return ('<div class="sv-tw"><table><thead><tr><th>' + bi('Personas', 'People') + '</th><th>' + bi('1 jornada · ~4 días de comida', '1 session · ~4 days of food') + '</th><th>' +
             bi('2 jornadas · toda la semana', '2 sessions · the whole week') + '</th></tr></thead><tbody>' + filas + '</tbody></table></div>')
 
+VCAL = r'''<section class="sv-sec vc" id="calendario"><span class="cp-k">✦ <span class="b-es">Temporada de verano</span><span class="b-en" lang="en">Summer season</span></span>
+<h2><span class="b-es">Elegí tus días de vacaciones</span><span class="b-en" lang="en">Pick your holiday dates</span></h2>
+<p class="vc-sub"><span class="b-es">Tocá el día de llegada y el de salida (o un solo día para una noche especial). Lo libre está en blanco; lo tachado ya está tomado.</span><span class="b-en" lang="en">Tap your arrival and departure days (or a single day for one special night). Free days are white; crossed-out days are taken.</span></p>
+<div class="vc-wrap"><div class="vc-meses" id="vc-meses"><div class="vc-load">…</div></div>
+<aside class="vc-form" data-no-tr>
+ <div class="vc-sel" id="vc-sel"></div>
+ <div class="vc-g"><span id="vc-l-dest"></span><div class="vc-ch" data-k="dest"></div><input id="vc-otro" type="text" hidden></div>
+ <div class="vc-g"><span id="vc-l-pp"></span><div class="vc-ch vc-pp" data-k="pp"></div></div>
+ <div class="vc-g"><span id="vc-l-mod"></span><div class="vc-ch" data-k="mod"></div></div>
+ <button type="button" class="vc-go" id="vc-go"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21c5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2Z"/></svg><span id="vc-go-t"></span></button>
+ <p class="vc-n" id="vc-n"></p>
+</aside></div></section>
+<style>
+.vc-sub{color:var(--mut);max-width:640px;margin:-4px 0 18px}
+.vc-wrap{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:22px;align-items:start}
+@media(max-width:900px){.vc-wrap{grid-template-columns:1fr}}
+.vc-meses{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:640px){.vc-meses{grid-template-columns:1fr}}
+.vc-mes{background:#fff;border:1px solid var(--crd);border-radius:18px;padding:14px}
+.vc-mes h3{font-family:'DM Serif Display',serif;font-weight:400;font-size:21px;margin:0 0 8px;color:var(--nv)}
+.vc-dn,.vc-gr{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.vc-dn span{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);text-align:center;padding:2px 0 4px}
+.vc-d{aspect-ratio:1;border:1px solid var(--crd);background:#fff;border-radius:10px;font:600 13.5px 'DM Sans',sans-serif;color:var(--nv);cursor:pointer;transition:background .15s,border-color .15s;padding:0}
+.vc-d:hover{border-color:var(--gd)}
+.vc-d.oc{background:#f1ece2;color:#b3a99a;text-decoration:line-through;cursor:not-allowed;border-color:transparent}
+.vc-d.pa{opacity:.35;cursor:default}
+.vc-d.fs{background:#fffaf0}
+.vc-d.in{background:rgba(201,168,76,.22);border-color:transparent;border-radius:4px}
+.vc-d.on{background:linear-gradient(135deg,var(--gd),var(--gdl));color:var(--nv);border-color:transparent}
+.vc-d.in.oc{background:#f3d9d0;color:#a35d4a}
+.vc-e{visibility:hidden}
+.vc-load{color:var(--mut);padding:30px;text-align:center}
+.vc-form{position:sticky;top:84px;background:var(--nv);color:var(--cr);border-radius:20px;padding:18px;box-shadow:0 20px 40px rgba(13,27,42,.18)}
+.vc-sel{font:400 19px 'DM Serif Display',serif;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid rgba(250,246,239,.15)}
+.vc-sel small{display:block;font:500 12px 'DM Sans',sans-serif;color:#E8C96B;margin-top:3px}
+.vc-g{margin-bottom:12px}.vc-g>span{display:block;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(250,246,239,.6);margin-bottom:6px}
+.vc-ch{display:flex;flex-wrap:wrap;gap:6px}
+.vc-ch button{border:1px solid rgba(250,246,239,.22);background:rgba(250,246,239,.05);color:var(--cr);border-radius:999px;padding:7px 12px;font:500 13px 'DM Sans',sans-serif;cursor:pointer}
+.vc-pp button{min-width:38px;padding:7px 0}
+.vc-ch button.on{background:linear-gradient(135deg,var(--gd),var(--gdl));color:var(--nv);border-color:transparent;font-weight:700}
+#vc-otro{width:100%;margin-top:8px;border:1px solid rgba(250,246,239,.25);background:rgba(250,246,239,.06);color:var(--cr);border-radius:10px;padding:9px 11px;font:14px 'DM Sans',sans-serif;box-sizing:border-box}
+.vc-go{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;margin-top:6px;padding:13px;border:0;border-radius:999px;background:#25D366;color:#fff;font:700 15px 'DM Sans',sans-serif;cursor:pointer;box-shadow:0 10px 24px rgba(37,211,102,.3)}
+.vc-n{font-size:11.5px;color:rgba(250,246,239,.55);margin:10px 0 0;text-align:center}
+.vc-warn{color:#f3b8a6}
+</style>
+<script>(function(){
+var SU='https://qolpnuscpmzqeacshfvu.supabase.co',SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvbHBudXNjcG16cWVhY3NoZnZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NjQ3OTQsImV4cCI6MjA5MTM0MDc5NH0.BJOz5Gwkeb1NqID_gkGKD5YlymifMtOwaf8iQMaBCx8',WA='5491160410607';
+var EN=function(){return document.documentElement.classList.contains('lang-en');};
+var T={es:{dest:'Destino',pp:'Personas',mod:'Qué buscan',go:'Consultar por WhatsApp',n:'Reservar no tiene costo. Te confirmo disponibilidad y traslado antes de la seña.',pick:'Elegí tus días en el calendario',dia:'día',dias:'días',warn:'Algunos días ya están tomados: lo vemos juntos.',otro:'¿Dónde? (ciudad o barrio)',D:['Costa Atlántica','Sierras','Otro destino'],M:['Una noche especial','Varios días de comida','Un encuentro grande'],dn:['L','M','M','J','V','S','D']},
+       en:{dest:'Destination',pp:'Guests',mod:'What you need',go:'Ask on WhatsApp',n:'Booking is free. I confirm availability and travel before the deposit.',pick:'Pick your dates on the calendar',dia:'day',dias:'days',warn:'Some days are already taken: we will sort it out together.',otro:'Where? (town or area)',D:['Atlantic coast','Hills','Other destination'],M:['One special night','Several days of meals','A bigger gathering'],dn:['M','T','W','T','F','S','S']}};
+var t=function(){return T[EN()?'en':'es'];};
+var hoy=new Date();hoy.setHours(12,0,0,0);
+var anio=hoy.getMonth()>=2?hoy.getFullYear()+1:hoy.getFullYear();
+var MESES=[[anio,0],[anio,1]],OC={},a=null,b=null,sel={dest:0,pp:4,mod:0};
+var iso=function(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
+var lab=function(k,o){return new Date(k+'T12:00:00').toLocaleDateString(EN()?'en-US':'es-AR',o||{weekday:'short',day:'numeric',month:'long'});};
+function pintar(){
+  var h='',min=new Date(hoy);min.setDate(min.getDate()+2);var mk=iso(min);
+  MESES.forEach(function(m){var d1=new Date(m[0],m[1],1,12),n=new Date(m[0],m[1]+1,0).getDate(),off=(d1.getDay()+6)%7;
+    var mt=d1.toLocaleDateString(EN()?'en-US':'es-AR',{month:'long',year:'numeric'});h+='<div class="vc-mes"><h3>'+mt.charAt(0).toUpperCase()+mt.slice(1)+'</h3><div class="vc-dn">'+t().dn.map(function(x){return '<span>'+x+'</span>';}).join('')+'</div><div class="vc-gr">';
+    for(var i=0;i<off;i++)h+='<button class="vc-d vc-e" tabindex="-1" aria-hidden="true"></button>';
+    for(var d=1;d<=n;d++){var k=iso(new Date(m[0],m[1],d,12)),c='vc-d',dw=new Date(m[0],m[1],d,12).getDay();
+      if(k<mk)c+=' pa';else if(OC[k])c+=' oc';
+      if(dw===5||dw===6||dw===0)c+=' fs';
+      if(a&&b&&k>a&&k<b)c+=' in';if(k===a||k===b)c+=' on';
+      h+='<button type="button" class="'+c+'" data-k="'+k+'" aria-label="'+lab(k)+(OC[k]?' (ocupado)':'')+'">'+d+'</button>';}
+    h+='</div></div>';});
+  document.getElementById('vc-meses').innerHTML=h;form();}
+function rango(){if(!a)return [];var r=[],d=new Date(a+'T12:00:00'),e=new Date((b||a)+'T12:00:00');while(d<=e){r.push(iso(d));d.setDate(d.getDate()+1);}return r;}
+function form(){var L=t(),r=rango(),s=document.getElementById('vc-sel');
+  s.innerHTML=a?(b?lab(a,{day:'numeric',month:'long'})+' → '+lab(b,{day:'numeric',month:'long'}):lab(a))+'<small>'+r.length+' '+(r.length===1?L.dia:L.dias)+(r.some(function(k){return OC[k];})?' · <span class="vc-warn">'+L.warn+'</span>':'')+'</small>':'<small style="font-size:14px">'+L.pick+'</small>';
+  document.getElementById('vc-l-dest').textContent=L.dest;document.getElementById('vc-l-pp').textContent=L.pp;document.getElementById('vc-l-mod').textContent=L.mod;
+  document.getElementById('vc-go-t').textContent=L.go;document.getElementById('vc-n').textContent=L.n;
+  var o=document.getElementById('vc-otro');o.placeholder=L.otro;o.hidden=sel.dest!==2;
+  var ch=function(k,arr){document.querySelector('.vc-ch[data-k="'+k+'"]').innerHTML=arr.map(function(x,i){var v=k==='pp'?x:i;return '<button type="button" data-v="'+v+'"'+(sel[k]==v?' class="on"':'')+'>'+x+'</button>';}).join('');};
+  ch('dest',L.D);ch('pp',[2,3,4,5,6,7,8,9,10,11,12,'12+']);ch('mod',L.M);}
+document.addEventListener('click',function(e){
+  var d=e.target.closest('.vc-d[data-k]');if(d){if(d.classList.contains('pa')||d.classList.contains('oc')&&!a)return;var k=d.getAttribute('data-k');
+    if(!a||b||k<a){a=k;b=null;}else if(k===a){b=null;}else{b=k;}pintar();return;}
+  var c=e.target.closest('.vc-ch button');if(c){var k2=c.parentNode.getAttribute('data-k');sel[k2]=k2==='pp'?c.getAttribute('data-v'):+c.getAttribute('data-v');form();if(k2==='dest'&&sel.dest===2)document.getElementById('vc-otro').focus();return;}
+  if(e.target.closest('#vc-go')){var L=T[EN()?'en':'es'],r=rango(),dest=sel.dest===2?(document.getElementById('vc-otro').value.trim()||L.D[2]):L.D[sel.dest];
+    var cuando=a?(b?lab(a,{day:'numeric',month:'long'})+' al '+lab(b,{day:'numeric',month:'long'})+' ('+r.length+' '+(r.length===1?L.dia:L.dias)+')':lab(a,{weekday:'long',day:'numeric',month:'long'})):(EN()?'to be defined':'a definir');
+    var m=EN()?'Hi Daro! I would like a private chef on my holiday.\n*Where:* '+dest+'\n*When:* '+cuando.replace(' al ',' to ')+'\n*Guests:* '+sel.pp+'\n*What we need:* '+L.M[sel.mod]+'\nCan you check availability and travel?'
+             :'Hola Daro! Quiero un chef privado en mis vacaciones.\n*Destino:* '+dest+'\n*Fechas:* '+cuando+'\n*Personas:* '+sel.pp+'\n*Qué buscamos:* '+L.M[sel.mod]+'\n¿Me confirmás disponibilidad y traslado?';
+    try{if(window.celTrack)celTrack('wa_click',{servicio:'vacaciones',origen:'calendario_verano'});}catch(x){}
+    window.open('https://wa.me/'+WA+'?text='+encodeURIComponent(m),'_blank','noopener');}
+});
+document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('[data-cel-lang]'))setTimeout(pintar,60);});
+var hd={apikey:SK,Authorization:'Bearer '+SK};
+Promise.all([fetch(SU+'/rest/v1/reservas?select=fecha,estado&estado=in.(reservada,confirmada,ofrecida,aceptada)&fecha=gte.'+anio+'-01-01&fecha=lte.'+anio+'-02-28',{headers:hd}).then(function(r){return r.ok?r.json():[];}),
+             fetch(SU+'/rest/v1/bloqueos?select=fecha&fecha=gte.'+anio+'-01-01&fecha=lte.'+anio+'-02-28',{headers:hd}).then(function(r){return r.ok?r.json():[];})])
+ .then(function(x){x[0].concat(x[1]).forEach(function(r){var k=(r.fecha||'').slice(0,10);if(k)OC[k]=1;});pintar();}).catch(function(){pintar();});
+pintar();
+})();</script>
+'''
+
 PAGES = [
  dict(slug='cena-romantica-en-casa', img='/img/svc-3pasos.webp', menu=1,
   title='Cena romántica en casa con chef privado en Buenos Aires | Celestia', title_en='Romantic dinner at home with a private chef in Buenos Aires | Celestia',
@@ -199,7 +295,7 @@ PAGES = [
        ('¿Trabajan fuera de CABA y GBA?','Do you work outside Buenos Aires?','Sí: cotizamos el traslado y lo confirmamos antes de la seña.','Yes: we quote travel and confirm it before the deposit.'),
        ('¿Qué formatos hacen?','What formats do you do?','Cena de pasos servida, estaciones o finger food: lo definimos según el espacio y la cantidad de invitados.','Plated courses, stations or finger food: we decide based on the space and guest count.')]),
 
- dict(slug='chef-privado-en-vacaciones', img='https://images.unsplash.com/photo-1681657687044-9bde75edb38e?w=1800&h=1000&fit=crop&q=72&auto=format', menu=None, og='cena-romantica', zona=('Costa, sierras y quintas', 'Coast, hills and country houses'),
+ dict(slug='chef-privado-en-vacaciones', img='https://images.unsplash.com/photo-1681657687044-9bde75edb38e?w=1800&h=1000&fit=crop&q=72&auto=format', menu=None, og='cena-romantica', extra=lambda: VCAL, zona=('Costa, sierras y quintas', 'Coast, hills and country houses'),
   area=['Costa Atlántica', 'Sierras', 'Provincia de Buenos Aires', 'Argentina'],
   title='Chef privado en vacaciones: costa, sierras y casas de veraneo | Celestia', title_en='Private chef on holiday: coast, hills and summer houses | Celestia',
   desc='Chef privado en tus vacaciones: Daro Castello cocina en la casa que alquilaste en la costa, las sierras o una quinta. Una noche especial o varios días de comida resuelta, con producto del lugar. Mismos valores que en Buenos Aires + traslado.',
@@ -208,7 +304,7 @@ PAGES = [
   sub=('En la costa, en las sierras o en una quinta con amigos: una noche especial que se recuerda o varios días de comida resuelta, para que nadie tenga que pensar en el menú.',
        'At the coast, in the hills or at a country house with friends: one special night to remember or several days of meals sorted, so nobody has to think about the menu.'),
   precio=(f(total(1,2)), 'para 2 · base Buenos Aires + traslado', 'for 2 · Buenos Aires base + travel'),
-  cta=(WA + quote('Hola Daro! Quiero un chef privado en mis vacaciones. Lugar: … Fechas: … Somos: …'), 'Consultar mi viaje →', 'Ask about my trip →'),
+  cta=('#calendario', 'Ver fechas de verano →', 'See summer dates →'),
   wa='Hola Daro! Quiero un chef privado en mis vacaciones. Lugar: … Fechas: … Somos: …',
   inc=[('🌙','Una noche especial','One special night','Menú de 3 o 7 pasos para un cumpleaños, un aniversario o la última cena del viaje.','A 3 or 7-course menu for a birthday, an anniversary or the last dinner of the trip.'),
        ('🍲','Varios días resueltos','Several days sorted','Jornadas de cocina con las comidas listas para varios días, ideal para familias o grupos.','Cooking sessions with meals ready for several days, ideal for families or groups.'),
@@ -253,6 +349,7 @@ def pagina(P):
     h += '<main class="sv-wrap">'
     h += ('<section class="sv-sec"><span class="cp-k">✦ ' + bi('Qué incluye', "What's included") + '</span><h2>' + bi('Todo resuelto, de principio a fin', 'Everything handled, start to finish') + '</h2><div class="sv-inc">' +
           ''.join(f'<div><i>{ic}</i><b>{bi(t, te)}</b><span>{bi(d, de)}</span></div>' for ic, t, te, d, de in P['inc']) + '</div></section>')
+    if P.get('extra'): h += P['extra']()
     h += ('<section class="sv-sec"><span class="cp-k">✦ ' + bi('Cómo funciona', 'How it works') + '</span><h2>' + bi(*P.get('pasos_h', ('Cuatro pasos y listo', 'Four steps and done'))) + '</h2><div class="sv-steps">' +
           ''.join(f'<div><b>{bi(t, te)}</b>{bi(d, de)}</div>' for t, te, d, de in P['pasos']) + '</div></section>')
     if P['tabla']:

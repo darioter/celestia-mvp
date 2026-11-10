@@ -135,6 +135,17 @@ INFORMACIÓN DEL NEGOCIO
 ${con}`;
 }
 
+/* ¿el primer mensaje de una charla nueva es una consulta para Celestia? (los mensajes armados desde la web arrancan con "Hola Daro!") */
+async function esConsultaCelestia(texto) {
+  const t = String(texto || '');
+  if (/celestia|chefprivado|chef privado|private chef|chef semanal|mise en place|thanksgiving|degustaci[oó]n de 7|experiencia de 3|^hola daro! (quiero|me interesa|tengo una (consulta|duda)|le[ií] el blog)/i.test(t)) return true;
+  if (t.length < 3 || /^\[El cliente mandó/.test(t)) return false;
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 5, system: 'Daro usa el mismo WhatsApp para su negocio de chef privado (Celestia: experiencias gastronómicas en casa, chef semanal, cajas de comida, clases de cocina, eventos, consultoría gastronómica) y para su vida personal y otros trabajos (estudio de arquitectura, amigos, familia). Te paso el primer mensaje de una persona nueva. Respondé solo SI si es una consulta o interés de cliente para Celestia, o NO si es personal, de otro trabajo, spam o no se entiende.', messages: [{ role: 'user', content: t.slice(0, 600) }] }) });
+    const j = await r.json(); return /^\s*S[IÍ]/i.test(((j.content || [])[0] || {}).text || '');
+  } catch (e) { return false; }
+}
 async function claude(sys, msgs) {
   const r = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -206,11 +217,18 @@ async function atender(msg, contacto) {
   const ins = await db('wa_mensajes?on_conflict=wa_id', { method: 'POST', headers: { Prefer: 'resolution=ignore-duplicates,return=representation' }, body: JSON.stringify({ tel, rol: 'cliente', texto, wa_id: msg.id }) });
   if (!ins || !ins.length) return;
   const conv = ((await db('wa_conversaciones?tel=eq.' + tel + '&select=*')) || [])[0];
-  if (!conv) await db('wa_conversaciones', { method: 'POST', body: JSON.stringify({ tel, nombre, estado: 'bot', ultimo: new Date().toISOString() }) });
-  else await db('wa_conversaciones?tel=eq.' + tel, { method: 'PATCH', body: JSON.stringify({ nombre: nombre || conv.nombre, ultimo: new Date().toISOString(), no_leidos: (conv.no_leidos || 0) + 1 }) });
-  // si Daro tomó la charla, el bot no responde (vuelve solo después de 24 h sin que Daro escriba)
-  if (conv && conv.estado === 'daro' && conv.daro_ultimo && Date.now() - new Date(conv.daro_ultimo).getTime() < 24 * 3600e3) return;
-  if (conv && conv.estado === 'daro' && !conv.daro_ultimo) return;
+  const ahora = new Date().toISOString();
+  if (!conv) {
+    // charla nueva: el bot solo responde si el primer mensaje es una consulta para Celestia (en tu número también te escriben amigos y clientes de otras cosas)
+    const esCel = await esConsultaCelestia(texto);
+    await db('wa_conversaciones', { method: 'POST', body: JSON.stringify(esCel ? { tel, nombre, estado: 'bot', ultimo: ahora }
+      : { tel, nombre, estado: 'daro', ultimo: ahora, no_leidos: 1, resumen: 'No parece una consulta de Celestia: el bot no responde.' }) });
+    if (!esCel) return;
+  } else {
+    await db('wa_conversaciones?tel=eq.' + tel, { method: 'PATCH', body: JSON.stringify({ nombre: nombre || conv.nombre, ultimo: ahora, no_leidos: (conv.no_leidos || 0) + 1 }) });
+    // si la charla es tuya (la tomaste, le escribiste desde la app o no es de Celestia), el bot no se mete hasta que la devuelvas desde el admin
+    if (conv.estado === 'daro') return;
+  }
   const hist = (await db('wa_mensajes?tel=eq.' + tel + '&select=rol,texto&order=created_at.desc&limit=24')).reverse();
   const r = await claude(sistema(await conocimiento(), nombre), aMensajes(hist));
   const wid = await enviar(tel, r.texto);
@@ -251,7 +269,9 @@ export async function POST(req) {
     if (!(await esAdmin(req))) return json({ error: 'Solo el admin puede usar el simulador' }, 401);
     try {
       const b = JSON.parse(raw || '{}');
-      const r = await claude(sistema(await conocimiento(), b.nombre || ''), aMensajes(b.historial || []));
+      const h = b.historial || [];
+      if (h.length === 1 && !(await esConsultaCelestia(h[0].texto))) return json({ silencio: true, texto: '🤫 El bot no respondería: no parece una consulta de Celestia (queda para vos).' });
+      const r = await claude(sistema(await conocimiento(), b.nombre || ''), aMensajes(h));
       return json(r);
     } catch (e) { return json({ error: e.message }, 500); }
   }

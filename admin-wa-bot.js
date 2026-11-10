@@ -20,7 +20,7 @@
     try {
       var r = await fetch('/api/wa-bot', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-celestia-sim': '1', Authorization: 'Bearer ' + (await token()) }, body: JSON.stringify({ historial: SIM.map(function (m) { return { rol: m.rol, texto: m.texto }; }), nombre: document.getElementById('wb-sim-nom').value.trim() }) });
       var j = await r.json();
-      SIM.push(j.error ? { rol: 'error', texto: 'Error: ' + j.error } : { rol: 'bot', texto: j.texto, resumen: j.derivar ? j.resumen : '' });
+      SIM.push(j.error ? { rol: 'error', texto: 'Error: ' + j.error } : j.silencio ? { rol: 'daro', texto: j.texto } : { rol: 'bot', texto: j.texto, resumen: j.derivar ? j.resumen : '' });
     } catch (e) { SIM.push({ rol: 'error', texto: 'Error: ' + e.message }); }
     simOcupado = false; pintarSim();
   }
@@ -40,7 +40,7 @@
     if (r.error) { el.innerHTML = '<div class="wb-vacio">' + (/relation|does not exist/i.test(r.error.message) ? 'Falta crear las tablas (supabase/wa_bot.sql).' : esc(r.error.message)) + '</div>'; return; }
     var L = r.data || [];
     el.innerHTML = L.length ? L.map(function (c) {
-      return '<button type="button" class="wb-c' + (convSel === c.tel ? ' on' : '') + '" data-wb-tel="' + esc(c.tel) + '"><b>' + esc(c.nombre || '+' + c.tel) + '</b><span class="wb-badge ' + c.estado + '">' + (c.estado === 'bot' ? '🤖 Bot' : '👨‍🍳 Vos') + '</span>' +
+      return '<button type="button" class="wb-c' + (convSel === c.tel ? ' on' : '') + '" data-wb-tel="' + esc(c.tel) + '"><b>' + esc(c.nombre || '+' + c.tel) + '</b><span class="wb-badge ' + c.estado + '">' + (c.estado === 'bot' ? '🤖 Bot' : '👨‍🍳 Vos · bot en silencio') + '</span>' +
         (c.resumen ? '<small>' + esc(c.resumen) + '</small>' : '') + '<i>' + new Date(c.ultimo).toLocaleString('es-AR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) + '</i></button>';
     }).join('') : '<div class="wb-vacio">Todavía no hay charlas reales. Aparecen acá cuando WhatsApp esté conectado.</div>';
   }
@@ -51,7 +51,7 @@
     var m = (await supa.from('wa_mensajes').select('rol,texto,created_at').eq('tel', tel).order('created_at', { ascending: true }).limit(200)).data || [];
     await supa.from('wa_conversaciones').update({ no_leidos: 0 }).eq('tel', tel);
     el.innerHTML = '<div class="wb-ch-hd"><div><b>' + esc(c.nombre || '') + '</b> +' + esc(tel) + '</div><div>' +
-      (c.estado === 'bot' ? '<button type="button" class="filter-btn" data-wb-estado="daro">👨‍🍳 La tomo yo</button>' : '<button type="button" class="filter-btn" data-wb-estado="bot">🤖 Devolver al bot</button>') +
+      (c.estado === 'bot' ? '<button type="button" class="filter-btn" data-wb-estado="daro">👨‍🍳 La tomo yo · que el bot no responda</button>' : '<button type="button" class="filter-btn" data-wb-estado="bot">🤖 Devolver al bot</button>') +
       '<a class="filter-btn" style="text-decoration:none" target="_blank" rel="noopener" href="https://wa.me/' + esc(tel) + '">Abrir en WhatsApp</a></div></div>' +
       (c.resumen ? '<div class="wb-der">↪ ' + esc(c.resumen) + '</div>' : '') +
       '<div class="wb-log">' + m.map(function (x) { return '<div class="wb-m ' + x.rol + '"><div>' + wa(x.texto) + '<small>' + (x.rol === 'daro' ? 'Vos · ' : x.rol === 'bot' ? 'Bot · ' : '') + new Date(x.created_at).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }) + '</small></div></div>'; }).join('') + '</div>';
