@@ -13,7 +13,7 @@
   var ESTILOS = window.CELESTIA_ESTILOS || [];
   var PASOS = window.CELESTIA_PASOS || { 3: ['Entrada', 'Principal', 'Postre'], 7: ['Bienvenida', 'Entrada fría', 'Entrada caliente', 'Intermedio', 'Principal', 'Pre-postre', 'Postre'] };
   var SUBIDOS = 'cel_menus_subidos';
-  var SUPN = { jumbo: 'Jumbo', carrefour: 'Carrefour' };
+  var SUPN = { jumbo: 'Jumbo', carrefour: 'Carrefour', dia: 'Día', changomas: 'ChangoMás' };
   function db() { return typeof supa !== 'undefined' ? supa : null; }
 
   var css = document.createElement('style');

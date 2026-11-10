@@ -1171,7 +1171,7 @@ select{color-scheme:dark}select option,select optgroup{background:#13263a;color:
     <div id="seccion-ingredientes" style="display:none;">
       <div class="section-title">✦ Ingredientes — canasta de referencia + lo que usaste en tus menús</div>
       <div style="font-size:12px;color:rgba(250,246,239,0.45);margin:-6px 0 18px;line-height:1.6;max-width:760px;">
-        Los productos con <b style="color:var(--gold-light)">📈 seguimiento</b> se actualizan solos todos los lunes (Jumbo y Carrefour) y mueven el índice que ajusta los ingredientes estimados del sitio.
+        Los productos con <b style="color:var(--gold-light)">📈 seguimiento</b> se actualizan solos todos los lunes (Jumbo, Carrefour, Día y ChangoMás) y mueven el índice que ajusta los ingredientes estimados del sitio.
         El resto se suma automáticamente a medida que cargás la lista de compras de cada menú confirmado.
       </div>
       <div class="ing-kpis" id="ing-kpis"></div>
@@ -3189,7 +3189,7 @@ async function cargarIngredientes(){
   const nMenus = ING_DATA.filter(i => i.usos > 0).length;
   document.getElementById('ing-kpis').innerHTML =
     `<div class="ing-kpi gen"><small>Índice general · ajusta el sitio</small><b>${ultIdx ? (ultIdx.indice >= 1 ? '+' : '') + ((ultIdx.indice - 1) * 100).toFixed(1) + '%' : '—'}</b><span>${ultIdx ? 'vs. semana base · ' + new Date(ultIdx.fecha + 'T12:00:00').toLocaleDateString('es-AR', { day: 'numeric', month: 'short' }) : 'sin datos aún'}</span></div>` +
-    `<div class="ing-kpi"><small>Con seguimiento</small><b>${Object.keys(porClave).length}</b><span>Jumbo + Carrefour, cada lunes</span></div>` +
+    `<div class="ing-kpi"><small>Con seguimiento</small><b>${Object.keys(porClave).length}</b><span>Jumbo, Carrefour, Día y ChangoMás · cada lunes</span></div>` +
     `<div class="ing-kpi"><small>De tus menús</small><b>${nMenus}</b><span>${reservas.length} listas de compras${menusSitio.length ? ' · ' + menusSitio.length + ' de presupuestos' : ''}</span></div>` +
     `<div class="ing-kpi"><small>Semanas registradas</small><b>${indices.length}</b><span>historial de precios</span></div>`;
   renderIngredientes();
@@ -3211,7 +3211,8 @@ function renderIngredientes(){
   if (!rows.length) { document.getElementById('ing-tabla').innerHTML = '<div class="loading">No hay ingredientes con ese filtro.</div>'; return; }
   const maxU = Math.max(1, ...rows.map(r => r.usos));
   const fila = i => {
-      const sp = i.supers ? Object.entries(i.supers).map(([k,o]) => `<div>${k === 'jumbo' ? 'Jumbo' : 'Carrefour'} <b>${fmtP(o.ult)}</b></div><div class="mut" style="margin-bottom:3px">${(o.prod||'').slice(0,42)}</div>`).join('') : '<span class="mut">—</span>';
+      const ent = i.supers ? Object.entries(i.supers).sort((a, b) => a[1].ult - b[1].ult) : [];
+      const sp = ent.length ? ent.map(([k,o], n) => `<div>${({ jumbo: 'Jumbo', carrefour: 'Carrefour', dia: 'Día', changomas: 'ChangoMás' })[k] || k} <b>${fmtP(o.ult)}</b>${n === 0 && ent.length > 1 ? ' <span style="font-size:10px;color:#5DBF87">✓ más barato</span>' : ''}</div><div class="mut" style="margin-bottom:3px">${(o.prod||'').slice(0,42)}</div>`).join('') : '<span class="mut">—</span>';
       const u = i.usos ? `<span class="ing-bar" style="width:${Math.max(6, 60 * i.usos / maxU)}px"></span>${i.usos} menú${i.usos > 1 ? 's' : ''}<div class="mut">${i.menus.slice(-2).map(m => (m.ref || '') + ' · ' + (m.menu || '')).join('<br>')}</div>` : '<span class="mut">—</span>';
       return `<tr><td><b style="font-weight:500">${i.nombre}</b>${i.canasta ? '<span class="ing-tag c">📈 seguimiento</span>' : ''}${i.usos ? '<span class="ing-tag m">🍽 menús</span>' : ''}</td>` +
         `<td>${sp}</td><td>${fmtV(i.variacion)}</td><td>${u}</td><td class="hide-m mut">${i.cantidades.slice(-3).join('<br>') || '—'}</td></tr>`;
@@ -3609,6 +3610,6 @@ async function estadoFiesta(id, estado) {
 }
 </script>
 <script src="/js/menus-ejemplo.js"></script>
-<script src="/admin-presupuesto.js?v=20261110h"></script><script src="/admin-menus-subir.js?v=20261110h"></script>
+<script src="/admin-presupuesto.js?v=20261110i"></script><script src="/admin-menus-subir.js?v=20261110i"></script>
 </body>
 </html>
