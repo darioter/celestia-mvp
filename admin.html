@@ -3124,6 +3124,7 @@ const ING_RUBROS = [
 ];
 const ING_OTROS = ['Otros', '#8A93A0'];
 function ingRubro(clave, nombre){
+  if (clave && clave.startsWith('beb_')) return 'Bebidas'; // almacén de bebidas (no entran al índice general)
   if (clave) { const r = ING_RUBROS.find(r => r[2].split(' ').includes(clave)); if (r) return r[0]; }
   const n = ingNorm(nombre);
   const r = ING_RUBROS.find(r => r[3].test(n));
