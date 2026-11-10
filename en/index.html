@@ -2932,13 +2932,12 @@ programar();
     <h2 class="section-title">Plan your week</h2>
     <p class="section-sub">Tres elecciones y listo: cocino en tu casa y te dejo comida para varios días, refrigerada y congelada.</p>
 
-    <div class="mp2-modo" role="group" aria-label="Tipo de servicio">
-      <button type="button" class="mp2-mo on" id="mp-modo-comidas" onclick="mpModo('comidas')"><i>🍱</i><span><b>Comidas listas</b><small>Cocino y te dejo los platos terminados</small></span></button>
-      <button type="button" class="mp2-mo" id="mp-modo-mise" onclick="mpModo('mise')"><span class="mp2-new">Nuevo</span><i>🔪</i><span><b>Mise en place</b><small>Te dejo todo cortado, porcionado y listo para cocinar</small></span></button>
-    </div>
-
     <div class="mp2">
       <div class="mp2-cfg">
+      <div class="mp2-modo" role="group" aria-label="Tipo de servicio">
+        <button type="button" class="mp2-mo on" id="mp-modo-comidas" onclick="mpModo('comidas')"><i>🍱</i><span><b>Comidas listas</b><small>Cocino y te dejo los platos terminados</small></span></button>
+        <button type="button" class="mp2-mo" id="mp-modo-mise" onclick="mpModo('mise')"><span class="mp2-new">Nuevo</span><i>🔪</i><span><b>Mise en place</b><small>Te dejo todo cortado, porcionado y listo para cocinar</small></span></button>
+      </div>
         <div class="mp2-q"><span class="mp2-qn">1</span><div><span class="mp2-qt">How many people are we cooking for?</span><span class="mp2-qs">Count everyone who eats at home during the week.</span></div></div>
         <div class="mp2-opts mp2-3"><button type="button" class="mp2-o" onclick="selectMpFlow('pp','1-2')" id="mpf-pp-1-2"><span class="mp2-ppl"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></span><b>1 a 2</b><small>people</small></button><button type="button" class="mp2-o" onclick="selectMpFlow('pp','3-4')" id="mpf-pp-3-4"><span class="mp2-ppl"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></span><b>3 a 4</b><small>people</small></button><button type="button" class="mp2-o" onclick="selectMpFlow('pp','5-6')" id="mpf-pp-5-6"><span class="mp2-ppl mp2-ppl6"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></span><b>5 a 6</b><small>people</small></button></div>
 
@@ -8176,7 +8175,7 @@ a.mc2-btn{display:block;text-align:center;text-decoration:none;box-sizing:border
 </script><style id="viandas-css">
 #mp-content{max-width:1120px!important}
 .mp2{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:36px;align-items:start}
-.mp2-modo{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:720px;margin:0 0 6px}
+.mp2-modo{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:720px;margin:0 0 18px}
 .mp2-mo{position:relative;display:flex;align-items:center;gap:12px;text-align:left;background:#fff;border:1.5px solid #E8E0D5;border-radius:16px;padding:14px 16px;cursor:pointer;font-family:'DM Sans',sans-serif;color:#0D1B2A;transition:all .2s}
 .mp2-mo:hover{border-color:#C9A84C}
 .mp2-mo i{font-style:normal;font-size:22px;width:42px;height:42px;border-radius:50%;background:#F5F0E6;display:flex;align-items:center;justify-content:center;flex:none}
