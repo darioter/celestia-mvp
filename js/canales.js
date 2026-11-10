@@ -40,7 +40,7 @@
   /* Chef semanal / mise en place: manda lo que la persona eligió en el calculador */
   window.celWASemanal = function () {
     var rows = [].slice.call(document.querySelectorAll('#mp2-sum-rows > div')).map(function (r) {
-      var s = r.querySelectorAll('span'); return s.length > 1 ? '*' + s[0].innerText.trim() + ':* ' + s[1].innerText.trim() : '';
+      var s = r.querySelectorAll('span'); return s.length > 1 ? '*' + s[0].textContent.trim() + ':* ' + s[1].textContent.trim() : '';
     }).filter(Boolean);
     var hon = (document.getElementById('mpf-result') || {}).innerText || '', m = hon.match(/\$\s?[\d.]+/);
     var mise = typeof mpState !== 'undefined' && mpState.modo === 'mise';
