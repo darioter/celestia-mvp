@@ -1,6 +1,27 @@
 # -*- coding: utf-8 -*-
 # Traducciones ES -> EN del sitio (landing + flujos). Clave = texto visible en español (espacios normalizados).
 TR = {
+# ── Hero por rubro (nov 2026) ──
+"✦ Cajas y mercadito": "✦ Boxes & market",
+"Cenas completas para cumpleaños, encuentros y las fiestas, más platos sueltos, postres y bebidas frías del mercadito. Llegan el día del evento, listas para regenerar.": "Full dinners for birthdays, gatherings and the holidays, plus single dishes, desserts and chilled drinks from the market. They arrive on the day of your event, ready to reheat.",
+"✦ Corporativos": "✦ Corporate",
+"✦ Aprendé": "✦ Learn",
+"Cociná con": "Cook with",
+"técnica de chef.": "a chef's technique.",
+"6 clases prácticas en tu casa, de mirar a cocinar solo, y el blog con lo que me enseñaron en la escuela: cortes, salsas madre, pastelería y trucos de cocina profesional.": "6 hands-on classes at your home, from watching to cooking on your own, and the blog with what I learned at culinary school: knife cuts, mother sauces, pastry and professional kitchen tricks.",
+"Leer el blog": "Read the blog",
+"✦ Management gastronómico": "✦ Restaurant management",
+"Que los números": "Make your business",
+"de tu negocio cierren.": "numbers add up.",
+"Consultoría para restaurantes, cafés y emprendimientos gastronómicos: concepto, carta, costos, espacio, equipo y lanzamiento. De la idea al crecimiento.": "Consulting for restaurants, cafés and food businesses: concept, menu, costs, space, team and launch. From the idea to growth.",
+"Conocer el servicio →": "Discover the service →",
+"Experiencias en casa": "Experiences at home",
+"En casa": "At home",
+"Cajas y mercadito": "Boxes & market",
+"Corporativos": "Corporate",
+"Empresas": "Companies",
+"Aprendé": "Learn",
+"Management": "Management",
 # ── Canales directos (nov 2026) ──
 "Mercadito y bebidas": "Market & drinks",
 "Platos sueltos y vinos": "Single dishes & wines",
