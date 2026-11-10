@@ -3137,7 +3137,11 @@ async function cargarIngredientes(){
   document.getElementById('ing-tabla').innerHTML = '<div class="loading">Cargando ingredientes...</div>';
   const [prod, prec, idx, res, msit] = await Promise.all([
     supa.from('canasta_productos').select('*').eq('activo', true),
-    supa.from('canasta_precios').select('fecha,super,clave,sku,nombre,precio').order('fecha', { ascending: true }),
+    (async () => { // paginado: Supabase devuelve como máximo 1000 filas por consulta
+      let all = [], from = 0;
+      for (;;) { const r = await supa.from('canasta_precios').select('fecha,super,clave,sku,nombre,precio').order('fecha', { ascending: true }).order('super', { ascending: true }).order('sku', { ascending: true }).range(from, from + 999); if (r.error) return r; all = all.concat(r.data || []); if (!r.data || r.data.length < 1000) break; from += 1000; }
+      return { data: all };
+    })(),
     supa.from('canasta_indice').select('*').order('fecha', { ascending: true }),
     supa.from('reservas').select('id,ref,fecha,menu,estado,personas,lista_compras').not('lista_compras', 'is', null).neq('estado', 'cancelada'),
     supa.from('menus_sitio').select('nombre,estilo,pasos,ingredientes,created_at,publicado').order('created_at', { ascending: true })
