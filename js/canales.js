@@ -80,4 +80,67 @@
     var f = e.target.closest && e.target.closest('#bl-wa-float'); if (f) track(f.getAttribute('data-wa') || 'general', 'flotante');
   });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', sec); else sec();
+
+  /* Reserva corta: fecha del calendario + personas, experiencia y turno → WhatsApp con todo armado */
+  var RC = null;
+  function fechaLarga(k) {
+    if (!k) return '';
+    var d = new Date(k + 'T12:00:00');
+    return d.toLocaleDateString(en() ? 'en-US' : 'es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
+  }
+  function rcArmar() {
+    if (RC) return RC;
+    var E = en();
+    var T = E ? { t: 'Book on WhatsApp', s: 'Two quick choices and I will reply to plan the menu with you.', f: 'Date', fp: 'Any date (tell me which ones work)', p: 'Guests', x: 'Experience', x3: '3 courses', x7: '7 courses', xn: 'Not sure yet', h: 'Time', hc: 'Dinner', ha: 'Lunch', go: 'Send on WhatsApp', nota: 'Booking is free. The date is confirmed with the deposit.' }
+              : { t: 'Reservá por WhatsApp', s: 'Dos elecciones rápidas y te respondo para armar el menú juntos.', f: 'Fecha', fp: 'Sin fecha fija (te cuento cuáles me sirven)', p: 'Personas', x: 'Experiencia', x3: '3 pasos', x7: '7 pasos', xn: 'Todavía no sé', h: 'Turno', hc: 'Cena', ha: 'Almuerzo', go: 'Enviar por WhatsApp', nota: 'Reservar no tiene costo. La fecha queda confirmada con la seña.' };
+    var pp = ''; for (var i = 2; i <= 12; i++) pp += '<button type="button" data-v="' + i + '"' + (i === 4 ? ' class="on"' : '') + '>' + i + '</button>';
+    var w = document.createElement('div'); w.id = 'cel-rc'; w.hidden = true; w.setAttribute('data-no-tr', '');
+    w.innerHTML = '<div class="rc-bg" data-x></div><div class="rc-box" role="dialog" aria-modal="true" aria-labelledby="rc-t"><button type="button" class="rc-x" data-x aria-label="Cerrar">&times;</button>' +
+      '<small class="rc-k">✦ ' + (E ? 'Two steps' : 'En 2 pasos') + '</small><h3 id="rc-t">' + T.t + '</h3><p class="rc-s">' + T.s + '</p>' +
+      '<div class="rc-f"><span>' + T.f + '</span><b id="rc-fecha"></b></div>' +
+      '<div class="rc-g"><span>' + T.p + '</span><div class="rc-ch rc-pp" data-k="pp">' + pp + '<button type="button" data-v="12+">12+</button></div></div>' +
+      '<div class="rc-g"><span>' + T.x + '</span><div class="rc-ch" data-k="x"><button type="button" data-v="3" class="on">' + T.x3 + '</button><button type="button" data-v="7">' + T.x7 + '</button><button type="button" data-v="?">' + T.xn + '</button></div></div>' +
+      '<div class="rc-g"><span>' + T.h + '</span><div class="rc-ch" data-k="h"><button type="button" data-v="c" class="on">' + T.hc + '</button><button type="button" data-v="a">' + T.ha + '</button></div></div>' +
+      '<button type="button" class="rc-go">' + '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21c5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2Z"/></svg>' + T.go + '</button>' +
+      '<p class="rc-n">' + T.nota + '</p></div>';
+    document.body.appendChild(w);
+    w.addEventListener('click', function (e) {
+      if (e.target.closest('[data-x]')) { rcCerrar(); return; }
+      var b = e.target.closest('.rc-ch button'); if (b) { [].forEach.call(b.parentNode.children, function (x) { x.classList.toggle('on', x === b); }); return; }
+      if (e.target.closest('.rc-go')) rcEnviar(T);
+    });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !w.hidden) rcCerrar(); });
+    RC = w; return w;
+  }
+  function val(k) { var b = RC.querySelector('.rc-ch[data-k="' + k + '"] .on'); return b ? b.getAttribute('data-v') : ''; }
+  function rcEnviar(T) {
+    var E = en(), f = RC.getAttribute('data-fecha'), pp = val('pp'), x = val('x'), h = val('h');
+    var xs = E ? { '3': 'the 3-course experience', '7': 'the 7-course tasting', '?': 'an experience (not sure which yet)' } : { '3': 'la experiencia de 3 pasos', '7': 'la degustación de 7 pasos', '?': 'una experiencia (todavía no sé cuál)' };
+    var t = E
+      ? 'Hi Daro! I would like to book ' + xs[x] + ' at home.\n*Date:* ' + (f ? fechaLarga(f) : 'flexible') + '\n*Time:* ' + (h === 'a' ? 'lunch' : 'dinner') + '\n*Guests:* ' + pp + '\nCan we plan the menu?'
+      : 'Hola Daro! Quiero reservar ' + xs[x] + ' en casa.\n*Fecha:* ' + (f ? fechaLarga(f) : 'a definir') + '\n*Turno:* ' + (h === 'a' ? 'almuerzo' : 'cena') + '\n*Personas:* ' + pp + '\n¿Armamos el menú?';
+    window.celWA('reserva_corta', t, 'reserva_2_pasos'); rcCerrar();
+  }
+  function rcCerrar() { if (RC) { RC.hidden = true; document.documentElement.classList.remove('rc-abierto'); } }
+  window.celReservaCorta = function (fecha) {
+    var w = rcArmar(); w.setAttribute('data-fecha', fecha || '');
+    var E = en(); w.querySelector('#rc-fecha').textContent = fecha ? fechaLarga(fecha) : (E ? 'Flexible — tell me which dates work' : 'A definir: contame qué fechas te sirven');
+    w.hidden = false; document.documentElement.classList.add('rc-abierto');
+    try { if (typeof celTrack === 'function') celTrack('reserva_corta_abrir', { fecha: fecha || '' }); } catch (e) {}
+  };
+  /* el link "o reservá por WhatsApp" debajo de cada calendario */
+  function rcLinks() {
+    [].forEach.call(document.querySelectorAll('.cc-ft'), function (ft) {
+      if (ft.nextElementSibling && ft.nextElementSibling.classList.contains('cc-wa')) return;
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'cc-wa'; b.setAttribute('data-no-tr', '');
+      b.innerHTML = en() ? 'or book on <u>WhatsApp in 2 steps</u>' : 'o reservá por <u>WhatsApp en 2 pasos</u>';
+      b.addEventListener('click', function (e) {
+        e.stopPropagation(); var root = ft.parentNode, d = root.querySelector('.cc-d.on'), k = d && (d.getAttribute('data-k') || d.dataset.k);
+        window.celReservaCorta(k || '');
+      });
+      ft.parentNode.insertBefore(b, ft.nextSibling);
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(rcLinks, 300); }); else setTimeout(rcLinks, 300);
+  setTimeout(rcLinks, 2500);
 })();
