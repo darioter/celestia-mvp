@@ -505,6 +505,9 @@
   .dot-reservada { background: var(--gold); }
   .dot-confirmada { background: #4CAF50; }
   .dot-bloqueada { background: #E57373; }
+  .agenda-dia.svc-semanal, .mini-dia.svc-semanal { background: rgba(95,168,211,0.18); border-color: rgba(95,168,211,0.45); color: #9CCDEB; font-weight: 600; }
+  .agenda-dia.svc-mise, .mini-dia.svc-mise { background: rgba(155,126,222,0.18); border-color: rgba(155,126,222,0.45); color: #C3B2F0; font-weight: 600; }
+  .agenda-dia.svc-caja, .mini-dia.svc-caja { background: rgba(226,163,62,0.18); border-color: rgba(226,163,62,0.45); color: #F0C27A; font-weight: 600; }
 
   /* PANEL DERECHO - AÑO */
   .agenda-right {
@@ -1060,6 +1063,9 @@ select{color-scheme:dark}select option,select optgroup{background:#13263a;color:
             <div class="legend-item"><div class="legend-dot" style="background:rgba(201,168,76,0.5);border:1px solid var(--gold);"></div>Reservada</div>
             <div class="legend-item"><div class="legend-dot" style="background:rgba(76,175,80,0.5);border:1px solid #4CAF50;"></div>Confirmada</div>
             <div class="legend-item"><div class="legend-dot" style="background:rgba(155,35,53,0.35);border:1px solid #E57373;"></div>Bloqueado</div>
+            <div class="legend-item"><div class="legend-dot" style="background:rgba(95,168,211,0.45);border:1px solid #5FA8D3;"></div>Chef semanal</div>
+            <div class="legend-item"><div class="legend-dot" style="background:rgba(155,126,222,0.45);border:1px solid #9B7EDE;"></div>Mise en place</div>
+            <div class="legend-item"><div class="legend-dot" style="background:rgba(226,163,62,0.45);border:1px solid #E2A33E;"></div>Caja</div>
             <div class="legend-item"><div class="legend-dot" style="border:1px solid rgba(201,168,76,0.5);"></div>Hoy</div>
           </div>
           <div class="agenda-detalle-wrap" id="agenda-detalle-izq"></div>
@@ -1395,13 +1401,26 @@ function irAMes(y, m) {
 
 async function cargarDatosAgenda() {
   const [resR, resB] = await Promise.all([
-    supa.from('reservas').select('fecha,turno,estado,nombre,personas,menu').in('estado',['reservada','confirmada']),
+    supa.from('reservas').select('fecha,turno,estado,nombre,personas,menu,tipo,jornadas').in('estado',['reservada','confirmada']),
     supa.from('bloqueos').select('fecha,motivo')
   ]);
   bloqueosDias = resB.data || [];
   agendaReservas = resR.data || [];
 }
 
+// Tipo de servicio de cada reserva, para pintarla con su color en la agenda
+const AG_SVC = {
+  semanal: { n: 'Chef semanal', i: '🍱', c: '#5FA8D3' },
+  mise: { n: 'Mise en place', i: '🔪', c: '#9B7EDE' },
+  caja: { n: 'Caja Celestia', i: '📦', c: '#E2A33E' }
+};
+function agServicio(r) {
+  const m = String(r.menu || '').toLowerCase();
+  if (m.includes('mise en place')) return 'mise';
+  if (r.tipo === 'semanal' || m.includes('chef semanal')) return 'semanal';
+  if (r.tipo === 'caja' || m.includes('caja celestia') || m.startsWith('caja')) return 'caja';
+  return '';
+}
 function buildPorFecha() {
   const pf = {};
   agendaReservas.forEach(r => { if (!pf[r.fecha]) pf[r.fecha]=[]; pf[r.fecha].push(r); });
@@ -1412,6 +1431,8 @@ function claseDia(dateStr, pf, bloqueosSet) {
   if (bloqueosSet.has(dateStr)) return 'bloqueada';
   const res = pf[dateStr];
   if (!res || !res.length) return '';
+  const sv = res.map(agServicio);
+  if (sv.every(x => x)) return 'svc svc-' + sv[0];
   const e = res.map(r => r.estado);
   if (e.includes('confirmada') && e.includes('reservada')) return 'mixta';
   if (e.includes('confirmada')) return 'confirmada';
@@ -1432,7 +1453,7 @@ function renderGridMes(y, m, pf, bloqueosSet, prefix) {
     let dots = '';
     if (!isSmall && clase && clase !== 'bloqueada') {
       const res = pf[ds] || [];
-      dots = `<div class="agenda-dots">${res.map(r=>`<div class="agenda-dot dot-${r.estado}"></div>`).join('')}</div>`;
+      dots = `<div class="agenda-dots">${res.map(r=>{ const sv = agServicio(r); return sv ? `<div class="agenda-dot" style="background:${AG_SVC[sv].c}${r.estado==='reservada'?';opacity:.55':''}"></div>` : `<div class="agenda-dot dot-${r.estado}"></div>`; }).join('')}</div>`;
     } else if (!isSmall && clase === 'bloqueada') {
       dots = `<div class="agenda-dots"><div class="agenda-dot dot-bloqueada"></div></div>`;
     }
@@ -1449,13 +1470,15 @@ function renderDetalle(contenedor, y, m, pf, bloqueosSet) {
     if (bloqueosSet.has(ds)) {
       eventos.push({ fecha:ds, tipo:'bloqueada', nombre:'Día bloqueado', info: bloqueosDias.find(b=>b.fecha===ds)?.motivo||'' });
     }
-    (pf[ds]||[]).forEach(r => eventos.push({ fecha:ds, tipo:r.estado, nombre:r.nombre||'—', info:`${r.turno==='almuerzo'?'☀':'🌙'} ${r.turno} · ${r.personas}p · ${r.menu}` }));
+    (pf[ds]||[]).forEach(r => { const sv = agServicio(r);
+      eventos.push({ fecha:ds, tipo:r.estado, sv, nombre:r.nombre||'—',
+        info: sv ? `${AG_SVC[sv].i} ${AG_SVC[sv].n}${r.jornadas ? ' · ' + r.jornadas + (r.jornadas > 1 ? ' jornadas' : ' jornada') : ''} · ${r.personas}p · ${r.estado}` : `${r.turno==='almuerzo'?'☀':'🌙'} ${r.turno} · ${r.personas}p · ${r.menu}` }); });
   }
   const fmt = f => new Date(f+'T12:00:00').toLocaleDateString('es-AR',{weekday:'short',day:'numeric',month:'short'});
   contenedor.innerHTML = eventos.length === 0 ? '' :
     `<div class="agenda-detalle-titulo">Reservas del mes</div>` +
     eventos.map(e=>`
-      <div class="agenda-detalle-item ${e.tipo}">
+      <div class="agenda-detalle-item ${e.tipo}"${e.sv ? ` style="border-left-color:${AG_SVC[e.sv].c}"` : ''}>
         <div class="agenda-detalle-fecha">${fmt(e.fecha)}</div>
         <div>
           <div class="agenda-detalle-nombre">${e.nombre}</div>
@@ -1509,7 +1532,7 @@ function renderAgendaRight() {
   const eventosAnio = agendaReservas.filter(r => r.fecha.startsWith(agendaYear.toString()));
   const bloqueosAnio = bloqueosDias.filter(b => b.fecha.startsWith(agendaYear.toString()));
   const todos = [
-    ...eventosAnio.map(r=>({ fecha:r.fecha, tipo:r.estado, nombre:r.nombre||'—', info:`${r.turno==='almuerzo'?'☀':'🌙'} ${r.turno} · ${r.personas}p` })),
+    ...eventosAnio.map(r=>{ const sv = agServicio(r); return { fecha:r.fecha, tipo:r.estado, sv, nombre:r.nombre||'—', info: sv ? `${AG_SVC[sv].i} ${AG_SVC[sv].n} · ${r.personas}p` : `${r.turno==='almuerzo'?'☀':'🌙'} ${r.turno} · ${r.personas}p` }; }),
     ...bloqueosAnio.map(b=>({ fecha:b.fecha, tipo:'bloqueada', nombre:'Bloqueado', info:b.motivo||'' }))
   ].sort((a,b)=>a.fecha.localeCompare(b.fecha));
   const fmt = f => new Date(f+'T12:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'short'});
@@ -1517,7 +1540,7 @@ function renderAgendaRight() {
   der.innerHTML = todos.length === 0 ? '' :
     `<div class="agenda-detalle-titulo">Reservas ${agendaYear}</div>` +
     todos.map(e=>`
-      <div class="agenda-detalle-item ${e.tipo}">
+      <div class="agenda-detalle-item ${e.tipo}"${e.sv ? ` style="border-left-color:${AG_SVC[e.sv].c}"` : ''}>
         <div class="agenda-detalle-fecha">${fmt(e.fecha)}</div>
         <div>
           <div class="agenda-detalle-nombre">${e.nombre}</div>
