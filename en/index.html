@@ -8420,6 +8420,7 @@ if(document.readyState==='complete')setTimeout(go,300);else window.addEventListe
 .cc-wa:hover u{color:#7FF0A9}
 #cel-rc{position:fixed;inset:0;z-index:3000;display:flex;align-items:center;justify-content:center;padding:16px;font-family:'DM Sans',sans-serif}
 #cel-rc[hidden]{display:none}
+body.beta-mode > #cel-rc:not([hidden]),body > #cel-rc:not([hidden]){display:flex!important}
 #cel-rc .rc-bg{position:absolute;inset:0;background:rgba(13,27,42,.72);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
 #cel-rc .rc-box{position:relative;width:100%;max-width:420px;max-height:calc(100vh - 32px);overflow:auto;background:#0D1B2A;color:#FAF6EF;border:1px solid rgba(201,168,76,.55);border-radius:22px;padding:24px 22px 18px;box-shadow:0 30px 70px rgba(0,0,0,.5);animation:rcIn .28s cubic-bezier(.16,.84,.44,1)}
 @keyframes rcIn{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
@@ -8439,7 +8440,7 @@ if(document.readyState==='complete')setTimeout(go,300);else window.addEventListe
 #cel-rc .rc-n{font-size:11.5px;color:rgba(250,246,239,.5);text-align:center;margin:10px 0 0}
 html.rc-abierto{overflow:hidden}
 </style>
-<script src="/js/canales.js?v=4" defer></script>
+<script src="/js/canales.js?v=5" defer></script>
 <style id="hx4-css">
 #beta-landing .bl-cart{position:relative;display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;border:1px solid rgba(201,168,76,.45);color:#E8C96B;margin-right:2px;flex:none;transition:background .2s,border-color .2s}
 #beta-landing .bl-cart:hover{background:rgba(201,168,76,.14);border-color:#E8C96B}
