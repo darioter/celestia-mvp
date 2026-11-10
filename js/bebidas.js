@@ -1,5 +1,6 @@
 /* Celestia · Almacén de bebidas (compartido por /cajas y /extras).
-   Precios de góndola (Jumbo, relevados el 10/11/2026) + margen por compra, frío y entrega.
+   Costo = el precio MÁS ALTO entre Jumbo, Carrefour, Día y ChangoMás (góndola o de lista sin promo, relevado el 10/11/2026,
+   buscado por código de barras): así el margen cubre también la logística, compres donde compres.
    precio = costo × (1 + BEB_MARGEN), redondeado hacia arriba a $500. Para actualizar, cambiá 'costo'. */
 const BEB_MARGEN = 0.20;
 const BEB_CATS = { tinto: ['🍷', 'Tintos'], blanco: ['🥂', 'Blancos y rosados'], espumante: ['🍾', 'Espumantes'], aperitivo: ['🍸', 'Aperitivos y destilados'], cerveza: ['🍺', 'Cervezas'], gaseosa: ['🥤', 'Gaseosas'], agua: ['💧', 'Aguas y saborizadas'], jugo: ['🧃', 'Jugos'] };
@@ -11,7 +12,7 @@ const BEBIDAS = [
   { id: "b-10698", cat: "tinto", nombre: "Trumpeter Malbec", det: "750 ml", costo: 11500, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/180222-400-400/p.jpg" },
   { id: "b-3361", cat: "tinto", nombre: "Saurus Malbec", det: "750 ml", costo: 16850, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/716997-400-400/p.jpg" },
   { id: "b-12691", cat: "tinto", nombre: "Graffigna Malbec", det: "750 ml", costo: 11600, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/180757-400-400/p.jpg" },
-  { id: "b-14041", cat: "tinto", nombre: "Alma Mora Malbec", det: "750 ml", costo: 8204, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/581070-400-400/p.jpg" },
+  { id: "b-14041", cat: "tinto", nombre: "Alma Mora Malbec", det: "750 ml", costo: 8410, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/581070-400-400/p.jpg" },
   { id: "b-247365", cat: "blanco", nombre: "Rutini Chardonnay", det: "750 ml", costo: 30300, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/427768-400-400/p.jpg" },
   { id: "b-238811", cat: "blanco", nombre: "Colomé Torrontés", det: "750 ml", costo: 28800, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/766860-400-400/p.jpg" },
   { id: "b-198760", cat: "blanco", nombre: "Lagarde Chardonnay", det: "750 ml", costo: 15900, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/766855-400-400/p.jpg" },
@@ -33,7 +34,7 @@ const BEBIDAS = [
   { id: "b-3088863", cat: "aperitivo", nombre: "Martini Rosso", det: "995 ml", costo: 12050, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/922120-400-400/p.jpg" },
   { id: "b-41494", cat: "aperitivo", nombre: "Cinzano Rosso", det: "950 ml", costo: 11100, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/602984-400-400/p.jpg" },
   { id: "b-167929", cat: "aperitivo", nombre: "Gancia", det: "950 ml", costo: 11000, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/788221-400-400/p.jpg" },
-  { id: "b-20555", cat: "cerveza", nombre: "Corona", det: "710 ml", costo: 7748, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/890502-400-400/p.jpg" },
+  { id: "b-20555", cat: "cerveza", nombre: "Corona", det: "710 ml", costo: 7749, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/890502-400-400/p.jpg" },
   { id: "b-10923", cat: "cerveza", nombre: "Patagonia Amber Lager", det: "730 ml", costo: 7300, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/890494-400-400/p.jpg" },
   { id: "b-167840", cat: "cerveza", nombre: "Heineken", det: "1 litro", costo: 7300, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/579428-400-400/p.jpg" },
   { id: "b-3087397", cat: "cerveza", nombre: "Stella Artois Pure Gold", det: "Lata 473 ml", costo: 4300, img: "https://jumboargentina.vteximg.com.br/arquivos/ids/917619-400-400/p.jpg" },
