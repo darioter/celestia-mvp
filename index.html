@@ -7988,7 +7988,7 @@ a.mc2-btn{display:block;text-align:center;text-decoration:none;box-sizing:border
 /* Panel lateral "Tu experiencia" */
 #rv-aside{display:none}
 @media(min-width:1180px){
-  #main-content.rv-con-aside{max-width:1180px!important;display:grid!important;grid-template-columns:minmax(0,1fr) 300px;column-gap:44px;align-items:start}
+  #main-content.rv-con-aside:not([style*="none"]){max-width:1180px!important;display:grid!important;grid-template-columns:minmax(0,1fr) 300px;column-gap:44px;align-items:start}
   #main-content.rv-con-aside>.screen,#main-content.rv-con-aside>#screen-success{grid-column:1}
   #main-content.rv-con-aside>#rv-aside{display:block;grid-column:2;grid-row:1/span 30;position:sticky;top:84px}
 }
