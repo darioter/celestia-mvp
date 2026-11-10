@@ -1497,40 +1497,38 @@ function renderAgendaLeft() {
 }
 
 function renderAgendaRight() {
-  document.getElementById('agenda-anio-titulo').textContent = agendaYear;
+  // Próximos 12 meses desde el mes actual (cruza al año siguiente: nov 2026 → oct 2027)
+  const ini = new Date(hoyYear, hoyMonth, 1), fin = new Date(hoyYear, hoyMonth + 11, 1);
+  document.getElementById('agenda-anio-titulo').textContent = 'Próximos 12 meses · ' + MESES_CORTO[ini.getMonth()] + ' ' + ini.getFullYear() + ' – ' + MESES_CORTO[fin.getMonth()] + ' ' + fin.getFullYear();
   const pf = buildPorFecha();
   const bs = new Set(bloqueosDias.map(b=>b.fecha));
   let html = '';
-  for (let m = 0; m < 12; m++) {
-    const isPasado = (agendaYear < hoyYear) || (agendaYear === hoyYear && m < hoyMonth);
-    const isActual = (agendaYear === hoyYear && m === hoyMonth);
-    const isSeleccionado = (m === agendaMonth);
-    let clases = 'mini-mes';
-    if (isPasado) clases += ' pasado';
-    else if (isActual) clases += ' actual';
-    else clases += ' futuro';
-    if (isSeleccionado) clases += ' seleccionado';
-
-    // Contar eventos
-    const daysInMonth = new Date(agendaYear, m+1, 0).getDate();
+  for (let k = 0; k < 12; k++) {
+    const dt = new Date(hoyYear, hoyMonth + k, 1), y = dt.getFullYear(), m = dt.getMonth();
+    const isActual = k === 0;
+    const isSeleccionado = (m === agendaMonth && y === agendaYear);
+    let clases = 'mini-mes' + (isActual ? ' actual' : ' futuro') + (isSeleccionado ? ' seleccionado' : '');
+    const daysInMonth = new Date(y, m+1, 0).getDate();
     let nEventos = 0;
     for (let d = 1; d <= daysInMonth; d++) {
-      const ds = `${agendaYear}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const ds = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
       if (bs.has(ds) || pf[ds]?.length) nEventos++;
     }
     const badge = nEventos > 0 ? `<span class="mini-badge">${nEventos}</span>` : '';
-    const onclick = isPasado ? '' : `onclick="irAMes(${agendaYear},${m})"`;
-
-    html += `<div class="${clases}" ${onclick}>
-      <div class="mini-mes-nombre">${MESES_CORTO[m]}${badge}</div>
-      <div class="mini-grid">${renderGridMes(agendaYear, m, pf, bs, 'mini')}</div>
+    const anio = (y !== hoyYear || m === 0) ? ` <small style="opacity:.6">${String(y).slice(2)}</small>` : '';
+    html += `<div class="${clases}" onclick="irAMes(${y},${m})">
+      <div class="mini-mes-nombre">${MESES_CORTO[m]}${anio}${badge}</div>
+      <div class="mini-grid">${renderGridMes(y, m, pf, bs, 'mini')}</div>
     </div>`;
   }
   document.getElementById('agenda-anio-grid').innerHTML = html;
 
   // Detalle anual abajo — solo reservas del año
-  const eventosAnio = agendaReservas.filter(r => r.fecha.startsWith(agendaYear.toString()));
-  const bloqueosAnio = bloqueosDias.filter(b => b.fecha.startsWith(agendaYear.toString()));
+  const desde = `${hoyYear}-${String(hoyMonth+1).padStart(2,'0')}-01`, hastaD = new Date(hoyYear, hoyMonth + 12, 1);
+  const hasta = `${hastaD.getFullYear()}-${String(hastaD.getMonth()+1).padStart(2,'0')}-01`;
+  const enRango = f => f && f.slice(0,10) >= desde && f.slice(0,10) < hasta;
+  const eventosAnio = agendaReservas.filter(r => enRango(r.fecha));
+  const bloqueosAnio = bloqueosDias.filter(b => enRango(b.fecha));
   const todos = [
     ...eventosAnio.map(r=>{ const sv = agServicio(r); return { fecha:r.fecha, tipo:r.estado, sv, nombre:r.nombre||'—', info: sv ? `${AG_SVC[sv].i} ${AG_SVC[sv].n} · ${r.personas}p` : `${r.turno==='almuerzo'?'☀':'🌙'} ${r.turno} · ${r.personas}p` }; }),
     ...bloqueosAnio.map(b=>({ fecha:b.fecha, tipo:'bloqueada', nombre:'Bloqueado', info:b.motivo||'' }))
@@ -1538,7 +1536,7 @@ function renderAgendaRight() {
   const fmt = f => new Date(f+'T12:00:00').toLocaleDateString('es-AR',{day:'numeric',month:'short'});
   const der = document.getElementById('agenda-detalle-der');
   der.innerHTML = todos.length === 0 ? '' :
-    `<div class="agenda-detalle-titulo">Reservas ${agendaYear}</div>` +
+    `<div class="agenda-detalle-titulo">Reservas de los próximos 12 meses</div>` +
     todos.map(e=>`
       <div class="agenda-detalle-item ${e.tipo}"${e.sv ? ` style="border-left-color:${AG_SVC[e.sv].c}"` : ''}>
         <div class="agenda-detalle-fecha">${fmt(e.fecha)}</div>
