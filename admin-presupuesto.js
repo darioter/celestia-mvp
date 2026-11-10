@@ -40,7 +40,9 @@
     estilo: '', menuNombre: '', platos: ['', '', ''], total: '', desglose: true, validez: 7,
     opciones: 1, modo: 'menus', menuNombreB: '', platosB: ['', '', ''], etiquetas: null, reservaId: '', pegado: '',
     intro: 'Gracias por pensar en Celestia para esta ocasión. Te comparto la propuesta: un menú diseñado para la fecha, cocinado y servido en tu casa.',
-    notas: '', bebidas: 'Bebidas a cargo del anfitrión; sugerimos maridaje para cada paso.'
+    notas: '', bebidas: 'Bebidas a cargo del anfitrión; sugerimos maridaje para cada paso.',
+    servicio: 'exp', spp: '3-4', sjor: '2', compras: true, mjor: '1', mitems: ['verd', 'prot', 'fond', 'gran', 'env'],
+    caja: '', cajaOp: 0, envio: 'z1', extras: [{ d: '', m: '' }, { d: '', m: '' }, { d: '', m: '' }], horario: '', dir: ''
   };
   var f = JSON.parse(JSON.stringify(DEF));
   try { var g = JSON.parse(localStorage.getItem(KEY) || 'null'); if (g) f = Object.assign(JSON.parse(JSON.stringify(DEF)), g); } catch (e) {}
@@ -117,6 +119,162 @@
     if (!r) return 'No encontré platos. Probá con una línea por paso, por ejemplo «Entrada: Burrata con tomates».';
     var n = r.platos.length;
     return '✓ ' + (r.opciones === 2 ? (r.modo === 'pasos' ? '1 menú con 2 opciones por paso' : '2 opciones de menú') : '1 menú') + ' · ' + n + ' paso' + (n > 1 ? 's' : '') + ' · tarifa de ' + r.pasos + ' pasos';
+  }
+
+  // ── Otros servicios: chef semanal, mise en place, cajas y personalizado (mismas tarifas que el sitio)
+  var SERVICIOS = { exp: 'Experiencia de 3 o 7 pasos', semanal: 'Chef semanal', mise: 'Mise en place', caja: 'Caja Celestia', libre: 'Personalizado' };
+  var MP_PJ = 200000, MP_MULT = { '1-2': 0.8, '3-4': 1.0, '5-6': 1.25 }, MP_HORA = 25000, COMPRAS = 60000;
+  var PP_TXT = { '1-2': '1 a 2 personas', '3-4': '3 a 4 personas', '5-6': '5 a 6 personas' };
+  var MISE = { verd: ['Verduras', 'Peladas, cortadas, blanqueadas y embolsadas'], prot: ['Proteínas', 'Despinadas, porcionadas y marinadas'],
+    form: ['Hamburguesas y milanesas', 'Formadas o empanadas, separadas y listas para el freezer'], fond: ['Fondos y salsas base', 'Caldos, salsas y aderezos'],
+    gran: ['Granos y legumbres', 'Arroz, quinoa, legumbres cocidas'], masa: ['Masas y panificados', 'Masas, tartas, pan, rebozados'], env: ['Envasado y etiquetado', 'Con fecha y uso, ordenado en heladera'] };
+  var CAJAS = [], ENVIO = { z1: 12000, z2: 16000, z3: 22000 }, ENVIO_GRATIS = 250000, ENVIO_TXT = { z1: 'CABA', z2: 'GBA cercano', z3: 'GBA más lejos' };
+  // Las cajas se leen de la página /cajas, así el presupuesto usa siempre los mismos precios y menús.
+  fetch('/cajas/').then(function (r) { return r.text(); }).then(function (h) {
+    var i = h.indexOf('const CAJAS = ['), j = h.indexOf('\n];', i);
+    if (i > 0 && j > i) CAJAS = new Function('return ' + h.slice(i + 14, j + 2))() || [];
+    var e = h.match(/const ENVIO = \{ z1: (\d+), z2: (\d+), z3: (\d+) \}/); if (e) ENVIO = { z1: +e[1], z2: +e[2], z3: +e[3] };
+    var g = h.match(/const ENVIO_GRATIS_DESDE = (\d+)/); if (g) ENVIO_GRATIS = +g[1];
+    if (f.servicio === 'caja' && $('#pz-form') && $('#pz-form').childElementCount) { form(); render(); }
+  }).catch(function () {});
+  function cajaSel() { return CAJAS.filter(function (c) { return c.id === f.caja; })[0] || null; }
+  function cajaOps(c) { return !c ? [] : (c.tipo === 'pp' ? (c.personas || [4]).map(function (n) { return { label: 'Para ' + n, personas: n, precio: c.pp * n }; }) : (c.opciones || [])); }
+  function extrasItems() { return (f.extras || []).filter(function (x) { return String(x.d).trim() && String(x.m).replace(/\D/g, ''); }).map(function (x) { return [x.d, +String(x.m).replace(/\D/g, '')]; }); }
+  function calcAlt() {
+    var r = { items: [], incluye: [], noIncluye: [], menu: [], menuTit: '', formato: '', personas: '', pago: 'seña del 50% para confirmar la fecha y saldo el día del servicio, por transferencia o MercadoPago.', cond: '' };
+    if (f.servicio === 'semanal') {
+      var j = parseInt(f.sjor, 10) || 1, hon = Math.round(MP_PJ * j * (MP_MULT[f.spp] || 1) / 1000) * 1000;
+      r.titulo = 'Chef semanal'; r.formato = j + (j > 1 ? ' jornadas' : ' jornada') + ' · ' + PP_TXT[f.spp]; r.personas = PP_TXT[f.spp];
+      r.items.push(['Servicio de chef · ' + j + (j > 1 ? ' jornadas' : ' jornada') + ' de ~6–7 hs · ' + (10 * j) + ' a ' + (12 * j) + ' preparaciones', hon]);
+      if (f.compras) r.items.push(['Compras de mercado y proveedores · ' + j + ' × ' + money(COMPRAS), COMPRAS * j]);
+      r.menuTit = 'Así funciona';
+      r.menu = [['Planificación y menú', 'Gustos, restricciones y cantidad de comensales. Para deportistas, coordinado con su nutricionista.'],
+        ['Producción en domicilio', '~6–7 horas por jornada y entre 10 y 12 preparaciones: principales, guarniciones y opciones dulces.'],
+        ['Entrega y conservación', 'Comida para ' + (j > 1 ? 'toda la semana' : 'unos cuatro días') + ', parte refrigerada y parte congelada. Cocina ordenada y limpia al terminar.']];
+      r.incluye = ['Diseño del menú semanal', 'Producción en tu cocina', 'Fraccionado y etiquetado', f.compras ? 'Compras de mercado y proveedores' : 'Lista de compras para que la hagas vos', 'Cocina limpia al terminar'];
+      r.noIncluye = ['Ingredientes (al costo, con ticket)', 'Viáticos: según la ubicación, se definen después', 'Envases y recipientes para freezer', 'IVA (los precios son sin IVA)'];
+      r.cond = 'Las jornadas se coordinan con al menos 48 horas de anticipación. El menú se cierra antes de cada jornada; cambios de fecha con 24 horas de aviso.';
+    } else if (f.servicio === 'mise') {
+      var jm = parseFloat(f.mjor) || 1, hs = jm * 8, honm = Math.round(hs * MP_HORA);
+      var items = (f.mitems || []).filter(function (k) { return MISE[k]; });
+      r.titulo = 'Mise en place'; r.formato = (jm === 0.5 ? 'Media jornada' : jm + (jm > 1 ? ' jornadas' : ' jornada')) + ' · ~' + hs + ' hs'; r.personas = PP_TXT[f.spp];
+      r.items.push(['Mise en place en tu cocina · ~' + hs + ' hs de trabajo', honm]);
+      if (f.compras) r.items.push(['Compras de mercado y proveedores · ' + Math.ceil(jm) + ' × ' + money(COMPRAS), COMPRAS * Math.ceil(jm)]);
+      r.menuTit = 'Qué te dejo preparado';
+      r.menu = items.map(function (k) { return MISE[k]; });
+      r.incluye = ['Organización de la jornada según tu menú', 'Cortes, porcionado y bases listas para cocinar', 'Envasado y etiquetado con fecha y uso', 'Cocina limpia al terminar'];
+      r.noIncluye = ['Ingredientes e insumos de envasado (al costo, con ticket)', 'Viáticos: según la ubicación, se definen después', 'IVA (los precios son sin IVA)'];
+      r.cond = 'Si la carne o el pollo vienen sin picar, se suman ~2 horas y hace falta picadora. Coordinamos la jornada con al menos 48 horas de anticipación.';
+    } else if (f.servicio === 'caja') {
+      var c = cajaSel(), ops = cajaOps(c), o = ops[+f.cajaOp] || ops[0];
+      r.titulo = c ? c.nombre : 'Caja Celestia'; r.formato = o ? o.label : '—'; r.personas = o ? (o.personas + ' personas') : '';
+      if (c && o) r.items.push([c.nombre + ' · ' + o.label, o.precio]);
+      var sub = r.items.concat(extrasItems()).reduce(function (a, x) { return a + x[1]; }, 0);
+      var env = sub >= ENVIO_GRATIS ? 0 : (ENVIO[f.envio] || 0);
+      r.envio = ['Envío · ' + (ENVIO_TXT[f.envio] || 'CABA') + (env ? '' : ' (sin cargo)'), env];
+      r.menuTit = 'El menú'; r.menu = c ? (c.menu || []) : [];
+      if (c && c.lead) r.lead = c.lead;
+      r.incluye = ['Elaboración artesanal el día anterior o el mismo día', 'Cada preparación en su envase, lista para regenerar', 'Guía impresa para regenerar y servir', 'Entrega refrigerada en la franja elegida'];
+      r.noIncluye = ['Bebidas', 'Vajilla y servicio en mesa', 'IVA (los precios son sin IVA)'];
+      r.pago = 'seña del 50% para confirmar el pedido y saldo antes de la entrega, por transferencia o MercadoPago.';
+      r.cond = 'Pedidos con al menos 48 horas de anticipación (fechas especiales según su cierre). Cambios de cantidades hasta 72 horas antes. Conservar refrigerado y consumir dentro de las 48 horas.';
+    } else {
+      r.titulo = f.ocasion || 'Propuesta a medida'; r.formato = f.personas ? f.personas + ' personas' : '—'; r.personas = f.personas ? f.personas + ' personas' : '';
+      r.incluye = ['Diseño de la propuesta a medida', 'Producción y coordinación con Celestia'];
+      r.noIncluye = ['IVA (los precios son sin IVA)', 'Lo que no figure en el detalle'];
+      r.cond = 'Valores sujetos a confirmación de la fecha con la seña.';
+    }
+    r.items = r.items.concat(extrasItems());
+    if (r.envio) r.items.push(r.envio);
+    r.calc = r.items.reduce(function (a, x) { return a + x[1]; }, 0);
+    var man = String(f.total).replace(/\D/g, '');
+    r.total = man ? +man : r.calc; r.manual = !!man && r.total !== r.calc;
+    return r;
+  }
+  function formAlt() {
+    var sel = function (k, ops, v) { return '<select data-k="' + k + '">' + ops.map(function (o) { return '<option value="' + esc(o[0]) + '"' + (String(v) === String(o[0]) ? ' selected' : '') + '>' + esc(o[1]) + '</option>'; }).join('') + '</select>'; };
+    var h = '';
+    if (f.servicio === 'semanal' || f.servicio === 'mise') {
+      h += '<div class="pz-2"><div class="pz-f"><label>Personas</label>' + sel('spp', [['1-2', '1 a 2'], ['3-4', '3 a 4'], ['5-6', '5 a 6']], f.spp) + '</div>';
+      h += f.servicio === 'semanal' ? '<div class="pz-f"><label>Jornadas</label>' + sel('sjor', [['1', '1 jornada'], ['2', '2 jornadas'], ['3', '3 jornadas'], ['4', '4 jornadas']], f.sjor) + '</div></div>'
+        : '<div class="pz-f"><label>Duración</label>' + sel('mjor', [['0.5', 'Media jornada (4 hs)'], ['1', '1 jornada (8 hs)'], ['2', '2 jornadas'], ['3', '3 jornadas']], f.mjor) + '</div></div>';
+      if (f.servicio === 'mise') h += '<div class="pz-f"><label>Qué preparo</label>' + Object.keys(MISE).map(function (k) { return '<label class="pz-chk" style="margin:0 0 4px"><input type="checkbox" data-mi="' + k + '"' + ((f.mitems || []).indexOf(k) >= 0 ? ' checked' : '') + '> ' + esc(MISE[k][0]) + '</label>'; }).join('') + '</div>';
+      h += '<label class="pz-chk"><input type="checkbox" data-k="compras"' + (f.compras ? ' checked' : '') + '> Hago yo las compras (+ ' + money(COMPRAS) + ' por jornada)</label>';
+    }
+    if (f.servicio === 'caja') {
+      var c = cajaSel();
+      h += '<div class="pz-f"><label>Caja</label><select data-k="caja"><option value="">' + (CAJAS.length ? '— Elegir caja —' : 'Cargando cajas…') + '</option>' + CAJAS.map(function (x) { return '<option value="' + esc(x.id) + '"' + (x.id === f.caja ? ' selected' : '') + '>' + esc(x.nombre + ' · ' + (x.grupo || '')) + '</option>'; }).join('') + '</select></div>';
+      if (c) h += '<div class="pz-f"><label>Opción</label>' + sel('cajaOp', cajaOps(c).map(function (o, i) { return [i, o.label + ' · ' + money(o.precio)]; }), f.cajaOp) + '</div>';
+      h += '<div class="pz-f"><label>Envío</label>' + sel('envio', [['z1', 'CABA · ' + money(ENVIO.z1)], ['z2', 'GBA cercano · ' + money(ENVIO.z2)], ['z3', 'GBA más lejos · ' + money(ENVIO.z3)]], f.envio) + '</div>';
+    }
+    if (f.servicio === 'libre') h += '<div class="pz-f"><label>Comensales</label><input type="number" min="1" max="200" data-k="personas" value="' + esc(f.personas) + '"></div>';
+    h += '<div class="pz-f"><label>' + (f.servicio === 'libre' ? 'Ítems del presupuesto' : 'Adicionales (opcional)') + '</label>' + (f.extras || []).map(function (x, i) {
+      return '<div style="display:grid;grid-template-columns:1fr 110px;gap:6px;margin-bottom:5px"><input data-xd="' + i + '" value="' + esc(x.d) + '" placeholder="Concepto"><input data-xm="' + i + '" inputmode="numeric" value="' + esc(x.m) + '" placeholder="$"></div>';
+    }).join('') + '<button type="button" id="pz-xmas" style="background:none;border:0;color:#E8C96B;font:600 12px \'DM Sans\';cursor:pointer;padding:2px 0;text-align:left">+ Agregar ítem</button></div>';
+    return h;
+  }
+  function renderAlt(doc) {
+    var r = calcAlt(), calc = $('#pz-calc');
+    if (calc) calc.innerHTML = r.items.map(function (x) { return esc(x[0]) + ' · ' + money(x[1]); }).join('<br>') + '<br><b>Total ' + money(r.calc) + '</b>' + (r.manual ? ' · se muestra ' + money(r.total) : '');
+    var horario = f.horario || (f.servicio === 'caja' ? 'A coordinar' : (f.servicio === 'libre' ? (f.turno === 'cena' ? 'Cena' : 'Almuerzo') : 'Desde las 9 h'));
+    var filas = (r.manual ? [] : r.items).map(function (x) { return '<div><span>' + esc(x[0]) + '</span><span>' + money(x[1]) + '</span></div>'; }).join('');
+    var menu = r.menu.length ? '<div class="pz-h2">' + esc(r.menuTit) + '</div><div class="pz-menu">' + r.menu.map(function (m) { return '<div><span>' + esc(m[0]) + '</span><b>' + esc(m[1]) + '</b></div>'; }).join('') + '</div>' : '';
+    doc.innerHTML = '<section class="pz-page' + (r.menu.length > 4 || r.items.length > 4 || f.notas ? ' cmp' : '') + '">' +
+      '<header class="pz-hd"><div class="pz-brand"><div class="pz-logo"><b>CELESTIA</b><small>CHEF PRIVADO</small></div>' +
+      '<div class="pz-nro">Presupuesto <b>' + esc(nro) + '</b><br>' + esc(hoyLargo()) + '<br>Válido hasta el ' + esc(vence()) + '</div></div>' +
+      '<div class="pz-tit">Presupuesto<br><em>' + esc(r.titulo) + '</em></div></header>' +
+      '<div class="pz-bd"><div class="pz-bd-in">' +
+      '<div class="pz-meta"><div><span>Para</span><b>' + esc(f.cliente || '—') + '</b></div><div><span>Ocasión</span><b>' + esc(f.ocasion || '—') + '</b></div><div><span>Contacto</span><b>' + esc(f.contacto || '—') + '</b></div>' +
+      '<div><span>Fecha</span><b>' + esc(fechaLarga(f.fecha)) + '</b></div><div><span>' + (f.servicio === 'caja' ? 'Entrega' : 'Horario') + '</span><b>' + esc(horario) + '</b></div><div><span>Formato</span><b>' + esc(r.formato) + '</b></div></div>' +
+      '<p class="pz-intro">' + esc(f.intro) + (r.lead ? ' ' + esc(r.lead) : '') + '</p>' + menu +
+      (f.notas ? '<p class="pz-fine" style="margin-top:3mm"><b>Notas:</b> ' + esc(f.notas) + '</p>' : '') +
+      '<div class="pz-row"><div><div class="pz-h2">Detalle</div><div class="pz-inv">' + filas +
+      '<div class="t"><span>Total' + (r.personas ? ' · ' + esc(r.personas) : '') + '<small>' + (f.servicio === 'semanal' || f.servicio === 'mise' ? 'Ingredientes y viáticos aparte' : 'No incluye IVA') + '</small></span><b>' + money(r.total) + '</b></div></div>' +
+      '<p class="pz-pago"><b>Forma de pago:</b> ' + esc(r.pago) + '</p></div>' +
+      '<div><div class="pz-h2">Incluye</div><ul class="pz-lst">' + r.incluye.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' +
+      '<div class="pz-h2" style="margin-top:4mm">No incluye</div><ul class="pz-lst no">' + r.noIncluye.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div></div>' +
+      '<div class="pz-h2">Condiciones</div><p class="pz-fine" style="margin:0">' + esc(r.cond) + ' La seña no es reembolsable y se toma a cuenta; por fuerza mayor se reprograma de común acuerdo. Alergias y restricciones: informarlas al confirmar. Términos completos en chefprivado.ar/terminos.</p>' +
+      '</div></div>' +
+      '<footer class="pz-ft"><div class="pz-firma"><b>Daro Castello</b>Chef · Celestia Chef Privado</div><div style="text-align:right">chefprivado.ar · +54 9 11 6041-0607<br>CABA y Gran Buenos Aires</div></footer></section>';
+    ajustar(doc); escalar();
+  }
+
+  // ── Marcar la fecha: crea (o actualiza) una reserva desde el admin, sin que el cliente reserve en el sitio.
+  function marcarFecha() {
+    var msg = $('#pz-mf-msg'), say = function (t, ok) { if (msg) { msg.className = 'pz-msg ' + (ok ? 'ok' : 'err'); msg.textContent = t; } };
+    if (typeof supa === 'undefined') return say('No hay sesión de admin.');
+    if (!f.fecha) return say('Elegí la fecha primero.');
+    var alt = f.servicio !== 'exp', r = alt ? calcAlt() : null, c = alt ? null : calcular(f);
+    var total = alt ? r.total : (String(f.total).replace(/\D/g, '') ? +String(f.total).replace(/\D/g, '') : c.total);
+    var turno = (f.servicio === 'exp' || f.servicio === 'libre') ? f.turno : 'almuerzo';
+    var personas = alt ? (parseInt(String(r.personas).replace(/^\D*(\d+).*$/, '$1'), 10) || parseInt(f.personas, 10) || 0) : c.personas;
+    if (alt && /a\s+(\d+)/.test(r.personas)) personas = +r.personas.match(/a\s+(\d+)/)[1];
+    var menu = alt ? (SERVICIOS[f.servicio] + ' · ' + r.titulo + ' · ' + r.formato) : ('Menú de ' + f.pasos + ' pasos' + (f.menuNombre ? ' · ' + f.menuNombre : ''));
+    var ct = String(f.contacto || ''), email = (ct.match(/[^\s,;]+@[^\s,;]+/) || [''])[0], tel = (ct.replace(email, '').match(/[+\d][\d\s\-()]{6,}/) || [''])[0].trim();
+    var datos = { fecha: f.fecha, turno: turno, menu: menu, personas: personas, nombre: f.cliente || 'Cliente WhatsApp', ocasion: f.ocasion || '',
+      total: total, honorario: alt ? total : c.servicio + c.asist, ingredientes: alt ? 0 : c.ingredientes };
+    if (email) datos.email = email; if (tel) datos.tel = tel; if (f.dir) datos.dir = f.dir;
+    if (f.servicio === 'semanal' || f.servicio === 'mise') datos.tipo = 'semanal';
+    var hacer = function () {
+      if (f.reservaId) {
+        return supa.from('reservas').update(datos).eq('id', f.reservaId).then(function (x) {
+          if (x.error) throw x.error; say('✓ Reserva actualizada: ' + fechaLarga(f.fecha) + ' · ' + turno + '.', true); cargarReservas(true);
+        });
+      }
+      datos.ref = 'ADM-' + Date.now().toString(36).toUpperCase(); datos.estado = 'reservada';
+      datos.notas = 'Cargada desde el admin (pedido por WhatsApp). Presupuesto ' + nro + (f.notas ? ' · ' + f.notas : '');
+      return supa.from('reservas').insert(datos).select('id').single().then(function (x) {
+        if (x.error) throw x.error; f.reservaId = String(x.data.id); guardar();
+        say('✓ Fecha marcada: ' + fechaLarga(f.fecha) + ' · ' + turno + ' (' + datos.ref + '). Ya aparece en Reservas y queda ocupada en el calendario del sitio.', true);
+        cargarReservas(true);
+      });
+    };
+    supa.from('reservas').select('id,nombre,turno,estado').eq('fecha', f.fecha).in('estado', ['reservada', 'confirmada', 'ofrecida', 'aceptada']).then(function (q) {
+      var otras = (q.data || []).filter(function (x) { return String(x.id) !== String(f.reservaId) && x.turno === turno; });
+      if (otras.length && !confirm('Ya hay ' + otras.length + ' reserva(s) ese día en ese turno (' + otras.map(function (x) { return x.nombre; }).join(', ') + '). ¿Marcar igual?')) return;
+      if (!f.reservaId && !confirm('¿Marcar el ' + fechaLarga(f.fecha) + ' (' + turno + ') para ' + datos.nombre + ' por ' + money(total) + '? Queda como reserva sin seña.')) return;
+      return hacer();
+    }).catch(function (e) { say('No se pudo guardar: ' + (e && e.message || e)); });
   }
 
   function numero() { var d = new Date(); var p = function (n) { return String(n).padStart(2, '0'); }; return 'CEL-' + String(d.getFullYear()).slice(2) + p(d.getMonth() + 1) + p(d.getDate()) + '-' + p(d.getHours()) + p(d.getMinutes()); }
@@ -265,8 +423,14 @@
   function form() {
     var root = $('#pz-form'); if (!root) return;
     root.innerHTML =
-      '<h3>Presupuesto formal</h3><p class="pz-ay">Hoja A4 con la propuesta y la carta del menú. Se exporta a PDF desde «Imprimir».</p>' +
+      '<h3>Presupuesto formal</h3><p class="pz-ay">Hoja A4 lista para mandar por WhatsApp o mail. Se exporta a PDF desde «Imprimir». Con «Marcar la fecha» queda reservada sin que el cliente tenga que reservar en el sitio.</p>' +
+      '<div class="pz-f"><label>Servicio</label><select data-k="servicio">' + Object.keys(SERVICIOS).map(function (k) { return '<option value="' + k + '"' + (f.servicio === k ? ' selected' : '') + '>' + esc(SERVICIOS[k]) + '</option>'; }).join('') + '</select></div>' +
       '<div class="pz-f"><label>Cargar desde una reserva</label><select id="pz-res"><option value="">— Elegir reserva (opcional) —</option></select></div>' +
+      (f.servicio !== 'exp' ? formComun() : formExp()) +
+      '<div class="pz-acc"><button type="button" class="pri" id="pz-print">🖨️ Imprimir / Guardar PDF</button><button type="button" id="pz-nuevo">Nuevo</button></div>' +
+      '<div class="pz-acc"><button type="button" id="pz-marcar">📌 ' + (f.reservaId ? 'Actualizar la reserva' : 'Marcar la fecha (sin reserva del cliente)') + '</button></div><div class="pz-msg" id="pz-mf-msg"></div>' +
+      (f.servicio === 'exp' ? '<div class="pz-acc"><button type="button" id="pz-subir">⬆ Subir menú al sitio e ingredientes</button></div>' : '');
+    function formExp() { return '' +
       '<div class="pz-sug"><div class="pz-f"><label for="pz-pega">Menú sugerido · pegalo completo</label>' +
       '<textarea id="pz-pega" spellcheck="false" placeholder="' + esc('Opción A — Mediterráneo\nEntrada: Burrata con tomates asados\nPrincipal: Sorrentinos de calabaza\nPostre: Tiramisú\n\nOpción B — Clásico\nEntrada: …\nPrincipal: …\nPostre: …') + '">' + esc(f.pegado) + '</textarea></div>' +
       '<div class="pz-acc"><button type="button" class="pri" id="pz-leer">✦ Rellenar el presupuesto</button></div>' +
@@ -288,20 +452,46 @@
       '<div class="pz-2"><div class="pz-f"><label>Validez (días)</label><input type="number" min="1" max="60" data-k="validez" value="' + esc(f.validez) + '"></div><div class="pz-f"><label>N.º</label><input value="' + esc(nro) + '" disabled></div></div>' +
       '<div class="pz-f"><label>Texto de presentación</label><textarea data-k="intro">' + esc(f.intro) + '</textarea></div>' +
       '<div class="pz-f"><label>Bebidas</label><input data-k="bebidas" value="' + esc(f.bebidas) + '"></div>' +
-      '<div class="pz-f"><label>Notas (alergias, horarios, pedidos)</label><textarea data-k="notas" placeholder="Opcional">' + esc(f.notas) + '</textarea></div>' +
-      '<div class="pz-acc"><button type="button" class="pri" id="pz-print">🖨️ Imprimir / Guardar PDF</button><button type="button" id="pz-nuevo">Nuevo</button></div>' +
-      '<div class="pz-acc"><button type="button" id="pz-subir">⬆ Subir menú al sitio e ingredientes</button></div>';
+      '<div class="pz-f"><label>Notas (alergias, horarios, pedidos)</label><textarea data-k="notas" placeholder="Opcional">' + esc(f.notas) + '</textarea></div>'; }
+    function formComun() { return '' +
+      '<div class="pz-f"><label>Para (cliente o empresa)</label><input data-k="cliente" value="' + esc(f.cliente) + '" placeholder="Nombre"></div>' +
+      '<div class="pz-f"><label>Contacto</label><input data-k="contacto" value="' + esc(f.contacto) + '" placeholder="Teléfono o mail"></div>' +
+      '<div class="pz-f"><label>Ocasión</label><input data-k="ocasion" value="' + esc(f.ocasion) + '" placeholder="Ej.: Thanksgiving en familia"></div>' +
+      '<div class="pz-2"><div class="pz-f"><label>Fecha</label><input type="date" data-k="fecha" value="' + esc(f.fecha) + '"></div>' +
+      (f.servicio === 'libre' ? '<div class="pz-f"><label>Turno</label><select data-k="turno"><option value="almuerzo"' + (f.turno === 'almuerzo' ? ' selected' : '') + '>Almuerzo</option><option value="cena"' + (f.turno === 'cena' ? ' selected' : '') + '>Cena</option></select></div></div>'
+        : '<div class="pz-f"><label>' + (f.servicio === 'caja' ? 'Franja de entrega' : 'Horario') + '</label><input data-k="horario" value="' + esc(f.horario) + '" placeholder="' + (f.servicio === 'caja' ? '15 a 17 h' : 'Desde las 9 h') + '"></div></div>') +
+      '<div class="pz-f"><label>Dirección (opcional)</label><input data-k="dir" value="' + esc(f.dir) + '" placeholder="Barrio o dirección"></div>' +
+      formAlt() +
+      '<div class="pz-calc" id="pz-calc"></div>' +
+      '<div class="pz-2"><div class="pz-f"><label>Total a mostrar (vacío = calculado)</label><input data-k="total" inputmode="numeric" value="' + esc(f.total) + '" placeholder="Ej.: 860000"></div>' +
+      '<div class="pz-f"><label>Validez (días)</label><input type="number" min="1" max="60" data-k="validez" value="' + esc(f.validez) + '"></div></div>' +
+      '<div class="pz-f"><label>Texto de presentación</label><textarea data-k="intro">' + esc(f.intro) + '</textarea></div>' +
+      '<div class="pz-f"><label>Notas (alergias, horarios, pedidos)</label><textarea data-k="notas" placeholder="Opcional">' + esc(f.notas) + '</textarea></div>'; }
     root.querySelectorAll('[data-k]').forEach(function (el) {
       el.addEventListener('input', function () {
         var k = el.getAttribute('data-k');
         f[k] = el.type === 'checkbox' ? el.checked : el.value;
         if (k === 'total') f.totalRes = false;
+        if (k === 'servicio') { f.total = ''; f.intro = INTRO[f.servicio] || f.intro; guardar(); form(); render(); return; }
+        if (f.servicio !== 'exp' && /^(caja|cajaOp|spp|sjor|mjor|compras|envio)$/.test(k)) { if (k === 'caja') f.cajaOp = 0; guardar(); form(); render(); return; }
         if (k === 'pasos' || (f.totalRes && /^(personas|fecha|turno)$/.test(k))) { f.total = ''; f.totalRes = false; if (k !== 'pasos') { var ti = $('[data-k=total]'); if (ti) ti.value = ''; } }
         if (k === 'pasos') { f.platos =PASOS[f.pasos].map(function () { return ''; }); f.platosB = f.platos.slice(); f.etiquetas = null; f.estilo = ''; form(); }
         guardar(); render();
       });
       if (el.tagName === 'SELECT' || el.type === 'checkbox' || el.type === 'date') el.addEventListener('change', function () { el.dispatchEvent(new Event('input')); });
     });
+    root.querySelectorAll('[data-mi]').forEach(function (el) {
+      el.addEventListener('change', function () { var k = el.getAttribute('data-mi'), a = (f.mitems || []).filter(function (x) { return x !== k; }); if (el.checked) a.push(k); f.mitems = a; guardar(); render(); });
+    });
+    root.querySelectorAll('[data-xd],[data-xm]').forEach(function (el) {
+      el.addEventListener('input', function () { var i = +(el.getAttribute('data-xd') || el.getAttribute('data-xm')); f.extras[i][el.hasAttribute('data-xd') ? 'd' : 'm'] = el.value; guardar(); render(); });
+    });
+    if ($('#pz-xmas')) $('#pz-xmas').addEventListener('click', function () { f.extras.push({ d: '', m: '' }); guardar(); form(); render(); });
+    $('#pz-marcar').addEventListener('click', marcarFecha);
+    $('#pz-print').addEventListener('click', function () { render(); prepararImpresion(); setTimeout(function () { window.print(); }, 80); });
+    $('#pz-nuevo').addEventListener('click', function () { if (!confirm('¿Empezar un presupuesto nuevo? Se borra el borrador actual.')) return; var sv = f.servicio; f = JSON.parse(JSON.stringify(DEF)); f.servicio = sv; f.intro = INTRO[sv] || f.intro; nro = numero(); guardar(); form(); render(); });
+    cargarReservas();
+    if (f.servicio !== 'exp') return;
     root.querySelectorAll('[data-plato]').forEach(function (el) {
       el.addEventListener('input', function () { f.platos[+el.getAttribute('data-plato')] = el.value; guardar(); render(); });
     });
@@ -339,15 +529,19 @@
       if (!ops.length) { alert('Primero cargá los platos del menú.'); return; }
       window.pzSubirMenu({ pasos: +f.pasos, etiquetas: f.etiquetas && f.etiquetas.length ? f.etiquetas.slice() : null, opciones: ops, ocasion: f.ocasion, cliente: f.cliente, reservaId: f.reservaId });
     });
-    $('#pz-print').addEventListener('click', function () { render(); prepararImpresion(); setTimeout(function () { window.print(); }, 80); });
-    $('#pz-nuevo').addEventListener('click', function () { if (!confirm('¿Empezar un presupuesto nuevo? Se borra el borrador actual.')) return; f = JSON.parse(JSON.stringify(DEF)); nro = numero(); guardar(); form(); render(); });
-    cargarReservas();
   }
+  var INTRO = {
+    exp: DEF.intro,
+    semanal: 'Gracias por pensar en Celestia. Te comparto la propuesta de chef semanal: cocino en tu casa y te dejo comida casera para varios días, refrigerada y congelada, con un menú pensado para vos.',
+    mise: 'Gracias por pensar en Celestia. Te comparto la propuesta de mise en place: preparo en tu cocina todo lo que necesitás para cocinar la semana, cortado, porcionado y etiquetado.',
+    caja: 'Gracias por pensar en Celestia. Te comparto la propuesta: una caja de chef elaborada artesanalmente, que llega lista para regenerar y servir.',
+    libre: 'Gracias por pensar en Celestia. Te comparto la propuesta armada a medida para tu pedido.'
+  };
   function guardar() { try { localStorage.setItem(KEY, JSON.stringify(f)); } catch (e) {} }
 
-  function cargarReservas() {
+  function cargarReservas(forzar) {
     var sel = $('#pz-res'); if (!sel) return;
-    var lista = (typeof todasReservas !== 'undefined' && todasReservas.length) ? Promise.resolve(todasReservas) :
+    var lista = (!forzar && typeof todasReservas !== 'undefined' && todasReservas.length) ? Promise.resolve(todasReservas) :
       (typeof supa !== 'undefined' ? supa.from('reservas').select('id,ref,fecha,turno,personas,nombre,menu,total,estado').order('fecha', { ascending: true }).then(function (r) { return r.data || []; }) : Promise.resolve([]));
     lista.then(function (rs) {
       var hoy = new Date().toISOString().slice(0, 10);
@@ -361,6 +555,7 @@
         f.reservaId = r ? String(r.id) : '';
         if (!r) { guardar(); return; }
         f.cliente = r.nombre || f.cliente; f.fecha = r.fecha.slice(0, 10); f.turno = r.turno || f.turno; f.personas = r.personas || f.personas;
+        if (f.servicio !== 'exp') { f.total = r.total ? String(r.total) : ''; guardar(); form(); render(); return; }
         var m = String(r.menu || '').toLowerCase(), np = m.indexOf('7') >= 0 ? 7 : (m.indexOf('3') >= 0 ? 3 : 0);
         if (np && +f.pasos !== np) { f.pasos = np; f.platos = PASOS[np].map(function () { return ''; }); f.platosB = f.platos.slice(); f.etiquetas = null; }
         f.total = r.total ? String(r.total) : ''; f.totalRes = !!r.total;
@@ -375,6 +570,7 @@
   // ── Hojas
   function render() {
     var doc = $('#pz-doc'); if (!doc) return;
+    if (f.servicio !== 'exp') return renderAlt(doc);
     var c = calcular(f), total = (String(f.total).replace(/\D/g, '') ? +String(f.total).replace(/\D/g, '') : c.total);
     var pasos = PASOS[f.pasos], fmt = f.pasos + ' pasos', turnoTxt = f.turno === 'cena' ? 'Cena · 20:00 a 23:30' : 'Almuerzo · 12:00 a 15:30';
     var calc = $('#pz-calc');
