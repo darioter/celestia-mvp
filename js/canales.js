@@ -58,7 +58,7 @@
     var dia = res ? ((res.querySelector('.calc-pp') || {}).innerText || '').split('·').slice(1).join('·').trim() : '';
     var t = en()
       ? 'Hi Daro! I would like the ' + (nombre || 'dining experience') + ' at home.\n*Guests:* ' + pp + (dia ? '\n*When:* ' + dia : '') + (tot ? '\n*Estimated total:* ' + tot : '') + '\nWhich dates are available?'
-      : 'Hola Daro! Quiero la experiencia ' + (nombre || 'en casa') + '.\n*Personas:* ' + pp + (dia ? '\n*Cuándo:* ' + dia : '') + (tot ? '\n*Total estimado:* ' + tot : '') + '\n¿Qué fechas tenés disponibles?';
+      : 'Hola Daro! Me interesa ' + (nombre ? 'el ' + nombre.charAt(0).toLowerCase() + nombre.slice(1) : 'una experiencia') + ' en casa.\n*Personas:* ' + pp + (dia ? '\n*Cuándo:* ' + dia : '') + (tot ? '\n*Total estimado:* ' + tot : '') + '\n¿Qué fechas tenés disponibles?';
     window.celWA('exp' + menuId, t, 'calculador');
   };
 
