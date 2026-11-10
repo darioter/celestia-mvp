@@ -278,7 +278,7 @@
     }
     L.push('*Total: ' + money(total) + '*' + (f.servicio === 'exp' ? ' (servicio, asistentes e ingredientes).' : '.'));
     L.push(pago + ' Te adjunto el PDF con el detalle; el presupuesto es válido por ' + (parseInt(f.validez, 10) || 7) + ' días.');
-    L.push('*Seña (50%): ' + money(Math.round(total * 0.5)) + '*\nTransferencia al alias *' + ALIAS_PAGO + '* (Daro Castello). Cuando la hagas, mandame el comprobante y la fecha queda confirmada.');
+    L.push('*Seña (50%): ' + money(Math.round(total * 0.5)) + '*\nTransferencia al alias *' + ALIAS_PAGO + '*. Cuando la hagas, mandame el comprobante y la fecha queda confirmada.');
     if (f.servicio !== 'semanal' && f.servicio !== 'mise') L.push('Si querés sumar bebidas (vinos, espumantes, aperitivos, gaseosas y aguas), las ves acá y te las llevo frías junto con el pedido: ' + LINK_BEBIDAS);
     L.push('Cualquier ajuste lo vemos sin problema. ¡Gracias por pensar en Celestia!\nDaro · Celestia Chef Privado');
     return L.join('\n\n');
