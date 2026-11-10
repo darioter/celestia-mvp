@@ -717,7 +717,7 @@
     var bd = doc.querySelector('.pz-bd'), inn = doc.querySelector('.pz-bd-in'); if (!bd || !inn) return;
     var set = function (z) { inn.style.transform = z < 1 ? 'scale(' + z + ')' : ''; inn.style.width = z < 1 ? (100 / z) + '%' : ''; };
     var z = 1; set(1);
-    while (inn.getBoundingClientRect().height > bd.getBoundingClientRect().height - 10 && z > 0.6) { z = Math.round((z - 0.02) * 100) / 100; set(z); }
+    while (inn.getBoundingClientRect().bottom > bd.getBoundingClientRect().bottom - 6 && z > 0.6) { z = Math.round((z - 0.02) * 100) / 100; set(z); }
   }
   // Las tipografías pueden terminar de cargar después del primer cálculo: se vuelve a ajustar para que no se corte el texto.
   function reajustar(doc) { setTimeout(function () { ajustar(doc); escalar(); }, 250); try { document.fonts.ready.then(function () { ajustar(doc); escalar(); }); } catch (e) {} }
