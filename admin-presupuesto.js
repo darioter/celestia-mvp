@@ -264,7 +264,7 @@
       datos.ref = 'ADM-' + Date.now().toString(36).toUpperCase(); datos.estado = 'reservada';
       datos.notas = 'Cargada desde el admin (pedido por WhatsApp). Presupuesto ' + nro + (f.notas ? ' · ' + f.notas : '');
       return supa.from('reservas').insert(datos).select('id').single().then(function (x) {
-        if (x.error) throw x.error; f.reservaId = String(x.data.id); guardar();
+        if (x.error) throw x.error; f.reservaId = String(x.data.id); guardar(); guardarBase(true);
         var ok = '✓ Fecha marcada: ' + fechaLarga(f.fecha) + ' · ' + turno + ' (' + datos.ref + '). Ya aparece en Reservas y queda ocupada en el calendario del sitio.';
         form(); render(); say(ok, true); msg = $('#pz-mf-msg'); if (msg) { msg.className = 'pz-msg ok'; msg.textContent = ok; }
       });
@@ -277,8 +277,8 @@
     }).catch(function (e) { say('No se pudo guardar: ' + (e && e.message || e)); });
   }
 
-  function numero() { var d = new Date(); var p = function (n) { return String(n).padStart(2, '0'); }; return 'CEL-' + String(d.getFullYear()).slice(2) + p(d.getMonth() + 1) + p(d.getDate()) + '-' + p(d.getHours()) + p(d.getMinutes()); }
-  var nro = numero();
+  function numero() { var d = new Date(); var p = function (n) { return String(n).padStart(2, '0'); }; return 'CEL-' + String(d.getFullYear()).slice(2) + p(d.getMonth() + 1) + p(d.getDate()) + '-' + p(d.getHours()) + p(d.getMinutes()) + p(d.getSeconds()); }
+  var nro = f.nro || numero(); f.nro = nro;
   function fechaLarga(k) { if (!k) return 'A definir'; var t = new Date(k + 'T12:00:00').toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }); return t.charAt(0).toUpperCase() + t.slice(1); }
   function hoyLargo() { return new Date().toLocaleDateString('es-AR', { day: 'numeric', month: 'long', year: 'numeric' }); }
   function vence() { var d = new Date(); d.setDate(d.getDate() + (parseInt(f.validez, 10) || 7)); return d.toLocaleDateString('es-AR', { day: 'numeric', month: 'long' }); }
@@ -428,6 +428,8 @@
     var root = $('#pz-form'); if (!root) return;
     root.innerHTML =
       '<h3>Presupuesto formal</h3><p class="pz-ay">Hoja A4 lista para mandar por WhatsApp o mail. Se exporta a PDF desde «Imprimir». Con «Marcar la fecha» queda reservada sin que el cliente tenga que reservar en el sitio.</p>' +
+      '<div class="pz-f"><label>Presupuestos guardados</label><select id="pz-gs"><option value="">Cargando…</option></select></div>' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin:-4px 0 12px;font-size:11.5px"><span id="pz-gd" style="color:rgba(250,246,239,.6)">N.º ' + esc(nro) + ' · se guarda solo al escribir</span><button type="button" id="pz-dup" style="background:none;border:0;color:#E8C96B;font:600 11.5px \'DM Sans\';cursor:pointer;padding:0">Duplicar como nuevo</button></div>' +
       '<div class="pz-f"><label>Servicio</label><select data-k="servicio">' + Object.keys(SERVICIOS).map(function (k) { return '<option value="' + k + '"' + (f.servicio === k ? ' selected' : '') + '>' + esc(SERVICIOS[k]) + '</option>'; }).join('') + '</select></div>' +
       '<div class="pz-f"><label>Cargar desde una reserva</label><select id="pz-res"><option value="">— Elegir reserva (opcional) —</option></select></div>' +
       '<div class="pz-mf"><b>📌 Pedido por WhatsApp</b><span>Completá cliente y fecha, y marcala: queda reservada sin que el cliente reserve en el sitio.</span><button type="button" id="pz-marcar">Marcar la fecha (sin reserva del cliente)</button>' + (f.reservaId ? '<button type="button" id="pz-actualizar" style="background:transparent;border:1px solid rgba(232,201,107,.6);color:#FAF6EF">Actualizar la reserva elegida</button>' : '') + '<div class="pz-msg" id="pz-mf-msg"></div></div>' +
@@ -491,10 +493,12 @@
       el.addEventListener('input', function () { var i = +(el.getAttribute('data-xd') || el.getAttribute('data-xm')); f.extras[i][el.hasAttribute('data-xd') ? 'd' : 'm'] = el.value; guardar(); render(); });
     });
     if ($('#pz-xmas')) $('#pz-xmas').addEventListener('click', function () { f.extras.push({ d: '', m: '' }); guardar(); form(); render(); });
+    listaGuardados();
+    $('#pz-dup').addEventListener('click', function () { nro = numero(); f.nro = nro; f.reservaId = ''; guardar(); form(); render(); estadoGuardado('Copia nueva ' + nro + ' (sin reserva vinculada).', true); });
     $('#pz-marcar').addEventListener('click', function () { f.reservaId = ''; guardar(); marcarFecha(); });
     if ($('#pz-actualizar')) $('#pz-actualizar').addEventListener('click', marcarFecha);
     $('#pz-print').addEventListener('click', function () { render(); prepararImpresion(); setTimeout(function () { window.print(); }, 80); });
-    $('#pz-nuevo').addEventListener('click', function () { if (!confirm('¿Empezar un presupuesto nuevo? Se borra el borrador actual.')) return; var sv = f.servicio; f = JSON.parse(JSON.stringify(DEF)); f.servicio = sv; f.intro = INTRO[sv] || f.intro; nro = numero(); guardar(); form(); render(); });
+    $('#pz-nuevo').addEventListener('click', function () { if (!confirm('¿Empezar un presupuesto nuevo? Se borra el borrador actual.')) return; var sv = f.servicio; f = JSON.parse(JSON.stringify(DEF)); f.servicio = sv; f.intro = INTRO[sv] || f.intro; nro = numero(); f.nro = nro; try { localStorage.setItem(KEY, JSON.stringify(f)); } catch (e) {} form(); render(); });
     cargarReservas();
     if (f.servicio !== 'exp') return;
     root.querySelectorAll('[data-plato]').forEach(function (el) {
@@ -542,7 +546,45 @@
     caja: 'Gracias por pensar en Celestia. Te comparto la propuesta: una caja de chef elaborada artesanalmente, que llega lista para regenerar y servir.',
     libre: 'Gracias por pensar en Celestia. Te comparto la propuesta armada a medida para tu pedido.'
   };
-  function guardar() { try { localStorage.setItem(KEY, JSON.stringify(f)); } catch (e) {} }
+  function guardar() { f.nro = nro; try { localStorage.setItem(KEY, JSON.stringify(f)); } catch (e) {} guardarBase(); }
+  // ── Guardado en la base (tabla presupuestos): se guardan todos, para reabrirlos y editarlos desde cualquier dispositivo.
+  var _gb = null;
+  function totalActual() { try { if (f.servicio !== 'exp') return calcAlt().total; var c = calcular(f), m = String(f.total).replace(/\D/g, ''); return m ? +m : c.total; } catch (e) { return null; } }
+  function estadoGuardado(t, ok) { var el = $('#pz-gd'); if (el) { el.textContent = t; el.style.color = ok === false ? '#ffb4a8' : (ok ? '#9fe0b0' : 'rgba(250,246,239,.6)'); } }
+  function guardarBase(ya) {
+    if (typeof supa === 'undefined') return;
+    if (!(String(f.cliente || '').trim() || f.fecha || String(f.contacto || '').trim())) return;
+    clearTimeout(_gb);
+    var go = function () {
+      estadoGuardado('Guardando…');
+      var fila = { nro: nro, servicio: f.servicio || 'exp', cliente: f.cliente || null, contacto: f.contacto || null, fecha: f.fecha || null,
+        total: totalActual(), reserva_id: f.reservaId || null, datos: f, updated_at: new Date().toISOString() };
+      return supa.from('presupuestos').upsert(fila, { onConflict: 'nro' }).then(function (r) {
+        if (r.error) { estadoGuardado('No se pudo guardar: ' + r.error.message, false); return; }
+        estadoGuardado('✓ Guardado · ' + new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }), true);
+      });
+    };
+    if (ya) return go();
+    _gb = setTimeout(go, 1500);
+  }
+  function listaGuardados() {
+    var sel = $('#pz-gs'); if (!sel || typeof supa === 'undefined') return;
+    supa.from('presupuestos').select('id,nro,servicio,cliente,fecha,total,reserva_id,updated_at').order('updated_at', { ascending: false }).limit(80).then(function (r) {
+      var rs = r.data || [];
+      sel.innerHTML = '<option value="">— ' + (rs.length ? rs.length + ' guardados · elegir para abrir' : 'Todavía no hay presupuestos guardados') + ' —</option>' + rs.map(function (x) {
+        return '<option value="' + esc(x.nro) + '"' + (x.nro === nro ? ' selected' : '') + '>' + esc((x.fecha ? x.fecha.slice(8, 10) + '/' + x.fecha.slice(5, 7) : 'sin fecha') + ' · ' + (x.cliente || 'Sin nombre') + ' · ' + (SERVICIOS[x.servicio] || x.servicio || '') + (x.total ? ' · ' + money(x.total) : '') + (x.reserva_id ? ' · 📌' : '')) + '</option>';
+      }).join('');
+      sel.onchange = function () {
+        var v = this.value; if (!v) return;
+        supa.from('presupuestos').select('nro,datos').eq('nro', v).single().then(function (q) {
+          if (q.error || !q.data) { estadoGuardado('No se pudo abrir.', false); return; }
+          f = Object.assign(JSON.parse(JSON.stringify(DEF)), q.data.datos || {}); nro = q.data.nro; f.nro = nro;
+          try { localStorage.setItem(KEY, JSON.stringify(f)); } catch (e) {}
+          form(); render(); estadoGuardado('Abierto ' + nro + '. Los cambios se guardan solos.', true);
+        });
+      };
+    }).catch(function () {});
+  }
 
   function cargarReservas(forzar) {
     var sel = $('#pz-res'); if (!sel) return;
