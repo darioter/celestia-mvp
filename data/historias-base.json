@@ -1,6 +1,149 @@
 {
  "notas": [
   {
+   "slug": "thanksgiving-dia-de-accion-de-gracias-historia-y-menu",
+   "cat": "Vuelta al mundo",
+   "icono": "🌍",
+   "titulo": "Thanksgiving: qué es el Día de Acción de Gracias y cómo es su menú tradicional",
+   "bajada": "La historia de Thanksgiving, por qué se come pavo y cómo se arma la mesa clásica: stuffing, gravy, puré, batatas con pecanes, green bean casserole, cranberry sauce, pumpkin pie y el sándwich del día después.",
+   "img": "https://images.unsplash.com/photo-1669223308086-bf5152ff0231?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1669223308086-bf5152ff0231?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Karolina Grabowska",
+   "url": "https://www.chefprivado.ar/blog/thanksgiving-dia-de-accion-de-gracias-historia-y-menu",
+   "tips": [
+    "Los arándanos rojos frescos son difíciles de conseguir en Argentina. Los congelados funcionan igual de bien; si solo encontrás deshidratados, hidratalos 30 minutos en el jugo de naranja caliente y reducí el azúcar a la mitad, porque ya vienen endulzados."
+   ],
+   "datos": [
+    "Cada año el presidente de Estados Unidos «indulta» a un pavo en la Casa Blanca, que se salva de la mesa y termina sus días en una granja. Es una de las tradiciones más fotografiadas de la temporada, junto con el desfile de Macy's en Nueva York y los partidos de fútbol americano de la tarde.",
+    "El día siguiente a Thanksgiving es el Black Friday, el inicio de la temporada de compras navideñas en Estados Unidos. El nombre viene de las cuentas de los comercios, que ese día pasaban de los números rojos a los negros."
+   ],
+   "secciones": [
+    {
+     "h2": "De dónde viene",
+     "texto": "El origen que se enseña en las escuelas es la cosecha de 1621 en Plymouth, Massachusetts: los colonos ingleses llegados en el Mayflower y el pueblo wampanoag…"
+    },
+    {
+     "h2": "Por qué pavo",
+     "texto": "El pavo es un ave nativa de América del Norte, grande y rendidora: un solo animal alimenta a toda la familia y deja sobras para los días siguientes."
+    },
+    {
+     "h2": "La mesa clásica, plato por plato",
+     "texto": "Pavo asado · Entero, con manteca de hierbas bajo la piel"
+    },
+    {
+     "h2": "Tres recetas que hacen la diferencia",
+     "texto": "Gravy."
+    },
+    {
+     "h2": "El día después: el sándwich de las sobras",
+     "texto": "Thanksgiving no termina el jueves."
+    },
+    {
+     "h2": "Cómo organizar la cena sin estrés",
+     "texto": "Tres o cuatro días antes: comprá el pavo (si es congelado, empezá a descongelarlo en la heladera) y hacé el caldo para el gravy."
+    },
+    {
+     "h2": "Thanksgiving en casa, sin cocinar",
+     "texto": "Si te gusta la idea pero no tenés tiempo (o el horno no te da para un pavo entero y cinco guarniciones), armé la caja Thanksgiving at Home: pavo entero para trinchar…"
+    }
+   ]
+  },
+  {
+   "slug": "como-cocinar-un-pavo-entero-jugoso",
+   "cat": "Carnes",
+   "icono": "🥩",
+   "titulo": "Cómo cocinar un pavo entero jugoso: salmuera, tiempos por kilo y cómo trincharlo",
+   "bajada": "La técnica completa para que el pavo no salga seco: cuánto comprar por persona, cómo descongelarlo, salmuera seca o húmeda, manteca de hierbas, temperatura y tiempo por kilo, reposo y trinchado.",
+   "img": "https://images.unsplash.com/photo-1606728035253-49e8a23146de?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1606728035253-49e8a23146de?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Claudio Schwarz",
+   "url": "https://www.chefprivado.ar/blog/como-cocinar-un-pavo-entero-jugoso",
+   "tips": [
+    "Antes de salar, revisá la cavidad: casi siempre trae adentro una bolsita con el cuello y los menudos. Sacala y guardala, porque con eso se hace el caldo para el gravy.",
+    "Trinchar la pechuga separada de la carcasa, en lugar de sacar fetas del pavo entero, da cortes más prolijos, todos con piel, y es mucho más fácil. Si querés el momento del pavo entero en la mesa, presentalo así y trinchalo en la cocina."
+   ],
+   "datos": [
+    "El pinchazo con jugo transparente es una pista, pero no una garantía. Un termómetro de cocina digital cuesta menos que el pavo y es la única forma segura de saber que está cocido sin pasarlo."
+   ],
+   "secciones": [
+    {
+     "h2": "Cuánto pavo comprar",
+     "texto": "Como el pavo entero tiene mucho hueso, se calcula en crudo y con generosidad."
+    },
+    {
+     "h2": "1. Descongelar bien (y con tiempo)",
+     "texto": "En Argentina el pavo se consigue casi siempre congelado."
+    },
+    {
+     "h2": "2. Salar con tiempo: salmuera seca o húmeda",
+     "texto": "La sal, con horas de anticipación, entra en la carne, disuelve parte de las proteínas y hace que retenga más jugo al cocinarse."
+    },
+    {
+     "h2": "3. Manteca de hierbas bajo la piel",
+     "texto": "Mezclá 150 g de manteca pomada con salvia, tomillo y romero picados, ajo rallado y pimienta."
+    },
+    {
+     "h2": "4. Al horno: moderado y con termómetro",
+     "texto": "Sacá el pavo de la heladera 1 hora antes, para que no entre helado al horno."
+    },
+    {
+     "h2": "5. El reposo: no te lo saltees",
+     "texto": "Sacá el pavo, cubrilo flojo con aluminio y dejalo reposar entre 30 y 40 minutos."
+    },
+    {
+     "h2": "6. Cómo trincharlo",
+     "texto": "Con un cuchillo largo y bien afilado, cortá la piel entre la pata y el cuerpo y tirá la pata hacia afuera hasta que la articulación ceda."
+    },
+    {
+     "h2": "Errores comunes",
+     "texto": "Rellenarlo: el relleno de adentro tiene que llegar a 74 °C, y para cuando lo logra, la pechuga se secó."
+    }
+   ]
+  },
+  {
+   "slug": "cantidades-por-persona-para-navidad-y-ano-nuevo",
+   "cat": "Para recibir",
+   "icono": "🥂",
+   "titulo": "Cuánta comida por persona para Navidad y Año Nuevo: la guía de cantidades",
+   "bajada": "Cuántos gramos de carne, cuántos bocados, cuánto vino, espumante y hielo calcular por persona para las fiestas, más qué se puede adelantar y cómo cuidar la comida con el calor de diciembre.",
+   "img": "https://images.unsplash.com/photo-1608835149345-b4d77bc490ae?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1608835149345-b4d77bc490ae?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Jed Owen",
+   "url": "https://www.chefprivado.ar/blog/cantidades-por-persona-para-navidad-y-ano-nuevo",
+   "tips": [
+    "Cuando hay chicos, contá dos chicos como un adulto. Y si la cena es larga y hay mucho picoteo, podés bajar el principal a 180–200 g por persona sin que nadie se quede con hambre."
+   ],
+   "datos": [
+    "Sobra siempre más de lo que falta. Si calculaste bien con esta tabla y tenés miedo, sumá una fuente de algo rendidor y barato (una buena ensalada de arroz o una tabla de quesos) en vez de más carne."
+   ],
+   "secciones": [
+    {
+     "h2": "La regla general",
+     "texto": "Pensá la cena en momentos, no en platos sueltos."
+    },
+    {
+     "h2": "Bebidas y hielo",
+     "texto": "Vino · Media botella"
+    },
+    {
+     "h2": "Un ejemplo: Nochebuena para 8",
+     "texto": "Bocados de recepción (4 variedades) · 50 a 60 piezas"
+    },
+    {
+     "h2": "Qué se puede adelantar",
+     "texto": "La cocina de las fiestas argentinas es fría en su mayoría, y eso es una ventaja: casi todo mejora hecho con anticipación."
+    },
+    {
+     "h2": "Con el calor, cuidado con la comida",
+     "texto": "Diciembre en Buenos Aires puede superar los 30 °C de noche, y la mesa de las fiestas tiene mayonesa, huevo, carnes frías y crema: el combo ideal para las bacterias."
+    },
+    {
+     "h2": "Si preferís no cocinar",
+     "texto": "Para Navidad y Año Nuevo armé las cajas de las fiestas, ya calculadas por persona: la Cena Tradición con los clásicos argentinos, la Cena Celestia de autor, bocados…"
+    }
+   ]
+  },
+  {
    "slug": "recetas-de-halloween-tipicas",
    "cat": "Recetas con toque de chef",
    "icono": "🍳",
