@@ -120,5 +120,5 @@ document.getElementById('fm').addEventListener('submit', e => { e.preventDefault
 const q = new URLSearchParams(location.search).get('ref');
 if (q) { document.getElementById('ref').value = q.toUpperCase(); const m = mios.find(x => x.ref === q.toUpperCase()); if (m) { document.getElementById('tel').value = m.tel; buscar(); } else document.getElementById('tel').focus(); }
 </script>
-<script src="/js/analytics.js"></script><script src="/js/wa-flotante.js?v=1" defer></script>
+<script src="/js/analytics.js"></script><script src="/js/wa-flotante.js?v=2" defer></script>
 </body></html>

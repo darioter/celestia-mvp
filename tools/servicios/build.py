@@ -198,19 +198,49 @@ PAGES = [
        ('¿Con cuánta anticipación conviene consultar?','How far ahead should we ask?','Idealmente con 2 a 3 semanas, para coordinar la reunión previa y el staff.','Ideally 2 to 3 weeks ahead, to plan the meeting and staff.'),
        ('¿Trabajan fuera de CABA y GBA?','Do you work outside Buenos Aires?','Sí: cotizamos el traslado y lo confirmamos antes de la seña.','Yes: we quote travel and confirm it before the deposit.'),
        ('¿Qué formatos hacen?','What formats do you do?','Cena de pasos servida, estaciones o finger food: lo definimos según el espacio y la cantidad de invitados.','Plated courses, stations or finger food: we decide based on the space and guest count.')]),
+
+ dict(slug='chef-privado-en-vacaciones', img='https://images.unsplash.com/photo-1681657687044-9bde75edb38e?w=1800&h=1000&fit=crop&q=72&auto=format', menu=None, og='cena-romantica', zona=('Costa, sierras y quintas', 'Coast, hills and country houses'),
+  area=['Costa Atlántica', 'Sierras', 'Provincia de Buenos Aires', 'Argentina'],
+  title='Chef privado en vacaciones: costa, sierras y casas de veraneo | Celestia', title_en='Private chef on holiday: coast, hills and summer houses | Celestia',
+  desc='Chef privado en tus vacaciones: Daro Castello cocina en la casa que alquilaste en la costa, las sierras o una quinta. Una noche especial o varios días de comida resuelta, con producto del lugar. Mismos valores que en Buenos Aires + traslado.',
+  k=('Chef privado en vacaciones · costa y sierras', 'Private chef on holiday · coast & hills'),
+  h1=('Un chef en tus vacaciones, <em>en la casa que alquilaste.</em>', 'A chef on your holiday, <em>at the house you rented.</em>'),
+  sub=('En la costa, en las sierras o en una quinta con amigos: una noche especial que se recuerda o varios días de comida resuelta, para que nadie tenga que pensar en el menú.',
+       'At the coast, in the hills or at a country house with friends: one special night to remember or several days of meals sorted, so nobody has to think about the menu.'),
+  precio=(f(total(1,2)), 'para 2 · base Buenos Aires + traslado', 'for 2 · Buenos Aires base + travel'),
+  cta=(WA + quote('Hola Daro! Quiero un chef privado en mis vacaciones. Lugar: … Fechas: … Somos: …'), 'Consultar mi viaje →', 'Ask about my trip →'),
+  wa='Hola Daro! Quiero un chef privado en mis vacaciones. Lugar: … Fechas: … Somos: …',
+  inc=[('🌙','Una noche especial','One special night','Menú de 3 o 7 pasos para un cumpleaños, un aniversario o la última cena del viaje.','A 3 or 7-course menu for a birthday, an anniversary or the last dinner of the trip.'),
+       ('🍲','Varios días resueltos','Several days sorted','Jornadas de cocina con las comidas listas para varios días, ideal para familias o grupos.','Cooking sessions with meals ready for several days, ideal for families or groups.'),
+       ('🎉','Encuentros grandes','Bigger gatherings','Una fiesta, una reunión de amigos o de equipo, con propuesta a medida.','A party, a gathering of friends or a team get-together, tailor-made.'),
+       ('🐟','Producto del lugar','Local produce','Pescados y mariscos en la costa; cordero y cocina de montaña en las sierras.','Fish and seafood at the coast; lamb and mountain cooking in the hills.'),
+       ('📸','Cocina revisada antes','Kitchen checked beforehand','Con fotos de hornallas, horno, heladera y vajilla adapto el menú a lo que hay.','With photos of the burners, oven, fridge and tableware I adapt the menu to what there is.'),
+       ('🚗','Traslado cotizado','Travel quoted upfront','Se suma según el destino y los días; te paso el total antes de la seña.','Added depending on the destination and days; you get the total before the deposit.')],
+  pasos_h=('Cómo se organiza', 'How it works'),
+  pasos=[('Me escribís','You message me','Lugar, fechas, cuántos son y qué tienen ganas de comer.','Place, dates, how many you are and what you feel like eating.'),
+         ('Fotos de la cocina','Kitchen photos','Hornallas, horno, heladera y vajilla de la casa.','Burners, oven, fridge and tableware of the house.'),
+         ('Armamos el menú','We plan the menu','Con producto del lugar y sus gustos y restricciones.','With local produce and your tastes and restrictions.'),
+         ('Presupuesto y seña','Quote and deposit','Todo incluido más el traslado; con la seña queda la fecha.','All included plus travel; the deposit secures the date.')],
+  precios_h=None, tabla=None, nota=None,
+  ejemplo=('Ejemplo · Noche de mar en la costa', 'Sample · Seaside night', ['Langostinos con mayonesa de lima y palta', 'Pesca del día con manteca de limón y papas rotas', 'Pavlova de frutos rojos y crema de mascarpone']),
+  faq=[('¿A qué destinos vas?','Where do you travel?','A casas de veraneo en la costa atlántica, las sierras o quintas, y a otros destinos a consultar. Decime el lugar y te confirmo.','To summer houses at the Atlantic coast, in the hills or country houses, and other places on request. Tell me where and I will confirm.'),
+       ('¿Cuánto cuesta?','How much is it?','Se toma el mismo valor que en Buenos Aires (una experiencia de 3 pasos arranca en ' + f(total(1,2)) + ' para dos, el chef semanal en ' + f(mpp('1-2','1')) + ' por jornada) y se suma el traslado según el destino y los días.','The same price as in Buenos Aires (a 3-course experience starts at ' + f(total(1,2)) + ' for two, the weekly chef at ' + f(mpp('1-2','1')) + ' per session) plus travel depending on the destination and days.'),
+       ('¿Con cuánta anticipación reservo?','How far ahead should I book?','En temporada alta (diciembre, enero y fines de semana largos) las fechas se ocupan rápido: reservá apenas sepas dónde y cuándo vas a estar.','In high season (December, January and long weekends) dates fill up fast: book as soon as you know where and when.'),
+       ('¿Qué tiene que tener la casa?','What does the house need?','Un horno que funcione bien, espacio en la heladera, vajilla para todos y una mesa (con plan B si llueve). Si falta algo, lo resolvemos antes.','A working oven, fridge space, tableware for everyone and a table (with a plan B if it rains). If something is missing, we sort it out beforehand.'),
+       ('¿Pueden mandarme una caja a la costa?','Can you send me a box to the coast?','No: las cajas se entregan solo en CABA y GBA, porque no podemos garantizar la cadena de frío en un envío. En vacaciones, la opción es que cocine yo allá.','No: boxes are delivered only in Buenos Aires city and suburbs, since we cannot guarantee the cold chain in a shipment. On holiday, the option is for me to cook there.')]),
 ]
 
 def pagina(P):
     url = f'{SITE}/{P["slug"]}'
     ld = [{"@context": "https://schema.org", "@type": "Service", "name": re.sub('<[^>]+>', '', P['h1'][0]), "serviceType": P['k'][0].split(' · ')[0],
-           "description": P['desc'], "url": url, "areaServed": ["Ciudad Autónoma de Buenos Aires", "Gran Buenos Aires"],
+           "description": P['desc'], "url": url, "areaServed": P.get("area", ["Ciudad Autónoma de Buenos Aires", "Gran Buenos Aires"]),
            "provider": {"@type": "LocalBusiness", "name": "Celestia · Chef Privado", "url": SITE + "/", "telephone": "+5491160410607",
                         "founder": {"@type": "Person", "name": "Daro Castello"}}},
           {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, _, a, _ in P['faq']]},
           {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Celestia", "item": SITE + "/"}, {"@type": "ListItem", "position": 2, "name": P['k'][0].split(' · ')[0], "item": url}]}]
     if P['menu']:
         ld[0]["offers"] = {"@type": "Offer", "priceCurrency": "ARS", "price": str(total(P['menu'], 2)), "description": "Desde, para 2 personas, todo incluido"}
-    head = HEAD.format(alt='', title=P['title'], title_en=P['title_en'], desc=P['desc'], url=url, ogtype='website', ogimg=SITE + '/img/og/' + {'cena-romantica-en-casa':'cena-romantica','menu-degustacion-7-pasos':'degustacion','chef-semanal':'chef-semanal','eventos-corporativos':'eventos'}[P['slug']] + '.jpg',
+    head = HEAD.format(alt='', title=P['title'], title_en=P['title_en'], desc=P['desc'], url=url, ogtype='website', ogimg=SITE + '/img/og/' + P.get('og') + '.jpg' if P.get('og') else SITE + '/img/og/' + {'cena-romantica-en-casa':'cena-romantica','menu-degustacion-7-pasos':'degustacion','chef-semanal':'chef-semanal','eventos-corporativos':'eventos'}[P['slug']] + '.jpg',
                        css=CSS + EXTRA_CSS, ld=''.join(f'<script type="application/ld+json">{json.dumps(x, ensure_ascii=False)}</script>' for x in ld),
                        nav_caps=bi('Blog', 'Blog'), nav_home=bi('Inicio', 'Home'), nav_book=bi('Reservar →', 'Book →'))
     wa = WA + quote(P['wa'])
@@ -219,7 +249,7 @@ def pagina(P):
           f'<h1>{bi(*P["h1"])}</h1><p class="sv-sub">{bi(*P["sub"])}</p>'
           f'<div class="sv-price"><b>{P["precio"][0]}</b><span>{bi(P["precio"][1], P["precio"][2])}</span></div>'
           f'<div class="sv-btns"><a class="cp-btn" href="{P["cta"][0]}" data-ev="cta_servicio">{bi(P["cta"][1], P["cta"][2])}</a><a class="sv-ghost" href="{wa}" target="_blank" rel="noopener">{bi("Consultar por WhatsApp", "Ask on WhatsApp")}</a></div>'
-          f'<div class="sv-trust"><span>★★★★★ <a href="{GOOGLE}" target="_blank" rel="noopener">5.0 · {bi("reseñas en Google", "Google reviews")}</a></span><span>✓ {bi("Cocina Daro Castello", "Cooked by Daro Castello")}</span><span>✓ {bi("CABA y GBA", "Buenos Aires area")}</span></div></div></section>')
+          f'<div class="sv-trust"><span>★★★★★ <a href="{GOOGLE}" target="_blank" rel="noopener">5.0 · {bi("reseñas en Google", "Google reviews")}</a></span><span>✓ {bi("Cocina Daro Castello", "Cooked by Daro Castello")}</span><span>✓ {bi(*P.get("zona", ("CABA y GBA", "Buenos Aires area")))}</span></div></div></section>')
     h += '<main class="sv-wrap">'
     h += ('<section class="sv-sec"><span class="cp-k">✦ ' + bi('Qué incluye', "What's included") + '</span><h2>' + bi('Todo resuelto, de principio a fin', 'Everything handled, start to finish') + '</h2><div class="sv-inc">' +
           ''.join(f'<div><i>{ic}</i><b>{bi(t, te)}</b><span>{bi(d, de)}</span></div>' for ic, t, te, d, de in P['inc']) + '</div></section>')

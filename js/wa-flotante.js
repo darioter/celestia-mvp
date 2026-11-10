@@ -12,6 +12,7 @@
     [/^\/chef-semanal/, 'semanal', 'Hola Daro! Me interesa el chef semanal. ¿Me contás cómo funciona y qué días tenés?', 'Hi Daro! I am interested in the weekly chef. How does it work and which days do you have?'],
     [/^\/menu-degustacion-7-pasos/, 'exp7', 'Hola Daro! Me interesa la degustación de 7 pasos en casa. ¿Qué fechas tenés disponibles?', 'Hi Daro! I am interested in the 7-course tasting at home. Which dates are available?'],
     [/^\/cena-romantica-en-casa/, 'romantica', 'Hola Daro! Quiero una cena romántica en casa. ¿Qué fechas tenés disponibles?', 'Hi Daro! I would like a romantic dinner at home. Which dates are available?'],
+    [/^\/chef-privado-en-vacaciones/, 'vacaciones', 'Hola Daro! Quiero un chef privado en mis vacaciones. Lugar: … Fechas: … Somos: …', 'Hi Daro! I would like a private chef on my holiday. Place: … Dates: … We are: …'],
     [/^\/eventos-corporativos/, 'corp', 'Hola Daro! Quiero consultar por un evento para mi empresa.', 'Hi Daro! I would like to ask about a corporate event.'],
     [/^\/aprende/, 'clases', 'Hola Daro! Me interesan las clases de cocina. ¿Me contás cómo funcionan?', 'Hi Daro! I am interested in the cooking classes. How do they work?'],
     [/^\/management/, 'management', 'Hola Daro! Quiero consultar por la consultoría para mi negocio gastronómico.', 'Hi Daro! I would like to ask about consulting for my food business.'],
