@@ -420,6 +420,7 @@ section{padding:70px 0}
 .dr-f .tot b{font-family:'DM Serif Display',serif;font-weight:400;font-size:28px;color:var(--nv)}
 .dr-sena{display:block;color:var(--mut);font-size:12.5px;margin:2px 0 12px}
 .dr-f .btn{width:100%;margin-top:8px}
+.wa-caja{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:12px;padding:10px 14px;border-radius:999px;border:1.5px solid #25D366;background:transparent;color:#128C4A;font:600 13.5px 'DM Sans',sans-serif;cursor:pointer;transition:background .2s,color .2s}.wa-caja:hover{background:#25D366;color:#fff}
 .dr-f .btn.wa-alt{display:flex;align-items:center;justify-content:center;gap:8px;background:#fff;color:#128C4A;border:1.5px solid #25D366;text-decoration:none}.dr-f .btn.wa-alt:hover{background:#25D366;color:#fff}
 /* tienda */
 .eg{margin:10px 0 4px;font-size:13px;line-height:1.35}
@@ -812,8 +813,20 @@ function cajaHTML(c) {
       ${opts.length > 1 ? `<div class="opc">${opts.map((x, i) => `<button type="button" class="op${i === sel ? ' on' : ''}" data-op="${i}">${x.label}</button>`).join('')}</div>` : ''}
       <div class="pie"><div class="precio"><b>${f$(o.precio)}</b><small>${c.tipo === 'pp' ? f$(c.pp) + ' por persona' : o.label}</small></div>
         <button type="button" class="btn add" data-add="${c.id}">Agregar al carrito</button></div>
+      <button type="button" class="wa-caja" data-wa-caja="${c.id}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21c5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2Z"/></svg> Pedila por WhatsApp</button>
     </div></article>`;
 }
+/* WhatsApp desde cada caja: manda la caja, la opción elegida, la ocasión y la fecha */
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-wa-caja]'); if (!b) return;
+  const c = CAJAS.find(x => x.id === b.dataset.waCaja); if (!c) return;
+  const opts = opciones(c), o = opts[st.sel[c.id] != null ? st.sel[c.id] : 0] || opts[0], oc = OCASIONES[st.ocasion];
+  const t = 'Hola Daro! Quiero pedir la caja *' + c.nombre + '*.\n*Opción:* ' + o.label + ' · ' + f$(o.precio) +
+    (oc ? '\n*Ocasión:* ' + oc.nombre + (st.fecha && fechaOK() ? ' · ' + fechaLarga(st.fecha) + (st.franja ? ' ' + st.franja : '') : '') : '') +
+    '\n¿Me confirmás disponibilidad?';
+  track('wa_click', { servicio: 'caja_' + c.id, origen: 'caja' });
+  window.open('https://wa.me/' + WA + '?text=' + encodeURIComponent(t), '_blank', 'noopener');
+});
 function pintarCatalogo() {
   setTimeout(() => { revelar(); document.querySelectorAll('#catalogo .rv, #merc .rv').forEach(el => { const r = el.getBoundingClientRect(); if (r.top < innerHeight) el.classList.add('vis'); }); }, 0);
   const oc = st.ocasion, lista = CAJAS.filter(c => !oc ? (c.ocasiones.some(k => !temporada(k)) || c.ocasiones.some(visible)) : enCaja(c, oc));
@@ -1198,5 +1211,5 @@ function misPedidos() { let n = 0; try { n = JSON.parse(localStorage.getItem('ce
   if (c || cup) { q.delete('c'); q.delete('cupon'); history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash); }
 })();
 </script>
-<script src="/js/analytics.js"></script>
+<script src="/js/analytics.js"></script><script src="/js/wa-flotante.js?v=1" defer></script>
 </body></html>
