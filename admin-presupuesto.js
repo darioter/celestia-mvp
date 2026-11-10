@@ -265,8 +265,8 @@
       datos.notas = 'Cargada desde el admin (pedido por WhatsApp). Presupuesto ' + nro + (f.notas ? ' · ' + f.notas : '');
       return supa.from('reservas').insert(datos).select('id').single().then(function (x) {
         if (x.error) throw x.error; f.reservaId = String(x.data.id); guardar();
-        say('✓ Fecha marcada: ' + fechaLarga(f.fecha) + ' · ' + turno + ' (' + datos.ref + '). Ya aparece en Reservas y queda ocupada en el calendario del sitio.', true);
-        cargarReservas(true);
+        var ok = '✓ Fecha marcada: ' + fechaLarga(f.fecha) + ' · ' + turno + ' (' + datos.ref + '). Ya aparece en Reservas y queda ocupada en el calendario del sitio.';
+        form(); render(); say(ok, true); msg = $('#pz-mf-msg'); if (msg) { msg.className = 'pz-msg ok'; msg.textContent = ok; }
       });
     };
     supa.from('reservas').select('id,nombre,turno,estado').eq('fecha', f.fecha).in('estado', ['reservada', 'confirmada', 'ofrecida', 'aceptada']).then(function (q) {
@@ -430,7 +430,7 @@
       '<h3>Presupuesto formal</h3><p class="pz-ay">Hoja A4 lista para mandar por WhatsApp o mail. Se exporta a PDF desde «Imprimir». Con «Marcar la fecha» queda reservada sin que el cliente tenga que reservar en el sitio.</p>' +
       '<div class="pz-f"><label>Servicio</label><select data-k="servicio">' + Object.keys(SERVICIOS).map(function (k) { return '<option value="' + k + '"' + (f.servicio === k ? ' selected' : '') + '>' + esc(SERVICIOS[k]) + '</option>'; }).join('') + '</select></div>' +
       '<div class="pz-f"><label>Cargar desde una reserva</label><select id="pz-res"><option value="">— Elegir reserva (opcional) —</option></select></div>' +
-      '<div class="pz-mf"><b>📌 Pedido por WhatsApp</b><span>Completá cliente y fecha, y marcala: queda reservada sin que el cliente reserve en el sitio.</span><button type="button" id="pz-marcar">' + (f.reservaId ? 'Actualizar la reserva' : 'Marcar la fecha (sin reserva del cliente)') + '</button><div class="pz-msg" id="pz-mf-msg"></div></div>' +
+      '<div class="pz-mf"><b>📌 Pedido por WhatsApp</b><span>Completá cliente y fecha, y marcala: queda reservada sin que el cliente reserve en el sitio.</span><button type="button" id="pz-marcar">Marcar la fecha (sin reserva del cliente)</button>' + (f.reservaId ? '<button type="button" id="pz-actualizar" style="background:transparent;border:1px solid rgba(232,201,107,.6);color:#FAF6EF">Actualizar la reserva elegida</button>' : '') + '<div class="pz-msg" id="pz-mf-msg"></div></div>' +
       (f.servicio !== 'exp' ? formComun() : formExp()) +
       '<div class="pz-acc"><button type="button" class="pri" id="pz-print">🖨️ Imprimir / Guardar PDF</button><button type="button" id="pz-nuevo">Nuevo</button></div>' +
       (f.servicio === 'exp' ? '<div class="pz-acc"><button type="button" id="pz-subir">⬆ Subir menú al sitio e ingredientes</button></div>' : '');
@@ -491,7 +491,8 @@
       el.addEventListener('input', function () { var i = +(el.getAttribute('data-xd') || el.getAttribute('data-xm')); f.extras[i][el.hasAttribute('data-xd') ? 'd' : 'm'] = el.value; guardar(); render(); });
     });
     if ($('#pz-xmas')) $('#pz-xmas').addEventListener('click', function () { f.extras.push({ d: '', m: '' }); guardar(); form(); render(); });
-    $('#pz-marcar').addEventListener('click', marcarFecha);
+    $('#pz-marcar').addEventListener('click', function () { f.reservaId = ''; guardar(); marcarFecha(); });
+    if ($('#pz-actualizar')) $('#pz-actualizar').addEventListener('click', marcarFecha);
     $('#pz-print').addEventListener('click', function () { render(); prepararImpresion(); setTimeout(function () { window.print(); }, 80); });
     $('#pz-nuevo').addEventListener('click', function () { if (!confirm('¿Empezar un presupuesto nuevo? Se borra el borrador actual.')) return; var sv = f.servicio; f = JSON.parse(JSON.stringify(DEF)); f.servicio = sv; f.intro = INTRO[sv] || f.intro; nro = numero(); guardar(); form(); render(); });
     cargarReservas();
