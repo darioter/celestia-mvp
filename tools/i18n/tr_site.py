@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 # Traducciones ES -> EN del sitio (landing + flujos). Clave = texto visible en español (espacios normalizados).
 TR = {
+# ── Canales directos (nov 2026) ──
+"Mercadito y bebidas": "Market & drinks",
+"Platos sueltos y vinos": "Single dishes & wines",
+"Pedilo por WhatsApp": "Ask on WhatsApp",
+"Consultalo por WhatsApp": "Ask about it on WhatsApp",
 # ── Reservar sin costo (oct 2026) ──
 "✦ RESERVÁ TU FECHA · SIN COSTO": "✦ BOOK YOUR DATE · FREE",
 "Elegí el día y reservalo": "Pick the day and book it",

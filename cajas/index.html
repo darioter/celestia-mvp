@@ -420,6 +420,7 @@ section{padding:70px 0}
 .dr-f .tot b{font-family:'DM Serif Display',serif;font-weight:400;font-size:28px;color:var(--nv)}
 .dr-sena{display:block;color:var(--mut);font-size:12.5px;margin:2px 0 12px}
 .dr-f .btn{width:100%;margin-top:8px}
+.dr-f .btn.wa-alt{display:flex;align-items:center;justify-content:center;gap:8px;background:#fff;color:#128C4A;border:1.5px solid #25D366;text-decoration:none}.dr-f .btn.wa-alt:hover{background:#25D366;color:#fff}
 /* tienda */
 .eg{margin:10px 0 4px;font-size:13px;line-height:1.35}
 .eg i{display:block;height:6px;border-radius:9px;background:rgba(127,127,127,.22);margin-top:7px;overflow:hidden}
@@ -1044,7 +1045,13 @@ function pintarCarrito() {
     <div class="tot"><span>Total</span><b>${f$(t.tot)}</b></div>
     <small class="dr-sena">Reservás con el 50%: ${f$(t.sena)} · el resto al recibir</small>
     ${t.base < COMPRA_MINIMA ? `<button type="button" class="btn" disabled style="opacity:.5;cursor:not-allowed">Compra mínima ${f$(COMPRA_MINIMA)}</button>` : `<a class="btn" href="#pedido" data-cerrar>Finalizar pedido →</a>`}
+    <a class="btn wa-alt" target="_blank" rel="noopener" href="https://wa.me/${WA}?text=${encodeURIComponent(textoCarritoWA(t, o))}" onclick="track('cajas_carrito_whatsapp')"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21c5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2Z"/></svg> Prefiero pedirlo por WhatsApp</a>
     <button type="button" class="btn sec" data-cerrar>Seguir comprando</button>` : '';
+}
+function textoCarritoWA(t, o) {
+  return 'Hola Daro! Quiero hacer este pedido:\n' + st.carrito.map(x => '• ' + (x.cant > 1 ? x.cant + ' × ' : '') + x.nombre + (x.variante ? ' (' + x.variante + ')' : '')).join('\n') +
+    (o ? '\n*Ocasión:* ' + o.nombre + (st.fecha && fechaOK() ? ' · ' + fechaLarga(st.fecha) + (st.franja ? ' ' + st.franja : '') : '') : '') +
+    '\n*Total:* ' + f$(t.tot) + (t.desc ? ' (con cupón ' + st.cupon.codigo + ')' : '') + '\n¿Me confirmás disponibilidad?';
 }
 document.getElementById('cart-btn').addEventListener('click', abrirCarrito);
 document.getElementById('flot-b').addEventListener('click', abrirCarrito);
@@ -1165,6 +1172,7 @@ function misPedidos() { let n = 0; try { n = JSON.parse(localStorage.getItem('ce
 /* Carrito recuperado: /cajas/?c=<id> (link del mensaje de recuperación) · cupón por URL: ?cupon=CODIGO */
 (async function () {
   const q = new URLSearchParams(location.search), c = q.get('c'), cup = q.get('cupon');
+  if (q.get('carrito') === '1') { q.delete('carrito'); history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash); setTimeout(abrirCarrito, 300); }
   if (c && /^[0-9a-f-]{36}$/i.test(c)) {
     try {
       const r = await fetch(SUPA.url + '/rest/v1/rpc/leer_carrito_cajas', { method: 'POST', headers: HDR, body: JSON.stringify({ p_id: c }) });
