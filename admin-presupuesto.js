@@ -317,6 +317,10 @@
     '#seccion-presupuestos .pz-sug .pz-acc{margin-top:0}',
     '#seccion-presupuestos .pz-msg{font-size:12px;line-height:1.45;margin-top:8px;color:rgba(250,246,239,.85)}',
     '#seccion-presupuestos .pz-msg.ok{color:#9fe0b0}#seccion-presupuestos .pz-msg.err{color:#ffb4a8}',
+    '#seccion-presupuestos .pz-mf{border:1px solid rgba(232,201,107,.6);background:rgba(232,201,107,.1);border-radius:14px;padding:12px;margin:0 0 14px;display:flex;flex-direction:column;gap:8px}',
+    '#seccion-presupuestos .pz-mf b{color:#E8C96B;font-size:13.5px}#seccion-presupuestos .pz-mf span{font-size:12px;line-height:1.45;color:rgba(250,246,239,.8)}',
+    '#seccion-presupuestos .pz-mf button{border-radius:999px;padding:11px 14px;font:600 13px "DM Sans",sans-serif;cursor:pointer;border:0;background:linear-gradient(135deg,#C9A84C,#E8C96B);color:#0D1B2A}',
+    '#seccion-presupuestos .pz-mf .pz-msg{margin-top:0}',
     '#seccion-presupuestos .pz-sep{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#0D1B2A;background:#E8C96B;border-radius:6px;padding:4px 8px;margin:12px 0 8px;display:inline-block}',
     '#seccion-presupuestos .pz-prev{display:flex;flex-direction:column;align-items:center;gap:18px;overflow:hidden}',
     '#seccion-presupuestos .pz-scale{transform-origin:top center}',
@@ -426,9 +430,9 @@
       '<h3>Presupuesto formal</h3><p class="pz-ay">Hoja A4 lista para mandar por WhatsApp o mail. Se exporta a PDF desde «Imprimir». Con «Marcar la fecha» queda reservada sin que el cliente tenga que reservar en el sitio.</p>' +
       '<div class="pz-f"><label>Servicio</label><select data-k="servicio">' + Object.keys(SERVICIOS).map(function (k) { return '<option value="' + k + '"' + (f.servicio === k ? ' selected' : '') + '>' + esc(SERVICIOS[k]) + '</option>'; }).join('') + '</select></div>' +
       '<div class="pz-f"><label>Cargar desde una reserva</label><select id="pz-res"><option value="">— Elegir reserva (opcional) —</option></select></div>' +
+      '<div class="pz-mf"><b>📌 Pedido por WhatsApp</b><span>Completá cliente y fecha, y marcala: queda reservada sin que el cliente reserve en el sitio.</span><button type="button" id="pz-marcar">' + (f.reservaId ? 'Actualizar la reserva' : 'Marcar la fecha (sin reserva del cliente)') + '</button><div class="pz-msg" id="pz-mf-msg"></div></div>' +
       (f.servicio !== 'exp' ? formComun() : formExp()) +
       '<div class="pz-acc"><button type="button" class="pri" id="pz-print">🖨️ Imprimir / Guardar PDF</button><button type="button" id="pz-nuevo">Nuevo</button></div>' +
-      '<div class="pz-acc"><button type="button" id="pz-marcar">📌 ' + (f.reservaId ? 'Actualizar la reserva' : 'Marcar la fecha (sin reserva del cliente)') + '</button></div><div class="pz-msg" id="pz-mf-msg"></div>' +
       (f.servicio === 'exp' ? '<div class="pz-acc"><button type="button" id="pz-subir">⬆ Subir menú al sitio e ingredientes</button></div>' : '');
     function formExp() { return '' +
       '<div class="pz-sug"><div class="pz-f"><label for="pz-pega">Menú sugerido · pegalo completo</label>' +
