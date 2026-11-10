@@ -991,9 +991,47 @@ select{color-scheme:dark}select option,select optgroup{background:#13263a;color:
       <div class="nav-g" style="--g:#C9A84C"><span class="nav-gl">Celestia · Servicio</span><div class="nav-gb"><button class="filter-btn active" onclick="verSeccion('reservas',this)">Reservas</button><button class="filter-btn" onclick="verSeccion('semanal',this)">Chef Semanal</button><button class="filter-btn" onclick="verSeccion('agenda',this)">Agenda</button><button class="filter-btn" onclick="verSeccion('pagos',this)">Pagos</button><button class="filter-btn" onclick="verSeccion('bloqueos',this)">Bloquear días</button><button class="filter-btn" onclick="verSeccion('presupuestos',this)">📄 Presupuestos</button><button class="filter-btn" onclick="verSeccion('chefs',this)">Chefs</button></div></div>
       <div class="nav-g" style="--g:#5DBF87"><span class="nav-gl">Cocina &amp; costos</span><div class="nav-gb"><button class="filter-btn" onclick="verSeccion('ingredientes',this)">Ingredientes</button><button class="filter-btn" onclick="verSeccion('platos',this)">Platos</button></div></div>
       <div class="nav-g" style="--g:#E2A33E"><span class="nav-gl">Tienda</span><div class="nav-gb"><button class="filter-btn" onclick="verSeccion('fiestas',this)">📦 Cajas</button><button class="filter-btn" onclick="verSeccion('cupones',this)">Cupones</button></div></div>
-      <div class="nav-g" style="--g:#D98BB5"><span class="nav-gl">Marketing</span><div class="nav-gb"><button class="filter-btn" onclick="verSeccion('casos',this)">Casos de éxito</button><button class="filter-btn" onclick="verSeccion('resenas',this)">Reseñas</button><button class="filter-btn" onclick="verSeccion('banners',this)">Banners</button><button class="filter-btn" onclick="verSeccion('catalogo',this)">📲 Catálogo WhatsApp</button><a class="filter-btn" href="/admin-historias" style="text-decoration:none;">📸 Historias IG</a></div></div>
+      <div class="nav-g" style="--g:#D98BB5"><span class="nav-gl">Marketing</span><div class="nav-gb"><button class="filter-btn" onclick="verSeccion('casos',this)">Casos de éxito</button><button class="filter-btn" onclick="verSeccion('resenas',this)">Reseñas</button><button class="filter-btn" onclick="verSeccion('banners',this)">Banners</button><button class="filter-btn" onclick="verSeccion('catalogo',this)">📲 Catálogo WhatsApp</button><button class="filter-btn" onclick="verSeccion('wabot',this)">🤖 Bot WhatsApp</button><a class="filter-btn" href="/admin-historias" style="text-decoration:none;">📸 Historias IG</a></div></div>
       <div class="nav-g" style="--g:#8EC5E8"><span class="nav-gl">Management · Clases</span><div class="nav-gb"><button class="filter-btn" onclick="verSeccion('management',this)">🎓 Management</button></div></div>
     </div>
+
+    <!-- SECCIÓN BOT DE WHATSAPP -->
+    <div id="seccion-wabot" style="display:none">
+      <div class="cws-hd"><div><h2>🤖 Bot de WhatsApp</h2><p>Responde con los precios, cajas y fechas libres del sitio, y te pasa la charla cuando hay que cerrar fecha, seña, un evento o un reclamo. Probalo acá antes de conectarlo: usa el mismo cerebro que va a usar en WhatsApp.</p><div class="wb-estado" id="wb-estado"></div></div>
+        <div class="cws-hb"><button type="button" class="filter-btn" id="wb-refrescar">↻ Actualizar</button></div></div>
+      <div class="wb-grid">
+        <div class="wb-card"><div class="wb-card-hd"><b>Simulador</b><input id="wb-sim-nom" placeholder="Nombre del cliente (opcional)"><button type="button" class="filter-btn" id="wb-sim-nueva">Nueva charla</button></div>
+          <div class="wb-log" id="wb-sim-log"></div>
+          <div class="wb-in"><textarea id="wb-sim-in" rows="2" placeholder="Escribí como cliente y apretá Enter"></textarea><button type="button" class="filter-btn active" id="wb-sim-go">Enviar</button></div></div>
+        <div class="wb-card"><div class="wb-card-hd"><b>Charlas reales</b></div><div class="wb-split"><div class="wb-charlas" id="wb-charlas"></div><div class="wb-charla" id="wb-charla"><div class="wb-vacio">Elegí una charla para verla.</div></div></div></div>
+      </div>
+    </div>
+    <style>
+    .wb-estado{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+    .wb-st{font-size:12px;border-radius:999px;padding:4px 10px;border:1px solid rgba(250,246,239,.2)}.wb-st.ok{border-color:#5DBF87;color:#7fd9a3}.wb-st.no{opacity:.6}
+    .wb-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:16px;align-items:start}
+    @media(max-width:1000px){.wb-grid{grid-template-columns:1fr}}
+    .wb-card{border:1px solid rgba(201,168,76,.3);border-radius:16px;padding:12px;background:rgba(255,255,255,.03)}
+    .wb-card-hd{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}.wb-card-hd b{font-family:'DM Serif Display',serif;font-weight:400;font-size:19px;margin-right:auto}
+    .wb-card-hd input{background:rgba(255,255,255,.06);border:1px solid rgba(250,246,239,.2);color:inherit;border-radius:8px;padding:6px 10px;font:13px 'DM Sans',sans-serif}
+    .wb-log{height:460px;overflow:auto;background:#0b1622;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}
+    .wb-m{display:flex}.wb-m>div{max-width:82%;padding:8px 11px;border-radius:12px;font-size:13.5px;line-height:1.45}
+    .wb-m.cliente{justify-content:flex-end}.wb-m.cliente>div{background:#005c4b;color:#e9fff8;border-bottom-right-radius:3px}
+    .wb-m.bot>div,.wb-m.daro>div{background:#1f2c34;color:#e9edef;border-bottom-left-radius:3px}.wb-m.daro>div{border:1px solid #C9A84C}
+    .wb-m.error>div{background:#5a1e1e;color:#ffd7d7}
+    .wb-m small{display:block;opacity:.55;font-size:10.5px;margin-top:3px;text-align:right}.wb-m a{color:#53bdeb}
+    .wb-esc{opacity:.6;font-style:italic}
+    .wb-der{margin-top:6px;padding:6px 9px;border-radius:8px;background:rgba(201,168,76,.15);color:#E8C96B;font-size:12px}
+    .wb-in{display:flex;gap:8px;margin-top:10px}.wb-in textarea{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(250,246,239,.2);color:inherit;border-radius:10px;padding:8px 10px;font:14px 'DM Sans',sans-serif;resize:vertical}
+    .wb-vacio{opacity:.6;font-size:13px;padding:14px;text-align:center}
+    .wb-split{display:grid;grid-template-columns:230px minmax(0,1fr);gap:10px}@media(max-width:700px){.wb-split{grid-template-columns:1fr}}
+    .wb-charlas{display:flex;flex-direction:column;gap:6px;max-height:520px;overflow:auto}
+    .wb-c{text-align:left;background:rgba(255,255,255,.04);border:1px solid rgba(250,246,239,.12);border-radius:10px;padding:8px 10px;color:inherit;cursor:pointer;font:13px 'DM Sans',sans-serif;display:flex;flex-direction:column;gap:2px}
+    .wb-c.on{border-color:#C9A84C}.wb-c small{opacity:.7;font-size:11.5px}.wb-c i{opacity:.5;font-size:10.5px;font-style:normal}
+    .wb-badge{font-size:10.5px;align-self:flex-start;border-radius:999px;padding:1px 7px;background:rgba(93,191,135,.18);color:#7fd9a3}.wb-badge.daro{background:rgba(201,168,76,.2);color:#E8C96B}
+    .wb-ch-hd{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;font-size:13.5px}
+    .wb-charla .wb-log{height:420px}
+    </style>
 
     <!-- SECCIÓN CATÁLOGO DE WHATSAPP -->
     <div id="seccion-catalogo" style="display:none">
@@ -2172,7 +2210,7 @@ function detenerRealtimeAdmin() {
 }
 
 function verSeccion(seccion, btn) {
-  ['reservas','semanal','agenda','pagos','bloqueos','presupuestos','chefs','casos','resenas','ingredientes','platos','cupones','banners','fiestas','management','catalogo'].forEach(s => {
+  ['reservas','semanal','agenda','pagos','bloqueos','presupuestos','chefs','casos','resenas','ingredientes','platos','cupones','banners','fiestas','management','catalogo','wabot'].forEach(s => {
     const el = document.getElementById('seccion-'+s);
     if (el) el.style.display = seccion === s ? 'block' : 'none';
   });
@@ -2197,6 +2235,7 @@ function verSeccion(seccion, btn) {
   if (seccion === 'management') cargarManagement();
   if (seccion === 'presupuestos' && window.cargarPresupuestos) cargarPresupuestos();
   if (seccion === 'catalogo' && window.cargarCatalogoWS) cargarCatalogoWS();
+  if (seccion === 'wabot' && window.cargarWaBot) cargarWaBot();
 }
 
 // ─── CELESTIA MANAGEMENT (diagnósticos, alumnos y compras del Supabase de Management) ───
@@ -3651,6 +3690,6 @@ async function estadoFiesta(id, estado) {
 }
 </script>
 <script src="/js/menus-ejemplo.js"></script>
-<script src="/admin-presupuesto.js?v=20261110n"></script><script src="/admin-catalogo-ws.js?v=1"></script><script src="/admin-menus-subir.js?v=20261110n"></script>
+<script src="/admin-presupuesto.js?v=20261110n"></script><script src="/admin-catalogo-ws.js?v=1"></script><script src="/admin-wa-bot.js?v=1"></script><script src="/admin-menus-subir.js?v=20261110n"></script>
 </body>
 </html>
