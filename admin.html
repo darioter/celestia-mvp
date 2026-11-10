@@ -991,9 +991,44 @@ select{color-scheme:dark}select option,select optgroup{background:#13263a;color:
       <div class="nav-g" style="--g:#C9A84C"><span class="nav-gl">Celestia · Servicio</span><div class="nav-gb"><button class="filter-btn active" onclick="verSeccion('reservas',this)">Reservas</button><button class="filter-btn" onclick="verSeccion('semanal',this)">Chef Semanal</button><button class="filter-btn" onclick="verSeccion('agenda',this)">Agenda</button><button class="filter-btn" onclick="verSeccion('pagos',this)">Pagos</button><button class="filter-btn" onclick="verSeccion('bloqueos',this)">Bloquear días</button><button class="filter-btn" onclick="verSeccion('presupuestos',this)">📄 Presupuestos</button><button class="filter-btn" onclick="verSeccion('chefs',this)">Chefs</button></div></div>
       <div class="nav-g" style="--g:#5DBF87"><span class="nav-gl">Cocina &amp; costos</span><div class="nav-gb"><button class="filter-btn" onclick="verSeccion('ingredientes',this)">Ingredientes</button><button class="filter-btn" onclick="verSeccion('platos',this)">Platos</button></div></div>
       <div class="nav-g" style="--g:#E2A33E"><span class="nav-gl">Tienda</span><div class="nav-gb"><button class="filter-btn" onclick="verSeccion('fiestas',this)">📦 Cajas</button><button class="filter-btn" onclick="verSeccion('cupones',this)">Cupones</button></div></div>
-      <div class="nav-g" style="--g:#D98BB5"><span class="nav-gl">Marketing</span><div class="nav-gb"><button class="filter-btn" onclick="verSeccion('casos',this)">Casos de éxito</button><button class="filter-btn" onclick="verSeccion('resenas',this)">Reseñas</button><button class="filter-btn" onclick="verSeccion('banners',this)">Banners</button><a class="filter-btn" href="/admin-historias" style="text-decoration:none;">📸 Historias IG</a></div></div>
+      <div class="nav-g" style="--g:#D98BB5"><span class="nav-gl">Marketing</span><div class="nav-gb"><button class="filter-btn" onclick="verSeccion('casos',this)">Casos de éxito</button><button class="filter-btn" onclick="verSeccion('resenas',this)">Reseñas</button><button class="filter-btn" onclick="verSeccion('banners',this)">Banners</button><button class="filter-btn" onclick="verSeccion('catalogo',this)">📲 Catálogo WhatsApp</button><a class="filter-btn" href="/admin-historias" style="text-decoration:none;">📸 Historias IG</a></div></div>
       <div class="nav-g" style="--g:#8EC5E8"><span class="nav-gl">Management · Clases</span><div class="nav-gb"><button class="filter-btn" onclick="verSeccion('management',this)">🎓 Management</button></div></div>
     </div>
+
+    <!-- SECCIÓN CATÁLOGO DE WHATSAPP -->
+    <div id="seccion-catalogo" style="display:none">
+      <div class="cws-hd"><div><h2>📲 Catálogo de WhatsApp Business</h2>
+        <p>Armado con los precios de hoy del sitio. Cargalo en la app (Herramientas para la empresa → Catálogo → <b>+</b>) copiando cada campo y bajando su foto, o subí el CSV en el Administrador de ventas de Meta para cargar todo de una vez. Las colecciones agrupan los artículos como en el menú del sitio.</p></div>
+        <div class="cws-hb"><button type="button" class="filter-btn" id="cws-recargar">↻ Actualizar precios</button><button type="button" class="filter-btn active" id="cws-csv">⬇ CSV para Meta</button></div></div>
+      <div class="cws-chips" id="cws-chips"></div>
+      <div id="cws-lista"></div>
+      <div class="cws-toast" id="cws-toast"></div>
+    </div>
+    <style>
+    .cws-hd{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;flex-wrap:wrap;margin-bottom:14px}
+    .cws-hd h2{font-family:'DM Serif Display',serif;font-weight:400;font-size:26px;margin:0 0 6px}
+    .cws-hd p{max-width:760px;font-size:13.5px;line-height:1.55;opacity:.8;margin:0}
+    .cws-hb{display:flex;gap:8px;flex-wrap:wrap}
+    .cws-chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 18px}
+    .cws-chip{border:1px solid rgba(201,168,76,.35);background:transparent;color:inherit;border-radius:999px;padding:7px 13px;font:500 13px 'DM Sans',sans-serif;cursor:pointer}
+    .cws-chip small{opacity:.6}.cws-chip.on{background:#C9A84C;color:#0D1B2A;border-color:#C9A84C}
+    .cws-col h3{font-family:'DM Serif Display',serif;font-weight:400;font-size:21px;margin:22px 0 10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .cws-col h3 small{font:400 12px 'DM Sans',sans-serif;opacity:.6}
+    .cws-mini{border:1px solid rgba(201,168,76,.4);background:none;color:#E8C96B;border-radius:999px;padding:4px 10px;font:500 11.5px 'DM Sans',sans-serif;cursor:pointer}
+    .cws-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+    .cws-it{display:grid;grid-template-columns:110px 1fr;gap:12px;background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.25);border-radius:14px;padding:10px}
+    .cws-im{width:110px;height:110px;border-radius:10px;background:#1a2e42 center/cover no-repeat}
+    .cws-im.ct{background-color:#f3ead6;background-size:contain;background-blend-mode:multiply}
+    .cws-b b{display:block;font-size:14.5px;line-height:1.3}
+    .cws-p{display:block;color:#E8C96B;font-weight:600;font-size:13.5px;margin:3px 0 4px}
+    .cws-b p{font-size:12px;line-height:1.45;opacity:.75;margin:0 0 8px;max-height:7.4em;overflow:auto}
+    .cws-acc{display:flex;flex-wrap:wrap;gap:5px}
+    .cws-acc button{border:1px solid rgba(250,246,239,.2);background:none;color:inherit;border-radius:8px;padding:5px 8px;font:500 11.5px 'DM Sans',sans-serif;cursor:pointer}
+    .cws-acc button:hover{border-color:#E8C96B;color:#E8C96B}
+    .cws-acc .cws-foto{background:#25D366;border-color:#25D366;color:#fff}
+    .cws-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#0D1B2A;color:#FAF6EF;border:1px solid #C9A84C;border-radius:999px;padding:9px 16px;font-size:13px;opacity:0;pointer-events:none;transition:all .25s;z-index:999}
+    .cws-toast.on{opacity:1;transform:translateX(-50%)}
+    </style>
 
     <!-- SECCIÓN PRESUPUESTOS (A4: propuesta + carta) -->
     <div id="seccion-presupuestos" style="display:none"><div class="pz-wrap"><div class="pz-form" id="pz-form"></div><div class="pz-prev" id="pz-prev"><div id="pz-doc" class="pz-scale"></div></div></div></div>
@@ -2137,7 +2172,7 @@ function detenerRealtimeAdmin() {
 }
 
 function verSeccion(seccion, btn) {
-  ['reservas','semanal','agenda','pagos','bloqueos','presupuestos','chefs','casos','resenas','ingredientes','platos','cupones','banners','fiestas','management'].forEach(s => {
+  ['reservas','semanal','agenda','pagos','bloqueos','presupuestos','chefs','casos','resenas','ingredientes','platos','cupones','banners','fiestas','management','catalogo'].forEach(s => {
     const el = document.getElementById('seccion-'+s);
     if (el) el.style.display = seccion === s ? 'block' : 'none';
   });
@@ -2161,6 +2196,7 @@ function verSeccion(seccion, btn) {
   if (seccion === 'banners') cargarBanners();
   if (seccion === 'management') cargarManagement();
   if (seccion === 'presupuestos' && window.cargarPresupuestos) cargarPresupuestos();
+  if (seccion === 'catalogo' && window.cargarCatalogoWS) cargarCatalogoWS();
 }
 
 // ─── CELESTIA MANAGEMENT (diagnósticos, alumnos y compras del Supabase de Management) ───
@@ -3615,6 +3651,6 @@ async function estadoFiesta(id, estado) {
 }
 </script>
 <script src="/js/menus-ejemplo.js"></script>
-<script src="/admin-presupuesto.js?v=20261110n"></script><script src="/admin-menus-subir.js?v=20261110n"></script>
+<script src="/admin-presupuesto.js?v=20261110n"></script><script src="/admin-catalogo-ws.js?v=1"></script><script src="/admin-menus-subir.js?v=20261110n"></script>
 </body>
 </html>
