@@ -420,10 +420,10 @@ def slides_html(P):
     dots = ''.join(f'<button type="button" class="vh-dot{" on" if i == 0 else ""}" aria-label="{es}" data-i="{i}"></button>' for i, (u, es, en) in enumerate(P['slides']))
     return (f'<div class="vh-slides" aria-hidden="true">{sl}</div><div class="vh-cap"><span class="vh-cap-t">📍 <b id="vh-cap">{P["slides"][0][1]}</b></span><span class="vh-dots">{dots}</span></div>'
             '<style>.vh-slides{position:absolute;inset:0;z-index:0}.vh-s{position:absolute;inset:0;background:#1a2e42 center/cover no-repeat;opacity:0;transform:scale(1.06);transition:opacity 1.4s ease,transform 7s ease}.vh-s.on{opacity:1;transform:scale(1)}'
-            '.sv-hero::after{z-index:0}.vh-cap{position:absolute;z-index:2;left:max(24px,calc((100vw - 1100px)/2 + 24px));top:18px;display:flex;align-items:center;gap:12px;font:500 12px \'DM Sans\',sans-serif;color:rgba(250,246,239,.85)}'
+            '.sv-hero::after{z-index:0}.sv-hero:has(.vh-slides){overflow:hidden}.vh-cap{position:absolute;z-index:2;left:max(24px,calc((100vw - 1100px)/2 + 24px));bottom:14px;display:flex;align-items:center;gap:12px;font:500 12px \'DM Sans\',sans-serif;color:rgba(250,246,239,.85)}'
             '.vh-cap-t{background:rgba(13,27,42,.55);border:1px solid rgba(250,246,239,.18);padding:5px 11px;border-radius:999px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}.vh-dots{display:flex;gap:6px}'
             '.vh-dot{width:8px;height:8px;border-radius:50%;border:0;padding:0;background:rgba(250,246,239,.4);cursor:pointer;transition:width .3s,background .3s}.vh-dot.on{width:22px;border-radius:5px;background:#E8C96B}'
-            '@media(max-width:700px){.vh-cap{top:auto;bottom:12px;left:24px}}</style>'
+            '@media(max-width:1000px){.vh-cap{bottom:auto;top:14px;left:24px}}</style>'
             '<script>(function(){var S=[].slice.call(document.querySelectorAll(".vh-s")),D=[].slice.call(document.querySelectorAll(".vh-dot")),c=document.getElementById("vh-cap"),i=0,t;'
             'function ir(n){S[i].classList.remove("on");D[i].classList.remove("on");i=(n+S.length)%S.length;S[i].classList.add("on");D[i].classList.add("on");c.textContent=document.documentElement.classList.contains("lang-en")?S[i].dataset.le:S[i].dataset.l;}'
             'function auto(){clearInterval(t);t=setInterval(function(){ir(i+1);},5500);}D.forEach(function(d){d.addEventListener("click",function(){ir(+d.dataset.i);auto();});});auto();})();</script>')
