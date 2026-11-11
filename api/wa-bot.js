@@ -179,14 +179,27 @@ async function db(path, opts = {}) {
 }
 
 /* ───────── WhatsApp ───────── */
-async function enviar(to, texto) {
+async function enviar1(to, texto) {
   const r = await fetch(`https://graph.facebook.com/v21.0/${process.env.WA_PHONE_ID}/messages`, {
     method: 'POST', headers: { Authorization: 'Bearer ' + process.env.WA_TOKEN, 'Content-Type': 'application/json' },
     body: JSON.stringify({ messaging_product: 'whatsapp', to, type: 'text', text: { body: texto, preview_url: true } })
   });
   const j = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error('WhatsApp ' + r.status + ': ' + JSON.stringify(j).slice(0, 200));
+  if (!r.ok) { const e = new Error('WhatsApp ' + r.status + ': ' + JSON.stringify(j).slice(0, 200)); e.code = j.error && j.error.code; throw e; }
   return j.messages && j.messages[0] && j.messages[0].id;
+}
+/* Argentina: los celulares llegan como 549 + área + número, pero a veces Meta solo acepta responder sin el 9
+   (o con el 15 local). Se prueba en ese orden y se usa el primero que funciona. */
+async function enviar(to, texto) {
+  const alt = [to];
+  if (/^549\d{10}$/.test(to)) {
+    const sin9 = '54' + to.slice(3); alt.push(sin9);
+    const area = to.slice(3, 5) === '11' ? 2 : (/^(2|3)\d{2}/.test(to.slice(3)) ? 3 : 4);
+    alt.push('54' + to.slice(3, 3 + area) + '15' + to.slice(3 + area));
+  }
+  let err;
+  for (const n of alt) { try { return await enviar1(n, texto); } catch (e) { err = e; if (![131030, 100, 131026].includes(e.code)) break; } }
+  throw err;
 }
 async function avisarDaro(tel, nombre, resumen) {
   if (!process.env.RESEND_API_KEY) return;
