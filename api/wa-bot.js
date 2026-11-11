@@ -186,7 +186,7 @@ async function diag(txt) {
 /* ───────── WhatsApp ───────── */
 async function enviar1(to, texto) {
   const r = await fetch(`https://graph.facebook.com/${process.env.WA_GRAPH_VER || 'v27.0'}/${process.env.WA_PHONE_ID}/messages`, {
-    method: 'POST', headers: { Authorization: 'Bearer ' + process.env.WA_TOKEN, 'Content-Type': 'application/json' },
+    method: 'POST', headers: { Authorization: 'Bearer ' + (process.env.WA_TOKEN || '').trim(), 'Content-Type': 'application/json' },
     body: JSON.stringify({ messaging_product: 'whatsapp', to, type: 'text', text: { body: texto, preview_url: true } })
   });
   const j = await r.json().catch(() => ({}));
@@ -203,7 +203,9 @@ async function enviar(to, texto) {
     alt.push('54' + to.slice(3, 3 + area) + '15' + to.slice(3 + area));
   }
   let err;
-  for (const n of alt) { try { return await enviar1(n, texto); } catch (e) { err = e; if (![131030, 100, 131026].includes(e.code)) break; } }
+  const intentos = [];
+  for (const n of alt) { try { const r = await enviar1(n, texto); if (intentos.length) await diag('Enviado a ' + n.slice(0, 5) + '… después de: ' + intentos.join(' | ')); return r; } catch (e) { err = e; intentos.push(n.slice(0, 5) + '…' + n.slice(-4) + ' → ' + (e.code || '') + ' ' + String(e.message).slice(0, 90)); if (![131030, 100, 131026, 131005].includes(e.code)) break; } }
+  err.message = 'Intentos: ' + intentos.join(' | ');
   throw err;
 }
 async function avisarDaro(tel, nombre, resumen) {
