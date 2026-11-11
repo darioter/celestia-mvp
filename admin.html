@@ -999,6 +999,9 @@ select{color-scheme:dark}select option,select optgroup{background:#13263a;color:
     <div id="seccion-wabot" style="display:none">
       <div class="cws-hd"><div><h2>🤖 Bot de WhatsApp</h2><p>Responde con los precios, cajas y fechas libres del sitio, y te pasa la charla cuando hay que cerrar fecha, seña, un evento o un reclamo. Probalo acá antes de conectarlo: usa el mismo cerebro que va a usar en WhatsApp.</p><div class="wb-estado" id="wb-estado"></div></div>
         <div class="cws-hb"><button type="button" class="filter-btn" id="wb-refrescar">↻ Actualizar</button></div></div>
+      <div class="wb-card wb-alta" id="wb-alta"><div class="wb-card-hd"><b>Tu número real</b><span id="wb-alta-est" class="wb-st no">○ Sin conectar</span></div>
+        <p style="font-size:13px;opacity:.8;margin:0 0 10px">Conecta tu WhatsApp Business de siempre al bot <b>sin dejar de usar la app</b> (coexistencia). Te abre la ventana de Meta: elegís el portfolio, ponés tu número y escaneás el QR desde WhatsApp Business en el celu (Configuración → Cuenta → Plataforma de empresas). Solo funciona cuando Meta aprueba la verificación del negocio.</p>
+        <button type="button" class="filter-btn active" id="wb-alta-go">📲 Conectar mi WhatsApp Business</button> <span id="wb-alta-msg" style="font-size:12.5px;margin-left:8px"></span></div>
       <div class="wb-grid">
         <div class="wb-card"><div class="wb-card-hd"><b>Simulador</b><input id="wb-sim-nom" placeholder="Nombre del cliente (opcional)"><button type="button" class="filter-btn" id="wb-sim-nueva">Nueva charla</button></div>
           <div class="wb-log" id="wb-sim-log"></div>
@@ -1007,6 +1010,7 @@ select{color-scheme:dark}select option,select optgroup{background:#13263a;color:
       </div>
     </div>
     <style>
+    .wb-alta{margin-bottom:16px}
     .wb-estado{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
     .wb-st{font-size:12px;border-radius:999px;padding:4px 10px;border:1px solid rgba(250,246,239,.2)}.wb-st.ok{border-color:#5DBF87;color:#7fd9a3}.wb-st.no{opacity:.6}
     .wb-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:16px;align-items:start}
@@ -3690,6 +3694,6 @@ async function estadoFiesta(id, estado) {
 }
 </script>
 <script src="/js/menus-ejemplo.js"></script>
-<script src="/admin-presupuesto.js?v=20261110n"></script><script src="/admin-catalogo-ws.js?v=1"></script><script src="/admin-wa-bot.js?v=3"></script><script src="/admin-menus-subir.js?v=20261110n"></script>
+<script src="/admin-presupuesto.js?v=20261110n"></script><script src="/admin-catalogo-ws.js?v=1"></script><script src="/admin-wa-bot.js?v=4"></script><script src="/admin-menus-subir.js?v=20261110n"></script>
 </body>
 </html>

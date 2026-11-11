@@ -2,7 +2,8 @@
    GET  /api/wa-bot   → verificación del webhook de Meta (hub.challenge)
    POST /api/wa-bot   → mensajes entrantes de WhatsApp; o, con el encabezado x-celestia-sim, el simulador del admin
    Variables en Vercel:
-     WA_TOKEN, WA_PHONE_ID         token de acceso y ID del número (Meta → WhatsApp → Configuración de la API)
+     WA_TOKEN, WA_PHONE_ID         token y número de prueba; el número real (coexistencia) se conecta desde el admin y queda en wa_config
+     WA_APP_ID                     (opcional) ID de la app de Meta; por defecto Celestia Bot
      WA_VERIFY_TOKEN               texto que inventás vos y pegás también en Meta al configurar el webhook
      WA_APP_SECRET                 (opcional) secreto de la app de Meta: valida que los avisos vengan de Meta
      SUPABASE_SERVICE_KEY          clave service_role de Supabase (guarda las charlas)
@@ -184,9 +185,25 @@ async function diag(txt) {
 }
 
 /* ───────── WhatsApp ───────── */
+const GRAPH = () => 'https://graph.facebook.com/' + (process.env.WA_GRAPH_VER || 'v27.0');
+/* Número conectado por Embedded Signup (coexistencia): queda en wa_config (solo service_role).
+   Si no hay, se usan WA_PHONE_ID / WA_TOKEN de Vercel (número de prueba). */
+let CFG = { t: 0, v: null };
+async function waCfg() {
+  if (Date.now() - CFG.t < 60000) return CFG.v;
+  let v = null; try { v = ((await db('wa_config?id=eq.1&select=phone_id,waba_id,token,numero,nombre')) || [])[0] || null; } catch (e) {}
+  CFG = { t: Date.now(), v }; return v;
+}
+async function cred(phoneId) {
+  const c = await waCfg();
+  if (c && c.token && (!phoneId || phoneId === c.phone_id)) return { id: c.phone_id, token: c.token };
+  return { id: phoneId || process.env.WA_PHONE_ID, token: (process.env.WA_TOKEN || '').trim() };
+}
+let PHONE_IN = null; // número que recibió el mensaje que se está respondiendo
 async function enviar1(to, texto) {
-  const r = await fetch(`https://graph.facebook.com/${process.env.WA_GRAPH_VER || 'v27.0'}/${process.env.WA_PHONE_ID}/messages`, {
-    method: 'POST', headers: { Authorization: 'Bearer ' + (process.env.WA_TOKEN || '').trim(), 'Content-Type': 'application/json' },
+  const k = await cred(PHONE_IN);
+  const r = await fetch(`${GRAPH()}/${k.id}/messages`, {
+    method: 'POST', headers: { Authorization: 'Bearer ' + k.token, 'Content-Type': 'application/json' },
     body: JSON.stringify({ messaging_product: 'whatsapp', to, type: 'text', text: { body: texto, preview_url: true } })
   });
   const j = await r.json().catch(() => ({}));
@@ -226,7 +243,8 @@ function firmaOK(raw, sig) {
   try { return crypto.timingSafeEqual(Buffer.from(h), Buffer.from(sig)); } catch (e) { return false; }
 }
 
-async function atender(msg, contacto) {
+async function atender(msg, contacto, phoneId) {
+  PHONE_IN = phoneId || null;
   const tel = msg.from, nombre = contacto && contacto.profile && contacto.profile.name || '';
   let texto = '';
   if (msg.type === 'text') texto = msg.text.body;
@@ -313,7 +331,9 @@ export async function GET(req) {
       else { try { sbTipo = JSON.parse(Buffer.from(k.split('.')[1], 'base64url').toString()).role || 'desconocida'; } catch (e) { sbTipo = 'formato desconocido'; } }
       try { await db('wa_conversaciones?select=tel&limit=1'); sbLee = true; } catch (e) { sbErr = e.message.slice(0, 120); }
     }
-    return json({ ok: true, supabaseClave: sbTipo, supabaseLee: sbLee, supabaseError: sbErr, whatsapp: !!(process.env.WA_TOKEN && process.env.WA_PHONE_ID), verify: !!process.env.WA_VERIFY_TOKEN, firma: !!process.env.WA_APP_SECRET, supabase: !!process.env.SUPABASE_SERVICE_KEY, claude: !!process.env.ANTHROPIC_API_KEY, modelo: MODEL() });
+    let conectado = '';
+    try { const c = await waCfg(); if (c && c.phone_id) conectado = (c.numero || c.phone_id) + (c.nombre ? ' · ' + c.nombre : ''); } catch (e) {}
+    return json({ ok: true, conectado, supabaseClave: sbTipo, supabaseLee: sbLee, supabaseError: sbErr, whatsapp: !!(process.env.WA_TOKEN && process.env.WA_PHONE_ID), verify: !!process.env.WA_VERIFY_TOKEN, firma: !!process.env.WA_APP_SECRET, supabase: !!process.env.SUPABASE_SERVICE_KEY, claude: !!process.env.ANTHROPIC_API_KEY, modelo: MODEL() });
   }
   return new Response('Forbidden', { status: 403 });
 }
@@ -331,12 +351,32 @@ export async function POST(req) {
       return json(r);
     } catch (e) { return json({ error: e.message }, 500); }
   }
+  /* alta del número real (Embedded Signup, coexistencia): el admin manda el code y los IDs que devuelve Meta */
+  if (req.headers.get('x-celestia-alta')) {
+    if (!(await esAdmin(req))) return json({ error: 'Solo admin' }, 401);
+    try {
+      const b = JSON.parse(raw || '{}');
+      if (!b.code || !b.waba_id || !b.phone_number_id) return json({ error: 'Faltan datos de Meta (code, waba_id, phone_number_id)' }, 400);
+      const appId = process.env.WA_APP_ID || '1894311805272831';
+      const tk = await (await fetch(GRAPH() + '/oauth/access_token?client_id=' + appId + '&client_secret=' + encodeURIComponent(process.env.WA_APP_SECRET || '') + '&code=' + encodeURIComponent(b.code))).json();
+      if (!tk.access_token) return json({ error: 'Meta no entregó el token: ' + ((tk.error && tk.error.message) || 'sin detalle') }, 400);
+      const H = { Authorization: 'Bearer ' + tk.access_token };
+      const sub = await (await fetch(GRAPH() + '/' + b.waba_id + '/subscribed_apps', { method: 'POST', headers: H })).json();
+      const ph = await (await fetch(GRAPH() + '/' + b.phone_number_id + '?fields=display_phone_number,verified_name', { headers: H })).json();
+      await db('wa_config?on_conflict=id', { method: 'POST', headers: { Prefer: 'resolution=merge-duplicates' }, body: JSON.stringify({ id: 1, phone_id: b.phone_number_id, waba_id: b.waba_id, token: tk.access_token, numero: ph.display_phone_number || '', nombre: ph.verified_name || '', updated_at: new Date().toISOString() }) });
+      CFG = { t: 0, v: null };
+      await diag('Número conectado: ' + (ph.display_phone_number || b.phone_number_id) + ' · suscripción ' + (sub.success ? 'OK' : JSON.stringify(sub).slice(0, 120)));
+      return json({ ok: true, numero: ph.display_phone_number, nombre: ph.verified_name, suscripto: !!sub.success });
+    } catch (e) { return json({ error: e.message }, 500); }
+  }
   if (!firmaOK(raw, req.headers.get('x-hub-signature-256'))) { await diag('Llegó un aviso de Meta pero la firma no coincide: revisar WA_APP_SECRET (clave secreta de la app Celestia Bot).'); return new Response('Bad signature', { status: 401 }); }
   let body = {}; try { body = JSON.parse(raw); } catch (e) { await diag('Llegó un aviso que no es JSON'); return new Response('ok'); }
   const tareas = [];
   (body.entry || []).forEach(en => (en.changes || []).forEach(ch => {
     const v = ch.value || {};
-    (v.messages || []).forEach(m => tareas.push(atender(m, (v.contacts || []).find(c => c.wa_id === m.from))));
+    const pid = v.metadata && v.metadata.phone_number_id;
+    (v.messages || []).forEach(m => tareas.push(atender(m, (v.contacts || []).find(c => c.wa_id === m.from), pid)));
+    // coexistencia: lo que escribís desde la app llega por smb_message_echoes (antes message_echoes)
     (v.message_echoes || []).forEach(e => tareas.push(ecoDaro(e)));
   }));
   const res = await Promise.allSettled(tareas);

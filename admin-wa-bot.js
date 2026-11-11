@@ -30,6 +30,7 @@
     try {
       var j = await (await fetch('/api/wa-bot?estado=1', { cache: 'no-store' })).json();
       var it = function (ok, t) { return '<span class="wb-st ' + (ok ? 'ok' : 'no') + '">' + (ok ? '✓' : '○') + ' ' + t + '</span>'; };
+      var ae = document.getElementById('wb-alta-est'); if (ae) { ae.className = 'wb-st ' + (j.conectado ? 'ok' : 'no'); ae.textContent = j.conectado ? '✓ ' + j.conectado : '○ Sin conectar (usa el número de prueba)'; }
       el.innerHTML = it(j.claude, 'Claude (' + esc(j.modelo) + ')') + it(j.supabase, 'Base de charlas') + it(j.whatsapp, 'WhatsApp conectado') + it(j.verify, 'Webhook verificado') + it(j.firma, 'Firma de Meta');
     } catch (e) { el.innerHTML = '<span class="wb-st no">El endpoint todavía no responde</span>'; }
   }
@@ -74,5 +75,48 @@
     }
   });
   document.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey && e.target && e.target.id === 'wb-sim-in') { e.preventDefault(); simEnviar(); } });
+  /* ── Alta del número real por Embedded Signup (coexistencia con la app WhatsApp Business) ── */
+  var APP_ID = '1894311805272831';
+  var ES_CONFIG = ''; // ID de la configuración de "Inicio de sesión con Facebook para empresas" (no es secreto)
+  var ALTA = {};
+  function altaMsg(t, ok) { var m = document.getElementById('wb-alta-msg'); if (m) { m.textContent = t; m.style.color = ok === false ? '#ff9b9b' : ok ? '#7fd9a3' : ''; } }
+  function cargarSDK() {
+    return new Promise(function (res) {
+      if (window.FB) return res();
+      window.fbAsyncInit = function () { FB.init({ appId: APP_ID, autoLogAppEvents: true, xfbml: false, version: 'v27.0' }); res(); };
+      var sc = document.createElement('script'); sc.async = true; sc.defer = true; sc.crossOrigin = 'anonymous'; sc.src = 'https://connect.facebook.net/es_LA/sdk.js'; document.head.appendChild(sc);
+    });
+  }
+  window.addEventListener('message', function (ev) {
+    if (!/(^|\.)facebook\.com$/.test(new URL(ev.origin).hostname)) return;
+    try {
+      var d = typeof ev.data === 'string' ? JSON.parse(ev.data) : ev.data;
+      if (!d || d.type !== 'WA_EMBEDDED_SIGNUP') return;
+      if (/^FINISH/.test(d.event || '')) { ALTA.waba_id = d.data.waba_id; ALTA.phone_number_id = d.data.phone_number_id; altaEnviar(); }
+      else if (d.event === 'CANCEL') altaMsg('Se cerró la ventana sin terminar' + (d.data && d.data.current_step ? ' (paso: ' + d.data.current_step + ')' : '') + '.', false);
+      else if (d.event === 'ERROR') altaMsg('Meta devolvió un error: ' + ((d.data && d.data.error_message) || ''), false);
+    } catch (e) {}
+  });
+  async function altaEnviar() {
+    if (!ALTA.code || !ALTA.waba_id || ALTA.enviado) return;
+    ALTA.enviado = true; altaMsg('Conectando…');
+    try {
+      var r = await fetch('/api/wa-bot', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-celestia-alta': '1', Authorization: 'Bearer ' + (await token()) }, body: JSON.stringify(ALTA) });
+      var j = await r.json();
+      if (j.ok) { altaMsg('✓ Conectado: ' + (j.numero || '') + (j.suscripto ? '' : ' (falta suscribir la app: avisale a Claude)'), true); estado(); }
+      else { altaMsg(j.error || 'No se pudo conectar', false); ALTA.enviado = false; }
+    } catch (e) { altaMsg(e.message, false); ALTA.enviado = false; }
+  }
+  document.addEventListener('click', async function (e) {
+    if (!e.target.closest || !e.target.closest('#wb-alta-go')) return;
+    if (!ES_CONFIG) { altaMsg('Falta el ID de configuración de Embedded Signup (lo cargamos cuando Meta apruebe la verificación).', false); return; }
+    ALTA = {}; altaMsg('Abriendo la ventana de Meta…');
+    await cargarSDK();
+    FB.login(function (resp) {
+      if (resp.authResponse && resp.authResponse.code) { ALTA.code = resp.authResponse.code; altaEnviar(); }
+      else altaMsg('No se completó el inicio de sesión con Meta.', false);
+    }, { config_id: ES_CONFIG, response_type: 'code', override_default_response_type: true, extras: { setup: {}, featureType: 'whatsapp_business_app_onboarding', sessionInfoVersion: '3' } });
+  });
+
   window.cargarWaBot = function () { estado(); charlas(); pintarSim(); };
 })();
