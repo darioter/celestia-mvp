@@ -288,6 +288,9 @@ export async function GET(req) {
       const d = dbg.data || {};
       const wabas = [...new Set((d.granular_scopes || []).filter(x => /whatsapp/.test(x.scope)).flatMap(x => x.target_ids || []))];
       const out = { tokenValido: !!d.is_valid, tipo: d.type, vence: d.expires_at ? new Date(d.expires_at * 1000).toISOString() : 'no vence', app: d.app_id, permisos: d.scopes, wabas: [] , error: dbg.error && dbg.error.message };
+      const ph = await (await fetch(G + '/' + process.env.WA_PHONE_ID + '?fields=display_phone_number,verified_name,quality_rating', { headers: H })).json();
+      out.numeroDelBot = ph.error ? 'sin acceso: ' + ph.error.message : ph.display_phone_number + ' · ' + ph.verified_name;
+      if (!wabas.length && u.searchParams.get('waba')) wabas.push(u.searchParams.get('waba'));
       for (const w of wabas) {
         if (u.searchParams.get('activar') === '1') {
           const r = await (await fetch(G + '/' + w + '/subscribed_apps', { method: 'POST', headers: H })).json();
