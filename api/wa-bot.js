@@ -170,7 +170,7 @@ function aMensajes(hist) {
 }
 
 /* ───────── Supabase (service role) ───────── */
-const sk = () => process.env.SUPABASE_SERVICE_KEY;
+const sk = () => (process.env.SUPABASE_SERVICE_KEY || '').trim().replace(/^["']|["']$/g, '').replace(/^Bearer\s+/i, '');
 async function db(path, opts = {}) {
   const r = await fetch(SUPA_URL + '/rest/v1/' + path, { ...opts, headers: { apikey: sk(), Authorization: 'Bearer ' + sk(), 'Content-Type': 'application/json', Prefer: 'return=representation', ...(opts.headers || {}) } });
   const t = await r.text(); let d = null; try { d = t ? JSON.parse(t) : null; } catch (e) {}
