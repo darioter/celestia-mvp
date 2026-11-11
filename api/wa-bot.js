@@ -178,6 +178,11 @@ async function db(path, opts = {}) {
   return d;
 }
 
+/* Diagnóstico: el último aviso de Meta queda en wa_conversaciones con tel '0' (el admin lo muestra aparte) */
+async function diag(txt) {
+  try { await db('wa_conversaciones?on_conflict=tel', { method: 'POST', headers: { Prefer: 'resolution=merge-duplicates' }, body: JSON.stringify({ tel: '0', nombre: 'diagnostico', estado: 'daro', resumen: String(txt).slice(0, 900), ultimo: new Date().toISOString() }) }); } catch (e) { console.error('diag', e.message); }
+}
+
 /* ───────── WhatsApp ───────── */
 async function enviar1(to, texto) {
   const r = await fetch(`https://graph.facebook.com/${process.env.WA_GRAPH_VER || 'v27.0'}/${process.env.WA_PHONE_ID}/messages`, {
@@ -288,8 +293,8 @@ export async function POST(req) {
       return json(r);
     } catch (e) { return json({ error: e.message }, 500); }
   }
-  if (!firmaOK(raw, req.headers.get('x-hub-signature-256'))) return new Response('Bad signature', { status: 401 });
-  let body = {}; try { body = JSON.parse(raw); } catch (e) { return new Response('ok'); }
+  if (!firmaOK(raw, req.headers.get('x-hub-signature-256'))) { await diag('Llegó un aviso de Meta pero la firma no coincide: revisar WA_APP_SECRET (clave secreta de la app Celestia Bot).'); return new Response('Bad signature', { status: 401 }); }
+  let body = {}; try { body = JSON.parse(raw); } catch (e) { await diag('Llegó un aviso que no es JSON'); return new Response('ok'); }
   const tareas = [];
   (body.entry || []).forEach(en => (en.changes || []).forEach(ch => {
     const v = ch.value || {};
@@ -297,6 +302,9 @@ export async function POST(req) {
     (v.message_echoes || []).forEach(e => tareas.push(ecoDaro(e)));
   }));
   const res = await Promise.allSettled(tareas);
-  res.filter(x => x.status === 'rejected').forEach(x => console.error('wa-bot', x.reason && x.reason.message));
+  const errs = res.filter(x => x.status === 'rejected').map(x => (x.reason && x.reason.message) || String(x.reason));
+  errs.forEach(m => console.error('wa-bot', m));
+  const campos = (body.entry || []).flatMap(en => (en.changes || []).map(ch => ch.field)).join(',');
+  await diag((errs.length ? 'ERROR: ' + errs.join(' | ') : 'OK') + ' · campos: ' + (campos || '-') + ' · mensajes: ' + tareas.length);
   return new Response('ok');
 }

@@ -38,7 +38,11 @@
     var el = document.getElementById('wb-charlas'); if (!el) return;
     var r = await supa.from('wa_conversaciones').select('*').order('ultimo', { ascending: false }).limit(60);
     if (r.error) { el.innerHTML = '<div class="wb-vacio">' + (/relation|does not exist/i.test(r.error.message) ? 'Falta crear las tablas (supabase/wa_bot.sql).' : esc(r.error.message)) + '</div>'; return; }
-    var L = r.data || [];
+    var D = (r.data || []).filter(function (c) { return c.tel === '0'; })[0];
+    var L = (r.data || []).filter(function (c) { return c.tel !== '0'; });
+    var dg = document.getElementById('wb-diag');
+    if (!dg) { dg = document.createElement('div'); dg.id = 'wb-diag'; dg.style.cssText = 'font-size:12px;margin:0 0 10px;padding:8px 10px;border-radius:8px;background:rgba(0,0,0,.04)'; el.parentNode.insertBefore(dg, el); }
+    dg.innerHTML = D ? '<b>Último aviso de Meta</b> · ' + new Date(D.ultimo).toLocaleString('es-AR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit' }) + '<br>' + esc(D.resumen) : '<b>Último aviso de Meta:</b> todavía no llegó ninguno.';
     el.innerHTML = L.length ? L.map(function (c) {
       return '<button type="button" class="wb-c' + (convSel === c.tel ? ' on' : '') + '" data-wb-tel="' + esc(c.tel) + '"><b>' + esc(c.nombre || '+' + c.tel) + '</b><span class="wb-badge ' + c.estado + '">' + (c.estado === 'bot' ? '🤖 Bot' : '👨‍🍳 Vos · bot en silencio') + '</span>' +
         (c.resumen ? '<small>' + esc(c.resumen) + '</small>' : '') + '<i>' + new Date(c.ultimo).toLocaleString('es-AR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) + '</i></button>';
