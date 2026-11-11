@@ -285,7 +285,7 @@ export async function GET(req) {
       const dbg = await (await fetch(G + '/debug_token?input_token=' + encodeURIComponent(tok), { headers: H })).json();
       const d = dbg.data || {};
       const wabas = [...new Set((d.granular_scopes || []).filter(x => /whatsapp/.test(x.scope)).flatMap(x => x.target_ids || []))];
-      const out = { tokenValido: !!d.is_valid, tipo: d.type, vence: d.expires_at ? new Date(d.expires_at * 1000).toISOString() : 'no vence', app: d.app_id, wabas: [] , error: dbg.error && dbg.error.message };
+      const out = { tokenValido: !!d.is_valid, tipo: d.type, vence: d.expires_at ? new Date(d.expires_at * 1000).toISOString() : 'no vence', app: d.app_id, permisos: d.scopes, wabas: [] , error: dbg.error && dbg.error.message };
       for (const w of wabas) {
         if (u.searchParams.get('activar') === '1') {
           const r = await (await fetch(G + '/' + w + '/subscribed_apps', { method: 'POST', headers: H })).json();
