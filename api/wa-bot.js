@@ -275,8 +275,18 @@ export async function GET(req) {
   const u = new URL(req.url);
   if (u.searchParams.get('hub.mode') === 'subscribe' && u.searchParams.get('hub.verify_token') && u.searchParams.get('hub.verify_token') === process.env.WA_VERIFY_TOKEN)
     return new Response(u.searchParams.get('hub.challenge') || '', { status: 200 });
-  if (u.searchParams.get('estado') === '1')
-    return json({ ok: true, whatsapp: !!(process.env.WA_TOKEN && process.env.WA_PHONE_ID), verify: !!process.env.WA_VERIFY_TOKEN, firma: !!process.env.WA_APP_SECRET, supabase: !!process.env.SUPABASE_SERVICE_KEY, claude: !!process.env.ANTHROPIC_API_KEY, modelo: MODEL() });
+  if (u.searchParams.get('estado') === '1') {
+    /* tipo de clave de Supabase (sin mostrarla) y si puede leer/escribir las charlas */
+    let sbTipo = 'falta', sbLee = false, sbErr = '';
+    const k = sk() || '';
+    if (k) {
+      if (k.startsWith('sb_secret_')) sbTipo = 'secret';
+      else if (k.startsWith('sb_publishable_')) sbTipo = 'publishable (no sirve: va la secret / service_role)';
+      else { try { sbTipo = JSON.parse(Buffer.from(k.split('.')[1], 'base64url').toString()).role || 'desconocida'; } catch (e) { sbTipo = 'formato desconocido'; } }
+      try { await db('wa_conversaciones?select=tel&limit=1'); sbLee = true; } catch (e) { sbErr = e.message.slice(0, 120); }
+    }
+    return json({ ok: true, supabaseClave: sbTipo, supabaseLee: sbLee, supabaseError: sbErr, whatsapp: !!(process.env.WA_TOKEN && process.env.WA_PHONE_ID), verify: !!process.env.WA_VERIFY_TOKEN, firma: !!process.env.WA_APP_SECRET, supabase: !!process.env.SUPABASE_SERVICE_KEY, claude: !!process.env.ANTHROPIC_API_KEY, modelo: MODEL() });
+  }
   return new Response('Forbidden', { status: 403 });
 }
 
