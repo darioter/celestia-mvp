@@ -78,7 +78,7 @@ input[type=range]{width:100%;accent-color:var(--gold)}
 .modo{background:none;border:0;color:var(--mut);border-radius:999px;padding:7px 14px;font-size:13px;font-weight:500}
 .modo.on{background:var(--gold);color:var(--navy);font-weight:600}
 .reel{display:grid;grid-template-columns:380px 1fr;gap:28px;align-items:start}
-.r-play{position:sticky;top:90px}
+.r-play{position:sticky;top:90px;max-height:calc(100vh - 100px);overflow:auto;scrollbar-width:thin}
 .r-cv{position:relative;width:100%;aspect-ratio:9/16;border-radius:16px;overflow:hidden;background:#000;border:1px solid var(--line)}
 .r-cv canvas{width:100%;height:100%;display:block}
 .r-rec{position:absolute;top:12px;left:12px;background:#b3261e;color:#fff;font-size:12px;font-weight:600;padding:5px 11px;border-radius:999px;display:none}
@@ -200,7 +200,7 @@ input[type=range]{width:100%;accent-color:var(--gold)}
             <button class="btn" id="r-share" onclick="reelCompartir()" style="display:none">📲 Guardar en el celu</button>
           </div>
           <label class="r-lab">Segundos por placa: <b id="r-seg-v">3</b></label>
-          <input type="range" min="2" max="6" step=".5" value="3" id="r-seg" oninput="REEL.seg=+this.value;document.getElementById('r-seg-v').textContent=this.value;reelInfo()">
+          <input type="range" min="2" max="8" step=".5" value="3" id="r-seg" oninput="REEL.seg=+this.value;document.getElementById('r-seg-v').textContent=this.value;reelInfo()">
           <p class="hint" id="r-info"></p>
           <div class="r-cap" id="r-port">
             <div class="r-cap-h"><b>🖼 Portada del reel</b><span>la línea punteada es lo que se ve en tu perfil</span></div>
@@ -228,7 +228,18 @@ input[type=range]{width:100%;accent-color:var(--gold)}
               <button class="btn sec sm" id="r-cap-ia" onclick="capIA()">✨ Mejorar con IA</button>
             </div>
           </div>
-          <p class="hint">El video sale en 1080×1920, sin música: la sumás en Instagram al publicarlo. Si preferís armarlo vos, bajá las placas y cargalas en el editor de reels.</p>
+          <div class="r-cap">
+            <div class="r-cap-h"><b>🎙️ Texto para el audio</b><span id="r-voz-n"></span></div>
+            <textarea class="inp" id="r-voz" placeholder="Se genera solo cuando armás el reel. Cada renglón va con una placa." oninput="vozInfo()" style="min-height:150px"></textarea>
+            <div class="r-ctrl" style="margin:6px 0 0">
+              <button class="btn sm" onclick="vozCopiar()">Copiar texto</button>
+              <button class="btn sec sm" id="r-voz-ia" onclick="vozIA()">✨ Reescribir con IA</button>
+              <button class="btn sec sm" onclick="vozAjustar()">⏱ Ajustar placas al audio</button>
+            </div>
+            <label class="drop" id="r-aud-drop" style="margin-top:10px;padding:12px"><b>🎧 Subí el audio generado</b>MP3, M4A o WAV: se suma al video y las placas se ajustan a su duración.<input type="file" id="r-audio" accept="audio/*" hidden onchange="vozSubir(this.files[0]);this.value=''"></label>
+            <div class="r-ctrl" id="r-aud-est" style="display:none;margin:6px 0 0"><span id="r-aud-nom" class="hint" style="margin:0"></span><button class="btn sec sm" onclick="vozQuitar()">Quitar audio</button></div>
+          </div>
+          <p class="hint">El video sale en 1080×1920. Si subís el audio, sale con tu voz; la música la podés sumar en Instagram al publicarlo. Si preferís armarlo vos, bajá las placas y cargalas en el editor de reels.</p>
         </div>
         <div class="r-frames">
           <div class="bar"><b style="font-family:'DM Serif Display',serif;font-weight:400;font-size:22px">Placas del reel</b><span class="cnt" id="r-cnt"></span><span style="flex:1"></span><button class="btn sec sm" onclick="reelAgregar()">+ Placa</button><button class="btn sec sm" onclick="REEL.frames=[];reelRender()">Vaciar</button></div>
@@ -764,7 +775,14 @@ const PRESENTACION = [
       ['foto', 'En tu casa', 'Llevo todo, cocino y sirvo', 'Vos solo ponés la mesa', 'Vos en la cocina de un cliente'],
       ['foto', 'Para cada ocasión', 'Aniversarios, cumpleaños y cenas con amigos', '', 'Una mesa con gente disfrutando'],
       ['foto', '¿No querés que vaya?', 'Te llevo la cena lista en una caja', 'Cajas Celestia para tus fiestas', 'Una caja o una fuente lista para servir'],
-      ['cierre', 'Reservá tu fecha sin costo', 'chefprivado.ar', 'Seguime para recetas de chef con lo que tenés en casa', '']] },
+      ['cierre', 'Reservá tu fecha sin costo', 'chefprivado.ar', 'Seguime para recetas de chef con lo que tenés en casa', '']],
+    voz: ['Soy Daro. Dirijo una empresa de arquitectura… y cocino con alma de chef.',
+      'Hace más de diez años que cocino. Me formé en la escuela de cocina EAG.',
+      'Y diseño cada menú como diseño un espacio: pensando en quien lo va a vivir.',
+      'Voy a tu casa con todo. Cocino, sirvo… y vos solo ponés la mesa.',
+      'Aniversarios, cumpleaños, una cena con amigos.',
+      'Y si no querés que vaya, te llevo la cena lista en una caja.',
+      'Reservá tu fecha sin costo en chefprivado punto ar. Y seguime, que se viene más.'] },
   { id: 'cena', icono: '🍽️', nombre: 'Así es una cena en tu casa', sub: '7 placas · cómo funciona, paso a paso', gancho: '¿Cómo es tener un chef privado en tu casa? Te lo muestro en 30 segundos 🍽️',
     cuerpo: ['1️⃣ Diseñamos el menú juntos\n2️⃣ Llego con todo, producto fresco del día\n3️⃣ Cocino en tu cocina\n4️⃣ Sirvo cada paso en la mesa\n5️⃣ Me voy y la cocina queda limpia'],
     frames: [
@@ -774,7 +792,14 @@ const PRESENTACION = [
       ['foto', '3 · Cocino', 'En tu cocina, terminado en el momento', 'Como en un restaurante', 'Vos cocinando'],
       ['foto', '4 · Sirvo', 'Paso a paso, en la mesa', 'Con servicio completo', 'Un plato llegando a la mesa'],
       ['foto', '5 · Me voy', 'Y la cocina queda limpia', 'Vos solo disfrutaste', 'Brindis o la cocina ordenada'],
-      ['cierre', 'Reservá tu fecha sin costo', 'chefprivado.ar', 'Menús de 3 y 7 pasos · CABA y GBA', '']] },
+      ['cierre', 'Reservá tu fecha sin costo', 'chefprivado.ar', 'Menús de 3 y 7 pasos · CABA y GBA', '']],
+    voz: ['¿Cómo es tener un chef privado en tu casa? Te lo muestro.',
+      'Primero diseñamos el menú juntos, por WhatsApp, a tu gusto.',
+      'El día de la cena llego con todo: producto fresco y la mise en place lista.',
+      'Termino cada plato en tu cocina, en el momento.',
+      'Y lo sirvo en la mesa, paso a paso, como en un restaurante.',
+      'Me voy y la cocina queda limpia. Vos solo disfrutaste.',
+      'Menús de tres y siete pasos, en CABA y GBA. Reservá en chefprivado punto ar.'] },
   { id: 'navidad', icono: '🎄', nombre: 'Navidad sin cocinar', sub: '5 placas · Cajas Celestia', gancho: 'Esta Navidad no cocines vos 🎄',
     cuerpo: ['Cajas Celestia: la cena completa de chef llega a tu casa el 24, fría y lista para regenerar, con la guía de cada plato.', 'Pedidos hasta el 21/12 o hasta completar cupos. Envío a CABA y GBA.'],
     frames: [
@@ -782,7 +807,42 @@ const PRESENTACION = [
       ['foto', '🎄 Nochebuena', 'Una cena completa de chef', 'Entradas, principal, guarnición y postre', 'Un plato de fiestas'],
       ['foto', 'Llega el 24', 'Fría y lista para regenerar', 'Con la guía de cada plato', 'La caja abierta con los envases'],
       ['foto', 'Sumá del mercadito', 'Vitel toné, pan dulce, langostinos…', '', 'Detalle de algún producto'],
-      ['cierre', 'Pedidos hasta el 21/12', 'chefprivado.ar/cajas', 'Cupos limitados · envío a CABA y GBA', '']] }
+      ['cierre', 'Pedidos hasta el 21/12', 'chefprivado.ar/cajas', 'Cupos limitados · envío a CABA y GBA', '']],
+    voz: ['Esta Navidad… no cocines vos.',
+      'Te llevo una cena completa de chef: entrada, principal, guarnición y postre.',
+      'Llega el veinticuatro, fría y lista para regenerar, con la guía de cada plato.',
+      'Y del mercadito sumás vitel toné, pan dulce, langostinos…',
+      'Pedidos hasta el veintiuno de diciembre, o hasta llenar los cupos. Entrá a chefprivado punto ar barra cajas.'] },
+  { id: 'equipo', icono: '🥂', nombre: 'Fin de año con tu equipo', sub: '6 placas · empresas y despedidas', gancho: 'La cena de fin de año de tu equipo, con chef y sin salir de la oficina 🥂',
+    cuerpo: ['Llevo la cocina a tu oficina o a una casa: menú de pasos, servicio completo y vos sin organizar nada.', 'Para grupos de más de 12 armamos una propuesta a medida, arrancando con una charla corta.'],
+    frames: [
+      ['portada', 'Fin de año · Empresas', 'La cena de tu equipo, con chef', '', 'Una mesa larga puesta o un brindis'],
+      ['foto', 'Dónde', 'En la oficina o en una casa', 'Llevo todo lo necesario', 'Vos llegando con la mise en place'],
+      ['foto', 'Qué', 'Menú de pasos pensado para el grupo', 'Con opciones para cada restricción', 'Un plato emplatado'],
+      ['foto', 'Cómo', 'Servicio completo en la mesa', 'Ustedes solo brindan', 'Gente brindando o un plato llegando'],
+      ['foto', 'Grupos grandes', 'Más de 12: propuesta a medida', 'Primero una charla corta', 'Una mesa con mucha gente'],
+      ['cierre', 'Las fechas de diciembre vuelan', 'chefprivado.ar', 'Escribime y armamos la propuesta', '']],
+    voz: ['La cena de fin de año de tu equipo… con chef, y sin salir de la oficina.',
+      'Voy a la oficina o a una casa, y llevo todo lo necesario.',
+      'Armo un menú de pasos pensado para el grupo, con opciones para cada restricción.',
+      'Sirvo cada paso en la mesa. Ustedes solo brindan.',
+      'Si son más de doce, armamos una propuesta a medida, arrancando con una charla corta.',
+      'Las fechas de diciembre vuelan. Escribime desde chefprivado punto ar.'] },
+  { id: 'verano', icono: '☀️', nombre: 'Chef en tus vacaciones', sub: '6 placas · costa, sierras y Patagonia', gancho: '¿Te vas de vacaciones? Llevate al chef ☀️',
+    cuerpo: ['En enero y febrero cocino en tu casa de veraneo: en la costa, las sierras o la Patagonia.', 'Una noche especial o una semana entera. En el calendario de la web ves los días libres y el estimado.'],
+    frames: [
+      ['portada', 'Verano · Chef privado', '¿Te vas de vacaciones? Llevate al chef', '', 'Mar, sierras o montaña'],
+      ['foto', 'Dónde', 'Costa, sierras y Patagonia', 'En tu casa de veraneo', 'Un paisaje de vacaciones'],
+      ['foto', 'Una noche', 'La experiencia de siempre', 'Como en Buenos Aires', 'Una mesa al aire libre'],
+      ['foto', 'O toda la semana', 'Chef dedicado toda la semana', 'Cocino todos los días, con un día libre por semana', 'Vos cocinando o un desayuno'],
+      ['foto', 'Fechas', 'Enero y febrero', 'Sujeto a disponibilidad', 'El calendario o una mesa de verano'],
+      ['cierre', 'Mirá los días libres', 'chefprivado.ar/chef-privado-en-vacaciones', 'Calendario y estimado al instante', '']],
+    voz: ['¿Te vas de vacaciones? Llevate al chef.',
+      'En la costa, las sierras o la Patagonia, cocino en tu casa de veraneo.',
+      'Puede ser una noche especial, como la que hacemos en Buenos Aires.',
+      'O toda la semana: cocino todos los días, con un día de descanso.',
+      'Enero y febrero, sujeto a disponibilidad.',
+      'En chefprivado punto ar ves los días libres y el estimado al instante.'] }
 ];
 function reelPresentacion(id) {
   const p = PRESENTACION.find(x => x.id === id); if (!p) return;
@@ -983,16 +1043,17 @@ async function reelDibujarEn(i) {
 }
 async function reelPlay() {
   const b = document.getElementById('r-btn-play');
-  if (REEL.playing) { REEL.playing = false; cancelAnimationFrame(REEL.raf); b.textContent = '▶ Reproducir'; return; }
+  if (REEL.playing) { REEL.playing = false; cancelAnimationFrame(REEL.raf); b.textContent = '▶ Reproducir'; vozSonar(false); return; }
   if (!REEL.frames.length) { toast('Primero armá el reel'); return; }
   const R = await reelImgs(); const x = document.getElementById('r-cv').getContext('2d');
   const total = REEL.frames.length * REEL.seg; const t0 = performance.now();
-  REEL.playing = true; b.textContent = '⏸ Pausar';
-  const loop = () => { if (!REEL.playing) return; const t = (performance.now() - t0) / 1000; if (t >= total) { REEL.playing = false; b.textContent = '▶ Reproducir'; return; } reelEn(x, t, R); REEL.raf = requestAnimationFrame(loop); };
+  REEL.playing = true; b.textContent = '⏸ Pausar'; vozSonar(true);
+  const loop = () => { if (!REEL.playing) return; const t = (performance.now() - t0) / 1000; if (t >= total) { REEL.playing = false; b.textContent = '▶ Reproducir'; vozSonar(false); return; } reelEn(x, t, R); REEL.raf = requestAnimationFrame(loop); };
   loop();
 }
 function reelTipoVideo() {
-  const c = ['video/mp4;codecs=avc1.42E01E', 'video/mp4;codecs=avc1', 'video/mp4', 'video/webm;codecs=vp9', 'video/webm'];
+  const c = REEL.audio ? ['video/mp4;codecs=avc1.42E01E,mp4a.40.2', 'video/mp4;codecs=avc1,mp4a.40.2', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm']
+    : ['video/mp4;codecs=avc1.42E01E', 'video/mp4;codecs=avc1', 'video/mp4', 'video/webm;codecs=vp9', 'video/webm'];
   return c.find(t => window.MediaRecorder && MediaRecorder.isTypeSupported(t)) || '';
 }
 async function reelGrabarMR() {
@@ -1002,15 +1063,18 @@ async function reelGrabarMR() {
   const tipo = reelTipoVideo(); const ext = tipo.includes('mp4') ? 'mp4' : 'webm';
   const cv = document.getElementById('r-cv'), x = cv.getContext('2d');
   let R; try { R = await reelImgs(); } catch (e) { toast('No se pudieron cargar las fotos'); return; }
-  const stream = cv.captureStream(30); const rec = new MediaRecorder(stream, { mimeType: tipo, videoBitsPerSecond: 10000000 });
+  const stream = cv.captureStream(30);
+  let actx = null, asrc = null;
+  if (REEL.audio) { actx = new (window.AudioContext || window.webkitAudioContext)(); const dest = actx.createMediaStreamDestination(); asrc = actx.createBufferSource(); asrc.buffer = REEL.audio.buf; asrc.connect(dest); dest.stream.getAudioTracks().forEach(t => stream.addTrack(t)); }
+  const rec = new MediaRecorder(stream, { mimeType: tipo, videoBitsPerSecond: 10000000 });
   const partes = []; rec.ondataavailable = e => e.data.size && partes.push(e.data);
   const total = REEL.frames.length * REEL.seg + .4;
   const fin = new Promise(res => rec.onstop = res);
   document.getElementById('r-rec').style.display = 'block'; REEL.playing = true;
   try { reelEn(x, 0, R); } catch (e) {}
-  rec.start(250); const t0 = performance.now();
+  rec.start(250); if (asrc) asrc.start(); const t0 = performance.now();
   await new Promise(res => { const loop = () => { const t = (performance.now() - t0) / 1000; reelEn(x, Math.min(t, total - .41), R); if (t >= total) return res(); requestAnimationFrame(loop); }; loop(); });
-  rec.stop(); await fin; REEL.playing = false; document.getElementById('r-rec').style.display = 'none';
+  rec.stop(); await fin; try { asrc && asrc.stop(); actx && actx.close(); } catch (e) {} REEL.playing = false; document.getElementById('r-rec').style.display = 'none';
   const nombre = 'celestia-reel-' + (REEL.nota ? REEL.nota.slug.slice(0, 40) : 'fotos') + '.' + ext;
   bajar(new Blob(partes, { type: tipo.split(';')[0] || 'video/webm' }), nombre);
   toast(ext === 'mp4' ? 'Video listo (MP4)' : 'Video listo (WEBM): si Instagram no lo acepta, actualizá Chrome o usá las placas');
@@ -1024,6 +1088,7 @@ async function reelPlacas() {
     try { zip.file('reel-placa-' + String(i + 1).padStart(2, '0') + '.png', await new Promise((res, rej) => cv.toBlob(b => b ? res(b) : rej(), 'image/png'))); } catch (e) { fallas.push(i + 1); }
   }
   const cap = document.getElementById('r-cap').value; if (cap) zip.file('texto-publicacion.txt', cap);
+  const vz = document.getElementById('r-voz').value; if (vz) zip.file('texto-audio.txt', vz);
   try { if (PORT.titular) zip.file('reel-placa-00-portada.png', await portBlob()); } catch (e) {}
   bajar(await zip.generateAsync({ type: 'blob' }), 'celestia-reel-placas.zip');
   toast(fallas.length ? 'Listo. Sin exportar: ' + fallas.join(', ') : 'Placas descargadas');
@@ -1057,7 +1122,7 @@ const CIERRES = [
 let _capV = 0;
 function capCont() { const t = document.getElementById('r-cap').value; document.getElementById('r-cap-n').textContent = t.length + ' / 2200'; }
 function capGenerar(otra) {
-  if (otra) _capV++;
+  if (otra) _capV++; else vozGenerar();
   const ta = document.getElementById('r-cap'); if (!REEL.frames.length) { ta.value = ''; capCont(); return; }
   const n = REEL.nota, v = _capV % 3, L = [];
   if (!n && REEL.preset) {
@@ -1107,6 +1172,113 @@ Reglas: español rioplatense con voseo, primera persona, tono cálido y experto,
   b.disabled = false; b.textContent = '✨ Mejorar con IA';
 }
 
+/* ───────── texto para el audio (locución) y audio del reel ─────────
+   Un renglón por placa. Se puede generar con IA, copiar para pasarlo a un generador de voz
+   y subir el audio para que salga dentro del video. */
+const voz_ = t => String(t || '').replace(/chefprivado\.ar\/?([\w-]*)/gi, (m, r) => 'chefprivado punto ar' + (r ? ' barra ' + r.replace(/-/g, ' ') : '')).replace(/\s*·\s*/g, ', ').replace(/[“”"]/g, '').trim();
+// recorta a una frase que se diga en pocos segundos
+function corta(t, max) {
+  t = voz_(t); let f = (t.match(/^[^.!?]+[.!?]?/) || [t])[0].trim();
+  if (f.split(/\s+/).length > max) { const c = f.split(/,|:|;| y | o /)[0].trim(); f = c.split(/\s+/).length <= max ? c : f.split(/\s+/).slice(0, max).join(' '); }
+  return f.replace(/[.,;:]$/, '') + '.';
+}
+const ORD = ['Primero', 'Segundo', 'Tercero', 'Cuarto', 'Quinto', 'Sexto'];
+function vozLinea(f, k, n) {
+  if (f.tipo === 'cierre') return REEL.nota ? 'La nota completa está en chefprivado punto ar barra blog. Y si lo querés vivir en tu casa, reservá tu fecha sin costo.' : 'Reservá tu fecha sin costo en chefprivado punto ar.';
+  const min = t => t.replace(/^./, c => c.toLowerCase());
+  if (/tip/i.test(f.kicker || '')) return 'Un tip de chef: ' + min(corta(f.titulo, 16));
+  if (f.kicker === 'En esta nota') return 'Vas a ver ' + min(corta(f.titulo, 14));
+  if (k === 0) return REEL.nota ? corta(f.titulo.replace(/:.*/, ''), 12).replace(/\.$/, '') + ': te lo cuento rápido.' : corta(f.titulo, 14);
+  if (/^\d+$/.test(f.kicker || '')) return ORD[+f.kicker - 1] + ': ' + corta(f.titulo, 10).replace(/^./, c => c.toLowerCase());
+  const t = corta(f.titulo, 12), x = f.texto ? corta(f.texto, 8) : '';
+  return x && (t + ' ' + x).split(/\s+/).length <= 16 ? t + ' ' + x : t;
+}
+function vozGenerar() {
+  const ta = document.getElementById('r-voz'); if (!ta) return;
+  if (!REEL.frames.length) { ta.value = ''; vozInfo(); return; }
+  const pr = !REEL.nota && REEL.preset;
+  ta.value = (pr && pr.voz && pr.voz.length === REEL.frames.length ? pr.voz : REEL.frames.map((f, k) => vozLinea(f, k, REEL.frames.length))).join('\n');
+  vozInfo();
+}
+function vozSeg() { // segundos estimados de locución (≈ 2,6 palabras por segundo + respiro entre renglones)
+  const L = document.getElementById('r-voz').value.split('\n').filter(l => l.trim());
+  return L.reduce((a, l) => a + l.trim().split(/\s+/).length / 2.6 + .35, 0);
+}
+function vozInfo() {
+  const el = document.getElementById('r-voz-n'); if (!el) return;
+  const t = document.getElementById('r-voz').value, pal = t.trim() ? t.trim().split(/\s+/).length : 0;
+  const ren = t.split('\n').filter(l => l.trim()).length, n = REEL.frames.length;
+  el.textContent = pal ? pal + ' palabras · ~' + Math.round(vozSeg()) + ' s' + (REEL.audio ? ' · audio ' + REEL.audio.buf.duration.toFixed(1) + ' s' : '') + (n && ren !== n ? ' · ⚠ ' + ren + ' renglones para ' + n + ' placas' : '') : '';
+}
+function vozCopiar() { const t = document.getElementById('r-voz').value; if (!t) { toast('Primero armá el reel'); return; } (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => toast('Texto del audio copiado'), () => { document.getElementById('r-voz').select(); toast('Seleccionado: copialo con Ctrl+C'); }); }
+function segPoner(v) {
+  v = Math.max(2, Math.min(8, Math.round(v * 2) / 2)); REEL.seg = v;
+  const r = document.getElementById('r-seg'); r.value = v; document.getElementById('r-seg-v').textContent = v; reelInfo();
+}
+function vozAjustar() {
+  if (!REEL.frames.length) { toast('Primero armá el reel'); return; }
+  const dur = REEL.audio ? REEL.audio.buf.duration + .3 : vozSeg();
+  segPoner(dur / REEL.frames.length);
+  toast((REEL.audio ? 'Placas ajustadas al audio: ' : 'Placas ajustadas a la locución estimada: ') + REEL.seg + ' s cada una');
+}
+async function vozSubir(file) {
+  if (!file) return;
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const buf = await ctx.decodeAudioData(await file.arrayBuffer()); ctx.close && ctx.close();
+    REEL.audio = { buf, nombre: file.name };
+    document.getElementById('r-aud-est').style.display = 'flex';
+    document.getElementById('r-aud-nom').textContent = '🎧 ' + file.name + ' · ' + buf.duration.toFixed(1) + ' s';
+    if (REEL.frames.length) vozAjustar(); vozInfo();
+  } catch (e) { toast('No pude leer ese audio: probá con MP3 o WAV'); }
+}
+function vozQuitar() { REEL.audio = null; document.getElementById('r-aud-est').style.display = 'none'; vozInfo(); toast('Audio quitado'); }
+let _vozPlay = null;
+function vozSonar(on) {
+  try { if (_vozPlay) { _vozPlay.src.stop(); _vozPlay.ctx.close(); } } catch (e) {} _vozPlay = null;
+  if (!on || !REEL.audio) return;
+  const ctx = new (window.AudioContext || window.webkitAudioContext)(), src = ctx.createBufferSource();
+  src.buffer = REEL.audio.buf; src.connect(ctx.destination); src.start(); _vozPlay = { ctx, src };
+}
+async function vozIA() {
+  if (!REEL.frames.length) { toast('Primero armá el reel'); return; }
+  const b = document.getElementById('r-voz-ia'); b.disabled = true; b.textContent = '✨ Escribiendo…';
+  const placas = REEL.frames.map((f, i) => `${i + 1}. [${TIPOS_R[f.tipo]}] ${[f.kicker, f.titulo, f.texto].filter(Boolean).join(' — ')}`).join('\n');
+  const pedido = `Sos Daro Castello, chef privado de Celestia (chefprivado.ar) en Buenos Aires. Escribí el texto de la voz en off de un reel de Instagram de ${REEL.frames.length} placas, para generarlo con un generador de voz.
+Tema: ${REEL.nota ? REEL.nota.titulo + ' (' + REEL.nota.cat + '). ' + REEL.nota.bajada : (REEL.preset ? REEL.preset.nombre : 'detrás de escena de una cena con chef privado en casa')}
+Placas:
+${placas}
+
+Reglas: exactamente ${REEL.frames.length} renglones, uno por placa y en el mismo orden. Cada renglón se dice en ${REEL.seg} a ${REEL.seg + 1.5} segundos (entre 7 y 14 palabras). Español rioplatense con voseo, primera persona, tono cálido, natural y de chef que sabe, como si se lo contaras a un amigo. El primer renglón engancha en los primeros 2 segundos. Escribí los números y las direcciones como se dicen ("chefprivado punto ar", "tres pasos"). No digas que sos arquitecto. Nada de hashtags, emojis ni números de renglón. Devolvé solo los renglones.`;
+  try {
+    const r = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: 'claude-sonnet-5-5', max_tokens: 700, messages: [{ role: 'user', content: pedido }] }) });
+    const d = await r.json(); const t = d && d.content && d.content.map(c => c.text || '').join('').trim();
+    if (!t) throw new Error((d && d.error && (d.error.message || d.error)) || 'sin respuesta');
+    document.getElementById('r-voz').value = t.split('\n').map(l => l.replace(/^\s*\d+[.)-]\s*/, '').trim()).filter(Boolean).join('\n'); vozInfo(); toast('Texto del audio escrito con IA');
+  } catch (e) { toast('No se pudo usar la IA: ' + String(e.message || e).slice(0, 80)); }
+  b.disabled = false; b.textContent = '✨ Reescribir con IA';
+}
+/* codifica el audio subido en AAC para el MP4 (WebCodecs) */
+async function vozAAC(muxer, total) {
+  const buf = REEL.audio.buf, sr = buf.sampleRate, ch = Math.min(2, buf.numberOfChannels);
+  const enc = new AudioEncoder({ output: (c, m) => muxer.addAudioChunk(c, m), error: e => { throw e; } });
+  enc.configure({ codec: 'mp4a.40.2', sampleRate: sr, numberOfChannels: ch, bitrate: 128000 });
+  const fin = Math.min(buf.length, Math.floor(total * sr)), paso = 1024 * 8;
+  const canales = [...Array(ch)].map((_, c) => buf.getChannelData(c));
+  for (let i = 0; i < fin; i += paso) {
+    const nf = Math.min(paso, fin - i), data = new Float32Array(nf * ch);
+    for (let c = 0; c < ch; c++) data.set(canales[c].subarray(i, i + nf), c * nf);
+    const ad = new AudioData({ format: 'f32-planar', sampleRate: sr, numberOfFrames: nf, numberOfChannels: ch, timestamp: Math.round(i / sr * 1e6), data });
+    enc.encode(ad); ad.close();
+    if (enc.encodeQueueSize > 8) await new Promise(r => setTimeout(r, 5));
+  }
+  await enc.flush(); enc.close();
+}
+async function vozAACsoportado() {
+  if (!REEL.audio || !window.AudioEncoder || !window.AudioData) return false;
+  try { const r = await AudioEncoder.isConfigSupported({ codec: 'mp4a.40.2', sampleRate: REEL.audio.buf.sampleRate, numberOfChannels: Math.min(2, REEL.audio.buf.numberOfChannels), bitrate: 128000 }); return !!(r && r.supported); } catch (e) { return false; }
+}
+
 /* ───────── video cuadro por cuadro (WebCodecs + MP4) ─────────
    No graba en tiempo real: dibuja cada cuadro y lo codifica en H.264.
    Así el video sale completo aunque el celular esté lento o la pantalla se apague. */
@@ -1122,12 +1294,15 @@ async function reelGrabar() {
   if (REEL.playing) reelPlay();
   const codec = await reelCodec();
   if (!codec) return reelGrabarMR();
+  const conAudio = await vozAACsoportado();
+  if (REEL.audio && !conAudio) return reelGrabarMR(); // el navegador no codifica AAC: se graba en vivo con el audio
   const badge = document.getElementById('r-rec'); badge.style.display = 'block'; badge.textContent = 'Generando 0%';
   let R; try { R = await reelImgs(); } catch (e) { toast('No se pudieron cargar las fotos'); badge.style.display = 'none'; return; }
   const fps = 30, total = REEL.frames.length * REEL.seg + .4, n = Math.round(total * fps);
   const cv = Object.assign(document.createElement('canvas'), { width: W, height: H }); const x = cv.getContext('2d');
   const vis = document.getElementById('r-cv').getContext('2d');
-  const muxer = new Mp4Muxer.Muxer({ target: new Mp4Muxer.ArrayBufferTarget(), video: { codec: 'avc', width: W, height: H, frameRate: fps }, fastStart: 'in-memory' });
+  const muxer = new Mp4Muxer.Muxer(Object.assign({ target: new Mp4Muxer.ArrayBufferTarget(), video: { codec: 'avc', width: W, height: H, frameRate: fps }, fastStart: 'in-memory' },
+    conAudio ? { audio: { codec: 'aac', sampleRate: REEL.audio.buf.sampleRate, numberOfChannels: Math.min(2, REEL.audio.buf.numberOfChannels) }, firstTimestampBehavior: 'offset' } : {}));
   let falla = null;
   const enc = new VideoEncoder({ output: (chunk, meta) => muxer.addVideoChunk(chunk, meta), error: e => { falla = e; } });
   enc.configure({ codec, width: W, height: H, bitrate: 8e6, framerate: fps, avc: { format: 'avc' } });
@@ -1144,7 +1319,9 @@ async function reelGrabar() {
       }
     }
     if (falla) throw falla;
-    await enc.flush(); muxer.finalize();
+    await enc.flush();
+    if (conAudio) { badge.textContent = 'Sumando el audio…'; await vozAAC(muxer, total); }
+    muxer.finalize();
   } catch (e) {
     REEL.playing = false; badge.style.display = 'none'; try { enc.close(); } catch (_) {}
     toast('Falló la codificación, pruebo grabando en vivo…'); return reelGrabarMR();
