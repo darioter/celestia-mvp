@@ -230,7 +230,7 @@ input[type=range]{width:100%;accent-color:var(--gold)}
           </div>
           <div class="r-cap">
             <div class="r-cap-h"><b>🎙️ Texto para el audio</b><span id="r-voz-n"></span></div>
-            <textarea class="inp" id="r-voz" placeholder="Se genera solo cuando armás el reel. Cada renglón va con una placa." oninput="vozInfo()" style="min-height:150px"></textarea>
+            <textarea class="inp" id="r-voz" placeholder="Se genera solo cuando armás el reel. Cada renglón va con una placa; lo que está entre corchetes es la expresión para ElevenLabs." oninput="vozInfo()" style="min-height:150px"></textarea>
             <div class="r-ctrl" style="margin:6px 0 0">
               <button class="btn sm" onclick="vozCopiar()">Copiar texto</button>
               <button class="btn sec sm" id="r-voz-ia" onclick="vozIA()">✨ Reescribir con IA</button>
@@ -776,13 +776,13 @@ const PRESENTACION = [
       ['foto', 'Para cada ocasión', 'Aniversarios, cumpleaños y cenas con amigos', '', 'Una mesa con gente disfrutando'],
       ['foto', '¿No querés que vaya?', 'Te llevo la cena lista en una caja', 'Cajas Celestia para tus fiestas', 'Una caja o una fuente lista para servir'],
       ['cierre', 'Reservá tu fecha sin costo', 'chefprivado.ar', 'Seguime para recetas de chef con lo que tenés en casa', '']],
-    voz: ['Soy Daro. Dirijo una empresa de arquitectura… y cocino con alma de chef.',
-      'Hace más de diez años que cocino. Me formé en la escuela de cocina EAG.',
-      'Y diseño cada menú como diseño un espacio: pensando en quien lo va a vivir.',
-      'Voy a tu casa con todo. Cocino, sirvo… y vos solo ponés la mesa.',
-      'Aniversarios, cumpleaños, una cena con amigos.',
-      'Y si no querés que vaya, te llevo la cena lista en una caja.',
-      'Reservá tu fecha sin costo en chefprivado punto ar. Y seguime, que se viene más.'] },
+    voz: ['Soy Daro. [short pause] Dirijo una empresa de arquitectura… [playfully] y cocino con alma de chef.',
+      '[warmly] Hace más de diez años que cocino. Me formé en la escuela de cocina EAG.',
+      '[thoughtfully] Y diseño cada menú como diseño un espacio: pensando en quien lo va a vivir.',
+      '[confidently] Voy a tu casa con todo. Cocino, sirvo… [cheerfully] y vos solo ponés la mesa.',
+      '[warmly] Aniversarios, cumpleaños, una cena con amigos.',
+      '[playfully] Y si no querés que vaya, te llevo la cena lista en una caja.',
+      '[energetic] Reservá tu fecha sin costo en chefprivado punto ar. [warmly] Y seguime, que se viene más.'] },
   { id: 'cena', icono: '🍽️', nombre: 'Así es una cena en tu casa', sub: '7 placas · cómo funciona, paso a paso', gancho: '¿Cómo es tener un chef privado en tu casa? Te lo muestro en 30 segundos 🍽️',
     cuerpo: ['1️⃣ Diseñamos el menú juntos\n2️⃣ Llego con todo, producto fresco del día\n3️⃣ Cocino en tu cocina\n4️⃣ Sirvo cada paso en la mesa\n5️⃣ Me voy y la cocina queda limpia'],
     frames: [
@@ -793,13 +793,13 @@ const PRESENTACION = [
       ['foto', '4 · Sirvo', 'Paso a paso, en la mesa', 'Con servicio completo', 'Un plato llegando a la mesa'],
       ['foto', '5 · Me voy', 'Y la cocina queda limpia', 'Vos solo disfrutaste', 'Brindis o la cocina ordenada'],
       ['cierre', 'Reservá tu fecha sin costo', 'chefprivado.ar', 'Menús de 3 y 7 pasos · CABA y GBA', '']],
-    voz: ['¿Cómo es tener un chef privado en tu casa? Te lo muestro.',
-      'Primero diseñamos el menú juntos, por WhatsApp, a tu gusto.',
-      'El día de la cena llego con todo: producto fresco y la mise en place lista.',
-      'Termino cada plato en tu cocina, en el momento.',
-      'Y lo sirvo en la mesa, paso a paso, como en un restaurante.',
-      'Me voy y la cocina queda limpia. Vos solo disfrutaste.',
-      'Menús de tres y siete pasos, en CABA y GBA. Reservá en chefprivado punto ar.'] },
+    voz: ['[curious] ¿Cómo es tener un chef privado en tu casa? [warmly] Te lo muestro.',
+      '[cheerfully] Primero diseñamos el menú juntos, por WhatsApp, a tu gusto.',
+      '[excited] El día de la cena llego con todo: producto fresco y la mise en place lista.',
+      '[confidently] Termino cada plato en tu cocina, en el momento.',
+      '[warmly] Y lo sirvo en la mesa, paso a paso, como en un restaurante.',
+      '[playfully] Me voy y la cocina queda limpia. [softly] Vos solo disfrutaste.',
+      '[energetic] Menús de tres y siete pasos, en CABA y GBA. Reservá en chefprivado punto ar.'] },
   { id: 'navidad', icono: '🎄', nombre: 'Navidad sin cocinar', sub: '5 placas · Cajas Celestia', gancho: 'Esta Navidad no cocines vos 🎄',
     cuerpo: ['Cajas Celestia: la cena completa de chef llega a tu casa el 24, fría y lista para regenerar, con la guía de cada plato.', 'Pedidos hasta el 21/12 o hasta completar cupos. Envío a CABA y GBA.'],
     frames: [
@@ -808,11 +808,11 @@ const PRESENTACION = [
       ['foto', 'Llega el 24', 'Fría y lista para regenerar', 'Con la guía de cada plato', 'La caja abierta con los envases'],
       ['foto', 'Sumá del mercadito', 'Vitel toné, pan dulce, langostinos…', '', 'Detalle de algún producto'],
       ['cierre', 'Pedidos hasta el 21/12', 'chefprivado.ar/cajas', 'Cupos limitados · envío a CABA y GBA', '']],
-    voz: ['Esta Navidad… no cocines vos.',
-      'Te llevo una cena completa de chef: entrada, principal, guarnición y postre.',
-      'Llega el veinticuatro, fría y lista para regenerar, con la guía de cada plato.',
-      'Y del mercadito sumás vitel toné, pan dulce, langostinos…',
-      'Pedidos hasta el veintiuno de diciembre, o hasta llenar los cupos. Entrá a chefprivado punto ar barra cajas.'] },
+    voz: ['Esta Navidad… [short pause] no cocines vos.',
+      '[excited] Te llevo una cena completa de chef: entrada, principal, guarnición y postre.',
+      '[short pause] Llega el veinticuatro, fría y lista para regenerar, con la guía de cada plato.',
+      '[warmly] Y del mercadito sumás vitel toné, pan dulce, langostinos…',
+      '[energetic] Pedidos hasta el veintiuno de diciembre, o hasta llenar los cupos. Entrá a chefprivado punto ar barra cajas.'] },
   { id: 'equipo', icono: '🥂', nombre: 'Fin de año con tu equipo', sub: '6 placas · empresas y despedidas', gancho: 'La cena de fin de año de tu equipo, con chef y sin salir de la oficina 🥂',
     cuerpo: ['Llevo la cocina a tu oficina o a una casa: menú de pasos, servicio completo y vos sin organizar nada.', 'Para grupos de más de 12 armamos una propuesta a medida, arrancando con una charla corta.'],
     frames: [
@@ -822,12 +822,12 @@ const PRESENTACION = [
       ['foto', 'Cómo', 'Servicio completo en la mesa', 'Ustedes solo brindan', 'Gente brindando o un plato llegando'],
       ['foto', 'Grupos grandes', 'Más de 12: propuesta a medida', 'Primero una charla corta', 'Una mesa con mucha gente'],
       ['cierre', 'Las fechas de diciembre vuelan', 'chefprivado.ar', 'Escribime y armamos la propuesta', '']],
-    voz: ['La cena de fin de año de tu equipo… con chef, y sin salir de la oficina.',
-      'Voy a la oficina o a una casa, y llevo todo lo necesario.',
-      'Armo un menú de pasos pensado para el grupo, con opciones para cada restricción.',
-      'Sirvo cada paso en la mesa. Ustedes solo brindan.',
-      'Si son más de doce, armamos una propuesta a medida, arrancando con una charla corta.',
-      'Las fechas de diciembre vuelan. Escribime desde chefprivado punto ar.'] },
+    voz: ['La cena de fin de año de tu equipo… [excited] con chef, y sin salir de la oficina.',
+      '[confidently] Voy a la oficina o a una casa, y llevo todo lo necesario.',
+      '[thoughtfully] Armo un menú de pasos pensado para el grupo, con opciones para cada restricción.',
+      '[cheerfully] Sirvo cada paso en la mesa. [playfully] Ustedes solo brindan.',
+      '[warmly] Si son más de doce, armamos una propuesta a medida, arrancando con una charla corta.',
+      '[seriously] Las fechas de diciembre vuelan. [energetic] Escribime desde chefprivado punto ar.'] },
   { id: 'verano', icono: '☀️', nombre: 'Chef en tus vacaciones', sub: '6 placas · costa, sierras y Patagonia', gancho: '¿Te vas de vacaciones? Llevate al chef ☀️',
     cuerpo: ['En enero y febrero cocino en tu casa de veraneo: en la costa, las sierras o la Patagonia.', 'Una noche especial o una semana entera. En el calendario de la web ves los días libres y el estimado.'],
     frames: [
@@ -837,12 +837,12 @@ const PRESENTACION = [
       ['foto', 'O toda la semana', 'Chef dedicado toda la semana', 'Cocino todos los días, con un día libre por semana', 'Vos cocinando o un desayuno'],
       ['foto', 'Fechas', 'Enero y febrero', 'Sujeto a disponibilidad', 'El calendario o una mesa de verano'],
       ['cierre', 'Mirá los días libres', 'chefprivado.ar/chef-privado-en-vacaciones', 'Calendario y estimado al instante', '']],
-    voz: ['¿Te vas de vacaciones? Llevate al chef.',
-      'En la costa, las sierras o la Patagonia, cocino en tu casa de veraneo.',
-      'Puede ser una noche especial, como la que hacemos en Buenos Aires.',
-      'O toda la semana: cocino todos los días, con un día de descanso.',
-      'Enero y febrero, sujeto a disponibilidad.',
-      'En chefprivado punto ar ves los días libres y el estimado al instante.'] }
+    voz: ['[curious] ¿Te vas de vacaciones? [excited] Llevate al chef.',
+      '[warmly] En la costa, las sierras o la Patagonia, cocino en tu casa de veraneo.',
+      '[cheerfully] Puede ser una noche especial, como la que hacemos en Buenos Aires.',
+      '[confidently] O toda la semana: cocino todos los días, con un día de descanso.',
+      '[thoughtfully] Enero y febrero, sujeto a disponibilidad.',
+      '[energetic] En chefprivado punto ar ves los días libres y el estimado al instante.'] }
 ];
 function reelPresentacion(id) {
   const p = PRESENTACION.find(x => x.id === id); if (!p) return;
@@ -1198,16 +1198,23 @@ function vozGenerar() {
   if (!REEL.frames.length) { ta.value = ''; vozInfo(); return; }
   const pr = !REEL.nota && REEL.preset, nv = REEL.nota && REEL.nota.voz;
   const fija = pr && pr.voz && pr.voz.length === REEL.frames.length ? pr.voz : (nv && nv.length === REEL.frames.length ? nv : null);
-  ta.value = (fija || REEL.frames.map((f, k) => vozLinea(f, k, REEL.frames.length))).join('\n');
+  const n = REEL.frames.length, PAL = ['[excited]', '[confidently]', '[thoughtfully]', '[playfully]', '[warmly]', '[cheerfully]'];
+  const auto = () => REEL.frames.map((f, k) => {
+    const l = vozLinea(f, k, n);
+    const tag = k === 0 ? (l.includes('?') ? '[curious] ' : '') : f.tipo === 'cierre' ? '[energetic] ' : /tip/i.test(f.kicker || '') ? '[whispers] ' : k === 1 ? '[warmly] ' : PAL[(k - 2) % PAL.length] + ' ';
+    return tag + l;
+  });
+  ta.value = (fija || auto()).join('\n');
   vozInfo();
 }
+const sinTags = t => String(t || '').replace(/\[[^\]]*\]/g, ' ').replace(/\s+/g, ' ').trim();
 function vozSeg() { // segundos estimados de locución (≈ 2,6 palabras por segundo + respiro entre renglones)
   const L = document.getElementById('r-voz').value.split('\n').filter(l => l.trim());
-  return L.reduce((a, l) => a + l.trim().split(/\s+/).length / 2.6 + .35, 0);
+  return L.reduce((a, l) => { const t = sinTags(l); return a + (t ? t.split(/\s+/).length / 2.6 + .35 : 0) + (/\[(short|long) pause\]/.test(l) ? .4 : 0); }, 0);
 }
 function vozInfo() {
   const el = document.getElementById('r-voz-n'); if (!el) return;
-  const t = document.getElementById('r-voz').value, pal = t.trim() ? t.trim().split(/\s+/).length : 0;
+  const t = document.getElementById('r-voz').value, st = sinTags(t), pal = st ? st.split(/\s+/).length : 0;
   const ren = t.split('\n').filter(l => l.trim()).length, n = REEL.frames.length;
   el.textContent = pal ? pal + ' palabras · ~' + Math.round(vozSeg()) + ' s' + (REEL.audio ? ' · audio ' + REEL.audio.buf.duration.toFixed(1) + ' s' : '') + (n && ren !== n ? ' · ⚠ ' + ren + ' renglones para ' + n + ' placas' : '') : '';
 }
@@ -1250,7 +1257,7 @@ Tema: ${REEL.nota ? REEL.nota.titulo + ' (' + REEL.nota.cat + '). ' + REEL.nota.
 Placas:
 ${placas}
 
-Reglas: exactamente ${REEL.frames.length} renglones, uno por placa y en el mismo orden. Cada renglón se dice en ${REEL.seg} a ${REEL.seg + 1.5} segundos (entre 7 y 14 palabras). Español rioplatense con voseo, primera persona, tono cálido, natural y de chef que sabe, como si se lo contaras a un amigo. El primer renglón engancha en los primeros 2 segundos. Escribí los números y las direcciones como se dicen ("chefprivado punto ar", "tres pasos"). No digas que sos arquitecto. Nada de hashtags, emojis ni números de renglón. Devolvé solo los renglones.`;
+Reglas: exactamente ${REEL.frames.length} renglones, uno por placa y en el mismo orden. Cada renglón se dice en ${REEL.seg} a ${REEL.seg + 1.5} segundos (entre 7 y 14 palabras). Español rioplatense con voseo, primera persona, tono cálido, natural y de chef que sabe, como si se lo contaras a un amigo. El primer renglón engancha en los primeros 2 segundos. Escribí los números y las direcciones como se dicen ("chefprivado punto ar", "tres pasos"). No digas que sos arquitecto. Es para ElevenLabs v3: empezá cada renglón (salvo, si querés, el primero) con una etiqueta de tono entre corchetes, como [warmly], [excited], [confidently], [thoughtfully], [playfully], [curious], [cheerfully], [seriously], [whispers] para el tip de chef, [energetic] para el cierre, y [short pause] donde haga falta respirar. Impronta: chef cálido y seguro que cuenta secretos de cocina como a un amigo; variá las etiquetas, sin repetir la misma dos veces seguidas. Nada de hashtags, emojis ni números de renglón. Devolvé solo los renglones.`;
   try {
     const r = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: 'claude-sonnet-5-5', max_tokens: 700, messages: [{ role: 'user', content: pedido }] }) });
     const d = await r.json(); const t = d && d.content && d.content.map(c => c.text || '').join('').trim();

@@ -598,3 +598,54 @@ VOZ = {
  'Tip: infusioná la leche con laurel y ajo.',
  C_RECETA],
 }
+
+
+# ── Expresiones para ElevenLabs (v3): una etiqueta entre corchetes antes de cada renglón ──
+# Impronta: chef cálido y seguro, que cuenta secretos de cocina como a un amigo.
+PALETA = {
+    'receta': ['[excited]', '[confidently]', '[thoughtfully]', '[playfully]', '[warmly]', '[cheerfully]'],
+    'negocio': ['[confidently]', '[thoughtfully]', '[seriously]', '[warmly]', '[curious]', '[confidently]'],
+    'saber': ['[curious]', '[confidently]', '[playfully]', '[thoughtfully]', '[warmly]', '[cheerfully]'],
+    'servicio': ['[warmly]', '[excited]', '[confidently]', '[cheerfully]', '[thoughtfully]', '[warmly]'],
+}
+TIPO_CAT = {
+    'La trastienda': 'negocio', 'Chef privado': 'servicio', 'Comer bien': 'saber', 'Cocina segura': 'saber',
+    'Copa y maridaje': 'saber', 'El arte de la mesa': 'saber', 'Sushi': 'saber',
+}
+import re as _re
+def _etiqueta(t, i, n, paleta, prev, hay_tip):
+    low = t.lower()
+    if i == 0:
+        return '[curious]' if '?' in t else ''
+    if i == 1:
+        return '[warmly]'
+    if i == n - 1:
+        return '[energetic]' if _re.search(r'reserv|escrib|mirá|calculá|contame|fechas', low) else '[cheerfully]'
+    if hay_tip and i == n - 2:
+        return '[whispers]'
+    num = _re.match(r'^(dos|tres|cuatro|cinco|seis|segundo|tercero|cuarto|quinto|sexto)\b', low) is not None
+    pre = '[short pause] ' if num else ''
+    if low.startswith('mito'):
+        return '[playfully]'
+    if low.startswith('verdad'):
+        return '[confidently]'
+    if '?' in t:
+        return '[curious]'
+    if _re.search(r'\b(error|nunca|ojo|cuidado|peligro|saltean|salteés|no sirve|engaña)\b', low):
+        return pre + '[seriously]'
+    tag = paleta[(i - 2) % len(paleta)]
+    if tag == prev:
+        tag = paleta[(i - 1) % len(paleta)]
+    return pre + tag
+
+def expresar(lineas, cat=''):
+    paleta = PALETA[TIPO_CAT.get(cat, 'receta')]
+    n = len(lineas); hay_tip = n > 2 and _re.match(r'^(tip|un tip)', lineas[-2].lower()) is not None
+    out, prev = [], ''
+    for i, t in enumerate(lineas):
+        if hay_tip and i == n - 2:
+            t = _re.sub(r'^(un\s+)?tip( de chef)?\s*:\s*', 'Un secreto de chef: ', t, flags=_re.I)
+        tag = _etiqueta(t, i, n, paleta, prev, hay_tip)
+        prev = tag.split()[-1] if tag else ''
+        out.append((tag + ' ' + t).strip())
+    return out
