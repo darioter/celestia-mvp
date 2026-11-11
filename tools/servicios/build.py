@@ -178,14 +178,14 @@ VCAL_TPL = r'''<section class="sv-sec vc" id="calendario"><span class="cp-k">✦
 var SU='https://qolpnuscpmzqeacshfvu.supabase.co',SK='__ANON__',WA='5491160410607',P=__PRECIOS__;
 var EN=function(){return document.documentElement.classList.contains('lang-en');};
 var $=function(n){return '$'+Math.round(n).toLocaleString('es-AR');};
-var T={es:{dest:'Destino',pp:'Personas',mod:'Qué buscan',go:'Consultar por WhatsApp',n:'Reservar no tiene costo. Te confirmo disponibilidad, traslado y alojamiento antes de la seña.',D:['Costa Atlántica','Sierras','Otro destino'],otro:'¿Dónde? (ciudad o barrio)',
+var T={es:{dest:'Destino',pp:'Personas',mod:'Qué buscan',go:'Consultar por WhatsApp',n:'Reservar no tiene costo. Te confirmo disponibilidad, traslado y alojamiento antes de la seña.',D:['Costa Atlántica','Sierras','Patagonia','Otro destino'],otro:'¿Dónde? (ciudad o barrio)',
   M:['Chef todos los días','Una noche especial','Un encuentro grande'],dn:['L','M','M','J','V','S','D'],lg:['Tu elección','Ocupado','Fin de semana','Una semana','Quincena'],tip:'Tocá el día de salida: hasta el <b>día 7</b> es una semana; hasta el <i>día 15</i>, una quincena.',
   pick1:'Tocá el día de llegada y el de salida',pick2:'Tocá el día de la cena',j:'jornada',js:'jornadas',d:'día',ds:'días',hs:'Chef dedicado: ~6–7 hs de cocina por jornada, con almuerzo y cena del día. 1 día de descanso por semana.',
   pj:'Jornal de chef',sub:'Subtotal',desc:'día de descanso',descs:'días de descanso',tot:'Estimado honorarios',rd:'Por día',rs:'Semana · 7 días (6 jornadas)',rq:'Quincena · 15 días (13 jornadas)',
   extra:'Más viáticos: traslado, alojamiento, compras e ingredientes al costo según el destino. Te paso el total antes de la seña.',n3:'Menú de 3 pasos',n7:'Degustación de 7 pasos',sem:'entre semana',fin:'fin de semana',
   noche:'Mismo valor que en Buenos Aires, todo incluido (servicio, asistentes e ingredientes), más los viáticos según el destino.',enc:'Fiesta, reunión de amigos o de equipo: armo una propuesta a medida según invitados y lugar.',amed:'A medida',warn:'Algunos días ya están tomados: lo vemos juntos.',
   mx:'Más de 12 personas: propuesta a medida.'},
- en:{dest:'Destination',pp:'Guests',mod:'What you need',go:'Ask on WhatsApp',n:'Booking is free. I confirm availability, travel and lodging before the deposit.',D:['Atlantic coast','Hills','Other destination'],otro:'Where? (town or area)',
+ en:{dest:'Destination',pp:'Guests',mod:'What you need',go:'Ask on WhatsApp',n:'Booking is free. I confirm availability, travel and lodging before the deposit.',D:['Atlantic coast','Hills','Patagonia','Other destination'],otro:'Where? (town or area)',
   M:['Chef every day','One special night','A bigger gathering'],dn:['M','T','W','T','F','S','S'],lg:['Your pick','Taken','Weekend','One week','Fortnight'],tip:'Tap your departure day: up to <b>day 7</b> is one week; up to <i>day 15</i>, a fortnight.',
   pick1:'Tap your arrival and departure days',pick2:'Tap the day of the dinner',j:'session',js:'sessions',d:'day',ds:'days',hs:'Dedicated chef: ~6–7 hours of cooking per session, with lunch and dinner of the day. 1 rest day per week.',
   pj:'Chef day rate',sub:'Subtotal',desc:'rest day',descs:'rest days',tot:'Estimated fee',rd:'Per day',rs:'Week · 7 days (6 sessions)',rq:'Fortnight · 15 days (13 sessions)',
@@ -261,8 +261,8 @@ document.addEventListener('click',function(e){
   if(e.target.closest&&e.target.closest('.vh-n')){hm=Math.min(MESES.length-1,hm+1);pintarHero();return;}
   var d=e.target.closest&&e.target.closest('.vc-d[data-k]');if(d){if(d.classList.contains('pa'))return;var k=d.getAttribute('data-k');
     if(sel.mod!==0){a=k;b=null;}else if(!a||b||k<a){a=k;b=null;}else if(k===a){b=null;}else{b=k;}pintar();return;}
-  var c=e.target.closest&&e.target.closest('.vc-ch button');if(c){var k2=c.parentNode.getAttribute('data-k'),v=c.getAttribute('data-v');sel[k2]=k2==='pp'?(v==='12+'?'12+':+v):+v;if(k2==='mod'&&sel.mod!==0&&b){b=null;}pintar();if(k2==='dest'&&sel.dest===2)document.getElementById('vc-otro').focus();return;}
-  if(e.target.closest&&e.target.closest('#vc-go')){var L=T[EN()?'en':'es'],r=rango(),cc=calc(),dest=sel.dest===2?(document.getElementById('vc-otro').value.trim()||L.D[2]):L.D[sel.dest];
+  var c=e.target.closest&&e.target.closest('.vc-ch button');if(c){var k2=c.parentNode.getAttribute('data-k'),v=c.getAttribute('data-v');sel[k2]=k2==='pp'?(v==='12+'?'12+':+v):+v;if(k2==='mod'&&sel.mod!==0&&b){b=null;}pintar();if(k2==='dest'&&sel.dest===3)document.getElementById('vc-otro').focus();return;}
+  if(e.target.closest&&e.target.closest('#vc-go')){var L=T[EN()?'en':'es'],r=rango(),cc=calc(),dest=sel.dest===3?(document.getElementById('vc-otro').value.trim()||L.D[3]):L.D[sel.dest];
     var cuando=a?(b?lab(a,{day:'numeric',month:'long'})+(EN()?' to ':' al ')+lab(b,{day:'numeric',month:'long'})+' ('+r.length+' '+L.ds+')':lab(a,{weekday:'long',day:'numeric',month:'long'})):(EN()?'to be defined':'a definir');
     var est=cc.tot?(EN()?'\n*Estimate:* ':'\n*Estimado:* ')+cc.n+' '+(cc.n===1?L.j:L.js)+(r.length>=7?' + '+Math.floor(r.length/7)+' '+(Math.floor(r.length/7)===1?L.desc:L.descs):'')+' · '+$(cc.tot)+(EN()?' + travel':' + viáticos'):'';
     var m=(EN()?'Hi Daro! I would like a private chef on my holiday.\n*What:* ':'Hola Daro! Quiero un chef privado en mis vacaciones.\n*Qué buscamos:* ')+L.M[sel.mod]+(EN()?'\n*Where:* ':'\n*Destino:* ')+dest+(EN()?'\n*When:* ':'\n*Fechas:* ')+cuando+(EN()?'\n*Guests:* ':'\n*Personas:* ')+sel.pp+est+(EN()?'\nCan you check availability, travel and lodging?':'\n¿Me confirmás disponibilidad, traslado y alojamiento?');
@@ -383,21 +383,21 @@ PAGES = [
        ('¿Trabajan fuera de CABA y GBA?','Do you work outside Buenos Aires?','Sí: cotizamos el traslado y lo confirmamos antes de la seña.','Yes: we quote travel and confirm it before the deposit.'),
        ('¿Qué formatos hacen?','What formats do you do?','Cena de pasos servida, estaciones o finger food: lo definimos según el espacio y la cantidad de invitados.','Plated courses, stations or finger food: we decide based on the space and guest count.')]),
 
- dict(slug='chef-privado-en-vacaciones', img='https://images.unsplash.com/photo-1681657687044-9bde75edb38e?w=1800&h=1000&fit=crop&q=72&auto=format', menu=None, og='cena-romantica', extra=lambda: VCAL(), hero_extra='<div class="vh-card" id="vh-card" data-no-tr><div class="vh-top"><div><span class="vh-k" id="vh-k"></span><b class="vh-mo" id="vh-mo"></b></div><div class="vh-nav"><button type="button" class="vh-p" aria-label="Anterior">&lsaquo;</button><button type="button" class="vh-n" aria-label="Siguiente">&rsaquo;</button></div></div><div class="vc-dn" id="vh-dn"></div><div class="vc-gr vh-gr" id="vh-gr"></div><div class="vh-ft"><div class="vh-sel" id="vh-sel"></div><a class="vh-go" id="vh-go" href="#calendario"></a></div><div class="vh-leg" id="vh-leg"></div></div>', zona=('Costa, sierras y quintas', 'Coast, hills and country houses'),
+ dict(slug='chef-privado-en-vacaciones', img='https://images.unsplash.com/photo-1586970905459-f96e0da4a2b3?w=1800&h=1000&fit=crop&q=72&auto=format', slides=[('https://images.unsplash.com/photo-1586970905459-f96e0da4a2b3?w=1800&h=1000&fit=crop&q=72&auto=format', 'Costa Atlántica', 'Atlantic coast'), ('https://images.unsplash.com/photo-1620825654267-b2d073e6fba2?w=1800&h=1000&fit=crop&q=72&auto=format', 'Sierras', 'The hills'), ('https://images.unsplash.com/photo-1575393476573-6cdacd2e8c88?w=1800&h=1000&fit=crop&q=72&auto=format', 'Lagos patagónicos', 'Patagonian lakes'), ('https://images.unsplash.com/photo-1585491665805-48272c97a0f6?w=1800&h=1000&fit=crop&q=72&auto=format', 'Montaña patagónica', 'Patagonian mountains')], menu=None, og='cena-romantica', extra=lambda: VCAL(), hero_extra='<div class="vh-card" id="vh-card" data-no-tr><div class="vh-top"><div><span class="vh-k" id="vh-k"></span><b class="vh-mo" id="vh-mo"></b></div><div class="vh-nav"><button type="button" class="vh-p" aria-label="Anterior">&lsaquo;</button><button type="button" class="vh-n" aria-label="Siguiente">&rsaquo;</button></div></div><div class="vc-dn" id="vh-dn"></div><div class="vc-gr vh-gr" id="vh-gr"></div><div class="vh-ft"><div class="vh-sel" id="vh-sel"></div><a class="vh-go" id="vh-go" href="#calendario"></a></div><div class="vh-leg" id="vh-leg"></div></div>', zona=('Costa, sierras y Patagonia', 'Coast, hills and Patagonia'),
   area=['Costa Atlántica', 'Sierras', 'Provincia de Buenos Aires', 'Argentina'],
   title='Chef privado en vacaciones: costa, sierras y casas de veraneo | Celestia', title_en='Private chef on holiday: coast, hills and summer houses | Celestia',
-  desc='Chef privado en tus vacaciones: Daro Castello cocina en la casa que alquilaste en la costa, las sierras o una quinta. Una noche especial o varios días de comida resuelta, con producto del lugar. Mismos valores que en Buenos Aires + traslado.',
-  k=('Chef privado en vacaciones · costa y sierras', 'Private chef on holiday · coast & hills'),
+  desc='Chef privado en tus vacaciones: Daro Castello cocina en la casa que alquilaste en la costa, las sierras, la Patagonia o una quinta. Una noche especial o varios días de comida resuelta, con producto del lugar. Mismos valores que en Buenos Aires + traslado.',
+  k=('Chef privado en vacaciones · costa, sierras y Patagonia', 'Private chef on holiday · coast, hills & Patagonia'),
   h1=('Un chef en tus vacaciones, <em>en la casa que alquilaste.</em>', 'A chef on your holiday, <em>at the house you rented.</em>'),
-  sub=('En la costa, en las sierras o en una quinta con amigos: una noche especial que se recuerda o varios días de comida resuelta, para que nadie tenga que pensar en el menú.',
-       'At the coast, in the hills or at a country house with friends: one special night to remember or several days of meals sorted, so nobody has to think about the menu.'),
+  sub=('En la costa, en las sierras, en la Patagonia o en una quinta con amigos: una noche especial que se recuerda o varios días de comida resuelta, para que nadie tenga que pensar en el menú.',
+       'At the coast, in the hills, in Patagonia or at a country house with friends: one special night to remember or several days of meals sorted, so nobody has to think about the menu.'),
   precio=(f(total(1,2)), 'para 2 · base Buenos Aires + traslado', 'for 2 · Buenos Aires base + travel'),
   cta=('#calendario', 'Ver fechas de verano →', 'See summer dates →'),
   wa='Hola Daro! Quiero un chef privado en mis vacaciones. Lugar: … Fechas: … Somos: …',
   inc=[('🌙','Una noche especial','One special night','Menú de 3 o 7 pasos para un cumpleaños, un aniversario o la última cena del viaje.','A 3 or 7-course menu for a birthday, an anniversary or the last dinner of the trip.'),
        ('🍲','Varios días resueltos','Several days sorted','Jornadas de cocina con las comidas listas para varios días, ideal para familias o grupos.','Cooking sessions with meals ready for several days, ideal for families or groups.'),
        ('🎉','Encuentros grandes','Bigger gatherings','Una fiesta, una reunión de amigos o de equipo, con propuesta a medida.','A party, a gathering of friends or a team get-together, tailor-made.'),
-       ('🐟','Producto del lugar','Local produce','Pescados y mariscos en la costa; cordero y cocina de montaña en las sierras.','Fish and seafood at the coast; lamb and mountain cooking in the hills.'),
+       ('🐟','Producto del lugar','Local produce','Pescados y mariscos en la costa; cocina de montaña en las sierras; cordero, trucha y frutos rojos en la Patagonia.','Fish and seafood at the coast; mountain cooking in the hills; lamb, trout and berries in Patagonia.'),
        ('📸','Cocina revisada antes','Kitchen checked beforehand','Con fotos de hornallas, horno, heladera y vajilla adapto el menú a lo que hay.','With photos of the burners, oven, fridge and tableware I adapt the menu to what there is.'),
        ('🚗','Traslado cotizado','Travel quoted upfront','Se suma según el destino y los días; te paso el total antes de la seña.','Added depending on the destination and days; you get the total before the deposit.')],
   pasos_h=('Cómo se organiza', 'How it works'),
@@ -407,12 +407,26 @@ PAGES = [
          ('Presupuesto y seña','Quote and deposit','Todo incluido más el traslado; con la seña queda la fecha.','All included plus travel; the deposit secures the date.')],
   precios_h=None, tabla=None, nota=None,
   ejemplo=('Ejemplo · Noche de mar en la costa', 'Sample · Seaside night', ['Langostinos con mayonesa de lima y palta', 'Pesca del día con manteca de limón y papas rotas', 'Pavlova de frutos rojos y crema de mascarpone']),
-  faq=[('¿A qué destinos vas?','Where do you travel?','A casas de veraneo en la costa atlántica, las sierras o quintas, y a otros destinos a consultar. Decime el lugar y te confirmo.','To summer houses at the Atlantic coast, in the hills or country houses, and other places on request. Tell me where and I will confirm.'),
+  faq=[('¿A qué destinos vas?','Where do you travel?','A casas de veraneo en la costa atlántica, las sierras, la Patagonia (Bariloche, San Martín de los Andes, Villa La Angostura y alrededores) o quintas, y a otros destinos a consultar. Decime el lugar y te confirmo.','To summer houses at the Atlantic coast, in the hills, in Patagonia (Bariloche, San Martín de los Andes, Villa La Angostura and nearby) or country houses, and other places on request. Tell me where and I will confirm.'),
        ('¿Cuánto cuesta?','How much is it?','Se toma el mismo valor que en Buenos Aires (una experiencia de 3 pasos arranca en ' + f(total(1,2)) + ' para dos, el chef semanal en ' + f(mpp('1-2','1')) + ' por jornada) y se suma el traslado según el destino y los días.','The same price as in Buenos Aires (a 3-course experience starts at ' + f(total(1,2)) + ' for two, the weekly chef at ' + f(mpp('1-2','1')) + ' per session) plus travel depending on the destination and days.'),
        ('¿Con cuánta anticipación reservo?','How far ahead should I book?','En temporada alta (diciembre, enero y fines de semana largos) las fechas se ocupan rápido: reservá apenas sepas dónde y cuándo vas a estar.','In high season (December, January and long weekends) dates fill up fast: book as soon as you know where and when.'),
        ('¿Qué tiene que tener la casa?','What does the house need?','Un horno que funcione bien, espacio en la heladera, vajilla para todos y una mesa (con plan B si llueve). Si falta algo, lo resolvemos antes.','A working oven, fridge space, tableware for everyone and a table (with a plan B if it rains). If something is missing, we sort it out beforehand.'),
        ('¿Pueden mandarme una caja a la costa?','Can you send me a box to the coast?','No: las cajas se entregan solo en CABA y GBA, porque no podemos garantizar la cadena de frío en un envío. En vacaciones, la opción es que cocine yo allá.','No: boxes are delivered only in Buenos Aires city and suburbs, since we cannot guarantee the cold chain in a shipment. On holiday, the option is for me to cook there.')]),
 ]
+
+def slides_html(P):
+    if not P.get('slides'): return ''
+    sl = ''.join(f'<div class="vh-s{" on" if i == 0 else ""}" style="background-image:url(\'{u}\')" data-l="{es}" data-le="{en}"></div>' for i, (u, es, en) in enumerate(P['slides']))
+    dots = ''.join(f'<button type="button" class="vh-dot{" on" if i == 0 else ""}" aria-label="{es}" data-i="{i}"></button>' for i, (u, es, en) in enumerate(P['slides']))
+    return (f'<div class="vh-slides" aria-hidden="true">{sl}</div><div class="vh-cap"><span class="vh-cap-t">📍 <b id="vh-cap">{P["slides"][0][1]}</b></span><span class="vh-dots">{dots}</span></div>'
+            '<style>.vh-slides{position:absolute;inset:0;z-index:0}.vh-s{position:absolute;inset:0;background:#1a2e42 center/cover no-repeat;opacity:0;transform:scale(1.06);transition:opacity 1.4s ease,transform 7s ease}.vh-s.on{opacity:1;transform:scale(1)}'
+            '.sv-hero::after{z-index:0}.vh-cap{position:absolute;z-index:2;left:max(24px,calc((100vw - 1100px)/2 + 24px));top:18px;display:flex;align-items:center;gap:12px;font:500 12px \'DM Sans\',sans-serif;color:rgba(250,246,239,.85)}'
+            '.vh-cap-t{background:rgba(13,27,42,.55);border:1px solid rgba(250,246,239,.18);padding:5px 11px;border-radius:999px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}.vh-dots{display:flex;gap:6px}'
+            '.vh-dot{width:8px;height:8px;border-radius:50%;border:0;padding:0;background:rgba(250,246,239,.4);cursor:pointer;transition:width .3s,background .3s}.vh-dot.on{width:22px;border-radius:5px;background:#E8C96B}'
+            '@media(max-width:700px){.vh-cap{top:auto;bottom:12px;left:24px}}</style>'
+            '<script>(function(){var S=[].slice.call(document.querySelectorAll(".vh-s")),D=[].slice.call(document.querySelectorAll(".vh-dot")),c=document.getElementById("vh-cap"),i=0,t;'
+            'function ir(n){S[i].classList.remove("on");D[i].classList.remove("on");i=(n+S.length)%S.length;S[i].classList.add("on");D[i].classList.add("on");c.textContent=document.documentElement.classList.contains("lang-en")?S[i].dataset.le:S[i].dataset.l;}'
+            'function auto(){clearInterval(t);t=setInterval(function(){ir(i+1);},5500);}D.forEach(function(d){d.addEventListener("click",function(){ir(+d.dataset.i);auto();});});auto();})();</script>')
 
 def pagina(P):
     url = f'{SITE}/{P["slug"]}'
@@ -429,7 +443,7 @@ def pagina(P):
                        nav_caps=bi('Blog', 'Blog'), nav_home=bi('Inicio', 'Home'), nav_book=bi('Reservar →', 'Book →'))
     wa = WA + quote(P['wa'])
     h = head
-    h += (f'<section class="sv-hero" style="background-image:url(\'{P["img"]}\')"><div class="sv-hero-in"><span class="cp-k">✦ {bi(*P["k"])}</span>'
+    h += (f'<section class="sv-hero" style="background-image:url(\'{P["img"]}\')">{slides_html(P)}<div class="sv-hero-in"><span class="cp-k">✦ {bi(*P["k"])}</span>'
           f'<h1>{bi(*P["h1"])}</h1><p class="sv-sub">{bi(*P["sub"])}</p>'
           f'<div class="sv-price"><b>{P["precio"][0]}</b><span>{bi(P["precio"][1], P["precio"][2])}</span></div>'
           f'<div class="sv-btns"><a class="cp-btn" href="{P["cta"][0]}" data-ev="cta_servicio">{bi(P["cta"][1], P["cta"][2])}</a><a class="sv-ghost" href="{wa}" target="_blank" rel="noopener">{bi("Consultar por WhatsApp", "Ask on WhatsApp")}</a></div>'
