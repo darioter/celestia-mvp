@@ -2063,10 +2063,14 @@ function Cal(root,opt){
   else{start=new Date(ref);end=new Date(ref);end.setDate(end.getDate()+13);var m1=start.getMonth(),m2=end.getMonth();titulo=m1===m2?(en()?MEN:MES)[m1]+' '+start.getFullYear():(en()?MCE:MC)[m1]+' – '+(en()?MCE:MC)[m2]+' '+end.getFullYear();}
   for(var d=new Date(start);d<=end;d.setDate(d.getDate()+1)){var k=iso(d),w=d.getDay(),pas=k<mk,ok=!pas&&libre(k),we=(w===0||w===5||w===6);
    var gi=(!pas&&window.celFechaInfo)?celFechaInfo(k):null,gp=!!(gi&&!ok&&(gi.estado==='prereserva'||gi.estado==='reservada'));
-   h+='<button type="button" class="cc-d g-cell'+(we?' we':'')+(k===hoy?' hoy':'')+(!pas&&!ok?' oc':'')+(gp?(gi.estado==='prereserva'?' g-pre':' g-res'):'')+(sel===k?' on':'')+'" style="--i:'+(i++)+'" data-k="'+k+'"'+(ok?'':(gp?' aria-disabled="true"':' disabled'))+' aria-label="'+lab(k)+' · '+(gi?celEtiqueta(gi):(en()?'not available':'no disponible'))+'">'+d.getDate()+(gi&&(gp||ok)?celGlobito(gi,true):'')+'</button>';}
+   h+='<button type="button" class="cc-d g-cell'+(we?' we':'')+(d.getMonth()<2?' ver':'')+(k===hoy?' hoy':'')+(!pas&&!ok?' oc':'')+(gp?(gi.estado==='prereserva'?' g-pre':' g-res'):'')+(sel===k?' on':'')+'" style="--i:'+(i++)+'" data-k="'+k+'"'+(ok?'':(gp?' aria-disabled="true"':' disabled'))+' aria-label="'+lab(k)+' · '+(gi?celEtiqueta(gi):(en()?'not available':'no disponible'))+'">'+d.getDate()+(gi&&(gp||ok)?celGlobito(gi,true):'')+'</button>';}
   var sig=h+'|'+mode;if(sig!==root._sig||anim){root._sig=sig;grid.classList.toggle('cc-still',!anim&&root._drawn);grid.innerHTML=h;root._drawn=true;}
   var mo=q('.cc-mo');if(mo.textContent!==titulo||anim)mo.innerHTML='<span>'+titulo+'</span>';
-  q('.cc-k').textContent=en()?'✦ Book your date':'✦ Reservá tu fecha';
+  var ver=mode==='mes'?ref.getMonth()<2:(start.getMonth()<2||end.getMonth()<2);
+  q('.cc-k').textContent=ver?(en()?'☀ Summer season':'☀ Temporada de verano'):(en()?'✦ Book your date':'✦ Reservá tu fecha');
+  var vb=q('.cc-ver');if(!vb){vb=document.createElement('div');vb.className='cc-ver';q('.cc-dn').parentNode.insertBefore(vb,q('.cc-dn'));}
+  vb.hidden=!ver;if(ver)vb.innerHTML=en()?'Buenos Aires prices stay the same, subject to availability. <a href="/chef-privado-en-vacaciones">On holiday? I cook at your summer house →</a>':'Tarifas de Buenos Aires sin cambios, sujeto a disponibilidad. <a href="/chef-privado-en-vacaciones">¿De vacaciones? Cocino en tu casa de veraneo →</a>';
+  root.classList.toggle('cc-verano',ver);
   q('.cc-dn').innerHTML=(en()?['M','T','W','T','F','S','S']:['L','M','M','J','V','S','D']).map(function(x){return '<span>'+x+'</span>';}).join('');
   var first=mode==='mes'?new Date(m.getFullYear(),m.getMonth(),1,12):(function(){var r=new Date(m);r.setDate(r.getDate()-((r.getDay()+6)%7));return r;})();
   q('.cc-p').disabled=ref<=first;var lim=new Date(m);lim.setMonth(lim.getMonth()+6);q('.cc-n').disabled=ref>=lim;
@@ -8387,6 +8391,12 @@ if(document.readyState==='complete')setTimeout(go,300);else window.addEventListe
 }
 </style>
 <style id="nav-grupos-css">
+.cc .cc-ver{margin:2px 0 10px;padding:8px 11px;border-radius:12px;background:linear-gradient(135deg,rgba(242,170,76,.18),rgba(110,180,214,.14));border:1px solid rgba(242,190,110,.35);font:500 11.5px/1.45 'DM Sans',sans-serif;color:rgba(250,246,239,.85)}
+.cc .cc-ver[hidden]{display:none}
+.cc .cc-ver a{display:block;color:#F2C46B;font-weight:600;text-decoration:none;margin-top:2px}
+.cc .cc-ver a:hover{text-decoration:underline}
+#beta-landing .cc .cc-d.ver:not(.oc):not(.on):not(.vac),.cc .cc-d.ver:not(.oc):not(.on):not(.vac){background-image:linear-gradient(160deg,rgba(242,170,76,.16),rgba(110,180,214,.10))}
+.cc.cc-verano .cc-k{color:#F2C46B}
 #beta-landing .bl-hero .bl-bp.bl-bp2{display:inline-block;margin-left:10px;text-decoration:none;background:rgba(13,27,42,.35)!important;color:#FAF6EF!important;border:1px solid rgba(250,246,239,.55)!important;box-shadow:none!important}
 #beta-landing .bl-hero .bl-bp.bl-bp2:hover{border-color:#E8C96B!important;color:#E8C96B!important}
 @media(max-width:600px){#beta-landing .bl-hero .bl-bp.bl-bp2{margin:10px 0 0 0}}

@@ -162,6 +162,17 @@ VCAL_TPL = r'''<section class="sv-sec vc" id="calendario"><span class="cp-k">✦
 #vc-otro{width:100%;margin-top:8px;border:1px solid rgba(250,246,239,.25);background:rgba(250,246,239,.06);color:#FAF6EF;border-radius:10px;padding:9px 11px;font:14px 'DM Sans',sans-serif;box-sizing:border-box}
 .vc-go{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:14px;border:0;border-radius:999px;background:#25D366;color:#fff;font:700 15px 'DM Sans',sans-serif;cursor:pointer;box-shadow:0 10px 24px rgba(37,211,102,.3)}
 .vc-n{font-size:11.5px;color:rgba(250,246,239,.5);margin:12px 0 0;text-align:center}
+.vh-card{position:absolute;z-index:2;right:max(24px,calc((100vw - 1100px)/2 + 24px));bottom:48px;width:330px;background:rgba(13,27,42,.88);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(201,168,76,.5);border-radius:20px;padding:16px;color:#FAF6EF;font-family:'DM Sans',sans-serif;box-shadow:0 24px 50px rgba(0,0,0,.35)}
+.vh-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.vh-k{display:block;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#F2C46B}
+.vh-mo{font:400 21px 'DM Serif Display',serif}
+.vh-nav{display:flex;gap:6px}.vh-nav button{width:30px;height:30px;border-radius:50%;border:1px solid rgba(250,246,239,.25);background:none;color:#FAF6EF;font-size:18px;line-height:1;cursor:pointer}.vh-nav button:disabled{opacity:.3;cursor:default}
+.vh-gr{gap:4px}.vh-gr .vc-d{aspect-ratio:1;border-radius:9px;font-size:12.5px}
+.vh-ft{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:12px}
+.vh-sel span{display:block;font-size:11px;color:rgba(250,246,239,.6)}.vh-sel b{font:400 15px 'DM Serif Display',serif}.vh-sel em{display:block;font-style:normal;font-size:11.5px;color:#E8C96B}
+.vh-go{flex:none;background:linear-gradient(135deg,#C9A84C,#E8C96B);color:#0D1B2A;font-weight:700;font-size:13px;padding:10px 14px;border-radius:999px;text-decoration:none;white-space:nowrap}
+.vh-leg{display:flex;gap:12px;margin-top:10px;font-size:11px;color:rgba(250,246,239,.6)}.vh-leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+@media(max-width:1000px){.sv-hero:has(.vh-card){flex-direction:column;align-items:stretch;justify-content:flex-end}.vh-card{position:relative;right:auto;bottom:auto;width:auto;max-width:420px;margin:-28px 24px 36px}}
 </style>
 <script>(function(){
 var SU='https://qolpnuscpmzqeacshfvu.supabase.co',SK='__ANON__',WA='5491160410607',P=__PRECIOS__;
@@ -188,6 +199,20 @@ var MESES=[[anio,0],[anio,1]],OC={},a=null,b=null,sel={mod:0,pp:4,dest:0};
 var iso=function(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
 var lab=function(k,o){return new Date(k+'T12:00:00').toLocaleDateString(EN()?'en-US':'es-AR',o||{weekday:'short',day:'numeric',month:'long'});};
 var esFin=function(k){var w=new Date(k+'T12:00:00').getDay();return w===5||w===6||w===0;};
+var hm=0;
+function pintarHero(){var c=document.getElementById('vh-card');if(!c)return;var L=t(),min=new Date(hoy);min.setDate(min.getDate()+2);var mk=iso(min),m=MESES[hm],d1=new Date(m[0],m[1],1,12),n=new Date(m[0],m[1]+1,0).getDate(),off=(d1.getDay()+6)%7,mt=d1.toLocaleDateString(EN()?'en-US':'es-AR',{month:'long',year:'numeric'}),h='';
+  for(var i=0;i<off;i++)h+='<button class="vc-d vc-e" tabindex="-1" aria-hidden="true"></button>';
+  for(var d=1;d<=n;d++){var k=iso(new Date(m[0],m[1],d,12)),cl='vc-d';if(k<mk)cl+=' pa';else if(OC[k])cl+=' oc';if(esFin(k))cl+=' fs';if(a&&b&&k>a&&k<b)cl+=' in';if(k===a||k===b)cl+=' on';
+    var st='';if(sel.mod===0&&a&&!b&&k>a){var dd=Math.round((new Date(k+'T12:00:00')-new Date(a+'T12:00:00'))/864e5)+1;if(dd<=7){cl+=' gw';st=' style="--g:'+(0.52-(dd-2)*0.04).toFixed(3)+'"';}else if(dd<=15){cl+=' gq';st=' style="--g:'+(0.42-(dd-8)*0.028).toFixed(3)+'"';}}
+    h+='<button type="button" class="'+cl+'"'+st+' data-k="'+k+'" aria-label="'+lab(k)+'">'+d+'</button>';}
+  document.getElementById('vh-gr').innerHTML=h;document.getElementById('vh-mo').textContent=mt.charAt(0).toUpperCase()+mt.slice(1);
+  document.getElementById('vh-k').textContent=EN()?'☀ Summer season':'☀ Temporada de verano';
+  document.getElementById('vh-dn').innerHTML=L.dn.map(function(x){return '<span>'+x+'</span>';}).join('');
+  c.querySelector('.vh-p').disabled=hm===0;c.querySelector('.vh-n').disabled=hm===MESES.length-1;
+  var r=rango(),nn=r.length,ds=Math.floor(nn/7),jn=nn-ds;
+  document.getElementById('vh-sel').innerHTML=a?('<span>'+(EN()?'Your stay':'Tu estadía')+'</span><b>'+(b?lab(a,{day:'numeric',month:'short'})+' → '+lab(b,{day:'numeric',month:'short'}):lab(a))+'</b>'+(sel.mod===0?'<em>'+nn+' '+(nn===1?L.d:L.ds)+' = '+jn+' '+(jn===1?L.j:L.js)+(ds?' + '+ds+' '+(ds===1?L.desc:L.descs):'')+'</em>':'')):'<span>'+(EN()?'Pick your days':'Elegí tus días')+'</span><b>'+(EN()?'Jan & Feb':'Enero y febrero')+'</b>';
+  document.getElementById('vh-go').textContent=a?(EN()?'See estimate →':'Ver estimado →'):(EN()?'More options →':'Más opciones →');
+  document.getElementById('vh-leg').innerHTML='<span><i style="background:linear-gradient(135deg,#C9A84C,#E8C96B)"></i>'+L.lg[0]+'</span><span><i style="outline:1px dashed rgba(250,246,239,.5)"></i>'+L.lg[1]+'</span><span><i style="background:rgba(201,168,76,.4)"></i>'+L.lg[3]+'</span>';}
 function rango(){if(!a)return [];var r=[],d=new Date(a+'T12:00:00'),e=new Date((b||a)+'T12:00:00');while(d<=e){r.push(iso(d));d.setDate(d.getDate()+1);}return r;}
 function pintar(){
   var L=t(),h='',min=new Date(hoy);min.setDate(min.getDate()+2);var mk=iso(min);
@@ -203,7 +228,7 @@ function pintar(){
         else if(dd<=15){c+=' gq';st=' style="--g:'+(0.42-(dd-8)*0.028).toFixed(3)+'"';if(dd===15)tg=' data-tag="'+(EN()?'15 d':'15 d')+'"';}}
       h+='<button type="button" class="'+c+'"'+st+tg+' data-k="'+k+'" aria-label="'+lab(k)+'">'+d+'</button>';}
     h+='</div></div>';});
-  document.getElementById('vc-meses').innerHTML=h;form();}
+  document.getElementById('vc-meses').innerHTML=h;form();pintarHero();}
 function calc(){var L=t(),r=rango(),n=r.length,pp=sel.pp==='12+'?null:+sel.pp,occ=r.some(function(k){return OC[k];});
   if(sel.mod===0){
     if(!a)return {html:'<div class="vr-h">'+L.pick1+'</div><div class="vr-n">'+L.hs+'</div>'+ref(pp),n:0};
@@ -232,6 +257,8 @@ function form(){var L=t();
   document.getElementById('vc-res').innerHTML=calc().html;document.getElementById('vc-go-t').textContent=L.go;document.getElementById('vc-n').textContent=L.n;}
 document.addEventListener('click',function(e){
   if(e.target.closest&&e.target.closest('[data-cel-lang]')){setTimeout(pintar,60);return;}
+  if(e.target.closest&&e.target.closest('.vh-p')){hm=Math.max(0,hm-1);pintarHero();return;}
+  if(e.target.closest&&e.target.closest('.vh-n')){hm=Math.min(MESES.length-1,hm+1);pintarHero();return;}
   var d=e.target.closest&&e.target.closest('.vc-d[data-k]');if(d){if(d.classList.contains('pa'))return;var k=d.getAttribute('data-k');
     if(sel.mod!==0){a=k;b=null;}else if(!a||b||k<a){a=k;b=null;}else if(k===a){b=null;}else{b=k;}pintar();return;}
   var c=e.target.closest&&e.target.closest('.vc-ch button');if(c){var k2=c.parentNode.getAttribute('data-k'),v=c.getAttribute('data-v');sel[k2]=k2==='pp'?(v==='12+'?'12+':+v):+v;if(k2==='mod'&&sel.mod!==0&&b){b=null;}pintar();if(k2==='dest'&&sel.dest===2)document.getElementById('vc-otro').focus();return;}
@@ -356,7 +383,7 @@ PAGES = [
        ('¿Trabajan fuera de CABA y GBA?','Do you work outside Buenos Aires?','Sí: cotizamos el traslado y lo confirmamos antes de la seña.','Yes: we quote travel and confirm it before the deposit.'),
        ('¿Qué formatos hacen?','What formats do you do?','Cena de pasos servida, estaciones o finger food: lo definimos según el espacio y la cantidad de invitados.','Plated courses, stations or finger food: we decide based on the space and guest count.')]),
 
- dict(slug='chef-privado-en-vacaciones', img='https://images.unsplash.com/photo-1681657687044-9bde75edb38e?w=1800&h=1000&fit=crop&q=72&auto=format', menu=None, og='cena-romantica', extra=lambda: VCAL(), zona=('Costa, sierras y quintas', 'Coast, hills and country houses'),
+ dict(slug='chef-privado-en-vacaciones', img='https://images.unsplash.com/photo-1681657687044-9bde75edb38e?w=1800&h=1000&fit=crop&q=72&auto=format', menu=None, og='cena-romantica', extra=lambda: VCAL(), hero_extra='<div class="vh-card" id="vh-card" data-no-tr><div class="vh-top"><div><span class="vh-k" id="vh-k"></span><b class="vh-mo" id="vh-mo"></b></div><div class="vh-nav"><button type="button" class="vh-p" aria-label="Anterior">&lsaquo;</button><button type="button" class="vh-n" aria-label="Siguiente">&rsaquo;</button></div></div><div class="vc-dn" id="vh-dn"></div><div class="vc-gr vh-gr" id="vh-gr"></div><div class="vh-ft"><div class="vh-sel" id="vh-sel"></div><a class="vh-go" id="vh-go" href="#calendario"></a></div><div class="vh-leg" id="vh-leg"></div></div>', zona=('Costa, sierras y quintas', 'Coast, hills and country houses'),
   area=['Costa Atlántica', 'Sierras', 'Provincia de Buenos Aires', 'Argentina'],
   title='Chef privado en vacaciones: costa, sierras y casas de veraneo | Celestia', title_en='Private chef on holiday: coast, hills and summer houses | Celestia',
   desc='Chef privado en tus vacaciones: Daro Castello cocina en la casa que alquilaste en la costa, las sierras o una quinta. Una noche especial o varios días de comida resuelta, con producto del lugar. Mismos valores que en Buenos Aires + traslado.',
@@ -406,7 +433,7 @@ def pagina(P):
           f'<h1>{bi(*P["h1"])}</h1><p class="sv-sub">{bi(*P["sub"])}</p>'
           f'<div class="sv-price"><b>{P["precio"][0]}</b><span>{bi(P["precio"][1], P["precio"][2])}</span></div>'
           f'<div class="sv-btns"><a class="cp-btn" href="{P["cta"][0]}" data-ev="cta_servicio">{bi(P["cta"][1], P["cta"][2])}</a><a class="sv-ghost" href="{wa}" target="_blank" rel="noopener">{bi("Consultar por WhatsApp", "Ask on WhatsApp")}</a></div>'
-          f'<div class="sv-trust"><span>★★★★★ <a href="{GOOGLE}" target="_blank" rel="noopener">5.0 · {bi("reseñas en Google", "Google reviews")}</a></span><span>✓ {bi("Cocina Daro Castello", "Cooked by Daro Castello")}</span><span>✓ {bi(*P.get("zona", ("CABA y GBA", "Buenos Aires area")))}</span></div></div></section>')
+          f'<div class="sv-trust"><span>★★★★★ <a href="{GOOGLE}" target="_blank" rel="noopener">5.0 · {bi("reseñas en Google", "Google reviews")}</a></span><span>✓ {bi("Cocina Daro Castello", "Cooked by Daro Castello")}</span><span>✓ {bi(*P.get("zona", ("CABA y GBA", "Buenos Aires area")))}</span></div></div>{P.get("hero_extra", "")}</section>')
     h += '<main class="sv-wrap">'
     h += ('<section class="sv-sec"><span class="cp-k">✦ ' + bi('Qué incluye', "What's included") + '</span><h2>' + bi('Todo resuelto, de principio a fin', 'Everything handled, start to finish') + '</h2><div class="sv-inc">' +
           ''.join(f'<div><i>{ic}</i><b>{bi(t, te)}</b><span>{bi(d, de)}</span></div>' for ic, t, te, d, de in P['inc']) + '</div></section>')
