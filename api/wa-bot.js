@@ -180,7 +180,7 @@ async function db(path, opts = {}) {
 
 /* ───────── WhatsApp ───────── */
 async function enviar1(to, texto) {
-  const r = await fetch(`https://graph.facebook.com/v21.0/${process.env.WA_PHONE_ID}/messages`, {
+  const r = await fetch(`https://graph.facebook.com/${process.env.WA_GRAPH_VER || 'v27.0'}/${process.env.WA_PHONE_ID}/messages`, {
     method: 'POST', headers: { Authorization: 'Bearer ' + process.env.WA_TOKEN, 'Content-Type': 'application/json' },
     body: JSON.stringify({ messaging_product: 'whatsapp', to, type: 'text', text: { body: texto, preview_url: true } })
   });
