@@ -275,6 +275,29 @@ export async function GET(req) {
   const u = new URL(req.url);
   if (u.searchParams.get('hub.mode') === 'subscribe' && u.searchParams.get('hub.verify_token') && u.searchParams.get('hub.verify_token') === process.env.WA_VERIFY_TOKEN)
     return new Response(u.searchParams.get('hub.challenge') || '', { status: 200 });
+  /* Solo admin: ¿la cuenta de WhatsApp (WABA) está suscripta a la app? &activar=1 la suscribe */
+  if (u.searchParams.get('suscripcion') === '1') {
+    if (!(await esAdmin(req))) return json({ error: 'Solo admin' }, 401);
+    const G = 'https://graph.facebook.com/' + (process.env.WA_GRAPH_VER || 'v27.0');
+    const tok = (process.env.WA_TOKEN || '').trim();
+    const H = { Authorization: 'Bearer ' + tok };
+    try {
+      const dbg = await (await fetch(G + '/debug_token?input_token=' + encodeURIComponent(tok), { headers: H })).json();
+      const d = dbg.data || {};
+      const wabas = [...new Set((d.granular_scopes || []).filter(x => /whatsapp/.test(x.scope)).flatMap(x => x.target_ids || []))];
+      const out = { tokenValido: !!d.is_valid, tipo: d.type, vence: d.expires_at ? new Date(d.expires_at * 1000).toISOString() : 'no vence', app: d.app_id, wabas: [] , error: dbg.error && dbg.error.message };
+      for (const w of wabas) {
+        if (u.searchParams.get('activar') === '1') {
+          const r = await (await fetch(G + '/' + w + '/subscribed_apps', { method: 'POST', headers: H })).json();
+          out.activado = r;
+        }
+        const sub = await (await fetch(G + '/' + w + '/subscribed_apps', { headers: H })).json();
+        const tels = await (await fetch(G + '/' + w + '/phone_numbers?fields=id,display_phone_number,verified_name', { headers: H })).json();
+        out.wabas.push({ id: w, apps: (sub.data || []).map(a => (a.whatsapp_business_api_data || a).name || (a.whatsapp_business_api_data || a).id), subError: sub.error && sub.error.message, telefonos: (tels.data || []).map(t => ({ id: t.id, numero: t.display_phone_number, nombre: t.verified_name, esElDelBot: t.id === process.env.WA_PHONE_ID })) });
+      }
+      return json(out);
+    } catch (e) { return json({ error: e.message }, 500); }
+  }
   if (u.searchParams.get('estado') === '1') {
     /* tipo de clave de Supabase (sin mostrarla) y si puede leer/escribir las charlas */
     let sbTipo = 'falta', sbLee = false, sbErr = '';
