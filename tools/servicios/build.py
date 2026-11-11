@@ -101,7 +101,7 @@ def VCAL():
     return VCAL_TPL.replace('__PRECIOS__', json.dumps(vcal_precios())).replace('__ANON__', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFvbHBudXNjcG16cWVhY3NoZnZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NjQ3OTQsImV4cCI6MjA5MTM0MDc5NH0.BJOz5Gwkeb1NqID_gkGKD5YlymifMtOwaf8iQMaBCx8')
 VCAL_TPL = r'''<section class="sv-sec vc" id="calendario"><span class="cp-k">✦ <span class="b-es">Temporada de verano</span><span class="b-en" lang="en">Summer season</span></span>
 <h2><span class="b-es">Elegí tus días de vacaciones</span><span class="b-en" lang="en">Pick your holiday dates</span></h2>
-<p class="vc-sub"><span class="b-es">Elegí qué buscan y tocá los días: te muestro al instante cuántas jornadas de cocina son y el estimado. Semana completa o quincena: 10% de descuento.</span><span class="b-en" lang="en">Choose what you need and tap the days: you will instantly see how many cooking sessions it takes and the estimate. Full week or fortnight: 10% off.</span></p>
+<p class="vc-sub"><span class="b-es">Elegí qué buscan y tocá los días: te muestro al instante cuántas jornadas de cocina son y el estimado. Con chef dedicado, cada semana lleva 1 día de descanso: 7 días son 6 jornadas y una quincena, 13.</span><span class="b-en" lang="en">Choose what you need and tap the days: you will instantly see how many cooking sessions it takes and the estimate. With a dedicated chef, each week includes 1 rest day: 7 days are 6 sessions and a fortnight, 13.</span></p>
 <div class="vcc" data-no-tr>
  <div class="vcc-top"><div class="vcc-g"><span id="vc-l-mod"></span><div class="vc-ch" data-k="mod"></div></div>
   <div class="vcc-g"><span id="vc-l-pp"></span><div class="vc-ch vc-pp" data-k="pp"></div></div></div>
@@ -155,22 +155,22 @@ VCAL_TPL = r'''<section class="sv-sec vc" id="calendario"><span class="cp-k">✦
 .vc-n{font-size:11.5px;color:rgba(250,246,239,.5);margin:12px 0 0;text-align:center}
 </style>
 <script>(function(){
-var SU='https://qolpnuscpmzqeacshfvu.supabase.co',SK='__ANON__',WA='5491160410607',P=__PRECIOS__,DESC=0.10;
+var SU='https://qolpnuscpmzqeacshfvu.supabase.co',SK='__ANON__',WA='5491160410607',P=__PRECIOS__;
 var EN=function(){return document.documentElement.classList.contains('lang-en');};
 var $=function(n){return '$'+Math.round(n).toLocaleString('es-AR');};
 var T={es:{dest:'Destino',pp:'Personas',mod:'Qué buscan',go:'Consultar por WhatsApp',n:'Reservar no tiene costo. Te confirmo disponibilidad, traslado y alojamiento antes de la seña.',D:['Costa Atlántica','Sierras','Otro destino'],otro:'¿Dónde? (ciudad o barrio)',
   M:['Chef todos los días','Una noche especial','Un encuentro grande'],dn:['L','M','M','J','V','S','D'],lg:['Tu elección','Ocupado','Fin de semana'],
-  pick1:'Tocá el día de llegada y el de salida',pick2:'Tocá el día de la cena',j:'jornada',js:'jornadas',d:'día',ds:'días',hs:'~6–7 hs de cocina por jornada: almuerzo y cena del día, y lo que quede listo para el siguiente.',
-  pj:'Por jornada',sub:'Subtotal',dto:'Semana completa · 10%',dtoq:'Quincena · 10%',tot:'Estimado honorarios',rd:'Por día',rs:'Por semana (7)',rq:'Por quincena (15)',
-  extra:'Ingredientes al costo, compras y traslado/alojamiento según el destino: te los paso antes de la seña.',n3:'Menú de 3 pasos',n7:'Degustación de 7 pasos',sem:'entre semana',fin:'fin de semana',
-  noche:'Una cena de restaurante en la casa, todo incluido (servicio, asistentes e ingredientes). Traslado según destino.',enc:'Fiesta, reunión de amigos o de equipo: armo una propuesta a medida según invitados y lugar.',amed:'A medida',warn:'Algunos días ya están tomados: lo vemos juntos.',
+  pick1:'Tocá el día de llegada y el de salida',pick2:'Tocá el día de la cena',j:'jornada',js:'jornadas',d:'día',ds:'días',hs:'Chef dedicado: ~6–7 hs de cocina por jornada, con almuerzo y cena del día. 1 día de descanso por semana.',
+  pj:'Jornal de chef',sub:'Subtotal',desc:'día de descanso',descs:'días de descanso',tot:'Estimado honorarios',rd:'Por día',rs:'Semana · 7 días (6 jornadas)',rq:'Quincena · 15 días (13 jornadas)',
+  extra:'Más viáticos: traslado, alojamiento, compras e ingredientes al costo según el destino. Te paso el total antes de la seña.',n3:'Menú de 3 pasos',n7:'Degustación de 7 pasos',sem:'entre semana',fin:'fin de semana',
+  noche:'Mismo valor que en Buenos Aires, todo incluido (servicio, asistentes e ingredientes), más los viáticos según el destino.',enc:'Fiesta, reunión de amigos o de equipo: armo una propuesta a medida según invitados y lugar.',amed:'A medida',warn:'Algunos días ya están tomados: lo vemos juntos.',
   mx:'Más de 12 personas: propuesta a medida.'},
  en:{dest:'Destination',pp:'Guests',mod:'What you need',go:'Ask on WhatsApp',n:'Booking is free. I confirm availability, travel and lodging before the deposit.',D:['Atlantic coast','Hills','Other destination'],otro:'Where? (town or area)',
   M:['Chef every day','One special night','A bigger gathering'],dn:['M','T','W','T','F','S','S'],lg:['Your pick','Taken','Weekend'],
-  pick1:'Tap your arrival and departure days',pick2:'Tap the day of the dinner',j:'session',js:'sessions',d:'day',ds:'days',hs:'~6–7 hours of cooking per session: lunch and dinner of the day, plus what is left ready for the next.',
-  pj:'Per session',sub:'Subtotal',dto:'Full week · 10%',dtoq:'Fortnight · 10%',tot:'Estimated fee',rd:'Per day',rs:'Per week (7)',rq:'Per fortnight (15)',
-  extra:'Ingredients at cost, shopping and travel/lodging depending on the destination: you get them before the deposit.',n3:'3-course menu',n7:'7-course tasting',sem:'weekday',fin:'weekend',
-  noche:'A restaurant dinner at the house, all included (service, assistants and ingredients). Travel depending on the destination.',enc:'A party or a gathering of friends or team: I prepare a tailor-made proposal for your guests and place.',amed:'Tailor-made',warn:'Some days are already taken: we will sort it out together.',
+  pick1:'Tap your arrival and departure days',pick2:'Tap the day of the dinner',j:'session',js:'sessions',d:'day',ds:'days',hs:'Dedicated chef: ~6–7 hours of cooking per session, with lunch and dinner of the day. 1 rest day per week.',
+  pj:'Chef day rate',sub:'Subtotal',desc:'rest day',descs:'rest days',tot:'Estimated fee',rd:'Per day',rs:'Week · 7 days (6 sessions)',rq:'Fortnight · 15 days (13 sessions)',
+  extra:'Plus travel costs: transport, lodging, shopping and ingredients at cost depending on the destination. You get the total before the deposit.',n3:'3-course menu',n7:'7-course tasting',sem:'weekday',fin:'weekend',
+  noche:'Same price as in Buenos Aires, all included (service, assistants and ingredients), plus travel costs depending on the destination.',enc:'A party or a gathering of friends or team: I prepare a tailor-made proposal for your guests and place.',amed:'Tailor-made',warn:'Some days are already taken: we will sort it out together.',
   mx:'More than 12 guests: tailor-made proposal.'}};
 var t=function(){return T[EN()?'en':'es'];};
 var hoy=new Date();hoy.setHours(12,0,0,0);
@@ -195,10 +195,10 @@ function calc(){var L=t(),r=rango(),n=r.length,pp=sel.pp==='12+'?null:+sel.pp,oc
   if(sel.mod===0){
     if(!a)return {html:'<div class="vr-h">'+L.pick1+'</div><div class="vr-n">'+L.hs+'</div>'+ref(pp),n:0};
     if(!pp)return {html:'<div class="vr-h">'+n+' '+(n===1?L.d:L.ds)+' · '+n+' '+(n===1?L.j:L.js)+'</div><div class="vr-s">'+L.mx+'</div>',n:n};
-    var pj=P[pp].j,sub=pj*n,dto=n>=7?Math.round(sub*DESC):0,tot=sub-dto;
-    return {n:n,tot:tot,html:'<div class="vr-h">'+(b?lab(a,{day:'numeric',month:'long'})+' → '+lab(b,{day:'numeric',month:'long'}):lab(a))+'</div><div class="vr-s">'+n+' '+(n===1?L.d:L.ds)+' = <b>'+n+' '+(n===1?L.j:L.js)+'</b> · '+L.hs+'</div>'+
-      '<div class="vr-rows"><div><span>'+L.pj+' ('+pp+' '+(EN()?'guests':'personas')+')</span><span>'+$(pj)+'</span></div><div><span>'+L.sub+' · '+n+' × '+$(pj)+'</span><span>'+$(sub)+'</span></div>'+
-      (dto?'<div class="dc"><span>'+(n>=14?L.dtoq:L.dto)+'</span><span>−'+$(dto)+'</span></div>':'')+'<div class="tt"><span>'+L.tot+'</span><b>'+$(tot)+'</b></div></div>'+
+    var ds=Math.floor(n/7),jn=n-ds,pj=P[pp].j,tot=pj*jn;
+    return {n:jn,tot:tot,html:'<div class="vr-h">'+(b?lab(a,{day:'numeric',month:'long'})+' → '+lab(b,{day:'numeric',month:'long'}):lab(a))+'</div><div class="vr-s">'+n+' '+(n===1?L.d:L.ds)+' = <b>'+jn+' '+(jn===1?L.j:L.js)+'</b>'+(ds?' + '+ds+' '+(ds===1?L.desc:L.descs):'')+' · '+L.hs+'</div>'+
+      '<div class="vr-rows"><div><span>'+L.pj+' ('+pp+' '+(EN()?'guests':'personas')+')</span><span>'+$(pj)+'</span></div><div><span>'+jn+' × '+$(pj)+'</span><span>'+$(tot)+'</span></div>'+
+      '<div class="tt"><span>'+L.tot+'</span><b>'+$(tot)+'</b></div></div>'+
       (occ?'<div class="vr-w">'+L.warn+'</div>':'')+ref(pp)+'<div class="vr-n">'+L.extra+'</div>'};}
   if(sel.mod===1){
     if(!a)return {html:'<div class="vr-h">'+L.pick2+'</div><div class="vr-n">'+L.noche+'</div>',n:0};
@@ -208,7 +208,7 @@ function calc(){var L=t(),r=rango(),n=r.length,pp=sel.pp==='12+'?null:+sel.pp,oc
       (occ?'<div class="vr-w">'+L.warn+'</div>':'')+'<div class="vr-n">'+L.noche+'</div>'};}
   return {n:n,html:'<div class="vr-h">'+(a?lab(a,{weekday:'long',day:'numeric',month:'long'}):L.pick2)+'</div><div class="vr-rows"><div class="tt"><span>'+(EN()?'Price':'Precio')+'</span><b>'+L.amed+'</b></div></div><div class="vr-n">'+L.enc+'</div>'};}
 function ref(pp){if(!pp)return '';var L=t(),pj=P[pp].j;
-  return '<div class="vr-ref"><div>'+L.rd+'<b>'+$(pj)+'</b></div><div>'+L.rs+'<b>'+$(pj*7*(1-DESC))+'</b></div><div>'+L.rq+'<b>'+$(pj*15*(1-DESC))+'</b></div></div>';}
+  return '<div class="vr-ref"><div>'+L.rd+'<b>'+$(pj)+'</b></div><div>'+L.rs+'<b>'+$(pj*6)+'</b></div><div>'+L.rq+'<b>'+$(pj*13)+'</b></div></div>';}
 function form(){var L=t();
   ['mod','pp','dest'].forEach(function(k){document.getElementById('vc-l-'+k).textContent=L[k];});
   var ch=function(k,arr){document.querySelector('.vc-ch[data-k="'+k+'"]').innerHTML=arr.map(function(x,i){var v=k==='pp'?x:i;return '<button type="button" data-v="'+v+'"'+(String(sel[k])===String(v)?' class="on"':'')+'>'+x+'</button>';}).join('');};
@@ -223,7 +223,7 @@ document.addEventListener('click',function(e){
   var c=e.target.closest&&e.target.closest('.vc-ch button');if(c){var k2=c.parentNode.getAttribute('data-k'),v=c.getAttribute('data-v');sel[k2]=k2==='pp'?(v==='12+'?'12+':+v):+v;if(k2==='mod'&&sel.mod!==0&&b){b=null;}pintar();if(k2==='dest'&&sel.dest===2)document.getElementById('vc-otro').focus();return;}
   if(e.target.closest&&e.target.closest('#vc-go')){var L=T[EN()?'en':'es'],r=rango(),cc=calc(),dest=sel.dest===2?(document.getElementById('vc-otro').value.trim()||L.D[2]):L.D[sel.dest];
     var cuando=a?(b?lab(a,{day:'numeric',month:'long'})+(EN()?' to ':' al ')+lab(b,{day:'numeric',month:'long'})+' ('+r.length+' '+L.ds+')':lab(a,{weekday:'long',day:'numeric',month:'long'})):(EN()?'to be defined':'a definir');
-    var est=cc.tot?(EN()?'\n*Estimate:* ':'\n*Estimado:* ')+r.length+' '+(r.length===1?L.j:L.js)+' · '+$(cc.tot)+(r.length>=7?(EN()?' (10% off included)':' (con 10% de descuento)'):''):'';
+    var est=cc.tot?(EN()?'\n*Estimate:* ':'\n*Estimado:* ')+cc.n+' '+(cc.n===1?L.j:L.js)+(r.length>=7?' + '+Math.floor(r.length/7)+' '+(Math.floor(r.length/7)===1?L.desc:L.descs):'')+' · '+$(cc.tot)+(EN()?' + travel':' + viáticos'):'';
     var m=(EN()?'Hi Daro! I would like a private chef on my holiday.\n*What:* ':'Hola Daro! Quiero un chef privado en mis vacaciones.\n*Qué buscamos:* ')+L.M[sel.mod]+(EN()?'\n*Where:* ':'\n*Destino:* ')+dest+(EN()?'\n*When:* ':'\n*Fechas:* ')+cuando+(EN()?'\n*Guests:* ':'\n*Personas:* ')+sel.pp+est+(EN()?'\nCan you check availability, travel and lodging?':'\n¿Me confirmás disponibilidad, traslado y alojamiento?');
     try{if(window.celTrack)celTrack('wa_click',{servicio:'vacaciones',origen:'calendario_verano'});}catch(x){}
     window.open('https://wa.me/'+WA+'?text='+encodeURIComponent(m),'_blank','noopener');}
