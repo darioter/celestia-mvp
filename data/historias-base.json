@@ -1,6 +1,50 @@
 {
  "notas": [
   {
+   "slug": "chef-privado-vacaciones-de-verano",
+   "cat": "Chef privado",
+   "icono": "🍽️",
+   "titulo": "Chef privado en tus vacaciones de verano: costa, sierras y Patagonia",
+   "bajada": "Este verano llevo la cocina a la casa que alquilaste: una noche especial o un chef dedicado toda la estadía. Destinos, menús de cada lugar, cómo se calculan las jornadas y cómo reservar enero y febrero.",
+   "img": "https://images.unsplash.com/photo-1575393476573-6cdacd2e8c88?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1575393476573-6cdacd2e8c88?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Emilio Luján",
+   "url": "https://www.chefprivado.ar/blog/chef-privado-vacaciones-de-verano",
+   "tips": [
+    "El día de descanso lo acomodamos con ustedes: suele coincidir con una excursión, un asado entre amigos o la noche en que tienen ganas de salir a comer afuera.",
+    "Enero, febrero y los fines de semana largos se ocupan rápido. Si ya sabés dónde y cuándo vas a estar, reservá con tiempo: confirmar la fecha es lo primero, el menú lo terminamos de ajustar después."
+   ],
+   "datos": [
+    "En el calendario de verano tocás el día de llegada y el de salida y te muestra al instante cuántas jornadas son, los días de descanso y el estimado. Al marcar la llegada, te guía con la semana en dorado y la quincena en celeste."
+   ],
+   "secciones": [
+    {
+     "h2": "Dónde cocino este verano",
+     "texto": "Costa Atlántica · Casas y complejos frente al mar"
+    },
+    {
+     "h2": "Dos formas de sumarlo a tus vacaciones",
+     "texto": "1."
+    },
+    {
+     "h2": "Cuánto cuesta",
+     "texto": "La base es la misma que en Buenos Aires: la noche especial tiene el valor de la experiencia de 3 o 7 pasos (desde $480.000 para dos personas, todo incluido) y el chef…"
+    },
+    {
+     "h2": "Un menú de cada lugar",
+     "texto": "Cocinar en vacaciones tiene una ventaja enorme: el producto fresco de la zona."
+    },
+    {
+     "h2": "Cómo se organiza",
+     "texto": "Elegís las fechas en el calendario de verano y me escribís por WhatsApp con el destino, cuántos son y qué buscan."
+    },
+    {
+     "h2": "¿Y las cajas?",
+     "texto": "Las cajas Celestia se entregan solo en CABA y Gran Buenos Aires: son comidas de chef refrigeradas y no podemos garantizar la cadena de frío en un envío."
+    }
+   ]
+  },
+  {
    "slug": "thanksgiving-dia-de-accion-de-gracias-historia-y-menu",
    "cat": "Vuelta al mundo",
    "icono": "🌍",
