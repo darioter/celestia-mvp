@@ -15,7 +15,7 @@
     "Enero, febrero y los fines de semana largos se ocupan rápido. Si ya sabés dónde y cuándo vas a estar, reservá con tiempo: confirmar la fecha es lo primero, el menú lo terminamos de ajustar después."
    ],
    "datos": [
-    "En el calendario de verano tocás el día de llegada y el de salida y te muestra al instante cuántas jornadas son, los días de descanso y el estimado. Al marcar la llegada, te guía con la semana en dorado y la quincena en celeste."
+    "Los valores vigentes los ves siempre en el calendario de verano: elegís qué buscan, cuántos son y tocás la llegada y la salida. Al instante te muestra las jornadas, los días de descanso y el estimado, con los mismos valores del sistema de reservas. Al marcar la llegada, te guía con la semana en dorado y la quincena en celeste."
    ],
    "secciones": [
     {
@@ -27,8 +27,8 @@
      "texto": "1."
     },
     {
-     "h2": "Cuánto cuesta",
-     "texto": "La base es la misma que en Buenos Aires: la noche especial tiene el valor de la experiencia de 3 o 7 pasos (desde $480.000 para dos personas, todo incluido) y el chef…"
+     "h2": "Cómo se calcula",
+     "texto": "La lógica es simple y es la misma que en Buenos Aires."
     },
     {
      "h2": "Un menú de cada lugar",
