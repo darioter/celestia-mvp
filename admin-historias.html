@@ -1196,8 +1196,9 @@ function vozLinea(f, k, n) {
 function vozGenerar() {
   const ta = document.getElementById('r-voz'); if (!ta) return;
   if (!REEL.frames.length) { ta.value = ''; vozInfo(); return; }
-  const pr = !REEL.nota && REEL.preset;
-  ta.value = (pr && pr.voz && pr.voz.length === REEL.frames.length ? pr.voz : REEL.frames.map((f, k) => vozLinea(f, k, REEL.frames.length))).join('\n');
+  const pr = !REEL.nota && REEL.preset, nv = REEL.nota && REEL.nota.voz;
+  const fija = pr && pr.voz && pr.voz.length === REEL.frames.length ? pr.voz : (nv && nv.length === REEL.frames.length ? nv : null);
+  ta.value = (fija || REEL.frames.map((f, k) => vozLinea(f, k, REEL.frames.length))).join('\n');
   vozInfo();
 }
 function vozSeg() { // segundos estimados de locución (≈ 2,6 palabras por segundo + respiro entre renglones)

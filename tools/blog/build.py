@@ -763,6 +763,7 @@ def secciones(cuerpo, limpio):
 
 def base_historias():
     """Base de contenido para el generador de historias de Instagram (admin-historias.html)."""
+    from voz import VOZ  # locución de cada reel (tools/blog/voz.py)
     limpio = lambda t: re.sub(r'\s+', ' ', html.unescape(re.sub(r'<[^>]+>', '', t))).strip()
     notas = []
     for a in sorted(ARTICULOS, key=lambda x: x['fecha'], reverse=True):
@@ -773,6 +774,7 @@ def base_historias():
             'tips': [limpio(b[1]) for b in es['cuerpo'] if b[0] == 'tip'],
             'datos': [limpio(b[1]) for b in es['cuerpo'] if b[0] == 'dato'],
             'secciones': secciones(es['cuerpo'], limpio),
+            'voz': VOZ.get(a['slug'], []),
         })
     p = os.path.join(ROOT, 'data', 'historias-base.json'); os.makedirs(os.path.dirname(p), exist_ok=True)
     open(p, 'w', encoding='utf-8').write(json.dumps({'notas': notas}, ensure_ascii=False, indent=1))
