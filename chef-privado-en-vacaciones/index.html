@@ -354,7 +354,7 @@ html.cel-pre body{visibility:hidden}
  <div class="vcc-top"><div class="vcc-g"><span id="vc-l-mod"></span><div class="vc-ch" data-k="mod"></div></div>
   <div class="vcc-g"><span id="vc-l-pp"></span><div class="vc-ch vc-pp" data-k="pp"></div></div></div>
  <div class="vcc-meses" id="vc-meses"></div>
- <div class="vcc-leg"><span><i class="lg-on"></i><b id="vc-lg1"></b></span><span><i class="lg-oc"></i><b id="vc-lg2"></b></span><span><i class="lg-fs"></i><b id="vc-lg3"></b></span></div>
+ <div class="vcc-leg"><span><i class="lg-on"></i><b id="vc-lg1"></b></span><span class="lg-g"><i class="lg-gw"></i><b id="vc-lg4"></b></span><span class="lg-g"><i class="lg-gq"></i><b id="vc-lg5"></b></span><span><i class="lg-oc"></i><b id="vc-lg2"></b></span><span><i class="lg-fs"></i><b id="vc-lg3"></b></span></div>
  <div class="vcc-res" id="vc-res"></div>
  <div class="vcc-ft"><div class="vcc-g"><span id="vc-l-dest"></span><div class="vc-ch" data-k="dest"></div><input id="vc-otro" type="text" hidden></div>
   <button type="button" class="vc-go" id="vc-go"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21c5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2Z"/></svg><span id="vc-go-t"></span></button></div>
@@ -385,6 +385,15 @@ html.cel-pre body{visibility:hidden}
 .vc-d.on::after{background:#0D1B2A}
 .vc-d.in.oc{color:#f3b8a6;outline-color:#f3b8a6}
 .vc-e{visibility:hidden}
+.vc-d.gw{background:rgba(201,168,76,var(--g));color:#FAF6EF}
+.vc-d.gq{background:rgba(110,180,214,var(--g));color:#FAF6EF}
+.vc-d.gw.oc,.vc-d.gq.oc{color:rgba(250,246,239,.45)}
+.vc-d[data-tag]::before{content:attr(data-tag);position:absolute;top:-7px;right:-4px;font:700 9px/1 'DM Sans',sans-serif;letter-spacing:.04em;padding:3px 5px;border-radius:999px;background:#E8C96B;color:#0D1B2A;white-space:nowrap;z-index:1}
+.vc-d.gq[data-tag]::before{background:#8ccbe6}
+.vc-d.gw[data-tag]{box-shadow:inset 0 0 0 2px #E8C96B}.vc-d.gq[data-tag]{box-shadow:inset 0 0 0 2px #8ccbe6}
+.lg-gw{background:linear-gradient(90deg,rgba(201,168,76,.45),rgba(201,168,76,.15))}.lg-gq{width:18px!important;background:linear-gradient(90deg,rgba(110,180,214,.4),rgba(110,180,214,.1))}.lg-gw{width:18px!important}
+.vcc-leg .lg-g{display:none}.vcc-leg.guia .lg-g{display:flex}
+.vr-tip{font-size:12.5px;color:rgba(250,246,239,.75);margin-top:6px}.vr-tip b{color:#E8C96B}.vr-tip i{font-style:normal;color:#8ccbe6;font-weight:700}
 .vcc-leg{display:flex;flex-wrap:wrap;gap:16px;font-size:12px;color:rgba(250,246,239,.65);margin:12px 0 4px}
 .vcc-leg span{display:flex;align-items:center;gap:6px}.vcc-leg i{width:12px;height:12px;border-radius:4px;display:inline-block}
 .lg-on{background:linear-gradient(135deg,#C9A84C,#E8C96B)}.lg-oc{outline:1px dashed rgba(250,246,239,.4)}.lg-fs{width:6px!important;height:6px!important;border-radius:50%!important;background:#E8C96B}
@@ -407,14 +416,14 @@ var SU='https://qolpnuscpmzqeacshfvu.supabase.co',SK='eyJhbGciOiJIUzI1NiIsInR5cC
 var EN=function(){return document.documentElement.classList.contains('lang-en');};
 var $=function(n){return '$'+Math.round(n).toLocaleString('es-AR');};
 var T={es:{dest:'Destino',pp:'Personas',mod:'Qué buscan',go:'Consultar por WhatsApp',n:'Reservar no tiene costo. Te confirmo disponibilidad, traslado y alojamiento antes de la seña.',D:['Costa Atlántica','Sierras','Otro destino'],otro:'¿Dónde? (ciudad o barrio)',
-  M:['Chef todos los días','Una noche especial','Un encuentro grande'],dn:['L','M','M','J','V','S','D'],lg:['Tu elección','Ocupado','Fin de semana'],
+  M:['Chef todos los días','Una noche especial','Un encuentro grande'],dn:['L','M','M','J','V','S','D'],lg:['Tu elección','Ocupado','Fin de semana','Una semana','Quincena'],tip:'Tocá el día de salida: hasta el <b>día 7</b> es una semana; hasta el <i>día 15</i>, una quincena.',
   pick1:'Tocá el día de llegada y el de salida',pick2:'Tocá el día de la cena',j:'jornada',js:'jornadas',d:'día',ds:'días',hs:'Chef dedicado: ~6–7 hs de cocina por jornada, con almuerzo y cena del día. 1 día de descanso por semana.',
   pj:'Jornal de chef',sub:'Subtotal',desc:'día de descanso',descs:'días de descanso',tot:'Estimado honorarios',rd:'Por día',rs:'Semana · 7 días (6 jornadas)',rq:'Quincena · 15 días (13 jornadas)',
   extra:'Más viáticos: traslado, alojamiento, compras e ingredientes al costo según el destino. Te paso el total antes de la seña.',n3:'Menú de 3 pasos',n7:'Degustación de 7 pasos',sem:'entre semana',fin:'fin de semana',
   noche:'Mismo valor que en Buenos Aires, todo incluido (servicio, asistentes e ingredientes), más los viáticos según el destino.',enc:'Fiesta, reunión de amigos o de equipo: armo una propuesta a medida según invitados y lugar.',amed:'A medida',warn:'Algunos días ya están tomados: lo vemos juntos.',
   mx:'Más de 12 personas: propuesta a medida.'},
  en:{dest:'Destination',pp:'Guests',mod:'What you need',go:'Ask on WhatsApp',n:'Booking is free. I confirm availability, travel and lodging before the deposit.',D:['Atlantic coast','Hills','Other destination'],otro:'Where? (town or area)',
-  M:['Chef every day','One special night','A bigger gathering'],dn:['M','T','W','T','F','S','S'],lg:['Your pick','Taken','Weekend'],
+  M:['Chef every day','One special night','A bigger gathering'],dn:['M','T','W','T','F','S','S'],lg:['Your pick','Taken','Weekend','One week','Fortnight'],tip:'Tap your departure day: up to <b>day 7</b> is one week; up to <i>day 15</i>, a fortnight.',
   pick1:'Tap your arrival and departure days',pick2:'Tap the day of the dinner',j:'session',js:'sessions',d:'day',ds:'days',hs:'Dedicated chef: ~6–7 hours of cooking per session, with lunch and dinner of the day. 1 rest day per week.',
   pj:'Chef day rate',sub:'Subtotal',desc:'rest day',descs:'rest days',tot:'Estimated fee',rd:'Per day',rs:'Week · 7 days (6 sessions)',rq:'Fortnight · 15 days (13 sessions)',
   extra:'Plus travel costs: transport, lodging, shopping and ingredients at cost depending on the destination. You get the total before the deposit.',n3:'3-course menu',n7:'7-course tasting',sem:'weekday',fin:'weekend',
@@ -436,7 +445,11 @@ function pintar(){
     for(var d=1;d<=n;d++){var k=iso(new Date(m[0],m[1],d,12)),c='vc-d';
       if(k<mk)c+=' pa';else if(OC[k])c+=' oc';if(esFin(k))c+=' fs';
       if(a&&b&&k>a&&k<b)c+=' in';if(k===a||k===b)c+=' on';
-      h+='<button type="button" class="'+c+'" data-k="'+k+'" aria-label="'+lab(k)+'">'+d+'</button>';}
+      var st='',tg='';
+      if(sel.mod===0&&a&&!b&&k>a){var dd=Math.round((new Date(k+'T12:00:00')-new Date(a+'T12:00:00'))/864e5)+1;
+        if(dd<=7){c+=' gw';st=' style="--g:'+(0.52-(dd-2)*0.04).toFixed(3)+'"';if(dd===7)tg=' data-tag="'+(EN()?'1 wk':'1 sem')+'"';}
+        else if(dd<=15){c+=' gq';st=' style="--g:'+(0.42-(dd-8)*0.028).toFixed(3)+'"';if(dd===15)tg=' data-tag="'+(EN()?'15 d':'15 d')+'"';}}
+      h+='<button type="button" class="'+c+'"'+st+tg+' data-k="'+k+'" aria-label="'+lab(k)+'">'+d+'</button>';}
     h+='</div></div>';});
   document.getElementById('vc-meses').innerHTML=h;form();}
 function calc(){var L=t(),r=rango(),n=r.length,pp=sel.pp==='12+'?null:+sel.pp,occ=r.some(function(k){return OC[k];});
@@ -445,7 +458,7 @@ function calc(){var L=t(),r=rango(),n=r.length,pp=sel.pp==='12+'?null:+sel.pp,oc
     if(!pp)return {html:'<div class="vr-h">'+n+' '+(n===1?L.d:L.ds)+' · '+n+' '+(n===1?L.j:L.js)+'</div><div class="vr-s">'+L.mx+'</div>',n:n};
     var ds=Math.floor(n/7),jn=n-ds,pj=P[pp].j,tot=pj*jn;
     return {n:jn,tot:tot,html:'<div class="vr-h">'+(b?lab(a,{day:'numeric',month:'long'})+' → '+lab(b,{day:'numeric',month:'long'}):lab(a))+'</div><div class="vr-s">'+n+' '+(n===1?L.d:L.ds)+' = <b>'+jn+' '+(jn===1?L.j:L.js)+'</b>'+(ds?' + '+ds+' '+(ds===1?L.desc:L.descs):'')+' · '+L.hs+'</div>'+
-      '<div class="vr-rows"><div><span>'+L.pj+' ('+pp+' '+(EN()?'guests':'personas')+')</span><span>'+$(pj)+'</span></div><div><span>'+jn+' × '+$(pj)+'</span><span>'+$(tot)+'</span></div>'+
+      (!b?'<div class="vr-tip">'+L.tip+'</div>':'')+'<div class="vr-rows"><div><span>'+L.pj+' ('+pp+' '+(EN()?'guests':'personas')+')</span><span>'+$(pj)+'</span></div><div><span>'+jn+' × '+$(pj)+'</span><span>'+$(tot)+'</span></div>'+
       '<div class="tt"><span>'+L.tot+'</span><b>'+$(tot)+'</b></div></div>'+
       (occ?'<div class="vr-w">'+L.warn+'</div>':'')+ref(pp)+'<div class="vr-n">'+L.extra+'</div>'};}
   if(sel.mod===1){
@@ -463,6 +476,7 @@ function form(){var L=t();
   ch('mod',L.M);ch('pp',[2,3,4,5,6,7,8,9,10,11,12,'12+']);ch('dest',L.D);
   var o=document.getElementById('vc-otro');o.placeholder=L.otro;o.hidden=sel.dest!==2;
   L.lg.forEach(function(x,i){document.getElementById('vc-lg'+(i+1)).textContent=x;});
+  document.querySelector('.vcc-leg').classList.toggle('guia',sel.mod===0&&!!a&&!b);
   document.getElementById('vc-res').innerHTML=calc().html;document.getElementById('vc-go-t').textContent=L.go;document.getElementById('vc-n').textContent=L.n;}
 document.addEventListener('click',function(e){
   if(e.target.closest&&e.target.closest('[data-cel-lang]')){setTimeout(pintar,60);return;}
