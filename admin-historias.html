@@ -66,6 +66,10 @@ textarea.inp{resize:vertical;min-height:64px;line-height:1.4}
 .card .ed{padding:14px;display:flex;flex-direction:column;gap:2px}
 .card label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin:4px 0 4px}
 .card .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.croma{border:1px solid var(--line);border-radius:12px;padding:10px;margin:2px 0 6px;background:rgba(255,255,255,.03)}
+.croma-h{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;margin-bottom:6px}.croma-h b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.croma-h span{color:var(--mut);flex:none}
+.croma-c{display:flex;align-items:center;gap:8px;margin-bottom:4px}.croma-c label{margin:0!important;flex:1}.croma-c input[type=color]{width:42px;height:30px;border:0;background:none;padding:0;cursor:pointer}
+.croma .row{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
 .card select.inp{padding:8px 10px;margin-bottom:6px}
 .card .inp{margin-bottom:6px;font-size:13px;padding:9px 11px}
 .link{display:flex;gap:6px;align-items:center;background:rgba(201,168,76,.08);border:1px solid var(--line);border-radius:10px;padding:7px 9px;font-size:12px;margin-top:4px}
@@ -239,6 +243,11 @@ input[type=range]{width:100%;accent-color:var(--gold)}
             <label class="drop" id="r-aud-drop" style="margin-top:10px;padding:12px"><b>🎧 Subí el audio generado</b>MP3, M4A o WAV: se suma al video y las placas se ajustan a su duración.<input type="file" id="r-audio" accept="audio/*" hidden onchange="vozSubir(this.files[0]);this.value=''"></label>
             <div class="r-ctrl" id="r-aud-est" style="display:none;margin:6px 0 0"><span id="r-aud-nom" class="hint" style="margin:0"></span><button class="btn sec sm" onclick="vozQuitar()">Quitar audio</button></div>
           </div>
+          <div class="r-cap">
+            <div class="r-cap-h"><b>🎬 Vos en el reel (video con croma)</b><span>sobre todas las placas</span></div>
+            <p class="hint" style="margin:0 0 8px">Grabate con fondo verde o azul. El fondo se saca acá; si el video tiene sonido y no subiste otro audio, se usa ese.</p>
+            <div id="r-croma"></div>
+          </div>
           <p class="hint">El video sale en 1080×1920. Si subís el audio, sale con tu voz; la música la podés sumar en Instagram al publicarlo. Si preferís armarlo vos, bajá las placas y cargalas en el editor de reels.</p>
         </div>
         <div class="r-frames">
@@ -252,6 +261,7 @@ input[type=range]{width:100%;accent-color:var(--gold)}
 <div class="toast" id="toast"></div>
 <div class="sel-foto" id="sel-foto" onclick="if(event.target===this)cerrarElegir()"><div class="sel-foto-c" id="sel-foto-c"></div></div>
 <input type="file" id="f-cambiar" accept="image/*" hidden>
+<input type="file" id="f-croma" accept="video/*" hidden>
 
 <script>
 const SUPA_URL = 'https://qolpnuscpmzqeacshfvu.supabase.co';
@@ -467,8 +477,11 @@ function renderGrid() {
         <label>Link para el sticker</label>
         <div class="link"><span>${esc(h.link || '')}</span><button onclick="copiar(${i})">Copiar</button></div>
         ${h.sticker != null ? `<label>Texto del sticker (lo que se ve en Instagram)</label><div class="link"><input class="inp" style="margin:0;flex:1;padding:6px 8px;font-size:12.5px" value="${esc(h.sticker)}" oninput="historias[${i}].sticker=this.value"><button onclick="copiarTxt(historias[${i}].sticker)">Copiar</button></div>` : ''}
+        <label>Video con croma <span style="text-transform:none;letter-spacing:0;color:var(--gold2)">· vos sobre la historia, sin el fondo verde</span></label>
+        ${cromaPanel('h' + i)}
         <div class="row">
-          <button class="btn sm" onclick="descargar(${i})">⬇ PNG</button>
+          ${h.vid ? `<button class="btn sm" onclick="historiaVideo(${i})">⬇ Video MP4</button>` : ''}
+          <button class="btn ${h.vid ? 'sec ' : ''}sm" onclick="descargar(${i})">⬇ PNG</button>
           <button class="btn sec sm" onclick="cambiarFoto(${i})">${h.img ? 'Cambiar foto' : 'Sumar foto'}</button>
           <button class="btn sec sm" onclick="mover(${i},-1)">↑</button>
           <button class="btn sec sm" onclick="mover(${i},1)">↓</button>
@@ -542,6 +555,8 @@ const LOGO = cargarImg('/img/ig-logo.png'), ISO = cargarImg('/img/ig-iso.png');
 async function dibujar(i) {
   const h = historias[i]; const cv = document.getElementById('cv-' + i); if (!h || !cv) return;
   await render(cv, Object.assign({}, h, { _pv: true }));   // _pv: guías que solo se ven en pantalla, no en el PNG
+  if (h.vid) { const b = h._bg || (h._bg = document.createElement('canvas')); b.width = W; b.height = H; b.getContext('2d').drawImage(cv, 0, 0); cromaDibujar(cv.getContext('2d'), h.vid); }
+  else h._bg = null;
 }
 async function render(cv, h) {
   const x = cv.getContext('2d');
@@ -739,7 +754,10 @@ function aBlob(h) {
 }
 function nombreArchivo(h, i) { return 'celestia-historia-' + String(i + 1).padStart(2, '0') + '-' + (h.dia ? h.dia.toLowerCase() + '-' : '') + h.tpl + '.png'; }
 async function descargar(i) {
-  try { const b = await aBlob(historias[i]); bajar(b, nombreArchivo(historias[i], i)); }
+  try {
+    const h = historias[i];
+    if (h.vid) { const cv = await historiaFondo(h); cromaDibujar(cv.getContext('2d'), h.vid); bajar(await new Promise(r => cv.toBlob(r, 'image/png')), nombreArchivo(h, i)); return; }
+    const b = await aBlob(historias[i]); bajar(b, nombreArchivo(historias[i], i)); }
   catch (e) { toast('Esta foto no permite exportar: cambiala por una propia'); }
 }
 function bajar(blob, nombre) { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = nombre; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
@@ -754,6 +772,162 @@ async function descargarTodas() {
   zip.file('links-para-stickers.txt', links.join('\n'));
   bajar(await zip.generateAsync({ type: 'blob' }), 'celestia-historias-' + iso(new Date()) + '.zip');
   toast(fallas.length ? 'Listo. No se pudieron exportar: ' + fallas.join(', ') : 'ZIP descargado');
+}
+
+/* ═════════════════ VIDEO CON CROMA ═════════════════
+   Tu video grabado sobre fondo verde (o azul) encima de la historia o del reel.
+   El fondo se saca cuadro por cuadro en el navegador: color, tolerancia, suavizado y quitar el reflejo verde. */
+const CROMA_DEF = { color: '#00b140', sim: 38, suave: 12, spill: 60, esc: 70, px: 85, py: 100, espejo: false };
+const CROMAS = {}; // clave → objeto de video ('reel' o 'h<i>')
+function cromaDe(k) { return k === 'reel' ? REEL.vid : (historias[+k.slice(1)] || {}).vid; }
+function hex2rgb(h) { const n = parseInt(String(h).replace('#', ''), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+function cromaAutoColor(v) { // promedio de las 4 esquinas del primer cuadro
+  const c = document.createElement('canvas'); c.width = 160; c.height = Math.round(160 * v.videoHeight / v.videoWidth) || 284;
+  const x = c.getContext('2d', { willReadFrequently: true }); x.drawImage(v, 0, 0, c.width, c.height);
+  let r = 0, g = 0, b = 0, n = 0;
+  [[2, 2], [c.width - 14, 2], [2, c.height - 14], [c.width - 14, c.height - 14]].forEach(([a, e]) => { const d = x.getImageData(a, e, 12, 12).data; for (let i = 0; i < d.length; i += 4) { r += d[i]; g += d[i + 1]; b += d[i + 2]; n++; } });
+  return '#' + [r, g, b].map(v => Math.round(v / n).toString(16).padStart(2, '0')).join('');
+}
+function vidIr(v, t) {
+  t = Math.max(0, Math.min(t, (v.duration || 0) - .04));
+  return new Promise(res => {
+    if (Math.abs(v.currentTime - t) < .004 && v.readyState >= 2) return res();
+    let ok = false; const fin = () => { if (ok) return; ok = true; v.removeEventListener('seeked', fin); res(); };
+    v.addEventListener('seeked', fin); v.currentTime = t; setTimeout(fin, 1500);
+  });
+}
+async function cromaCargar(file) {
+  const url = URL.createObjectURL(file), el = document.createElement('video');
+  el.src = url; el.muted = true; el.playsInline = true; el.preload = 'auto';
+  await new Promise((res, rej) => { el.onloadeddata = res; el.onerror = () => rej(new Error('formato')); setTimeout(() => rej(new Error('tiempo')), 20000); });
+  await vidIr(el, .1);
+  const c = Object.assign({ url, el, nombre: file.name, dur: el.duration }, CROMA_DEF);
+  try { c.color = cromaAutoColor(el); } catch (e) {}
+  try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); c.audio = await ctx.decodeAudioData(await file.arrayBuffer()); ctx.close && ctx.close(); } catch (e) { c.audio = null; }
+  return c;
+}
+/* dibuja el cuadro actual del video, sin el fondo, sobre el canvas x */
+function cromaDibujar(x, c) {
+  const v = c && c.el; if (!v || v.readyState < 2 || !v.videoWidth) return;
+  const vw = v.videoWidth, vh = v.videoHeight, dh = H * c.esc / 100, dw = dh * vw / vh;
+  const dx = (W - dw) * c.px / 100, dy = (H - dh) * c.py / 100;
+  const ph = Math.max(2, Math.round(Math.min(dh, c._hi ? 1920 : 760))), pw = Math.max(2, Math.round(ph * vw / vh));
+  const k = cromaDibujar._c || (cromaDibujar._c = document.createElement('canvas'));
+  if (k.width !== pw || k.height !== ph) { k.width = pw; k.height = ph; }
+  const kx = k.getContext('2d', { willReadFrequently: true });
+  kx.save(); kx.clearRect(0, 0, pw, ph); if (c.espejo) { kx.translate(pw, 0); kx.scale(-1, 1); } kx.drawImage(v, 0, 0, pw, ph); kx.restore();
+  const id = kx.getImageData(0, 0, pw, ph), d = id.data;
+  const [kr, kg, kb] = hex2rgb(c.color);
+  const kcb = -.168736 * kr - .331264 * kg + .5 * kb, kcr = .5 * kr - .418688 * kg - .081312 * kb;
+  const t1 = c.sim * 1.2, t2 = t1 + Math.max(1, c.suave * 2), rango = t2 - t1, sp = 1 - c.spill / 100;
+  const verde = kg >= kb; // reflejo a quitar: verde o azul
+  for (let i = 0; i < d.length; i += 4) {
+    const r = d[i], g = d[i + 1], b = d[i + 2];
+    const cb = -.168736 * r - .331264 * g + .5 * b - kcb, cr = .5 * r - .418688 * g - .081312 * b - kcr;
+    const dist = Math.sqrt(cb * cb + cr * cr);
+    if (dist <= t1) { d[i + 3] = 0; continue; }
+    if (dist < t2) d[i + 3] = (dist - t1) / rango * 255;
+    if (verde) { const m = Math.max(r, b); if (g > m) d[i + 1] = m + (g - m) * sp; }
+    else { const m = Math.max(r, g); if (b > m) d[i + 2] = m + (b - m) * sp; }
+  }
+  kx.putImageData(id, 0, 0);
+  x.drawImage(k, dx, dy, dw, dh);
+}
+function cromaPanel(k) {
+  const c = cromaDe(k);
+  if (!c) return `<button class="btn sec sm" onclick="cromaElegir('${k}')">🎬 Sumar mi video con croma</button>`;
+  const sl = (prop, ic, min, max, tit) => `<div class="enc" title="${tit}"><span>${ic}</span><input type="range" min="${min}" max="${max}" value="${c[prop]}" oninput="cromaSet('${k}','${prop}',+this.value)"></div>`;
+  return `<div class="croma">
+    <div class="croma-h"><b>🎬 ${esc(c.nombre)}</b><span>${c.dur.toFixed(1)} s${c.audio ? ' · con sonido' : ''}</span></div>
+    <div class="croma-c"><label>Color del fondo</label><input type="color" value="${c.color}" oninput="cromaSet('${k}','color',this.value)"><button class="btn sec sm" onclick="cromaAuto('${k}')">🎯 Detectar</button></div>
+    ${sl('sim', '🟩', 0, 100, 'Tolerancia: cuánto verde se saca')}${sl('suave', '〰️', 0, 60, 'Suavizado del borde')}${sl('spill', '🧽', 0, 100, 'Quitar reflejo verde de la piel y la ropa')}
+    ${sl('esc', '🔍', 25, 120, 'Tamaño')}${sl('px', '↔', 0, 100, 'Posición horizontal')}${sl('py', '↕', 0, 100, 'Posición vertical')}
+    <div class="row"><button class="btn sec sm" onclick="cromaVer('${k}')">▶ Ver en movimiento</button><button class="btn sec sm" onclick="cromaSet('${k}','espejo',${!c.espejo})">⇋ Espejar</button><button class="btn sec sm" onclick="cromaQuitar('${k}')">Quitar video</button></div>
+  </div>`;
+}
+let _cromaK = null;
+function cromaElegir(k) { _cromaK = k; document.getElementById('f-croma').click(); }
+document.addEventListener('change', async e => {
+  if (e.target.id !== 'f-croma') return; const f = e.target.files[0]; e.target.value = ''; if (!f || !_cromaK) return;
+  toast('Cargando el video…');
+  try {
+    const c = await cromaCargar(f), k = _cromaK;
+    if (k === 'reel') {
+      REEL.vid = c;
+      if (c.audio && !REEL.audio) { REEL.audio = { buf: c.audio, nombre: 'Sonido de ' + f.name, delVideo: true }; document.getElementById('r-aud-est').style.display = 'flex'; document.getElementById('r-aud-nom').textContent = '🎧 Sonido del video · ' + c.audio.duration.toFixed(1) + ' s'; if (REEL.frames.length) vozAjustar(); vozInfo(); }
+      cromaRefrescar(k);
+    } else { historias[+k.slice(1)].vid = c; renderGrid(); }
+    toast('Video listo: ajustá el croma y la posición');
+  } catch (err) { toast('No pude abrir ese video: probá con MP4 o MOV'); }
+});
+function cromaSet(k, prop, v) {
+  const c = cromaDe(k); if (!c) return; c[prop] = v;
+  if (prop === 'espejo') return cromaRefrescar(k, true);
+  clearTimeout(cromaSet._t); cromaSet._t = setTimeout(() => cromaRedibujar(k), 30);
+}
+function cromaAuto(k) { const c = cromaDe(k); if (!c) return; c.color = cromaAutoColor(c.el); cromaRefrescar(k, true); }
+function cromaQuitar(k) {
+  const c = cromaDe(k); if (c) { try { c.el.pause(); URL.revokeObjectURL(c.url); } catch (e) {} }
+  if (k === 'reel') { if (REEL.audio && REEL.audio.delVideo) vozQuitar(); REEL.vid = null; cromaRefrescar(k); }
+  else { delete historias[+k.slice(1)].vid; renderGrid(); }
+}
+function cromaRefrescar(k, panel) {
+  if (k === 'reel') { const el = document.getElementById('r-croma'); if (el) el.innerHTML = cromaPanel('reel'); cromaRedibujar(k); }
+  else renderGrid();
+}
+async function cromaRedibujar(k) {
+  if (k === 'reel') { if (!REEL.playing && REEL.frames.length) reelDibujarEn(REEL.sel || 0); return; }
+  const i = +k.slice(1), h = historias[i], cv = document.getElementById('cv-' + i); if (!h || !cv) return;
+  const x = cv.getContext('2d'); if (!h._bg) return dibujar(i);
+  x.clearRect(0, 0, W, H); x.drawImage(h._bg, 0, 0); cromaDibujar(x, h.vid);
+}
+function cromaVer(k) {
+  const c = cromaDe(k); if (!c) return;
+  if (k === 'reel') { reelPlay(); return; }
+  const i = +k.slice(1);
+  if (!c.el.paused) { c.el.pause(); return; }
+  c.el.currentTime = 0; c.el.play();
+  const loop = () => { if (c.el.paused || c.el.ended) return; cromaRedibujar(k); requestAnimationFrame(loop); }; loop();
+}
+/* historia con video → MP4 (cuadro por cuadro, con el sonido del video) */
+async function historiaFondo(h) { const cv = Object.assign(document.createElement('canvas'), { width: W, height: H }); await render(cv, h); return cv; }
+async function historiaVideo(i) {
+  const h = historias[i], c = h.vid; if (!c) return;
+  const dur = Math.min(c.dur, 60), fps = 30, n = Math.round(dur * fps), bg = await historiaFondo(h);
+  const codec = await reelCodec(), aac = c.audio ? await aacSoportado(c.audio) : false;
+  const nombre = 'celestia-historia-' + String(i + 1).padStart(2, '0') + '-video.mp4';
+  const cv = Object.assign(document.createElement('canvas'), { width: W, height: H }), x = cv.getContext('2d');
+  c.el.pause(); c._hi = true;
+  try {
+    if (codec && (!c.audio || aac)) {
+      const muxer = new Mp4Muxer.Muxer(Object.assign({ target: new Mp4Muxer.ArrayBufferTarget(), video: { codec: 'avc', width: W, height: H, frameRate: fps }, fastStart: 'in-memory' },
+        c.audio ? { audio: { codec: 'aac', sampleRate: c.audio.sampleRate, numberOfChannels: Math.min(2, c.audio.numberOfChannels) }, firstTimestampBehavior: 'offset' } : {}));
+      let falla = null; const enc = new VideoEncoder({ output: (ch, m) => muxer.addVideoChunk(ch, m), error: e => { falla = e; } });
+      enc.configure({ codec, width: W, height: H, bitrate: 8e6, framerate: fps, avc: { format: 'avc' } });
+      for (let k = 0; k < n && !falla; k++) {
+        await vidIr(c.el, k / fps); x.drawImage(bg, 0, 0); cromaDibujar(x, c);
+        const vf = new VideoFrame(cv, { timestamp: Math.round(k * 1e6 / fps), duration: Math.round(1e6 / fps) }); enc.encode(vf, { keyFrame: k % 60 === 0 }); vf.close();
+        if (k % 15 === 0) { toast('Generando video ' + Math.round(k / n * 100) + '%'); while (enc.encodeQueueSize > 4) await new Promise(r => setTimeout(r, 10)); }
+      }
+      if (falla) throw falla;
+      await enc.flush(); enc.close();
+      if (c.audio) await aacCodificar(muxer, dur, c.audio);
+      muxer.finalize(); bajar(new Blob([muxer.target.buffer], { type: 'video/mp4' }), nombre);
+    } else {
+      // sin WebCodecs: se graba en vivo, con el sonido del video
+      const tipo = (c.audio ? ['video/mp4;codecs=avc1,mp4a.40.2', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm'] : ['video/mp4', 'video/webm']).find(t => window.MediaRecorder && MediaRecorder.isTypeSupported(t)) || '';
+      const st = cv.captureStream(30); let actx = null, src = null;
+      if (c.audio) { actx = new (window.AudioContext || window.webkitAudioContext)(); const dst = actx.createMediaStreamDestination(); src = actx.createBufferSource(); src.buffer = c.audio; src.connect(dst); dst.stream.getAudioTracks().forEach(t => st.addTrack(t)); }
+      const rec = new MediaRecorder(st, { mimeType: tipo, videoBitsPerSecond: 10000000 }), partes = []; rec.ondataavailable = e => e.data.size && partes.push(e.data);
+      const fin = new Promise(r => rec.onstop = r); c.el.currentTime = 0; await vidIr(c.el, 0);
+      rec.start(250); src && src.start(); await c.el.play();
+      await new Promise(r => { const loop = () => { x.drawImage(bg, 0, 0); cromaDibujar(x, c); if (c.el.ended || c.el.currentTime >= dur) return r(); requestAnimationFrame(loop); }; loop(); });
+      rec.stop(); await fin; c.el.pause(); try { src && src.stop(); actx && actx.close(); } catch (e) {}
+      bajar(new Blob(partes, { type: tipo.split(';')[0] || 'video/webm' }), nombre.replace('.mp4', tipo.includes('mp4') ? '.mp4' : '.webm'));
+    }
+    toast('Video de la historia listo');
+  } catch (e) { toast('No se pudo generar el video: ' + String(e.message || e).slice(0, 60)); }
+  c._hi = false; cromaRedibujar('h' + i);
 }
 
 /* ═════════════════ REELS ═════════════════ */
@@ -852,7 +1026,7 @@ function reelPresentacion(id) {
   toast('Guion listo: subí tus fotos en el orden de las placas');
 }
 function reelPanel() {
-  reelGaleria();
+  reelGaleria(); const rc = document.getElementById('r-croma'); if (rc) rc.innerHTML = cromaPanel('reel');
   document.getElementById('r-pres').innerHTML = PRESENTACION.map(p => `<button class="it" onclick="reelPresentacion('${p.id}')"><span class="ic">${p.icono}</span><div><b>${esc(p.nombre)}</b><span>${esc(p.sub)}</span></div></button>`).join('');
   document.getElementById('r-notas').innerHTML = BASE.notas.map((n, i) =>
     `<button class="it${USADOS['reel:' + n.slug] ? ' usado' : ''}" onclick="reelDesdeNota(${i})"><img src="${esc(n.img_sq)}" alt="" loading="lazy"><div><b>${esc(n.titulo)}</b><span>${esc(n.icono + ' ' + n.cat)} · ${(n.secciones || []).length + 3} placas</span></div></button>`).join('');
@@ -1029,6 +1203,7 @@ function reelEn(x, t, R) {
     reelFrame(y, REEL.frames[i], lt / seg, (lt - .15) / .6, R.imgs[i], R.logo, R.iso_);
     x.drawImage(c2, 0, 0); x.globalAlpha = 1;
   } else reelFrame(x, REEL.frames[i], lt / seg, (lt - .15) / .6, R.imgs[i], R.logo, R.iso_);
+  if (REEL.vid && t < REEL.vid.dur) cromaDibujar(x, REEL.vid);
 }
 async function reelMini(i) {
   const cv = document.getElementById('rt-' + i); const f = REEL.frames[i]; if (!cv || !f) return;
@@ -1039,16 +1214,19 @@ async function reelMini(i) {
 }
 async function reelDibujarEn(i) {
   if (!REEL.frames.length || REEL.playing) return; REEL.sel = i;
-  const R = await reelImgs(); reelEn(document.getElementById('r-cv').getContext('2d'), i * REEL.seg + REEL.seg * .6, R);
+  const R = await reelImgs(), t = i * REEL.seg + REEL.seg * .6;
+  if (REEL.vid) await vidIr(REEL.vid.el, Math.min(t, REEL.vid.dur - .05));
+  reelEn(document.getElementById('r-cv').getContext('2d'), t, R);
 }
 async function reelPlay() {
   const b = document.getElementById('r-btn-play');
-  if (REEL.playing) { REEL.playing = false; cancelAnimationFrame(REEL.raf); b.textContent = '▶ Reproducir'; vozSonar(false); return; }
+  if (REEL.playing) { REEL.playing = false; cancelAnimationFrame(REEL.raf); b.textContent = '▶ Reproducir'; vozSonar(false); REEL.vid && REEL.vid.el.pause(); return; }
   if (!REEL.frames.length) { toast('Primero armá el reel'); return; }
   const R = await reelImgs(); const x = document.getElementById('r-cv').getContext('2d');
   const total = REEL.frames.length * REEL.seg; const t0 = performance.now();
+  if (REEL.vid) { await vidIr(REEL.vid.el, 0); REEL.vid.el.play(); }
   REEL.playing = true; b.textContent = '⏸ Pausar'; vozSonar(true);
-  const loop = () => { if (!REEL.playing) return; const t = (performance.now() - t0) / 1000; if (t >= total) { REEL.playing = false; b.textContent = '▶ Reproducir'; vozSonar(false); return; } reelEn(x, t, R); REEL.raf = requestAnimationFrame(loop); };
+  const loop = () => { if (!REEL.playing) return; const t = (performance.now() - t0) / 1000; if (t >= total) { REEL.playing = false; b.textContent = '▶ Reproducir'; vozSonar(false); REEL.vid && REEL.vid.el.pause(); return; } reelEn(x, t, R); REEL.raf = requestAnimationFrame(loop); };
   loop();
 }
 function reelTipoVideo() {
@@ -1072,9 +1250,10 @@ async function reelGrabarMR() {
   const fin = new Promise(res => rec.onstop = res);
   document.getElementById('r-rec').style.display = 'block'; REEL.playing = true;
   try { reelEn(x, 0, R); } catch (e) {}
-  rec.start(250); if (asrc) asrc.start(); const t0 = performance.now();
+  if (REEL.vid) { await vidIr(REEL.vid.el, 0); }
+  rec.start(250); if (asrc) asrc.start(); if (REEL.vid) REEL.vid.el.play(); const t0 = performance.now();
   await new Promise(res => { const loop = () => { const t = (performance.now() - t0) / 1000; reelEn(x, Math.min(t, total - .41), R); if (t >= total) return res(); requestAnimationFrame(loop); }; loop(); });
-  rec.stop(); await fin; try { asrc && asrc.stop(); actx && actx.close(); } catch (e) {} REEL.playing = false; document.getElementById('r-rec').style.display = 'none';
+  rec.stop(); await fin; try { asrc && asrc.stop(); actx && actx.close(); REEL.vid && REEL.vid.el.pause(); } catch (e) {} REEL.playing = false; document.getElementById('r-rec').style.display = 'none';
   const nombre = 'celestia-reel-' + (REEL.nota ? REEL.nota.slug.slice(0, 40) : 'fotos') + '.' + ext;
   bajar(new Blob(partes, { type: tipo.split(';')[0] || 'video/webm' }), nombre);
   toast(ext === 'mp4' ? 'Video listo (MP4)' : 'Video listo (WEBM): si Instagram no lo acepta, actualizá Chrome o usá las placas');
@@ -1267,8 +1446,9 @@ Reglas: exactamente ${REEL.frames.length} renglones, uno por placa y en el mismo
   b.disabled = false; b.textContent = '✨ Reescribir con IA';
 }
 /* codifica el audio subido en AAC para el MP4 (WebCodecs) */
-async function vozAAC(muxer, total) {
-  const buf = REEL.audio.buf, sr = buf.sampleRate, ch = Math.min(2, buf.numberOfChannels);
+async function vozAAC(muxer, total) { return aacCodificar(muxer, total, REEL.audio.buf); }
+async function aacCodificar(muxer, total, buf) {
+  const sr = buf.sampleRate, ch = Math.min(2, buf.numberOfChannels);
   const enc = new AudioEncoder({ output: (c, m) => muxer.addAudioChunk(c, m), error: e => { throw e; } });
   enc.configure({ codec: 'mp4a.40.2', sampleRate: sr, numberOfChannels: ch, bitrate: 128000 });
   const fin = Math.min(buf.length, Math.floor(total * sr)), paso = 1024 * 8;
@@ -1282,9 +1462,10 @@ async function vozAAC(muxer, total) {
   }
   await enc.flush(); enc.close();
 }
-async function vozAACsoportado() {
-  if (!REEL.audio || !window.AudioEncoder || !window.AudioData) return false;
-  try { const r = await AudioEncoder.isConfigSupported({ codec: 'mp4a.40.2', sampleRate: REEL.audio.buf.sampleRate, numberOfChannels: Math.min(2, REEL.audio.buf.numberOfChannels), bitrate: 128000 }); return !!(r && r.supported); } catch (e) { return false; }
+async function vozAACsoportado() { return REEL.audio ? aacSoportado(REEL.audio.buf) : false; }
+async function aacSoportado(buf) {
+  if (!buf || !window.AudioEncoder || !window.AudioData) return false;
+  try { const r = await AudioEncoder.isConfigSupported({ codec: 'mp4a.40.2', sampleRate: buf.sampleRate, numberOfChannels: Math.min(2, buf.numberOfChannels), bitrate: 128000 }); return !!(r && r.supported); } catch (e) { return false; }
 }
 
 /* ───────── video cuadro por cuadro (WebCodecs + MP4) ─────────
@@ -1316,7 +1497,9 @@ async function reelGrabar() {
   enc.configure({ codec, width: W, height: H, bitrate: 8e6, framerate: fps, avc: { format: 'avc' } });
   REEL.playing = true;
   try {
+    if (REEL.vid) { REEL.vid.el.pause(); REEL.vid._hi = true; }
     for (let k = 0; k < n && !falla; k++) {
+      if (REEL.vid && k / fps < REEL.vid.dur) await vidIr(REEL.vid.el, k / fps);
       reelEn(x, Math.min(k / fps, total - .41), R);
       const vf = new VideoFrame(cv, { timestamp: Math.round(k * 1e6 / fps), duration: Math.round(1e6 / fps) });
       enc.encode(vf, { keyFrame: k % (fps * 2) === 0 }); vf.close();
@@ -1328,6 +1511,7 @@ async function reelGrabar() {
     }
     if (falla) throw falla;
     await enc.flush();
+    if (REEL.vid) REEL.vid._hi = false;
     if (conAudio) { badge.textContent = 'Sumando el audio…'; await vozAAC(muxer, total); }
     muxer.finalize();
   } catch (e) {
