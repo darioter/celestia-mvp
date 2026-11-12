@@ -45,6 +45,23 @@ textarea.inp{resize:vertical;min-height:64px;line-height:1.4}
 .drop.over,.drop:hover{background:rgba(201,168,76,.08)}
 .drop b{display:block;color:var(--gold);font-size:15px;margin-bottom:4px}
 .items{display:flex;flex-direction:column;gap:8px}
+.pleg{border:1px solid var(--line);border-radius:12px;margin:14px 0 4px;background:rgba(255,255,255,.02)}
+.pleg>summary{list-style:none;cursor:pointer;padding:11px 12px;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--cream)}
+.pleg>summary::-webkit-details-marker{display:none}
+.pleg>summary span{margin-left:auto;font-weight:400;font-size:12px;color:var(--mut)}
+.pleg>summary::after{content:'▾';color:var(--gold2);transition:transform .2s}
+.pleg[open]>summary::after{transform:rotate(180deg)}
+.pleg-b{padding:0 12px 12px}
+.pleg-b .gal-h{margin-top:4px}
+.buscar{width:100%;margin:0 0 8px;font-size:13px;padding:9px 11px}
+.side-tg{display:none}
+@media(max-width:900px){
+  .side-tg{display:flex;width:100%;align-items:center;justify-content:space-between;gap:8px;background:var(--navy3);border:1px solid var(--line);border-radius:12px;color:var(--cream);font:600 14px "DM Sans",sans-serif;padding:12px 14px;margin-bottom:12px;cursor:pointer}
+  .side-tg::after{content:'▴';color:var(--gold2)}
+  .side.cerrada .side-tg::after{content:'▾'}
+  .side.cerrada>*:not(.side-tg){display:none!important}
+  .side.cerrada .side-tg{margin-bottom:0}
+}
 .it{display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:8px;cursor:pointer;text-align:left;color:var(--cream);transition:border-color .15s,background .15s}
 .it:hover{border-color:var(--gold);background:rgba(201,168,76,.07)}
 .it img{width:52px;height:52px;border-radius:8px;object-fit:cover;flex:none;background:var(--navy3)}
@@ -154,7 +171,8 @@ input[type=range]{width:100%;accent-color:var(--gold)}
     <a class="back" href="/admin">← Volver al admin</a>
   </div>
   <div class="wrap" id="modo-hist">
-    <aside class="side">
+    <aside class="side" id="side-hist">
+      <button type="button" class="side-tg" onclick="lateral('side-hist')">📚 Contenido para armar historias</button>
       <div class="tabs" id="tabs">
         <button class="tab on" data-t="fotos">📷 Mis fotos</button>
         <button class="tab" data-t="notas">📰 Notas</button>
@@ -183,15 +201,19 @@ input[type=range]{width:100%;accent-color:var(--gold)}
   </div>
 </div>
 <div class="wrap" id="modo-reel" style="display:none">
-    <aside class="side">
+    <aside class="side" id="side-reel">
+      <button type="button" class="side-tg" onclick="lateral('side-reel')">📚 Guiones, fotos y notas</button>
       <p class="hint" style="margin-top:2px"><b style="color:var(--cream)">🎬 Reels de presentación</b><br>Guiones listos para relanzar la cuenta. Elegí uno, después subí tus fotos (en el orden de las placas) y se reparten solas. Cada placa te dice qué foto va mejor.</p>
       <div class="items" id="r-pres" style="margin-bottom:18px"></div>
       <p class="hint" style="margin-top:0"><b style="color:var(--cream)">📷 Tus fotos</b><br>Se reparten en orden entre las placas. Si subís 10, cada placa lleva una tuya.</p>
       <label class="drop" id="r-drop"><b>Subí las fotos del reel</b>Arrastralas en el orden en que van.<input type="file" id="r-fotos" accept="image/*" multiple hidden></label>
       <button class="btn sec sm" onclick="reelDesdeFotos()" style="width:100%">Armar reel solo con mis fotos</button>
       <div id="r-gal"></div>
-      <p class="hint" style="margin-top:22px"><b style="color:var(--cream)">📰 O armá un reel desde una nota del blog</b><br>El reel se arma solo con la nota: portada, las ideas principales, un tip y el cierre.</p>
-      <div class="items" id="r-notas"></div>
+      <details class="pleg" data-k="reel-notas"><summary>📰 Reel desde una nota del blog<span id="r-notas-n"></span></summary><div class="pleg-b">
+        <p class="hint" style="margin-top:0">El reel se arma solo con la nota: portada, las ideas principales, un tip y el cierre.</p>
+        <input class="inp buscar" placeholder="Buscar nota…" oninput="filtrar(this)">
+        <div class="items" id="r-notas"></div>
+      </div></details>
     </aside>
     <main class="main">
       <div class="reel">
@@ -346,15 +368,28 @@ function item(k, img, titulo, sub, onclick, icono) {
   return `<button class="it${USADOS[k] ? ' usado' : ''}" onclick="${onclick}">${img ? `<img src="${esc(img)}" alt="" loading="lazy">` : `<span class="ic">${icono || '✦'}</span>`}<div><b>${esc(titulo)}</b><span>${esc(sub)}</span></div></button>`;
 }
 /* galería de fotos propias (data/galeria.json, se carga con tools/galeria.py) */
+/* secciones que se pliegan y recuerdan si las dejaste abiertas */
+function plegAbierta(k, def) { try { const v = localStorage.getItem('cel_pleg_' + k); return v == null ? def : v === '1'; } catch (e) { return def; } }
+function pleg(k, titulo, cuenta, html, def = false) { return `<details class="pleg" data-k="${k}"${plegAbierta(k, def) ? ' open' : ''}><summary>${titulo}<span>${cuenta}</span></summary><div class="pleg-b">${html}</div></details>`; }
+document.addEventListener('toggle', e => { const d = e.target; if (d.classList && d.classList.contains('pleg') && d.dataset.k) { try { localStorage.setItem('cel_pleg_' + d.dataset.k, d.open ? '1' : '0'); } catch (er) {} } }, true);
+function plegInit() { document.querySelectorAll('details.pleg[data-k]').forEach(d => { d.open = plegAbierta(d.dataset.k, d.open); }); }
+/* buscador: filtra los botones de la lista que sigue al campo */
+function filtrar(inp) {
+  const q = inp.value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim(), list = inp.nextElementSibling; if (!list) return;
+  list.querySelectorAll('.it').forEach(b => { const t = b.textContent.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); b.style.display = !q || t.includes(q) ? '' : 'none'; });
+}
+/* lateral plegable en el celular: se cierra solo al sumar algo y baja a la mesa de trabajo */
+function lateral(id, abrir) { const el = document.getElementById(id); if (!el) return; el.classList.toggle('cerrada', abrir == null ? !el.classList.contains('cerrada') : !abrir); }
+function aLaMesa(id, sel) { if (innerWidth > 900) return; lateral(id, false); setTimeout(() => { const t = document.querySelector(sel); t && t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 120); }
 function galeriaHTML(modo) {
   if (!GALERIA.length) return `<p class="hint" style="margin-top:14px">📁 <b style="color:var(--cream)">Galería Celestia</b>: todavía no hay fotos cargadas.</p>`;
   const tags = ['todas', ...new Set(GALERIA.map(g => g.tag || 'general'))];
   const lista = GALERIA.map((g, i) => [g, i]).filter(([g]) => galTag === 'todas' || (g.tag || 'general') === galTag);
   const enReel = src => modo === 'reel' && REEL.fotos.includes(src);
-  return `<div class="gal-h">📁 Galería Celestia <span>${GALERIA.length} fotos</span></div>
+  return pleg('gal-' + modo, '📁 Galería Celestia', GALERIA.length + ' fotos', `
     <div class="qch-chips" style="margin-bottom:8px">${tags.map(t => `<button class="qch-c${galTag === t ? ' on' : ''}" onclick="galTag='${t}';${modo === 'reel' ? 'reelGaleria()' : 'renderPanel()'}">${t}</button>`).join('')}</div>
     <p class="hint" style="margin-bottom:8px">${modo === 'reel' ? 'Tocá las fotos en el orden en que van en el reel.' : 'Tocá una foto para sumar una historia con ella.'}</p>
-    <div class="gal">${lista.map(([g, i]) => `<button class="${enReel(g.src) ? 'on' : ''}" onclick="${modo === 'reel' ? `reelGalToggle(${i})` : `agregar(Object.assign(desdeFoto({ url: GALERIA[${i}].src }), { foco: 25 }))`}"><img src="${g.src}" alt="" loading="lazy">${enReel(g.src) ? `<i>${REEL.fotos.indexOf(g.src) + 1}</i>` : ''}</button>`).join('')}</div>`;
+    <div class="gal">${lista.map(([g, i]) => `<button class="${enReel(g.src) ? 'on' : ''}" onclick="${modo === 'reel' ? `reelGalToggle(${i})` : `agregar(Object.assign(desdeFoto({ url: GALERIA[${i}].src }), { foco: 25 }))`}"><img src="${g.src}" alt="" loading="lazy">${enReel(g.src) ? `<i>${REEL.fotos.indexOf(g.src) + 1}</i>` : ''}</button>`).join('')}</div>`);
 }
 function renderPanel() {
   const P = document.getElementById('panel'); let h = '';
@@ -364,11 +399,11 @@ function renderPanel() {
       <div class="items">${fotos.map((f, i) => `<button class="it" onclick="agregarFoto(${i})"><img src="${f.url}" alt=""><div><b>Foto ${i + 1}</b><span>Tocá para sumar otra historia con esta foto</span></div></button>`).join('')}</div>
       ${galeriaHTML('hist')}`;
   } else if (tabActual === 'notas') {
-    h = `<p class="hint">Una historia por nota, con el link para el sticker.</p><div class="items">` + BASE.notas.map((n, i) => item('nota:' + n.slug, n.img_sq, n.titulo, n.icono + ' ' + n.cat, `agregar(desdeNota(${i}))`)).join('') + '</div>';
+    h = `<p class="hint">Una historia por nota, con el link para el sticker.</p><input class="inp buscar" placeholder="Buscar entre ${BASE.notas.length} notas…" oninput="filtrar(this)"><div class="items">` + BASE.notas.map((n, i) => item('nota:' + n.slug, n.img_sq, n.titulo, n.icono + ' ' + n.cat, `agregar(desdeNota(${i}))`)).join('') + '</div>';
   } else if (tabActual === 'tips') {
-    h = `<p class="hint">Tips sacados de las notas del blog.</p><div class="items">` + tips().map((t, i) => item(t.k, null, t.nota.titulo, t.texto, `agregar(desdeTip(${i}))`, '💡')).join('') + '</div>';
+    h = `<p class="hint">Tips sacados de las notas del blog.</p><input class="inp buscar" placeholder="Buscar tip…" oninput="filtrar(this)"><div class="items">` + tips().map((t, i) => item(t.k, null, t.nota.titulo, t.texto, `agregar(desdeTip(${i}))`, '💡')).join('') + '</div>';
   } else if (tabActual === 'datos') {
-    h = `<div class="items">` + datos().map((t, i) => item(t.k, null, t.nota.titulo, t.texto, `agregar(desdeDato(${i}))`, '✨')).join('') + '</div>';
+    h = `<input class="inp buscar" placeholder="Buscar dato…" oninput="filtrar(this)"><div class="items">` + datos().map((t, i) => item(t.k, null, t.nota.titulo, t.texto, `agregar(desdeDato(${i}))`, '✨')).join('') + '</div>';
   } else if (tabActual === 'platos') {
     h = `<p class="hint">${PLATOS.length} platos del catálogo.</p><div class="items">` + PLATOS.map((p, i) => item('plato:' + p.id, p.imagen_url, p.titulo, p.cocina || p.descripcion || '', `agregar(desdePlato(${i}))`)).join('') + '</div>';
   } else if (tabActual === 'resenas') {
@@ -415,7 +450,7 @@ function mesesAgenda() {
   return out;
 }
 
-function agregar(h) { historias.push(Object.assign({ foco: 50, zoom: 1 }, h)); renderGrid(); renderPanel(); toast('Historia agregada'); setTimeout(() => { const c = document.querySelectorAll('.card'); c[c.length - 1] && c[c.length - 1].scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 60); }
+function agregar(h) { historias.push(Object.assign({ foco: 50, zoom: 1 }, h)); renderGrid(); renderPanel(); toast('Historia agregada'); if (innerWidth <= 900) lateral('side-hist', false); setTimeout(() => { const c = document.querySelectorAll('.card'); c[c.length - 1] && c[c.length - 1].scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 60); }
 function agregarFoto(i) { agregar(desdeFoto(fotos[i])); }
 function subirFotos(list) {
   const arr = [...list].filter(f => /^image\//.test(f.type)); if (!arr.length) return;
@@ -1028,6 +1063,8 @@ function reelPresentacion(id) {
 function reelPanel() {
   reelGaleria(); const rc = document.getElementById('r-croma'); if (rc) rc.innerHTML = cromaPanel('reel');
   document.getElementById('r-pres').innerHTML = PRESENTACION.map(p => `<button class="it" onclick="reelPresentacion('${p.id}')"><span class="ic">${p.icono}</span><div><b>${esc(p.nombre)}</b><span>${esc(p.sub)}</span></div></button>`).join('');
+  document.getElementById('r-notas-n').textContent = BASE.notas.length + ' notas';
+  plegInit();
   document.getElementById('r-notas').innerHTML = BASE.notas.map((n, i) =>
     `<button class="it${USADOS['reel:' + n.slug] ? ' usado' : ''}" onclick="reelDesdeNota(${i})"><img src="${esc(n.img_sq)}" alt="" loading="lazy"><div><b>${esc(n.titulo)}</b><span>${esc(n.icono + ' ' + n.cat)} · ${(n.secciones || []).length + 3} placas</span></div></button>`).join('');
   const inp = document.getElementById('r-fotos'), d = document.getElementById('r-drop');
@@ -1301,7 +1338,7 @@ const CIERRES = [
 let _capV = 0;
 function capCont() { const t = document.getElementById('r-cap').value; document.getElementById('r-cap-n').textContent = t.length + ' / 2200'; }
 function capGenerar(otra) {
-  if (otra) _capV++; else { vozGenerar(); if (innerWidth <= 900) setTimeout(() => { const v = document.querySelector('.r-play'); v && v.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 150); }
+  if (otra) _capV++; else { vozGenerar(); if (innerWidth <= 900) aLaMesa('side-reel', '.r-play'); }
   const ta = document.getElementById('r-cap'); if (!REEL.frames.length) { ta.value = ''; capCont(); return; }
   const n = REEL.nota, v = _capV % 3, L = [];
   if (!n && REEL.preset) {
