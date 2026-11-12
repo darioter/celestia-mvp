@@ -1118,9 +1118,21 @@ function reelInfo() {
   document.getElementById('r-info').textContent = n ? `${n} placas · ${Math.round(t)} segundos de video` : '';
   document.getElementById('r-cnt').textContent = n ? n + ' placas' : '';
 }
+/* reproductor sin reel: en vez de quedar negro, muestra qué hacer */
+async function reelVacio() {
+  const cv = document.getElementById('r-cv'); if (!cv) return; const x = cv.getContext('2d'); const logo = await LOGO;
+  fondoNavy(x, 9);
+  if (logo) { const w = 330, hh = w * logo.height / logo.width; x.drawImage(logo, (W - w) / 2, 520, w, hh); }
+  x.textAlign = 'center'; x.fillStyle = C.cream; x.font = '400 78px "DM Serif Display"';
+  x.fillText('Tu reel aparece acá', W / 2, 900);
+  x.fillStyle = 'rgba(250,246,239,.7)'; x.font = '400 40px "DM Sans"';
+  [innerWidth <= 900 ? 'Tocá «Guiones, fotos y notas»' : 'Elegí un guion a la izquierda,', innerWidth <= 900 ? 'y elegí un guion, tus fotos' : 'subí tus fotos o elegí', innerWidth <= 900 ? 'o una nota del blog' : 'una nota del blog'].forEach((l, k) => x.fillText(l, W / 2, 1010 + k * 60));
+  x.fillStyle = C.gold2; x.font = '400 120px "DM Sans"'; x.fillText(innerWidth <= 900 ? '↑' : '←', W / 2, 1340);
+}
 function reelRender() {
   const L = document.getElementById('r-list');
   document.getElementById('r-empty').style.display = REEL.frames.length ? 'none' : 'block';
+  if (!REEL.frames.length) reelVacio();
   L.innerHTML = REEL.frames.map((f, i) => `
     <div class="rf">
       <canvas width="270" height="480" id="rt-${i}" onclick="reelDibujarEn(${i})" title="Ver en el reproductor"></canvas>
