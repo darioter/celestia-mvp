@@ -24,5 +24,15 @@ create policy "resenas_lectura_publica" on public.resenas
 drop policy if exists "resenas_admin" on public.resenas;
 create policy "resenas_admin" on public.resenas
   for all to authenticated
-  using ((auth.jwt() ->> 'email') = 'dario@dali-arquitectura.com.ar')
-  with check ((auth.jwt() ->> 'email') = 'dario@dali-arquitectura.com.ar');
+  using ((auth.jwt() ->> 'email') in ('dario@dali-arquitectura.com.ar', 'celestiachefs@gmail.com'))
+  with check ((auth.jwt() ->> 'email') in ('dario@dali-arquitectura.com.ar', 'celestiachefs@gmail.com'));
+
+-- Reseñas de Google que ya están en la home (solo si la tabla está vacía)
+insert into public.resenas (nombre, texto, estrellas, orden)
+select * from (values
+  ('Verónica Krieg', 'Excelente servicio! Puntualidad al llegar. La comida increíble, riquísima y muy abundante... ¡los postres un fuego! Cinco estrellas para la atención personalizada del Chef Daro. VIVAN LA EXPERIENCIA.', 5, 1),
+  ('Jimena Maderna', 'Una experiencia realmente espectacular desde el primer momento hasta el último detalle. La entrada de empanadas de carne fue simplemente increíble, de esas que uno prueba y no se olvida más: sabrosas, caseras y perfectamente logradas.', 5, 2),
+  ('María Civile', 'Excelente servicio! Menú súper rico, todo casero 🤗 Re buena opción para una cena diferente con amigos.', 5, 3),
+  ('Maite Scalisi', 'Increíble experiencia ❤️❤️ Muy rico y originales los platos 😁👍', 5, 4)
+) as v(nombre, texto, estrellas, orden)
+where not exists (select 1 from public.resenas);
