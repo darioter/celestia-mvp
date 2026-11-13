@@ -77,7 +77,7 @@
   document.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey && e.target && e.target.id === 'wb-sim-in') { e.preventDefault(); simEnviar(); } });
   /* ── Alta del número real por Embedded Signup (coexistencia con la app WhatsApp Business) ── */
   var APP_ID = '1894311805272831';
-  var ES_CONFIG = ''; // ID de la configuración de "Inicio de sesión con Facebook para empresas" (no es secreto)
+  var ES_CONFIG = '1142768295007866'; // ID de la configuración de "Inicio de sesión con Facebook para empresas" (no es secreto)
   var ALTA = {};
   function altaMsg(t, ok) { var m = document.getElementById('wb-alta-msg'); if (m) { m.textContent = t; m.style.color = ok === false ? '#ff9b9b' : ok ? '#7fd9a3' : ''; } }
   function cargarSDK() {
