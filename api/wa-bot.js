@@ -420,10 +420,12 @@ export async function POST(req) {
   }
   if (!firmaOK(raw, req.headers.get('x-hub-signature-256'))) { await diag('Llegó un aviso de Meta pero la firma no coincide: revisar WA_APP_SECRET (clave secreta de la app Celestia Bot).'); return new Response('Bad signature', { status: 401 }); }
   let body = {}; try { body = JSON.parse(raw); } catch (e) { await diag('Llegó un aviso que no es JSON'); return new Response('ok'); }
-  const tareas = [];
+  const tareas = [], estados = [];
   (body.entry || []).forEach(en => (en.changes || []).forEach(ch => {
     const v = ch.value || {};
     const pid = v.metadata && v.metadata.phone_number_id;
+    // estado de cada envío (sent / delivered / read / failed): queda en el diagnóstico
+    (v.statuses || []).forEach(st => estados.push(st.status + ' a ' + String(st.recipient_id || '').slice(-4) + (st.errors ? ' · ' + st.errors.map(e => e.code + ' ' + (e.error_data && e.error_data.details || e.title || e.message || '')).join(' | ') : '')));
     (v.messages || []).forEach(m => tareas.push(atender(m, (v.contacts || []).find(c => c.wa_id === m.from), pid)));
     // coexistencia: lo que escribís desde la app llega por smb_message_echoes (antes message_echoes)
     (v.message_echoes || []).forEach(e => tareas.push(ecoDaro(e)));
@@ -432,6 +434,6 @@ export async function POST(req) {
   const errs = res.filter(x => x.status === 'rejected').map(x => (x.reason && x.reason.message) || String(x.reason));
   errs.forEach(m => console.error('wa-bot', m));
   const campos = (body.entry || []).flatMap(en => (en.changes || []).map(ch => ch.field)).join(',');
-  await diag((errs.length ? 'ERROR: ' + errs.join(' | ') : 'OK') + ' · campos: ' + (campos || '-') + ' · mensajes: ' + tareas.length);
+  await diag((errs.length ? 'ERROR: ' + errs.join(' | ') : 'OK') + ' · campos: ' + (campos || '-') + ' · mensajes: ' + tareas.length + (estados.length ? ' · estado: ' + estados.join(' ; ') : ''));
   return new Response('ok');
 }
