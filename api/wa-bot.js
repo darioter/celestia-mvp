@@ -199,6 +199,16 @@ async function cred(phoneId) {
   if (c && c.token && (!phoneId || phoneId === c.phone_id)) return { id: c.phone_id, token: c.token };
   return { id: phoneId || process.env.WA_PHONE_ID, token: (process.env.WA_TOKEN || '').trim() };
 }
+/* WABA del número que usa el bot: la del número real conectado, WA_WABA_ID, o la que tenga permisos el token */
+async function wabaId(token) {
+  const c = await waCfg(); if (c && c.waba_id && c.token === token) return c.waba_id;
+  if (process.env.WA_WABA_ID) return process.env.WA_WABA_ID;
+  try {
+    const d = ((await (await fetch(GRAPH() + '/debug_token?input_token=' + encodeURIComponent(token), { headers: { Authorization: 'Bearer ' + token } })).json()).data) || {};
+    const ids = [...new Set((d.granular_scopes || []).filter(x => /whatsapp/.test(x.scope)).flatMap(x => x.target_ids || []))];
+    return ids[0] || '1457252273206232'; // WABA del número de prueba
+  } catch (e) { return null; }
+}
 let PHONE_IN = null; // número que recibió el mensaje que se está respondiendo
 async function enviar1(to, texto) {
   const k = await cred(PHONE_IN);
@@ -351,6 +361,45 @@ export async function POST(req) {
       return json(r);
     } catch (e) { return json({ error: e.message }, 500); }
   }
+  /* herramientas del admin (también sirven para los videos de la revisión de Meta):
+     enviar un mensaje de prueba, crear y listar plantillas de la cuenta de WhatsApp */
+  const accion = req.headers.get('x-celestia-accion');
+  if (accion) {
+    if (!(await esAdmin(req))) return json({ error: 'Solo admin' }, 401);
+    try {
+      const b = JSON.parse(raw || '{}'), k = await cred(), H = { Authorization: 'Bearer ' + k.token, 'Content-Type': 'application/json' };
+      const waba = await wabaId(k.token);
+      if (accion === 'enviar') {
+        const to = String(b.to || '').replace(/\D/g, ''); if (to.length < 10) return json({ error: 'Número inválido' }, 400);
+        const cuerpo = b.plantilla
+          ? { messaging_product: 'whatsapp', to, type: 'template', template: { name: b.plantilla, language: { code: b.idioma || 'es_AR' } } }
+          : { messaging_product: 'whatsapp', to, type: 'text', text: { body: String(b.texto || 'Hola! Este es un mensaje de prueba de Celestia.').slice(0, 4000) } };
+        const alt = [to]; if (/^549\d{10}$/.test(to)) { alt.push('54' + to.slice(3)); }
+        const intentos = [];
+        for (const n of alt) {
+          const r = await (await fetch(GRAPH() + '/' + k.id + '/messages', { method: 'POST', headers: H, body: JSON.stringify(Object.assign({}, cuerpo, { to: n })) })).json();
+          if (r.messages) return json({ ok: true, a: n, id: r.messages[0].id, intentos });
+          intentos.push(n + ': ' + ((r.error && (r.error.code + ' ' + (r.error.error_data && r.error.error_data.details || r.error.message))) || 'sin respuesta'));
+        }
+        return json({ error: 'Meta no lo aceptó', intentos }, 400);
+      }
+      if (!waba) return json({ error: 'No encontré la cuenta de WhatsApp Business (WABA) del token' }, 400);
+      if (accion === 'plantillas') {
+        const r = await (await fetch(GRAPH() + '/' + waba + '/message_templates?fields=name,status,category,language,components&limit=50', { headers: H })).json();
+        return json({ waba, plantillas: (r.data || []).map(t => ({ name: t.name, status: t.status, category: t.category, language: t.language, cuerpo: ((t.components || []).find(c => c.type === 'BODY') || {}).text || '' })), error: r.error && r.error.message });
+      }
+      if (accion === 'plantilla_crear') {
+        const nombre = String(b.nombre || '').toLowerCase().replace(/[^a-z0-9_]/g, '_').slice(0, 512);
+        if (!nombre || !b.cuerpo) return json({ error: 'Faltan el nombre o el texto' }, 400);
+        const comp = [{ type: 'BODY', text: String(b.cuerpo) }];
+        if (/\{\{1\}\}/.test(b.cuerpo)) comp[0].example = { body_text: [[b.ejemplo || 'Daro']] };
+        const r = await (await fetch(GRAPH() + '/' + waba + '/message_templates', { method: 'POST', headers: H, body: JSON.stringify({ name: nombre, language: b.idioma || 'es_AR', category: b.categoria || 'UTILITY', components: comp }) })).json();
+        return r.id ? json({ ok: true, id: r.id, status: r.status, category: r.category, name: nombre }) : json({ error: (r.error && (r.error.error_user_msg || r.error.message)) || 'Meta no la aceptó' }, 400);
+      }
+      return json({ error: 'Acción desconocida' }, 400);
+    } catch (e) { return json({ error: e.message }, 500); }
+  }
+
   /* alta del número real (Embedded Signup, coexistencia): el admin manda el code y los IDs que devuelve Meta */
   if (req.headers.get('x-celestia-alta')) {
     if (!(await esAdmin(req))) return json({ error: 'Solo admin' }, 401);

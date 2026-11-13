@@ -999,6 +999,27 @@ select{color-scheme:dark}select option,select optgroup{background:#13263a;color:
     <div id="seccion-wabot" style="display:none">
       <div class="cws-hd"><div><h2>🤖 Bot de WhatsApp</h2><p>Responde con los precios, cajas y fechas libres del sitio, y te pasa la charla cuando hay que cerrar fecha, seña, un evento o un reclamo. Probalo acá antes de conectarlo: usa el mismo cerebro que va a usar en WhatsApp.</p><div class="wb-estado" id="wb-estado"></div></div>
         <div class="cws-hb"><button type="button" class="filter-btn" id="wb-refrescar">↻ Actualizar</button></div></div>
+      <div class="wb-card wb-alta" id="wb-prueba"><div class="wb-card-hd"><b>🧪 Pruebas y plantillas</b><span style="font-size:12px;opacity:.7">para los videos de la revisión de Meta</span></div>
+        <div class="wb-pr">
+          <div>
+            <b style="font-size:13px">1 · Enviar un mensaje</b>
+            <input class="filter-input" id="wp-to" value="5491160410607" placeholder="Número con 549…" style="width:100%;margin:8px 0 6px">
+            <select class="filter-input" id="wp-tipo" style="width:100%;margin-bottom:6px" onchange="document.getElementById('wp-txt').style.display=this.value==='texto'?'':'none'"><option value="texto">Texto (si te escribieron en las últimas 24 h)</option><option value="hello_world|en_US">Plantilla hello_world (en_US)</option></select>
+            <textarea class="filter-input" id="wp-txt" rows="3" style="width:100%">Hola! Soy el asistente de Celestia 👨‍🍳 Este es un mensaje de prueba enviado desde chefprivado.ar.</textarea>
+            <button type="button" class="filter-btn active" id="wp-enviar" style="margin-top:6px">📤 Enviar</button>
+            <div id="wp-res" style="font-size:12.5px;margin-top:6px"></div>
+          </div>
+          <div>
+            <b style="font-size:13px">2 · Crear una plantilla</b>
+            <input class="filter-input" id="wt-nom" value="confirmacion_reserva" placeholder="nombre_en_minusculas" style="width:100%;margin:8px 0 6px">
+            <div style="display:flex;gap:6px;margin-bottom:6px"><select class="filter-input" id="wt-cat" style="flex:1"><option value="UTILITY">Utilidad (reservas, avisos)</option><option value="MARKETING">Marketing (promos)</option></select><select class="filter-input" id="wt-idi"><option value="es_AR">es_AR</option><option value="es">es</option><option value="en_US">en_US</option></select></div>
+            <textarea class="filter-input" id="wt-cuerpo" rows="3" style="width:100%">Hola {{1}}! Tu reserva con Celestia Chef Privado quedó confirmada. El día anterior te escribo para coordinar el horario de llegada.</textarea>
+            <button type="button" class="filter-btn active" id="wt-crear" style="margin-top:6px">➕ Crear plantilla</button>
+            <div id="wt-res" style="font-size:12.5px;margin-top:6px"></div>
+            <div id="wt-lista" style="margin-top:8px"></div>
+          </div>
+        </div>
+      </div>
       <div class="wb-card wb-alta" id="wb-alta"><div class="wb-card-hd"><b>Tu número real</b><span id="wb-alta-est" class="wb-st no">○ Sin conectar</span></div>
         <p style="font-size:13px;opacity:.8;margin:0 0 10px">Conecta tu WhatsApp Business de siempre al bot <b>sin dejar de usar la app</b> (coexistencia). Te abre la ventana de Meta: elegís el portfolio, ponés tu número y escaneás el QR desde WhatsApp Business en el celu (Configuración → Cuenta → Plataforma de empresas). Solo funciona cuando Meta aprueba la verificación del negocio.</p>
         <button type="button" class="filter-btn active" id="wb-alta-go">📲 Conectar mi WhatsApp Business</button> <span id="wb-alta-msg" style="font-size:12.5px;margin-left:8px"></span></div>
@@ -1011,6 +1032,8 @@ select{color-scheme:dark}select option,select optgroup{background:#13263a;color:
     </div>
     <style>
     .wb-alta{margin-bottom:16px}
+    .wb-pr{display:grid;grid-template-columns:1fr 1fr;gap:18px}@media(max-width:760px){.wb-pr{grid-template-columns:1fr}}
+    .wt-it{font-size:12.5px;padding:6px 8px;border-radius:8px;background:rgba(255,255,255,.04);margin-bottom:5px}.wt-it b{margin-right:6px}
     .wb-estado{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
     .wb-st{font-size:12px;border-radius:999px;padding:4px 10px;border:1px solid rgba(250,246,239,.2)}.wb-st.ok{border-color:#5DBF87;color:#7fd9a3}.wb-st.no{opacity:.6}
     .wb-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:16px;align-items:start}
@@ -3694,6 +3717,6 @@ async function estadoFiesta(id, estado) {
 }
 </script>
 <script src="/js/menus-ejemplo.js"></script>
-<script src="/admin-presupuesto.js?v=20261110n"></script><script src="/admin-catalogo-ws.js?v=1"></script><script src="/admin-wa-bot.js?v=4"></script><script src="/admin-menus-subir.js?v=20261110n"></script>
+<script src="/admin-presupuesto.js?v=20261110n"></script><script src="/admin-catalogo-ws.js?v=1"></script><script src="/admin-wa-bot.js?v=5"></script><script src="/admin-menus-subir.js?v=20261110n"></script>
 </body>
 </html>

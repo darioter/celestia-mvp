@@ -118,5 +118,40 @@
     }, { config_id: ES_CONFIG, response_type: 'code', override_default_response_type: true, extras: { setup: {}, featureType: 'whatsapp_business_app_onboarding', sessionInfoVersion: '3' } });
   });
 
-  window.cargarWaBot = function () { estado(); charlas(); pintarSim(); };
+  /* ── pruebas y plantillas (API de WhatsApp) ── */
+  async function accion(a, cuerpo) {
+    var r = await fetch('/api/wa-bot', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-celestia-accion': a, Authorization: 'Bearer ' + (await token()) }, body: JSON.stringify(cuerpo || {}) });
+    return r.json();
+  }
+  var EST = { APPROVED: '✅ Aprobada', PENDING: '⏳ En revisión', REJECTED: '❌ Rechazada', PAUSED: '⏸ Pausada', DISABLED: '⛔ Desactivada' };
+  async function plantillas() {
+    var el = document.getElementById('wt-lista'); if (!el) return;
+    el.innerHTML = '<span style="font-size:12px;opacity:.7">Cargando plantillas…</span>';
+    try {
+      var j = await accion('plantillas'); var L = j.plantillas || [];
+      el.innerHTML = (j.error ? '<div style="color:#ff9b9b;font-size:12px">' + esc(j.error) + '</div>' : '') + (L.length ? L.map(function (t) { return '<div class="wt-it"><b>' + esc(t.name) + '</b>' + (EST[t.status] || esc(t.status)) + ' · ' + esc(t.category) + ' · ' + esc(t.language) + (t.cuerpo ? '<div style="opacity:.75;margin-top:3px">' + esc(t.cuerpo).slice(0, 140) + '</div>' : '') + '</div>'; }).join('') : '<span style="font-size:12px;opacity:.7">Sin plantillas.</span>');
+      var sel = document.getElementById('wp-tipo');
+      if (sel) sel.innerHTML = '<option value="texto">Texto (si te escribieron en las últimas 24 h)</option>' + L.filter(function (t) { return t.status === 'APPROVED'; }).map(function (t) { return '<option value="' + esc(t.name) + '|' + esc(t.language) + '">Plantilla ' + esc(t.name) + ' (' + esc(t.language) + ')</option>'; }).join('');
+    } catch (e) { el.innerHTML = '<span style="color:#ff9b9b;font-size:12px">' + esc(e.message) + '</span>'; }
+  }
+  document.addEventListener('click', async function (e) {
+    var t = e.target.closest && e.target.closest('#wp-enviar,#wt-crear'); if (!t) return;
+    t.disabled = true;
+    try {
+      if (t.id === 'wp-enviar') {
+        var tipo = document.getElementById('wp-tipo').value, res = document.getElementById('wp-res'), pl = tipo !== 'texto' ? tipo.split('|') : null;
+        res.textContent = 'Enviando…';
+        var j = await accion('enviar', { to: document.getElementById('wp-to').value, texto: document.getElementById('wp-txt').value, plantilla: pl && pl[0], idioma: pl && pl[1] });
+        res.innerHTML = j.ok ? '<span style="color:#7fd9a3">✓ Meta lo aceptó (a +' + esc(j.a) + '). Fijate el celular.</span>' : '<span style="color:#ff9b9b">' + esc(j.error) + (j.intentos ? '<br>' + j.intentos.map(esc).join('<br>') : '') + '</span>';
+      } else {
+        var r2 = document.getElementById('wt-res'); r2.textContent = 'Creando…';
+        var k = await accion('plantilla_crear', { nombre: document.getElementById('wt-nom').value, categoria: document.getElementById('wt-cat').value, idioma: document.getElementById('wt-idi').value, cuerpo: document.getElementById('wt-cuerpo').value });
+        r2.innerHTML = k.ok ? '<span style="color:#7fd9a3">✓ Plantilla "' + esc(k.name) + '" creada · ' + (EST[k.status] || esc(k.status)) + '</span>' : '<span style="color:#ff9b9b">' + esc(k.error) + '</span>';
+        plantillas();
+      }
+    } catch (er) { alert(er.message); }
+    t.disabled = false;
+  });
+
+  window.cargarWaBot = function () { estado(); charlas(); pintarSim(); plantillas(); };
 })();
