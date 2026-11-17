@@ -68,7 +68,7 @@ async function conocimiento() {
   const cajasTxt = CAJAS.map(c => {
     const opts = c.tipo === 'pp' ? (c.personas || []).map(p => p + ' personas ' + fmt(p * c.pp)) : (c.opciones || []).map(o => o.label + ' ' + fmt(o.precio));
     const menu = (c.menu || []).map(m => m[0] + ': ' + m[1]).join(' | ');
-    return '- *' + c.nombre + '* (' + c.tag + '). ' + (c.tipo === 'pp' ? fmt(c.pp) + ' por persona. ' : '') + 'Opciones: ' + opts.join(' · ') + '. Ocasiones: ' + (c.ocasiones || []).map(k => OC[k] ? OC[k].nombre : k).join(', ') + '. Menú: ' + menu;
+    return '- *' + c.nombre + '* (' + c.tag + '). ' + (c.tipo === 'pp' ? fmt(c.pp) + ' por persona. ' : '') + 'Opciones: ' + opts.join(' · ') + '. Ocasiones: ' + (c.ocasiones || []).map(k => OC[k] ? OC[k].nombre : k).join(', ') + '. ' + (c.nota ? c.nota + ' Cada opción se cobra completa por su rango: 7 personas pagan la de 6 a 8, 9 personas la de 8 a 10 (el pavo es entero, no se prorratea). ' : '') + 'Menú: ' + menu;
   }).join('\n');
   const mercTxt = MERC.filter(m => !m.cat).map(m => m.nombre + ' (' + m.det + ') ' + fmt(m.precio)).join('; ');
   let bebTxt = '';

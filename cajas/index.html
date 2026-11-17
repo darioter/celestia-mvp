@@ -302,6 +302,7 @@ section{padding:70px 0}
 .bmi .bico{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:64px;font-style:normal;padding-bottom:40px}
 @media(max-width:600px){.bmi .ph img{padding:36px 16% 62px}}
 
+.nota-op{font-size:13px;line-height:1.45;color:#6b6b6b;margin:10px 0 0}
 /* Hero a pantalla completa con la mesa y la caja */
 .hero.hxf{position:relative;min-height:calc(100svh - 64px);display:flex;align-items:center;background:var(--nv);overflow:hidden;padding:0}
 .hxf-bg{position:absolute;inset:-40px;background:url('/img/cajas/hero-mesa.webp') center/cover;filter:blur(28px) brightness(.45) saturate(1.1);transform:scale(1.1)}
@@ -606,7 +607,8 @@ const SENIA = 0.5;
    ocasiones: en cuáles aparece. */
 const CAJAS = [
   { id: 'thanksgiving', grupo: 'Cenas completas', nombre: 'Thanksgiving at Home', tag: 'La cena tradicional americana', img: 'photo-1574672280600-4accfa5b6f98', tipo: 'fijo',
-    opciones: [{ label: 'Para 4 · y la mesa del día después', personas: 4, precio: 860000, mesa: 'para cuatro' }, { label: 'Para 6 a 8', personas: 8, precio: 1150000, mesa: 'para seis a ocho' }, { label: 'Para 10', personas: 10, precio: 1430000, mesa: 'para diez' }],
+    opciones: [{ label: 'Para 4 a 6', personas: 6, precio: 860000, mesa: 'para cuatro a seis' }, { label: 'Para 6 a 8', personas: 8, precio: 1150000, mesa: 'para seis a ocho' }, { label: 'Para 8 a 10', personas: 10, precio: 1430000, mesa: 'para ocho a diez' }],
+    nota: '¿Son más de 10? Se arma con dos cajas: de 11 a 12 personas, dos de 4 a 6; de 13 a 14, una de 4 a 6 y una de 6 a 8; de 15 a 16, una de 4 a 6 y una de 8 a 10.',
     ocasiones: ['thanksgiving'], lead: 'Una mesa {mesa}. Una tradición para compartir. Recuerdos que continúan mañana. Pavo entero para trinchar en la mesa y cada preparación en su propio envase, con su historia y cómo servirla.',
     menu: [['Protagonista', 'Pavo entero al horno con manteca de salvia, tomillo y romero · Gravy de sus jugos'],
            ['Guarniciones', 'Stuffing de pan y hierbas · Puré de papas a la manteca · Cazuela de batatas con pecanes · Green bean casserole: chauchas en crema de hongos y cebolla crocante · Cranberry sauce con naranja · Dinner rolls tibios'],
@@ -811,6 +813,7 @@ function cajaHTML(c) {
     <div class="b"><h4>${c.nombre}</h4><p class="lead">${String(c.lead).replace('{mesa}', (o && o.mesa) || 'para compartir')}</p>
       <ul class="menu">${c.menu.map(m => `<li><span>${m[0]}</span><div>${m[1]}</div></li>`).join('')}</ul>
       ${opts.length > 1 ? `<div class="opc">${opts.map((x, i) => `<button type="button" class="op${i === sel ? ' on' : ''}" data-op="${i}">${x.label}</button>`).join('')}</div>` : ''}
+      ${c.nota ? `<p class="nota-op">${c.nota}</p>` : ''}
       <div class="pie"><div class="precio"><b>${f$(o.precio)}</b><small>${c.tipo === 'pp' ? f$(c.pp) + ' por persona' : o.label}</small></div>
         <button type="button" class="btn add" data-add="${c.id}">Agregar al carrito</button></div>
       <button type="button" class="wa-caja" data-wa-caja="${c.id}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21c5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2Z"/></svg> Pedila por WhatsApp</button>
