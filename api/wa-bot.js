@@ -66,9 +66,9 @@ async function conocimiento() {
   const hoyK = new Date(Date.now() - 3 * 3600e3).toISOString().slice(0, 10);
   const ocTxt = Object.keys(OC).map(k => { const o = OC[k]; if (o.fecha && o.fecha < hoyK) return ''; return '- ' + o.nombre + (o.fecha ? ' (entrega ' + o.fecha + ', pedidos hasta ' + o.cierre + ')' : '') + (o.franjas ? ', franjas ' + o.franjas.join(' / ') : ''); }).filter(Boolean).join('\n');
   const cajasTxt = CAJAS.map(c => {
-    const opts = c.tipo === 'pp' ? (c.personas || []).map(p => p + ' personas ' + fmt(p * c.pp)) : (c.opciones || []).map(o => o.label + ' ' + fmt(o.precio));
+    const opts = c.calc && c.cajas ? ['se elige la cantidad de personas (4 a 30) y se calculan solas las cajas. Rangos: ' + c.cajas.map(k => k.r + ' personas ' + fmt(k.precio)).join(' · ') + '. Cada caja se cobra completa por su rango (el pavo va entero, no se prorratea): 7 personas pagan la de 6 a 8, 9 personas la de 8 a 10. Ejemplos: ' + [5, 7, 9, 12, 14, 16, 20].map(n => { const o = c.opciones.find(x => x.personas === n); return o ? n + ' → ' + o.det + ' ' + fmt(o.precio) : ''; }).filter(Boolean).join('; ') + '. Más de 30: derivá a Daro'] : c.tipo === 'pp' ? (c.personas || []).map(p => p + ' personas ' + fmt(p * c.pp)) : (c.opciones || []).map(o => o.label + ' ' + fmt(o.precio));
     const menu = (c.menu || []).map(m => m[0] + ': ' + m[1]).join(' | ');
-    return '- *' + c.nombre + '* (' + c.tag + '). ' + (c.tipo === 'pp' ? fmt(c.pp) + ' por persona. ' : '') + 'Opciones: ' + opts.join(' · ') + '. Ocasiones: ' + (c.ocasiones || []).map(k => OC[k] ? OC[k].nombre : k).join(', ') + '. ' + (c.nota ? c.nota + ' Cada opción se cobra completa por su rango: 7 personas pagan la de 6 a 8, 9 personas la de 8 a 10 (el pavo es entero, no se prorratea). ' : '') + 'Menú: ' + menu;
+    return '- *' + c.nombre + '* (' + c.tag + '). ' + (c.tipo === 'pp' ? fmt(c.pp) + ' por persona. ' : '') + 'Opciones: ' + opts.join(' · ') + '. Ocasiones: ' + (c.ocasiones || []).map(k => OC[k] ? OC[k].nombre : k).join(', ') + '. Menú: ' + menu;
   }).join('\n');
   const mercTxt = MERC.filter(m => !m.cat).map(m => m.nombre + ' (' + m.det + ') ' + fmt(m.precio)).join('; ');
   let bebTxt = '';

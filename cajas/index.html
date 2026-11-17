@@ -302,7 +302,8 @@ section{padding:70px 0}
 .bmi .bico{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:64px;font-style:normal;padding-bottom:40px}
 @media(max-width:600px){.bmi .ph img{padding:36px 16% 62px}}
 
-.nota-op{font-size:13px;line-height:1.45;color:#6b6b6b;margin:10px 0 0}
+.cuantos{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin:14px 0 0}.cuantos>span{font-size:14px;font-weight:600}.cuantos small{flex-basis:100%;font-size:13px;color:#6b6b6b}
+.stp{display:inline-flex;align-items:center;border:1px solid #d9cfb8;border-radius:999px;overflow:hidden}.stp b{min-width:44px;text-align:center;font-size:18px}.stp-b{width:44px;height:44px;border:0;background:#faf6ef;font-size:22px;cursor:pointer;color:inherit}.stp-b:disabled{opacity:.35;cursor:default}
 /* Hero a pantalla completa con la mesa y la caja */
 .hero.hxf{position:relative;min-height:calc(100svh - 64px);display:flex;align-items:center;background:var(--nv);overflow:hidden;padding:0}
 .hxf-bg{position:absolute;inset:-40px;background:url('/img/cajas/hero-mesa.webp') center/cover;filter:blur(28px) brightness(.45) saturate(1.1);transform:scale(1.1)}
@@ -607,8 +608,20 @@ const SENIA = 0.5;
    ocasiones: en cuáles aparece. */
 const CAJAS = [
   { id: 'thanksgiving', grupo: 'Cenas completas', nombre: 'Thanksgiving at Home', tag: 'La cena tradicional americana', img: 'photo-1574672280600-4accfa5b6f98', tipo: 'fijo',
-    opciones: [{ label: 'Para 4 a 6', personas: 6, precio: 860000, mesa: 'para cuatro a seis' }, { label: 'Para 6 a 8', personas: 8, precio: 1150000, mesa: 'para seis a ocho' }, { label: 'Para 8 a 10', personas: 10, precio: 1430000, mesa: 'para ocho a diez' }],
-    nota: '¿Son más de 10? Se arma con dos cajas: de 11 a 12 personas, dos de 4 a 6; de 13 a 14, una de 4 a 6 y una de 6 a 8; de 15 a 16, una de 4 a 6 y una de 8 a 10.',
+    calc: true, cajas: [{ r: '4 a 6', max: 6, precio: 860000 }, { r: '6 a 8', max: 8, precio: 1150000 }, { r: '8 a 10', max: 10, precio: 1430000 }],
+    /* Elegís cuántas personas y se arma solo: cada caja se cobra completa por su rango (el pavo va entero); más de 10, la combinación de cajas más conveniente. */
+    opciones: (function () {
+      const T = [[6, 860000, '4 a 6'], [8, 1150000, '6 a 8'], [10, 1430000, '8 a 10']], out = [];
+      const NUM = ['', 'una', 'dos', 'tres', 'cuatro'];
+      for (let n = 4; n <= 30; n++) {
+        let best = null;
+        (function rec(k, cap, tot, cs) { if (cap >= n) { if (!best || tot < best.tot || (tot === best.tot && cs.length < best.cs.length)) best = { tot, cs: cs.slice() }; return; } if (cs.length >= 4) return; for (let t = k; t < T.length; t++) { cs.push(T[t]); rec(t, cap + T[t][0], tot + T[t][1], cs); cs.pop(); } })(0, 0, 0, []);
+        const g = {}; best.cs.forEach(c => { g[c[2]] = (g[c[2]] || 0) + 1; });
+        const det = Object.keys(g).map(r => g[r] > 1 ? g[r] + ' cajas de ' + r : (best.cs.length > 1 ? '1 caja de ' : 'caja de ') + r).join(' + ');
+        out.push({ label: n + ' personas · ' + det, personas: n, precio: best.tot, mesa: 'para ' + n, cajasN: best.cs.length, det });
+      }
+      return out;
+    })(),
     ocasiones: ['thanksgiving'], lead: 'Una mesa {mesa}. Una tradición para compartir. Recuerdos que continúan mañana. Pavo entero para trinchar en la mesa y cada preparación en su propio envase, con su historia y cómo servirla.',
     menu: [['Protagonista', 'Pavo entero al horno con manteca de salvia, tomillo y romero · Gravy de sus jugos'],
            ['Guarniciones', 'Stuffing de pan y hierbas · Puré de papas a la manteca · Cazuela de batatas con pecanes · Green bean casserole: chauchas en crema de hongos y cebolla crocante · Cranberry sauce con naranja · Dinner rolls tibios'],
@@ -812,9 +825,8 @@ function cajaHTML(c) {
     <div class="img" style="background-image:url('${c.img.charAt(0) === '/' ? c.img : U(c.img, 900, 506)}')"><span class="tag">${c.tag}</span></div>
     <div class="b"><h4>${c.nombre}</h4><p class="lead">${String(c.lead).replace('{mesa}', (o && o.mesa) || 'para compartir')}</p>
       <ul class="menu">${c.menu.map(m => `<li><span>${m[0]}</span><div>${m[1]}</div></li>`).join('')}</ul>
-      ${opts.length > 1 ? `<div class="opc">${opts.map((x, i) => `<button type="button" class="op${i === sel ? ' on' : ''}" data-op="${i}">${x.label}</button>`).join('')}</div>` : ''}
-      ${c.nota ? `<p class="nota-op">${c.nota}</p>` : ''}
-      <div class="pie"><div class="precio"><b>${f$(o.precio)}</b><small>${c.tipo === 'pp' ? f$(c.pp) + ' por persona' : o.label}</small></div>
+      ${c.calc ? `<div class="cuantos"><span>¿Para cuántas personas?</span><div class="stp"><button type="button" class="stp-b" data-paso="-1" aria-label="Menos personas"${sel <= 0 ? ' disabled' : ''}>−</button><b>${o.personas}</b><button type="button" class="stp-b" data-paso="1" aria-label="Más personas"${sel >= opts.length - 1 ? ' disabled' : ''}>+</button></div><small>${o.det}</small>${sel >= opts.length - 1 ? '<small>¿Son más? Escribime por WhatsApp.</small>' : ''}</div>` : opts.length > 1 ? `<div class="opc">${opts.map((x, i) => `<button type="button" class="op${i === sel ? ' on' : ''}" data-op="${i}">${x.label}</button>`).join('')}</div>` : ''}
+      <div class="pie"><div class="precio"><b>${f$(o.precio)}</b><small>${c.tipo === 'pp' ? f$(c.pp) + ' por persona' : c.calc ? 'Total para ' + o.personas + ' personas' : o.label}</small></div>
         <button type="button" class="btn add" data-add="${c.id}">Agregar al carrito</button></div>
       <button type="button" class="wa-caja" data-wa-caja="${c.id}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21c5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2Z"/></svg> Pedila por WhatsApp</button>
     </div></article>`;
@@ -865,6 +877,7 @@ function pintarBebidas() {
 }
 document.addEventListener('click', e => {
   const bc = e.target.closest('[data-bcat]'); if (bc) { BEB_FILTRO = bc.dataset.bcat; pintarBebidas(); return; }
+  const sp = e.target.closest('.stp-b'); if (sp) { const c = CAJAS.find(x => x.id === sp.closest('.caja').dataset.id), n = opciones(c).length; st.sel[c.id] = Math.max(0, Math.min(n - 1, (st.sel[c.id] || 0) + +sp.dataset.paso)); pintarCatalogo(); return; }
   const op = e.target.closest('.op'); if (op) { st.sel[op.closest('.caja').dataset.id] = +op.dataset.op; pintarCatalogo(); return; }
   const add = e.target.closest('[data-add]'); if (add) {
     const c = CAJAS.find(x => x.id === add.dataset.add), o = opciones(c)[st.sel[c.id] || 0], key = c.id + '|' + o.label;
