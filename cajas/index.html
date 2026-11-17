@@ -616,7 +616,7 @@ const CAJAS = [
       const NUM = ['', 'una', 'dos', 'tres', 'cuatro'];
       for (let n = 4; n <= 30; n++) {
         let best = null;
-        (function rec(k, cap, tot, cs) { if (cap >= n) { if (!best || tot < best.tot || (tot === best.tot && cs.length < best.cs.length)) best = { tot, cs: cs.slice() }; return; } if (cs.length >= 4) return; for (let t = k; t < T.length; t++) { cs.push(T[t]); rec(t, cap + T[t][0], tot + T[t][1], cs); cs.pop(); } })(0, 0, 0, []);
+        (function rec(k, cap, tot, cs) { if (cap >= n) { if (!best || cs.length < best.cs.length || (cs.length === best.cs.length && tot < best.tot)) best = { tot, cs: cs.slice() }; return; } if (cs.length >= 4) return; for (let t = k; t < T.length; t++) { cs.push(T[t]); rec(t, cap + T[t][0], tot + T[t][1], cs); cs.pop(); } })(0, 0, 0, []);
         const g = {}; best.cs.forEach(c => { g[c[2]] = (g[c[2]] || 0) + 1; });
         const det = Object.keys(g).map(r => g[r] > 1 ? g[r] + ' cajas de ' + r : (best.cs.length > 1 ? '1 caja de ' : 'caja de ') + r).join(' + ');
         out.push({ label: n + ' personas · ' + det, personas: n, precio: best.tot, mesa: 'para ' + n, cajasN: best.cs.length, det });
@@ -658,7 +658,7 @@ const CAJAS = [
       const T = [[8, 219000, 'para 8'], [12, 319000, 'para 12'], [20, 499000, 'para 20']], out = [];
       for (let n = 6; n <= 60; n++) {
         let best = null;
-        (function rec(k, cap, tot, cs) { if (cap >= n) { if (!best || tot < best.tot || (tot === best.tot && cs.length < best.cs.length)) best = { tot, cs: cs.slice() }; return; } if (cs.length >= 4) return; for (let t = k; t < T.length; t++) { cs.push(T[t]); rec(t, cap + T[t][0], tot + T[t][1], cs); cs.pop(); } })(0, 0, 0, []);
+        (function rec(k, cap, tot, cs) { if (cap >= n) { if (!best || cs.length < best.cs.length || (cs.length === best.cs.length && tot < best.tot)) best = { tot, cs: cs.slice() }; return; } if (cs.length >= 4) return; for (let t = k; t < T.length; t++) { cs.push(T[t]); rec(t, cap + T[t][0], tot + T[t][1], cs); cs.pop(); } })(0, 0, 0, []);
         const g = {}; best.cs.forEach(c => { g[c[2]] = (g[c[2]] || 0) + 1; });
         const det = Object.keys(g).map(r => g[r] > 1 ? g[r] + ' bandejas ' + r : (best.cs.length > 1 ? '1 bandeja ' : 'bandeja ') + r).join(' + ');
         out.push({ label: n + ' personas · ' + det, personas: n, precio: best.tot, cajasN: best.cs.length, det });
