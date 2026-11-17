@@ -140,7 +140,7 @@
     if (f.servicio === 'caja' && $('#pz-form') && $('#pz-form').childElementCount) { form(); render(); }
   }).catch(function () {});
   function cajaSel() { return CAJAS.filter(function (c) { return c.id === f.caja; })[0] || null; }
-  function cajaOps(c) { return !c ? [] : (c.tipo === 'pp' ? (c.personas || [4]).map(function (n) { return { label: 'Para ' + n, personas: n, precio: c.pp * n }; }) : (c.opciones || [])); }
+  function cajaOps(c) { return !c ? [] : (c.tipo === 'pp' ? (function () { var o = [], a = (c.personas || [4])[0], b = c.max || 20; for (var n = a; n <= b; n++) o.push({ label: 'Para ' + n, personas: n, precio: c.pp * n }); return o; })() : (c.opciones || [])); }
   function extrasItems() { return (f.extras || []).filter(function (x) { return String(x.d).trim() && String(x.m).replace(/\D/g, ''); }).map(function (x) { return [x.d, +String(x.m).replace(/\D/g, '')]; }); }
   function calcAlt() {
     var r = { items: [], incluye: [], noIncluye: [], menu: [], menuTit: '', formato: '', personas: '', pago: 'seña del 50% para confirmar la fecha y saldo el día del servicio, por transferencia o MercadoPago.', cond: '' };

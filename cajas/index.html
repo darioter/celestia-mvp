@@ -304,6 +304,7 @@ section{padding:70px 0}
 
 .cuantos{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin:14px 0 0}.cuantos>span{font-size:14px;font-weight:600}.cuantos small{flex-basis:100%;font-size:13px;color:#6b6b6b}
 .stp{display:inline-flex;align-items:center;border:1px solid #d9cfb8;border-radius:999px;overflow:hidden}.stp b{min-width:44px;text-align:center;font-size:18px}.stp-b{width:44px;height:44px;border:0;background:#faf6ef;font-size:22px;cursor:pointer;color:inherit}.stp-b:disabled{opacity:.35;cursor:default}
+#paso-caja,#cuando,#pedido{scroll-margin-top:90px}.cal-seguir{display:block;text-align:center;margin-top:14px}.cal-extra{display:block;font-size:12px;color:#8a8a8a;margin-top:8px;text-align:center}
 /* Hero a pantalla completa con la mesa y la caja */
 .hero.hxf{position:relative;min-height:calc(100svh - 64px);display:flex;align-items:center;background:var(--nv);overflow:hidden;padding:0}
 .hxf-bg{position:absolute;inset:-40px;background:url('/img/cajas/hero-mesa.webp') center/cover;filter:blur(28px) brightness(.45) saturate(1.1);transform:scale(1.1)}
@@ -506,10 +507,10 @@ nav.nav-ic a svg{color:#E8C96B;flex:none}
   <div class="paso"><b>1</b> ¿Qué celebrás?</div>
   <h2 class="sh">Elegí la <em>ocasión</em></h2>
   <div class="fiestas oc" id="ocasiones"></div>
-  <div id="cuando" style="margin-top:26px"></div>
 
-  <div class="paso" style="margin-top:46px"><b>2</b> Armá tu caja</div>
+  <div class="paso" style="margin-top:46px" id="paso-caja"><b>2</b> Elegí tu caja y para cuántos</div>
   <div id="catalogo"></div>
+  <div id="cuando" style="margin-top:34px"></div>
 
   <div class="cat-h" id="mercadito"><h3>Mercadito</h3><span class="sub" style="margin:0">Sumá un plato, una guarnición o un postre suelto. También se pide solo.</span></div>
   <div class="merc" id="merc"></div>
@@ -548,7 +549,7 @@ nav.nav-ic a svg{color:#E8C96B;flex:none}
 </div></section>
 
 <section id="pedido"><div class="wrap">
-  <div class="paso"><b>3</b> Tus datos y la entrega</div>
+  <div class="paso"><b>4</b> Tus datos y la confirmación</div>
   <h2 class="sh">Hacé tu <em>pedido</em></h2>
   <p class="sub">Completás tus datos, te paso cómo abonar la seña y confirmamos por WhatsApp.</p>
   <div id="ant-ck" style="margin-top:26px"></div>
@@ -652,7 +653,18 @@ const CAJAS = [
            ['Postre', 'Volcán de chocolate con frutos rojos'],
            ['Incluye', 'Guía para regenerar y emplatar, con sugerencia de vino']] },
   { id: 'bocados', grupo: 'Para picar y brindar', nombre: 'Bocados y picada', tag: 'Para la previa y el brindis', img: 'photo-1678572823447-45fc146df43c', tipo: 'fijo',
-    opciones: [{ label: '8 personas', personas: 8, precio: 219000 }, { label: '12 personas', personas: 12, precio: 319000 }, { label: '20 personas', personas: 20, precio: 499000 }],
+    calc: true, cajas: [{ r: 'para 8', max: 8, precio: 219000 }, { r: 'para 12', max: 12, precio: 319000 }, { r: 'para 20', max: 20, precio: 499000 }],
+    opciones: (function () {
+      const T = [[8, 219000, 'para 8'], [12, 319000, 'para 12'], [20, 499000, 'para 20']], out = [];
+      for (let n = 6; n <= 60; n++) {
+        let best = null;
+        (function rec(k, cap, tot, cs) { if (cap >= n) { if (!best || tot < best.tot || (tot === best.tot && cs.length < best.cs.length)) best = { tot, cs: cs.slice() }; return; } if (cs.length >= 4) return; for (let t = k; t < T.length; t++) { cs.push(T[t]); rec(t, cap + T[t][0], tot + T[t][1], cs); cs.pop(); } })(0, 0, 0, []);
+        const g = {}; best.cs.forEach(c => { g[c[2]] = (g[c[2]] || 0) + 1; });
+        const det = Object.keys(g).map(r => g[r] > 1 ? g[r] + ' bandejas ' + r : (best.cs.length > 1 ? '1 bandeja ' : 'bandeja ') + r).join(' + ');
+        out.push({ label: n + ' personas · ' + det, personas: n, precio: best.tot, cajasN: best.cs.length, det });
+      }
+      return out;
+    })(),
     ocasiones: ['navidad', 'anio_nuevo', 'cumple', 'amigos'], lead: '8 bocados por persona en 6 variedades, más una tabla de quesos y fiambres.',
     menu: [['Bocados', 'Bruschettas de tomates confitados · Tartaletas de queso azul y pera · Mini empanadas de carne cortada a cuchillo · Langostinos crocantes con alioli · Brochettes caprese · Rolls de jamón crudo y rúcula'],
            ['Picada', 'Quesos, fiambres, frutos secos, panes y grisines caseros']] },
@@ -743,6 +755,7 @@ const visible = o => !temporada(o) || new Date(OCASIONES[o].fecha + 'T23:59:59')
 const abierta = o => !temporada(o) || new Date(OCASIONES[o].cierre + 'T23:59:59') >= new Date();
 const primeraFecha = () => { const d = new Date(Date.now() + ANTICIPACION_HORAS * 3600e3); if (d.getHours() >= 18) d.setDate(d.getDate() + 1); return iso(d); };
 const ultimaFecha = () => iso(new Date(Date.now() + 90 * 864e5));
+const irA = id => { const el = document.getElementById(id); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
 const enCaja = (x, o) => !x.ocasiones || x.ocasiones.includes(o);
 function track(ev, p) { try { window.celTrack && celTrack(ev, p || {}); } catch (e) {} }
 fetch(SUPA.url + '/rest/v1/bloqueos?select=fecha', { headers: { apikey: SUPA.key, Authorization: 'Bearer ' + SUPA.key } })
@@ -790,7 +803,7 @@ function pintarCuando() {
   const cap = t => t.charAt(0).toUpperCase() + t.slice(1);
   const mesTxt = cap(d0.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' }));
   const selTxt = st.fecha ? cap(fechaLarga(st.fecha)) : 'Elegí un día';
-  C.innerHTML = `<div class="paso" style="margin-bottom:12px">🚚 ¿Cuándo la recibís?</div>
+  C.innerHTML = `<div class="paso" style="margin-bottom:12px"><b>3</b> ¿Cuándo la recibís?</div>
   <div class="cal-wrap"><div class="cc cal-card${C.dataset.mes === calMes ? ' cc-still' : ''}">
     <div class="cc-top"><div><span class="cc-k">${temporada(st.ocasion) ? o.icono + ' ' + o.nombre + ' · entrega el día del evento' : 'Entrega a domicilio · ' + ANTICIPACION_HORAS + ' h de anticipación'}</span><span class="cc-mo"><span>${mesTxt}</span></span></div>
       <div class="cc-nav"><button type="button" data-nav="-1" aria-label="Mes anterior" ${temporada(st.ocasion) || calMes <= minMes ? 'disabled' : ''}>‹</button><button type="button" data-nav="1" aria-label="Mes siguiente" ${temporada(st.ocasion) || calMes >= maxMes ? 'disabled' : ''}>›</button></div></div>
@@ -801,7 +814,7 @@ function pintarCuando() {
   <div class="cal-side">
     <div class="cal-sel"><span class="cc-k" style="color:#a08a5c">Tu entrega</span><b>${selTxt}</b>${st.franja ? `<small>${st.franja}</small>` : '<small>Elegí la franja horaria</small>'}</div>
     <div class="cal-fr">${franjas.map(f => `<button type="button" class="fr${st.franja === f ? ' on' : ''}" data-fr="${f}"><span>🕒</span>${f}</button>`).join('')}</div>
-    <p class="cal-nota">La caja llega fría y lista para la heladera. Si necesitás otra franja, contámelo en las notas del pedido.</p>
+    <p class="cal-nota">La caja llega fría y lista para la heladera. Si necesitás otra franja, contámelo en las notas del pedido.</p>${st.fecha && st.franja && st.carrito.length ? '<a class="btn cal-seguir" href="#pedido">Seguir con tus datos ↓</a><small class="cal-extra">¿Querés sumar algo? Abajo tenés el mercadito y las bebidas.</small>' : ''}
   </div></div>`;
   C.dataset.mes = calMes;
 }
@@ -809,23 +822,26 @@ document.getElementById('cuando').addEventListener('click', e => {
   const d = e.target.closest('.cc-d[data-f]'); if (d && !d.disabled) { st.fecha = d.dataset.f; guardar(); pintarCuando(); pintarRes(); return; }
   const nv = e.target.closest('[data-nav]'); if (nv && !nv.disabled) { const [y, m] = calMes.split('-').map(Number); const t = new Date(y, m - 1 + (+nv.dataset.nav), 1); calMes = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0'); document.getElementById('cuando').dataset.mes = ''; pintarCuando(); return; }
   const f = e.target.closest('[data-fr]'); if (f) { st.franja = f.dataset.fr; guardar(); pintarCuando(); pintarRes(); }
+  const sg = e.target.closest('.cal-seguir'); if (sg) { e.preventDefault(); irA('pedido'); }
 });
 document.getElementById('ocasiones').addEventListener('click', e => {
   const b = e.target.closest('.fz'); if (!b || b.disabled) return;
   const prev = st.ocasion; st.ocasion = b.dataset.k; if (prev !== st.ocasion) { st.franja = null; calMes = null; document.getElementById('cuando').dataset.mes = ''; if (temporada(st.ocasion) || (prev && temporada(prev))) st.fecha = null; }
   st.carrito = st.carrito.filter(x => { const c = CAJAS.find(y => y.id === x.id); return c ? enCaja(c, st.ocasion) : MERCADITO.some(y => y.id === x.id); });
   guardar(); pintarOcasiones(); pintarCuando(); pintarCatalogo(); pintarRes(); track('cajas_ocasion', { ocasion: st.ocasion });
+  setTimeout(() => irA('paso-caja'), 60);
 });
 
 /* ═════════ catálogo ═════════ */
-function opciones(c) { return c.tipo === 'pp' ? c.personas.map(p => ({ label: p + ' personas', personas: p, precio: p * c.pp })) : c.opciones; }
+function opciones(c) { if (c.tipo !== 'pp') return c.opciones; const out = []; for (let p = c.personas[0]; p <= (c.max || 20); p++) out.push({ label: p + ' personas', personas: p, precio: p * c.pp }); return out; }
+const conStepper = c => c.calc || c.tipo === 'pp';
 function cajaHTML(c) {
   const opts = opciones(c), sel = st.sel[c.id] != null ? st.sel[c.id] : 0, o = opts[sel];
   return `<article class="caja" data-id="${c.id}">
     <div class="img" style="background-image:url('${c.img.charAt(0) === '/' ? c.img : U(c.img, 900, 506)}')"><span class="tag">${c.tag}</span></div>
     <div class="b"><h4>${c.nombre}</h4><p class="lead">${String(c.lead).replace('{mesa}', (o && o.mesa) || 'para compartir')}</p>
       <ul class="menu">${c.menu.map(m => `<li><span>${m[0]}</span><div>${m[1]}</div></li>`).join('')}</ul>
-      ${c.calc ? `<div class="cuantos"><span>¿Para cuántas personas?</span><div class="stp"><button type="button" class="stp-b" data-paso="-1" aria-label="Menos personas"${sel <= 0 ? ' disabled' : ''}>−</button><b>${o.personas}</b><button type="button" class="stp-b" data-paso="1" aria-label="Más personas"${sel >= opts.length - 1 ? ' disabled' : ''}>+</button></div><small>${o.det}</small>${sel >= opts.length - 1 ? '<small>¿Son más? Escribime por WhatsApp.</small>' : ''}</div>` : opts.length > 1 ? `<div class="opc">${opts.map((x, i) => `<button type="button" class="op${i === sel ? ' on' : ''}" data-op="${i}">${x.label}</button>`).join('')}</div>` : ''}
+      ${conStepper(c) ? `<div class="cuantos"><span>¿Para cuántas personas?</span><div class="stp"><button type="button" class="stp-b" data-paso="-1" aria-label="Menos personas"${sel <= 0 ? ' disabled' : ''}>−</button><b>${o.personas}</b><button type="button" class="stp-b" data-paso="1" aria-label="Más personas"${sel >= opts.length - 1 ? ' disabled' : ''}>+</button></div>${o.det ? `<small>${o.det}</small>` : ''}${sel >= opts.length - 1 ? '<small>¿Son más? Escribime por WhatsApp.</small>' : ''}</div>` : opts.length > 1 ? `<div class="opc">${opts.map((x, i) => `<button type="button" class="op${i === sel ? ' on' : ''}" data-op="${i}">${x.label}</button>`).join('')}</div>` : ''}
       <div class="pie"><div class="precio"><b>${f$(o.precio)}</b><small>${c.tipo === 'pp' ? f$(c.pp) + ' por persona' : c.calc ? 'Total para ' + o.personas + ' personas' : o.label}</small></div>
         <button type="button" class="btn add" data-add="${c.id}">Agregar al carrito</button></div>
       <button type="button" class="wa-caja" data-wa-caja="${c.id}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21c5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2Z"/></svg> Pedila por WhatsApp</button>
@@ -884,7 +900,8 @@ document.addEventListener('click', e => {
     if (!st.ocasion) { const k = c.ocasiones.find(x => visible(x) && abierta(x) && !temporada(x)) || c.ocasiones.find(x => visible(x) && abierta(x)); if (k) { st.ocasion = k; pintarOcasiones(); pintarCuando(); } }
     const it = st.carrito.find(x => x.key === key); if (it) it.cant++; else st.carrito.push({ key, id: c.id, nombre: c.nombre, variante: o.label, personas: o.personas, precio: o.precio, cant: 1 });
     guardar(); pintarCatalogo(); pintarRes(); const b = document.querySelector('[data-add="' + c.id + '"]'); if (b) { b.textContent = '✓ Agregado'; b.classList.add('ok'); setTimeout(() => { b.textContent = 'Agregar al carrito'; b.classList.remove('ok'); }, 1400); } bump(); avisar(c.nombre + ' · ' + o.label);
-    track('cajas_agregar', { producto: c.id, variante: o.label, value: o.precio, currency: 'ARS' }); return;
+    track('cajas_agregar', { producto: c.id, variante: o.label, value: o.precio, currency: 'ARS' });
+    if (!(st.fecha && st.franja)) setTimeout(() => irA('cuando'), 500); return;
   }
   const q = e.target.closest('[data-m]'); if (q) {
     const m = MERCADITO.find(x => x.id === q.dataset.m), d = +q.dataset.d; let it = st.carrito.find(x => x.id === m.id);
