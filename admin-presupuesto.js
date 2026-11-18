@@ -345,6 +345,7 @@
       var ok = '✓ Pedido cargado en Cajas: ' + fechaLarga(f.fecha) + ' (' + x.data.ref + ').';
       form(); render(); var m = $('#pz-mf-msg'); if (m) { m.className = 'pz-msg ok'; m.textContent = ok; }
       if (typeof cargarFiestas === 'function' && document.getElementById('fx-lista')) cargarFiestas();
+      if (typeof sincronizarBloqueosCajas === 'function') sincronizarBloqueosCajas();
     }).catch(function (e) { say('No se pudo guardar: ' + (e && e.message || e)); });
   }
 
@@ -503,7 +504,7 @@
       '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin:-4px 0 12px;font-size:11.5px"><span id="pz-gd" style="color:rgba(250,246,239,.6)">N.º ' + esc(nro) + ' · se guarda solo al escribir</span><button type="button" id="pz-dup" style="background:none;border:0;color:#E8C96B;font:600 11.5px \'DM Sans\';cursor:pointer;padding:0">Duplicar como nuevo</button></div>' +
       '<div class="pz-f"><label>Servicio</label><select data-k="servicio">' + Object.keys(SERVICIOS).map(function (k) { return '<option value="' + k + '"' + (f.servicio === k ? ' selected' : '') + '>' + esc(SERVICIOS[k]) + '</option>'; }).join('') + '</select></div>' +
       '<div class="pz-f"><label>Cargar desde una reserva</label><select id="pz-res"><option value="">— Elegir reserva (opcional) —</option></select></div>' +
-      '<div class="pz-mf"><b>📌 Pedido por WhatsApp</b><span>' + (f.servicio === 'caja' ? 'Completá cliente y fecha de entrega: el pedido queda cargado en Cajas, pendiente de seña.' : 'Completá cliente y fecha, y marcala: queda reservada sin que el cliente reserve en el sitio.') + '</span><button type="button" id="pz-marcar">' + (f.servicio === 'caja' ? (f.cajaPedidoId ? 'Actualizar el pedido en Cajas' : 'Cargar el pedido en Cajas') : 'Marcar la fecha (sin reserva del cliente)') + '</button>' + (f.reservaId && f.servicio !== 'caja' ? '<button type="button" id="pz-actualizar" style="background:transparent;border:1px solid rgba(232,201,107,.6);color:#FAF6EF">Actualizar la reserva elegida</button>' : '') + '<div class="pz-msg" id="pz-mf-msg"></div></div>' +
+      '<div class="pz-mf"><b>📌 Pedido por WhatsApp</b><span>' + (f.servicio === 'caja' ? 'Completá cliente y fecha de entrega: el pedido queda cargado en Cajas, pendiente de seña, y ese día se bloquea para experiencias.' : 'Completá cliente y fecha, y marcala: queda reservada sin que el cliente reserve en el sitio.') + '</span><button type="button" id="pz-marcar">' + (f.servicio === 'caja' ? (f.cajaPedidoId ? 'Actualizar el pedido en Cajas' : 'Cargar el pedido en Cajas') : 'Marcar la fecha (sin reserva del cliente)') + '</button>' + (f.reservaId && f.servicio !== 'caja' ? '<button type="button" id="pz-actualizar" style="background:transparent;border:1px solid rgba(232,201,107,.6);color:#FAF6EF">Actualizar la reserva elegida</button>' : '') + '<div class="pz-msg" id="pz-mf-msg"></div></div>' +
       (f.servicio !== 'exp' ? formComun() : formExp()) +
       '<div class="pz-acc"><button type="button" class="pri" id="pz-print">🖨️ Imprimir / Guardar PDF</button><button type="button" id="pz-nuevo">Nuevo</button></div>' +
       (f.servicio === 'exp' ? '<div class="pz-acc"><button type="button" id="pz-subir">⬆ Subir menú al sitio e ingredientes</button></div>' : '') +

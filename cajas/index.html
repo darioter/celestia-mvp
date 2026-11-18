@@ -758,8 +758,8 @@ const ultimaFecha = () => iso(new Date(Date.now() + 90 * 864e5));
 const irA = id => { const el = document.getElementById(id); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
 const enCaja = (x, o) => !x.ocasiones || x.ocasiones.includes(o);
 function track(ev, p) { try { window.celTrack && celTrack(ev, p || {}); } catch (e) {} }
-fetch(SUPA.url + '/rest/v1/bloqueos?select=fecha', { headers: { apikey: SUPA.key, Authorization: 'Bearer ' + SUPA.key } })
-  .then(r => r.ok ? r.json() : []).then(j => { BLOQ = new Set((j || []).map(x => String(x.fecha).slice(0, 10))); pintarCuando(); pintarRes(); }).catch(() => {});
+fetch(SUPA.url + '/rest/v1/bloqueos?select=fecha,motivo', { headers: { apikey: SUPA.key, Authorization: 'Bearer ' + SUPA.key } })
+  .then(r => r.ok ? r.json() : []).then(j => { BLOQ = new Set((j || []).filter(x => !/^📦 Caja/.test(x.motivo || '')).map(x => String(x.fecha).slice(0, 10))); pintarCuando(); pintarRes(); }).catch(() => {});
 
 /* ═════════ ocasión y fecha ═════════ */
 function pintarOcasiones() {

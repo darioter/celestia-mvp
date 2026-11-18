@@ -2918,6 +2918,26 @@ async function cargarBloqueos() {
   `).join('');
 }
 
+// ─── Cajas bloquean el día para experiencias (no puedo entregar un pedido y armar una experiencia el mismo día) ───
+// Cada día con un pedido de caja activo tiene un bloqueo "📦 Caja …". Si el pedido se cancela o cambia de día, se libera.
+async function sincronizarBloqueosCajas() {
+  try {
+    const hoy = new Date().toISOString().slice(0, 10);
+    const [{ data: peds, error: e1 }, { data: bloq, error: e2 }] = await Promise.all([
+      supa.from('pedidos_cajas').select('ref,entrega_fecha,estado').gte('entrega_fecha', hoy),
+      supa.from('bloqueos').select('id,fecha,motivo').gte('fecha', hoy)
+    ]);
+    if (e1 || e2) return;
+    const activas = {}; (peds || []).filter(p => p.estado !== 'cancelado').forEach(p => { (activas[p.entrega_fecha] = activas[p.entrega_fecha] || []).push(p.ref); });
+    const porFecha = {}; (bloq || []).forEach(b => { (porFecha[String(b.fecha).slice(0, 10)] = porFecha[String(b.fecha).slice(0, 10)] || []).push(b); });
+    const borrar = (bloq || []).filter(b => /^📦 Caja/.test(b.motivo || '') && !activas[String(b.fecha).slice(0, 10)]).map(b => b.id);
+    const nuevos = Object.keys(activas).filter(f => !porFecha[f]).map(f => ({ fecha: f, motivo: '📦 Caja ' + activas[f].join(', ') }));
+    if (borrar.length) await supa.from('bloqueos').delete().in('id', borrar);
+    if (nuevos.length) await supa.from('bloqueos').insert(nuevos);
+    if ((borrar.length || nuevos.length) && document.getElementById('bloqueos-grid') && document.getElementById('bloqueos-grid').offsetParent) cargarBloqueos();
+  } catch (e) { console.warn('sync bloqueos cajas', e); }
+}
+
 async function agregarBloqueo() {
   const fecha = document.getElementById('bloqueo-fecha').value;
   const motivo = document.getElementById('bloqueo-motivo').value;
@@ -2942,6 +2962,7 @@ function entrarAdmin() {
   document.getElementById('admin-screen').style.display = 'block';
   cargarReservas();
   iniciarRealtimeAdmin();
+  sincronizarBloqueosCajas();
 }
 // Si ya hay sesión de admin (por ejemplo, al volver de Instagram u otra página), entrar directo
 (async () => {
@@ -3060,7 +3081,7 @@ const sinAdic = t => (t || '').replace(ADIC_RE, '').trim();
 const esCaja = r => /^caja celestia\b/i.test(r.menu || '') || /^caja\b/i.test(r.menu || '');
 async function pasarACajas(id) {
   const r = todasReservas.find(x => x.id === id); if (!r) return;
-  if (!confirm('¿Pasar "' + (r.menu || 'la caja') + '" de ' + (r.nombre || '') + ' a Cajas? Se saca de Reservas y libera el turno en el calendario.')) return;
+  if (!confirm('¿Pasar "' + (r.menu || 'la caja') + '" de ' + (r.nombre || '') + ' a Cajas? Se saca de Reservas y el día queda bloqueado para experiencias.')) return;
   const total = Number(r.total) || ((r.honorario_final || r.honorario || 0) + (Number(r.ingredientes) || 0));
   const partes = String(r.menu || '').split(' · ');
   const seniaOk = r.senia_cobrada || r.estado === 'confirmada';
@@ -3073,7 +3094,8 @@ async function pasarACajas(id) {
   if (seniaOk) await supa.from('pedidos_cajas').update({ estado: 'sena_cobrada' }).eq('ref', fila.ref);
   const { error: e2 } = await supa.from('reservas').update({ estado: 'cancelada', notas: '[Pasada a Cajas como ' + fila.ref + '] ' + (r.notas || '') }).eq('id', id);
   if (e2) alert('El pedido quedó en Cajas, pero no pude sacar la reserva: ' + e2.message);
-  cargarReservas(); alert('✓ Listo: quedó en Cajas como ' + fila.ref + '.');
+  await sincronizarBloqueosCajas();
+  cargarReservas(); alert('✓ Listo: quedó en Cajas como ' + fila.ref + '. El día sigue bloqueado para experiencias.');
 }
 async function guardarDir(id) {
   const r = todasReservas.find(x => x.id === id); if (!r) return;
@@ -3842,9 +3864,10 @@ async function estadoFiesta(id, estado) {
   const { error } = await supa.from('pedidos_cajas').update({ estado }).eq('id', id);
   if (error) { alert('Error: ' + error.message); return; }
   const p = todosFiestas.find(x => x.id === id); if (p) p.estado = estado; renderFiestas();
+  sincronizarBloqueosCajas();
 }
 </script>
 <script src="/js/menus-ejemplo.js"></script>
-<script src="/admin-presupuesto.js?v=20261118a"></script><script src="/admin-catalogo-ws.js?v=1"></script><script src="/admin-wa-bot.js?v=6"></script><script src="/admin-menus-subir.js?v=20261110n"></script>
+<script src="/admin-presupuesto.js?v=20261118b"></script><script src="/admin-catalogo-ws.js?v=1"></script><script src="/admin-wa-bot.js?v=6"></script><script src="/admin-menus-subir.js?v=20261110n"></script>
 </body>
 </html>
