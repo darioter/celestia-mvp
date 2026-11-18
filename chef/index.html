@@ -1249,9 +1249,7 @@ async function cargarSolicitudes() {
       </div>
       <div class="compra-chips">
         <div class="info-label" style="width:100%;margin-bottom:4px;">Modalidad de compra</div>
-        <div class="compra-chip ${(r.compra_modo||'chef')==='chef'?'active':''}" onclick="setCompra('${r.id}','chef',this)">Chef compra</div>
-        <div class="compra-chip ${(r.compra_modo||'')==='usuario'?'active':''}" onclick="setCompra('${r.id}','usuario',this)">Usuario compra</div>
-        <div class="compra-chip ${(r.compra_modo||'')==='market'?'active':''}" onclick="setCompra('${r.id}','market',this)">Market automático</div>
+        <div class="compra-chip active">👨‍🍳 Chef compra todo</div>
       </div>
       <div class="solicitud-actions">
         <button class="btn-aceptar" onclick="aceptarServicio('${r.id}')">✓ Aceptar servicio</button>
@@ -1296,7 +1294,8 @@ async function aceptarServicio(id) {
     estado: 'confirmada',
     adelanto_monto: adelantoMonto,
     adelanto_reservado: true,
-    adelanto_reservado_at: new Date().toISOString()
+    adelanto_reservado_at: new Date().toISOString(),
+    compra_modo: 'chef'
   }).eq('id', id);
 
   if (error) {
@@ -1514,53 +1513,21 @@ function renderServicioActivo(r) {
   const modoIcons = { chef:'👨‍🍳', cliente:'🛍', market:'📦' };
   const modoLabels = { chef:'Chef compra todo', cliente:'Cliente compra', market:'Market/Domicilio' };
 
-  // Sección de modalidad compras
-  const comprasModalidad = compra_bloqueado ? `
+  // Compras: siempre las hace el chef (ingredientes incluidos en el total)
+  const comprasModalidad = `
     <div style="background:rgba(93,191,135,0.1);border:1px solid rgba(93,191,135,0.25);border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-      <span style="font-size:20px;">${modoIcons[compra_modo]||'✓'}</span>
+      <span style="font-size:20px;">👨‍🍳</span>
       <div>
-        <div style="font-size:13px;color:#5DBF87;font-weight:500;">✓ ${modoLabels[compra_modo]||compra_modo} — confirmado</div>
-        <div style="font-size:11px;color:rgba(250,246,239,0.35);">Bloqueado — el cliente confirmó esta modalidad</div>
+        <div style="font-size:13px;color:#5DBF87;font-weight:500;">Chef compra todo</div>
+        <div style="font-size:11px;color:rgba(250,246,239,0.35);">Los ingredientes están incluidos en el total del servicio</div>
       </div>
-    </div>` :
-  compra_modo_chef && compra_modo ? `
-    <div style="background:rgba(93,191,135,0.08);border:1px solid rgba(93,191,135,0.2);border-radius:10px;padding:10px 14px;margin-bottom:12px;">
-      <div style="font-size:11px;color:#5DBF87;margin-bottom:3px;">✓ Cliente confirmó: ${modoIcons[compra_modo]} ${modoLabels[compra_modo]||compra_modo}</div>
-      <div style="font-size:11px;color:rgba(250,246,239,0.3);">Acordado y bloqueado</div>
-    </div>` :
-  compra_modo_chef ? `
-    <div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:10px 14px;margin-bottom:12px;">
-      <div style="font-size:11px;color:var(--gold);margin-bottom:3px;">⏳ Propuesta enviada — esperando que el cliente confirme</div>
-      <div style="font-size:13px;color:var(--cream);">${modoIcons[compra_modo_chef]} ${modoLabels[compra_modo_chef]}</div>
-      <div style="font-size:11px;color:rgba(250,246,239,0.3);margin-top:3px;">Aclaración: según disponibilidad de ingredientes</div>
-    </div>` : `
-    <div style="margin-bottom:12px;">
-      <div style="font-size:12px;color:rgba(250,246,239,0.4);margin-bottom:8px;">Proponé al cliente cómo manejar las compras:</div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;">
-        ${['chef','cliente','market'].map(k => `
-          <button onclick="proponerCompraChef('${r.id}','${k}')"
-            style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:var(--cream);font-family:'DM Sans',sans-serif;font-size:12px;padding:8px 14px;border-radius:20px;cursor:pointer;transition:all 0.15s;"
-            onmouseover="this.style.borderColor='rgba(201,168,76,0.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'">
-            ${modoIcons[k]} ${modoLabels[k]}
-          </button>`).join('')}
-      </div>
-      <div style="font-size:11px;color:rgba(250,246,239,0.25);margin-top:6px;">Según disponibilidad de ingredientes. El cliente podrá aceptar o cambiar una vez.</div>
     </div>`;
 
   const comprasSection = menuOk ? `
     <div class="compras-wrap" id="compras-wrap-${r.id}">
       <div class="checklist-title" style="margin-bottom:12px;">Compras del servicio</div>
       ${comprasModalidad}
-      ${listaCompras?.secciones?.length ? renderListaCompras(listaCompras, r.id) : `
-        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;">
-          <button class="btn-menu-ia" onclick="generarListaCompras('${r.id}')" id="btn-lista-${r.id}">
-            ✦ Generar lista con IA
-          </button>
-          <div id="lista-ia-loading-${r.id}" style="display:none;" class="ia-loading">
-            <div class="ia-dot"></div><div class="ia-dot"></div><div class="ia-dot"></div>
-            <span>Generando lista...</span>
-          </div>
-        </div>`}
+      ${listaCompras?.secciones?.length ? renderListaCompras(listaCompras, r.id) : ''}
     </div>` : '';
 
   // ─── Sección recetas ───
