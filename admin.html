@@ -3056,6 +3056,13 @@ async function guardarTraslado(id) {
 const ADIC_RE = /\s*\[ADIC \$([\d.]+) · (cobrar|absorbo)(?: · ([^\]]*))?\]/;
 function infoAdic(r) { const m = (r.notas || '').match(ADIC_RE); return m ? { monto: parseInt(m[1].replace(/\./g, '')) || 0, cobrar: m[2] === 'cobrar', det: m[3] || '' } : null; }
 const sinAdic = t => (t || '').replace(ADIC_RE, '').trim();
+async function guardarDir(id) {
+  const r = todasReservas.find(x => x.id === id); if (!r) return;
+  const dir = document.getElementById('dir-' + id).value.trim();
+  const { error } = await supa.from('reservas').update({ dir }).eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  r.dir = dir; renderReservas();
+}
 async function guardarRecibido(id, cual) {
   const r = todasReservas.find(x => x.id === id); if (!r) return;
   const v = document.getElementById((cual === 'senia' ? 'srec-' : 'lrec-') + id).value;
@@ -3231,7 +3238,7 @@ function renderReservas() {
       <div class="res-cliente">
         <div class="res-nombre">${r.nombre || '—'}</div>
         <div class="res-contacto">${r.tel || ''}<br>${r.email || ''}</div>
-        ${r.dir ? `<div class="res-contacto" style="margin-top:4px;">📍 ${r.dir}</div>` : ''}
+        <div class="precio-wrap" style="margin-top:6px;"><input class="precio-input" id="dir-${r.id}" value="${(r.dir || '').replace(/"/g, '&quot;')}" placeholder="📍 Dirección del evento" style="width:100%;font-size:12px;"><button class="precio-ok-btn" onclick="guardarDir('${r.id}')">✓</button></div>
         ${sinAdic(tr ? tr.resto : r.notas) ? `<div class="res-contacto" style="margin-top:4px;font-style:italic;">${sinAdic(tr ? tr.resto : r.notas)}</div>` : ''}
         ${r.ocasion ? `<div class="res-contacto" style="margin-top:4px;">🎉 ${r.ocasion}</div>` : ''}
         ${tr ? `<div style="margin-top:10px;padding:10px 12px;border-radius:8px;background:rgba(226,163,62,0.12);border:1px solid rgba(226,163,62,0.45);">
