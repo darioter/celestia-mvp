@@ -3097,6 +3097,68 @@ async function pasarACajas(id) {
   await sincronizarBloqueosCajas();
   cargarReservas(); alert('✓ Listo: quedó en Cajas como ' + fila.ref + '. El día sigue bloqueado para experiencias.');
 }
+// ─── Cambiar cantidad de personas: recalcula el importe y pide confirmación ───
+let _CAJAS_ADM = null;
+async function cajasAdm() {
+  if (_CAJAS_ADM) return _CAJAS_ADM;
+  try { const h = await (await fetch('/cajas/')).text(); const i = h.indexOf('const CAJAS = ['), j = h.indexOf('\n];', i); _CAJAS_ADM = (i > 0 && j > i) ? (new Function('return ' + h.slice(i + 14, j + 2))() || []) : []; } catch (e) { _CAJAS_ADM = []; }
+  return _CAJAS_ADM;
+}
+function opcionesCaja(c) { if (c.tipo !== 'pp') return c.opciones || []; const o = []; for (let p = (c.personas || [4])[0]; p <= (c.max || 20); p++) o.push({ label: p + ' personas', personas: p, precio: p * c.pp }); return o; }
+async function cambiarPersonas(id) {
+  const r = todasReservas.find(x => x.id === id); if (!r) return;
+  const n = parseInt(document.getElementById('pers-' + id).value, 10), antes = Number(r.personas) || 0;
+  if (!n || n < 1) { alert('Poné una cantidad válida.'); return; }
+  if (n === antes) return;
+  const totalAntes = (r.honorario_final || r.honorario || 0) + (Number(r.ingredientes) || 0);
+  let totalNuevo = antes ? Math.round(totalAntes / antes * n / 1000) * 1000 : totalAntes, menuNuevo = r.menu, como = 'proporcional por persona (' + fmtAR(antes ? Math.round(totalAntes / antes) : 0) + ' c/u)';
+  if (esCaja(r)) {
+    const cs = await cajasAdm(), c = cs.find(x => (r.menu || '').includes(x.nombre));
+    if (c) {
+      const o = opcionesCaja(c).find(x => x.personas === n) || opcionesCaja(c).find(x => x.personas >= n);
+      if (o) { totalNuevo = o.precio; menuNuevo = 'Caja Celestia · ' + c.nombre + ' · ' + o.label; como = 'según la caja: ' + o.label; }
+      else como = 'esa cantidad no está en las opciones de la caja: revisá el importe';
+    }
+  }
+  modalPersonas(r, antes, n, totalAntes, totalNuevo, menuNuevo, como);
+}
+const fmtAR = n => '$' + Number(n || 0).toLocaleString('es-AR');
+function modalPersonas(r, antes, n, tA, tN, menuN, como) {
+  document.getElementById('mp-ov')?.remove();
+  const ov = document.createElement('div'); ov.id = 'mp-ov';
+  ov.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(5,10,20,.72);display:flex;align-items:center;justify-content:center;padding:16px';
+  const sena = r.senia_cobrada && Number(r.senia_monto) > 0 ? Number(r.senia_monto) : 0;
+  const pint = () => { const t = parseInt(ov.querySelector('#mp-t').value, 10) || 0; ov.querySelector('#mp-calc').innerHTML =
+    `<div><span>Seña (50%)</span><b>${fmtAR(Math.round(t * .5))}</b></div>` + (sena ? `<div><span>Seña ya recibida</span><b>${fmtAR(sena)}</b></div>` : '') +
+    `<div><span>${sena ? 'Saldo a cobrar' : 'Saldo (50%)'}</span><b>${fmtAR(t - (sena || Math.round(t * .5)))}</b></div>`; };
+  ov.innerHTML = `<div style="background:#0F1B2D;border:1px solid rgba(201,168,76,.45);border-radius:16px;max-width:420px;width:100%;padding:20px 20px 16px;color:#FAF6EF;font-family:'DM Sans',sans-serif;box-shadow:0 20px 60px rgba(0,0,0,.5)">
+    <div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#E2A33E;margin-bottom:8px">⚠ Confirmá el cambio</div>
+    <div style="font-family:'DM Serif Display',serif;font-size:20px;line-height:1.3;margin-bottom:6px">Estás cambiando de <b style="color:#E8C96A">${antes}</b> a <b style="color:#E8C96A">${n} personas</b></div>
+    <div style="font-size:13px;color:rgba(250,246,239,.6);margin-bottom:14px">${r.nombre || ''} · ${r.menu || ''}</div>
+    <div class="adm-desglose" style="font-size:13px">
+      <div><span>Total actual</span><b>${fmtAR(tA)}</b></div>
+      <div class="tot" style="align-items:center"><span>Nuevo total</span><input id="mp-t" class="precio-input" type="number" value="${tN}" style="width:140px;text-align:right"></div>
+      <small>Calculado ${como}. Podés ajustarlo antes de confirmar.</small>
+      <div id="mp-calc" style="margin-top:6px;display:block"></div>
+      ${menuN !== r.menu ? `<small style="color:rgba(250,246,239,.55)">Menú pasa a: ${menuN}</small>` : ''}
+    </div>
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button id="mp-no" class="accion-btn btn-cancelar" style="flex:1">Cancelar</button>
+      <button id="mp-si" class="accion-btn btn-confirmar" style="flex:1.4">✓ Sí, cambiar a ${n} personas</button>
+    </div></div>`;
+  document.body.appendChild(ov); pint();
+  ov.querySelector('#mp-t').addEventListener('input', pint);
+  const cerrar = () => { ov.remove(); const i = document.getElementById('pers-' + r.id); if (i) i.value = antes; };
+  ov.querySelector('#mp-no').onclick = cerrar; ov.addEventListener('click', e => { if (e.target === ov) cerrar(); });
+  ov.querySelector('#mp-si').onclick = async () => {
+    const t = parseInt(ov.querySelector('#mp-t').value, 10);
+    if (!t || t < 0) { alert('Revisá el nuevo total.'); return; }
+    const upd = { personas: n, honorario_final: t, ingredientes: 0, total: t, menu: menuN };
+    const { error } = await supa.from('reservas').update(upd).eq('id', r.id);
+    if (error) { alert('Error: ' + error.message); return; }
+    Object.assign(r, upd); ov.remove(); renderReservas();
+  };
+}
 async function guardarDir(id) {
   const r = todasReservas.find(x => x.id === id); if (!r) return;
   const dir = document.getElementById('dir-' + id).value.trim();
@@ -3291,7 +3353,7 @@ function renderReservas() {
       </div>
       <div>
         <div class="res-menu">${r.menu || '—'}</div>
-        <div class="res-personas">${r.personas} personas</div>
+        <div class="precio-wrap" style="margin-top:2px;"><input class="precio-input" id="pers-${r.id}" type="number" min="1" value="${r.personas || ''}" style="width:80px;"><span class="res-personas" style="margin:0 6px;">personas</span><button class="precio-ok-btn" onclick="cambiarPersonas('${r.id}')">Cambiar</button></div>
         <div class="pago-bloque-titulo" style="margin-top:10px;">Total <span style="opacity:.5;text-transform:none;letter-spacing:0">(todo incluido: servicio + ingredientes)</span></div>
         <div class="precio-wrap">
           <input class="precio-input" id="precio-${r.id}" value="${totalBase}" type="number">
