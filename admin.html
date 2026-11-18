@@ -3020,8 +3020,11 @@ async function cargarReservas(silencioso = false) {
     return;
   }
   // Solo re-renderizar si hubo cambios reales
-  const newHash = JSON.stringify(data.map(r => r.id + r.estado + (r.chef_id||'') + (r.estado_servicio||'')));
+  const newHash = JSON.stringify(data.map(r => r.id + r.estado + (r.chef_id||'') + (r.estado_servicio||'')).sort());
   if (silencioso && newHash === _reservasPrevHash) return;
+  // No refrescar mientras estás escribiendo en una reserva o con un cartel abierto: se refresca en la próxima vuelta
+  const ae = document.activeElement;
+  if (silencioso && (document.getElementById('mp-ov') || (ae && /^(INPUT|SELECT|TEXTAREA)$/.test(ae.tagName) && ae.closest('#reservas-grid')))) return;
   _reservasPrevHash = newHash;
   // Enriquecer con datos del chef si tiene chef_id
   const chefIds = [...new Set(data.filter(r => r.chef_id).map(r => r.chef_id))];
@@ -3237,10 +3240,13 @@ function pintarGruposReservas(lista, tarjeta) {
   const pasada = r => (r.fecha && r.fecha < hoy) || r.estado_servicio === 'finalizado';
   const prox = lista.filter(r => !pasada(r)).sort((a, b) => (a.fecha || '').localeCompare(b.fecha || ''));
   const pas = lista.filter(pasada).sort((a, b) => (b.fecha || '').localeCompare(a.fecha || ''));
-  document.getElementById('reservas-grid').innerHTML =
+  const G = document.getElementById('reservas-grid');
+  const abiertos = [...G.querySelectorAll('details[open][id]')].map(d => d.id);
+  G.innerHTML =
     `<div class="res-grupo-t">Próximas <span>${prox.length}</span></div>` +
     (prox.length ? prox.map(r => filaReserva(r, tarjeta(r))).join('') : '<div class="empty-state" style="padding:18px">No hay servicios próximos</div>') +
     (pas.length ? `<div class="res-pasadas${RES_PASADAS_ABIERTO ? ' abierto' : ''}" id="res-pasadas"><button type="button" class="res-grupo-t res-grupo-btn" onclick="togglePasadas()">Realizadas <span>${pas.length}</span><i>▾</i></button><div class="res-pasadas-l">${pas.map(r => filaReserva(r, tarjeta(r))).join('')}</div></div>` : '');
+  abiertos.forEach(id => { const d = document.getElementById(id); if (d) d.open = true; });
 }
 
 function renderReservas() {
@@ -3395,13 +3401,13 @@ function renderReservas() {
           ${recibido ? `<div class="pg"><span>Recibido en total</span><b>${fmt(recibido)}</b></div>` : ''}
           <div class="tot"><span>${restaCobrar ? (recibido ? 'Falta cobrar' : 'A cobrar el día del servicio') : '✓ Todo cobrado'}</span><b>${fmt(restaCobrar) === '—' ? '$0' : fmt(restaCobrar)}</b></div>
         </div>
-        <details class="adic-box"><summary>＋ Cargar pago parcial</summary>
+        <details class="adic-box" id="det-pp-${r.id}"><summary>＋ Cargar pago parcial</summary>
           <p>Para pagos fuera de la seña y el saldo: un adelanto para acopio de ingredientes, una seña en partes, etc. Se descuenta de lo que falta cobrar.</p>
           <select class="precio-input adic-det" id="pp-c-${r.id}"><option>Acopio de ingredientes</option><option>Seña (parte)</option><option>Saldo (parte)</option><option>Otro</option></select>
           <div class="precio-wrap"><input class="precio-input" id="pp-m-${r.id}" type="number" placeholder="Monto $"><input class="precio-input" id="pp-f-${r.id}" type="date" value="${new Date().toISOString().slice(0, 10)}" style="width:150px"></div>
           <button class="precio-ok-btn" style="margin-top:8px" onclick="agregarPago('${r.id}')">＋ Agregar pago</button>
         </details>
-        <details class="adic-box"${ad ? ' open' : ''}><summary>＋ Adicionales de ingredientes</summary>
+        <details class="adic-box" id="det-ad-${r.id}"${ad ? ' open' : ''}><summary>＋ Adicionales de ingredientes</summary>
           <p>Si por el menú los ingredientes superan lo incluido. Elegís si se lo cobrás con el saldo o lo absorbés.</p>
           <div class="precio-wrap"><input class="precio-input" id="adic-${r.id}" value="${ad ? ad.monto : ''}" type="number" placeholder="Monto $"></div>
           <input class="precio-input adic-det" id="adic-det-${r.id}" value="${ad ? ad.det.replace(/"/g, '&quot;') : ''}" placeholder="Detalle (ej.: langostinos, trufa)">
