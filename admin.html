@@ -324,6 +324,29 @@
     color: var(--gold-light);
     text-align: right;
   }
+  .res-grupo-t{display:flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin:6px 0 2px}
+  .res-grupo-t span{font-size:10px;padding:1px 8px;border-radius:20px;background:rgba(201,168,76,.12);letter-spacing:0}
+  .res-grupo-btn{background:none;border:0;cursor:pointer;width:100%;padding:14px 0 6px;margin-top:14px;border-top:1px solid rgba(255,255,255,.08);font:inherit;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(250,246,239,.55)}
+  .res-grupo-btn i{margin-left:auto;font-style:normal;transition:transform .2s}
+  .res-pasadas-l{display:none;flex-direction:column;gap:8px}.res-pasadas.abierto .res-pasadas-l{display:flex}.res-pasadas.abierto .res-grupo-btn i{transform:rotate(180deg)}
+  .res-pasadas .res-row{opacity:.7}
+  .res-wrap{display:flex;flex-direction:column}
+  .res-row{display:grid;grid-template-columns:120px minmax(0,1fr) auto auto 22px;gap:14px;align-items:center;width:100%;text-align:left;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-left:3px solid rgba(255,255,255,.15);border-radius:12px;padding:10px 14px;color:var(--cream);cursor:pointer;font:inherit;transition:background .15s}
+  .res-row:hover{background:rgba(255,255,255,.07)}
+  .res-row.estado-reservada{border-left-color:var(--gold)}.res-row.estado-ofrecida{border-left-color:#7C9EBF}.res-row.estado-confirmada{border-left-color:#4CAF50}.res-row.estado-cancelada{opacity:.5}
+  .res-row b{display:block;font-weight:500;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .res-row small{display:block;font-size:11px;color:rgba(250,246,239,.45);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rr-f b{text-transform:capitalize}.rr-t{text-align:right}.rr-t b{font-family:'DM Serif Display',serif;font-size:16px;color:var(--gold-light);font-weight:400}
+  .rr-e{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+  .rr-p{font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(201,168,76,.1);color:var(--gold);white-space:nowrap}.rr-p.mid{background:rgba(124,158,191,.12);color:#9DB8D3}.rr-p.ok{background:rgba(76,175,80,.12);color:#81C784}
+  .rr-a{color:rgba(250,246,239,.45);transition:transform .2s;text-align:center}
+  .res-det{display:none;margin-top:6px}.res-wrap.abierta .res-det{display:block}.res-wrap.abierta .rr-a{transform:rotate(180deg)}
+  .res-wrap.abierta .res-row{border-color:rgba(201,168,76,.35)}
+  .adic-box{margin-top:8px;font-size:11.5px;border:1px dashed rgba(201,168,76,.25);border-radius:10px;padding:6px 10px}
+  .adic-box summary{cursor:pointer;color:var(--gold);font-size:11.5px}
+  .adic-box p{margin:6px 0;color:rgba(250,246,239,.45);font-size:11px;line-height:1.4}
+  .adic-box .adic-det{width:100%;margin:6px 0}.adic-cob{display:flex;align-items:center;gap:6px;margin:4px 0 8px;color:rgba(250,246,239,.7)}
+  @media (max-width:760px){.res-row{grid-template-columns:minmax(0,1fr) auto 18px;gap:6px 10px}.rr-f{grid-column:1}.rr-t{grid-column:2;grid-row:1}.rr-a{grid-column:3;grid-row:1/3}.rr-c{grid-column:1/3}.rr-e{grid-column:1/3;flex-direction:row;justify-content:flex-start}}
   .adm-desglose{margin-top:8px;font-size:11.5px;color:rgba(250,246,239,0.55);line-height:1.5;border:1px solid rgba(201,168,76,0.18);border-radius:10px;padding:8px 10px;background:rgba(201,168,76,0.04)}
   .adm-desglose div{display:flex;justify-content:space-between;gap:10px}
   .adm-desglose b{font-weight:500;color:var(--cream)}
@@ -1733,9 +1756,11 @@ function calcularFinanciero(r) {
   const retPct   = (r.retencion_pct || 15) / 100;
 
   const totalServicio = servicio + express;
-  const totalCliente  = totalServicio + market + extras;
-  const seniaMonto    = Math.round(totalServicio * 0.5);                    // seña: 50% del servicio
-  const saldoMonto    = totalCliente - seniaMonto;                          // resto (50% servicio + ingredientes + extras) el día del servicio
+  const ad = infoAdic(r), adic = ad && ad.cobrar ? ad.monto : 0;            // adicionales de ingredientes que se cobran
+  const totalBase     = totalServicio + market;                             // total todo incluido
+  const totalCliente  = totalBase + extras + adic;
+  const seniaMonto    = Math.round(totalBase * 0.5);                        // seña: 50% del total
+  const saldoMonto    = totalCliente - seniaMonto;                          // saldo 50% + adicionales, el día del servicio
   const comisionApp   = Math.round(totalServicio * COMISION_APP);
   const baseChef      = Math.round(totalServicio * (1 - COMISION_APP));     // 70% del servicio
   const retencionChef = Math.round(baseChef * retPct);
@@ -1827,7 +1852,7 @@ async function cargarPagos() {
           <div class="pago-monto-row ${seniaCobrada?'cobrado':''}">
             <div>
               <div class="pago-monto-label">Seña — al reservar</div>
-              <div style="font-size:10px;color:rgba(250,246,239,0.25);margin-top:1px;">50% del servicio</div>
+              <div style="font-size:10px;color:rgba(250,246,239,0.25);margin-top:1px;">50% del total</div>
             </div>
             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
               <div class="pago-monto-valor">${fmt(f.seniaMonto)}</div>
@@ -1839,7 +1864,7 @@ async function cargarPagos() {
           <div class="pago-monto-row ${saldoCobrado?'cobrado':''} ${!seniaCobrada?'bloqueado':''}">
             <div>
               <div class="pago-monto-label">Resto — el día del servicio</div>
-              <div style="font-size:10px;color:rgba(250,246,239,0.25);margin-top:1px;">50% servicio + ingredientes${f.market ? ' (' + fmt(f.market) + ')' : ''}</div>
+              <div style="font-size:10px;color:rgba(250,246,239,0.25);margin-top:1px;">50% del total${f.totalCliente - f.seniaMonto * 2 > 0 ? ' + adicionales (' + fmt(f.totalCliente - f.seniaMonto * 2) + ')' : ''}</div>
             </div>
             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
               <div class="pago-monto-valor">${fmt(f.saldoMonto)}</div>
@@ -3025,6 +3050,56 @@ async function guardarTraslado(id) {
   renderReservas();
 }
 
+// ─── ADICIONALES (ingredientes que superan lo incluido según el menú) ───
+// Se guardan al final de "notas":  [ADIC $25.000 · cobrar · trufa y langostinos]  ó  [ADIC $25.000 · absorbo]
+const ADIC_RE = /\s*\[ADIC \$([\d.]+) · (cobrar|absorbo)(?: · ([^\]]*))?\]/;
+function infoAdic(r) { const m = (r.notas || '').match(ADIC_RE); return m ? { monto: parseInt(m[1].replace(/\./g, '')) || 0, cobrar: m[2] === 'cobrar', det: m[3] || '' } : null; }
+const sinAdic = t => (t || '').replace(ADIC_RE, '').trim();
+async function guardarAdic(id) {
+  const r = todasReservas.find(x => x.id === id); if (!r) return;
+  const monto = parseInt(document.getElementById('adic-' + id).value) || 0;
+  const det = (document.getElementById('adic-det-' + id).value || '').replace(/[\[\]]/g, '').trim();
+  const cobrar = document.getElementById('adic-cob-' + id).checked;
+  let notas = sinAdic(r.notas);
+  if (monto > 0) notas = (notas ? notas + ' ' : '') + `[ADIC $${monto.toLocaleString('es-AR')} · ${cobrar ? 'cobrar' : 'absorbo'}${det ? ' · ' + det : ''}]`;
+  const { error } = await supa.from('reservas').update({ notas }).eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  r.notas = notas; renderReservas();
+}
+// Vista compacta: fila resumen + flecha que despliega la reserva completa
+const RES_ABIERTAS = new Set(); let RES_PASADAS_ABIERTO = false;
+function toggleRes(id) { RES_ABIERTAS.has(id) ? RES_ABIERTAS.delete(id) : RES_ABIERTAS.add(id); const w = document.getElementById('rw-' + id); if (w) w.classList.toggle('abierta', RES_ABIERTAS.has(id)); }
+function togglePasadas() { RES_PASADAS_ABIERTO = !RES_PASADAS_ABIERTO; const g = document.getElementById('res-pasadas'); if (g) g.classList.toggle('abierto', RES_PASADAS_ABIERTO); }
+function filaReserva(r, full) {
+  const fmt = n => n ? '$' + Number(n).toLocaleString('es-AR') : '—';
+  const hon = r.honorario_final || r.honorario || 0, total = hon + (Number(r.ingredientes) || 0);
+  const f = new Date((r.fecha || '') + 'T12:00:00');
+  const dia = isNaN(f) ? '—' : f.toLocaleDateString('es-AR', { weekday: 'short', day: 'numeric', month: 'short' });
+  const ad = infoAdic(r);
+  const pago = r.saldo_cobrado ? '<span class="rr-p ok">✓ Pagado</span>' : (r.senia_cobrada || r.estado === 'confirmada') ? '<span class="rr-p mid">Seña ✓ · saldo pend.</span>' : '<span class="rr-p">Seña pendiente</span>';
+  const est = r.estado === 'reservada' ? 'pendiente' : r.estado;
+  return `<div class="res-wrap${RES_ABIERTAS.has(r.id) ? ' abierta' : ''}" id="rw-${r.id}">
+    <button type="button" class="res-row estado-${r.estado}" onclick="toggleRes('${r.id}')" aria-label="Ver detalle de la reserva">
+      <span class="rr-f"><b>${dia}</b><small>${r.turno === 'almuerzo' ? '☀ Almuerzo' : '🌙 Cena'}</small></span>
+      <span class="rr-c"><b>${r.nombre || '—'}</b><small>${r.personas || '—'} pers. · ${r.menu || '—'}</small></span>
+      <span class="rr-t"><b>${fmt(total)}</b>${ad ? `<small>+ adic. ${fmt(ad.monto)}${ad.cobrar ? '' : ' (no se cobra)'}</small>` : ''}</span>
+      <span class="rr-e"><span class="estado-badge ${r.estado}">${est}</span>${pago}</span>
+      <span class="rr-a" aria-hidden="true">▾</span>
+    </button>
+    <div class="res-det">${full}</div>
+  </div>`;
+}
+function pintarGruposReservas(lista, tarjeta) {
+  const hoy = new Date().toISOString().slice(0, 10);
+  const pasada = r => (r.fecha && r.fecha < hoy) || r.estado_servicio === 'finalizado';
+  const prox = lista.filter(r => !pasada(r)).sort((a, b) => (a.fecha || '').localeCompare(b.fecha || ''));
+  const pas = lista.filter(pasada).sort((a, b) => (b.fecha || '').localeCompare(a.fecha || ''));
+  document.getElementById('reservas-grid').innerHTML =
+    `<div class="res-grupo-t">Próximas <span>${prox.length}</span></div>` +
+    (prox.length ? prox.map(r => filaReserva(r, tarjeta(r))).join('') : '<div class="empty-state" style="padding:18px">No hay servicios próximos</div>') +
+    (pas.length ? `<div class="res-pasadas${RES_PASADAS_ABIERTO ? ' abierto' : ''}" id="res-pasadas"><button type="button" class="res-grupo-t res-grupo-btn" onclick="togglePasadas()">Realizadas <span>${pas.length}</span><i>▾</i></button><div class="res-pasadas-l">${pas.map(r => filaReserva(r, tarjeta(r))).join('')}</div></div>` : '');
+}
+
 function renderReservas() {
   const reservas = filtroActual === 'todas'
     ? todasReservas
@@ -3065,7 +3140,7 @@ function renderReservas() {
     return { total, senia_cliente, saldo_cliente, comision_app, total_chef, adelanto_chef, saldo_chef };
   };
 
-  document.getElementById('reservas-grid').innerHTML = reservas.map(r => {
+  const tarjeta = r => {
     const enviados = r.mensajes_enviados || [];
     const honorario = r.honorario_final || r.honorario || 0;
     const p = calcPrecios(honorario);
@@ -3100,15 +3175,19 @@ function renderReservas() {
 
     const tr = infoTraslado(r);
     const trasladoOk = tr && tr.cotizado;
-    const totalEst = honorario + ingEst + (trasladoOk ? tr.monto : 0);
-    const aTransferir = p.senia_cliente + (trasladoOk ? tr.monto : 0);
-    const msgM3 = `Hola ${primerNombre}, ¡tenemos disponibilidad! Confirmamos tu experiencia Celestia 🍽\\n\\n*${r.menu}* · ${fechaStr} · ${turnoStr} · ${r.personas} personas\\n\\n*Total (todo incluido):* ${fmt(totalEst)}\\n_Servicio, asistentes e ingredientes${trasladoOk ? ' y traslado' : ''}. Si el menú o los detalles cambian, te confirmo el importe final con el menú._\\n\\n*Para reservar la fecha* transferí la seña de *${fmt(aTransferir)}* al alias *daro.chef* y mandanos el comprobante por acá 🙌\\n\\n*El resto (${fmt(totalEst - aTransferir)})* se abona el día del servicio.\\n\\n— Daro · Celestia Chef Privado`;
+    const totalBase = honorario + ingEst;                       // total todo incluido (servicio + ingredientes)
+    const ad = infoAdic(r), adicCobro = ad && ad.cobrar ? ad.monto : 0;
+    const seniaBase = Math.round(totalBase * 0.5);              // seña 50% del total
+    const totalEst = totalBase + (trasladoOk ? tr.monto : 0) + adicCobro;
+    const aTransferir = seniaBase + (trasladoOk ? tr.monto : 0);
+    const adicTxt = adicCobro ? ` (incluye ${fmt(adicCobro)} de ingredientes adicionales${ad.det ? ': ' + ad.det.replace(/[`"$\\]/g, '') : ''})` : '';
+    const msgM3 = `Hola ${primerNombre}, ¡tenemos disponibilidad! Confirmamos tu experiencia Celestia 🍽\\n\\n*${r.menu}* · ${fechaStr} · ${turnoStr} · ${r.personas} personas\\n\\n*Total (todo incluido):* ${fmt(totalEst)}\\n_Servicio, asistentes e ingredientes${trasladoOk ? ' y traslado' : ''}. Si el menú o los detalles cambian, te confirmo el importe final con el menú._\\n\\n*Para reservar la fecha* transferí la seña de *${fmt(aTransferir)}* al alias *daro.chef* y mandanos el comprobante por acá 🙌\\n\\n*El resto (${fmt(totalEst - aTransferir)})* se abona el día del servicio${adicTxt}.\\n\\n— Daro · Celestia Chef Privado`;
 
     const msgMN = `Hola ${primerNombre} 👋 Te comparto el menú de tu experiencia del *${fechaStr}*:\\n\\n${(r.menu_definitivo || '').replace(/[`"$\\]/g, '').replace(/\n/g, '\\n')}\\n\\nSi querés ajustar algo, avisame por acá.\\n\\n— Daro · Celestia Chef Privado`;
 
     const msgM4 = `Hola ${primerNombre} 👋 Tu experiencia Celestia es el *${fechaStr}*.\\n\\nVoy a llegar entre las *${llegadaVentana}* para el mise en place (depende del menú); el día anterior te confirmo el horario exacto. El servicio comienza a las *${inicioStr}*.\\n\\nEn los días previos coordinamos los últimos detalles por acá.\\n\\n¡Nos vemos pronto! — Daro · Celestia Chef Privado`;
 
-    const msgM5 = `Hola ${primerNombre} 👋 ¡Mañana es tu experiencia Celestia!\\n\\n*${r.menu}* · ${turnoStr} · ${r.personas} personas · ${r.dir || ''}\\n\\nLlego con anticipación para el mise en place; te confirmo por acá el horario exacto.\\n\\nPara que lo tengas a mano: el resto a abonar es *${fmt(totalEst - aTransferir)}*, el día del servicio.\\n\\nCualquier última consulta, acá estoy. ¡Hasta mañana! — Daro · Celestia Chef Privado`;
+    const msgM5 = `Hola ${primerNombre} 👋 ¡Mañana es tu experiencia Celestia!\\n\\n*${r.menu}* · ${turnoStr} · ${r.personas} personas · ${r.dir || ''}\\n\\nLlego con anticipación para el mise en place; te confirmo por acá el horario exacto.\\n\\nPara que lo tengas a mano: el resto a abonar es *${fmt(totalEst - aTransferir)}*${adicTxt}, el día del servicio.\\n\\nCualquier última consulta, acá estoy. ¡Hasta mañana! — Daro · Celestia Chef Privado`;
 
     const msgM6 = `Hola ${primerNombre}, fue un placer compartir la experiencia con vos y tus invitados 🙌\\n\\nEspero que haya sido un momento especial. Si tenés un minuto, nos ayuda muchísimo una reseña en Google: podés escanear la tarjeta que te dejé o entrar acá:\\n\\nhttps://g.page/r/CWYAy7Wn5FfhEBM/review\\n\\n¡Hasta la próxima! — Daro · Celestia Chef Privado`;
 
@@ -3136,7 +3215,7 @@ function renderReservas() {
         <div class="res-nombre">${r.nombre || '—'}</div>
         <div class="res-contacto">${r.tel || ''}<br>${r.email || ''}</div>
         ${r.dir ? `<div class="res-contacto" style="margin-top:4px;">📍 ${r.dir}</div>` : ''}
-        ${(tr ? tr.resto : r.notas) ? `<div class="res-contacto" style="margin-top:4px;font-style:italic;">${tr ? tr.resto : r.notas}</div>` : ''}
+        ${sinAdic(tr ? tr.resto : r.notas) ? `<div class="res-contacto" style="margin-top:4px;font-style:italic;">${sinAdic(tr ? tr.resto : r.notas)}</div>` : ''}
         ${r.ocasion ? `<div class="res-contacto" style="margin-top:4px;">🎉 ${r.ocasion}</div>` : ''}
         ${tr ? `<div style="margin-top:10px;padding:10px 12px;border-radius:8px;background:rgba(226,163,62,0.12);border:1px solid rgba(226,163,62,0.45);">
           <div style="font-size:11px;color:#E2A33E;font-weight:600;letter-spacing:.04em;">✈ FUERA DE AMBA · ${tr.zona}</div>
@@ -3148,25 +3227,26 @@ function renderReservas() {
       <div>
         <div class="res-menu">${r.menu || '—'}</div>
         <div class="res-personas">${r.personas} personas</div>
-        <div class="pago-bloque-titulo" style="margin-top:10px;">Servicio <span style="opacity:.5;text-transform:none;letter-spacing:0">(honorario + asistentes)</span></div>
+        <div class="pago-bloque-titulo" style="margin-top:10px;">Total <span style="opacity:.5;text-transform:none;letter-spacing:0">(todo incluido: servicio + ingredientes)</span></div>
         <div class="precio-wrap">
-          <input class="precio-input" id="precio-${r.id}" value="${honorario}" type="number">
+          <input class="precio-input" id="precio-${r.id}" value="${totalBase}" type="number">
           <button class="precio-ok-btn" onclick="guardarPrecio('${r.id}')">✓ OK</button>
         </div>
-        <div class="pago-bloque-titulo" style="margin-top:8px;">Ingredientes <span style="opacity:.5;text-transform:none;letter-spacing:0">(estimado)</span></div>
-        <div class="precio-wrap">
-          <input class="precio-input" id="ing-${r.id}" value="${ingEst}" type="number">
-          <button class="precio-ok-btn" onclick="guardarIngredientes('${r.id}')">✓ OK</button>
-        </div>
         <div class="adm-desglose">
-          <div><span>Servicio</span><b>${fmt(honorario)}</b></div>
-          <div><span>Ingredientes</span><b>${fmt(ingEst)}</b></div>
+          <div><span>Total</span><b>${fmt(totalBase)}</b></div>
           ${trasladoOk ? `<div><span>Traslado</span><b>${fmt(tr.monto)}</b></div>` : ''}
-          <div class="tot"><span>Total cliente</span><b>${fmt(totalEst)}</b></div>
-          <div class="pg"><span>Seña (50% servicio${trasladoOk ? ' + traslado' : ''})</span><b>${fmt(aTransferir)}</b></div>
-          <div class="pg"><span>Resto el día del servicio</span><b>${fmt(totalEst - aTransferir)}</b></div>
-          <small>El cliente ve un solo total. El desglose es solo para vos.</small>
+          <div class="pg"><span>Seña (50%${trasladoOk ? ' + traslado' : ''})${r.senia_cobrada || r.estado === 'confirmada' ? ' ✓' : ''}</span><b>${fmt(aTransferir)}</b></div>
+          <div class="pg"><span>Saldo (50%)</span><b>${fmt(totalBase - seniaBase)}</b></div>
+          ${ad ? `<div class="pg"><span>Adicionales${ad.det ? ' · ' + ad.det : ''}${ad.cobrar ? '' : ' (no se cobran)'}</span><b${ad.cobrar ? '' : ' style="text-decoration:line-through;opacity:.5"'}>${fmt(ad.monto)}</b></div>` : ''}
+          <div class="tot"><span>A cobrar el día del servicio${r.saldo_cobrado ? ' ✓' : ''}</span><b>${fmt(totalEst - aTransferir)}</b></div>
         </div>
+        <details class="adic-box"${ad ? ' open' : ''}><summary>＋ Adicionales de ingredientes</summary>
+          <p>Si por el menú los ingredientes superan lo incluido. Elegís si se lo cobrás con el saldo o lo absorbés.</p>
+          <div class="precio-wrap"><input class="precio-input" id="adic-${r.id}" value="${ad ? ad.monto : ''}" type="number" placeholder="Monto $"></div>
+          <input class="precio-input adic-det" id="adic-det-${r.id}" value="${ad ? ad.det.replace(/"/g, '&quot;') : ''}" placeholder="Detalle (ej.: langostinos, trufa)">
+          <label class="adic-cob"><input type="checkbox" id="adic-cob-${r.id}"${!ad || ad.cobrar ? ' checked' : ''}> Cobrarlo con el saldo</label>
+          <button class="precio-ok-btn" onclick="guardarAdic('${r.id}')">✓ Guardar adicionales</button>
+        </details>
         <div style="margin-top:8px;"><span class="estado-badge ${r.estado}">${r.estado === 'reservada' ? 'pendiente de validación' : r.estado}</span></div>
       </div>
       <div class="res-acciones">
@@ -3193,7 +3273,8 @@ function renderReservas() {
         ${waBtn('M7','M7 Recordatorio reseña', msgM7, m7Activo)}
       </div>
     </div>`;
-  }).join('');
+  };
+  pintarGruposReservas(reservas, tarjeta);
 }
 
 async function enviarM(id, mKey, telWA, msg) {
@@ -3347,10 +3428,11 @@ async function guardarPrecio(id) {
   const input = document.getElementById('precio-' + id);
   const nuevo = parseInt(input.value);
   if (!nuevo || nuevo < 0) return;
-  const { error } = await supa.from('reservas').update({ honorario_final: nuevo }).eq('id', id);
+  // El total es todo incluido: queda en honorario_final y los ingredientes aparte en 0
+  const { error } = await supa.from('reservas').update({ honorario_final: nuevo, ingredientes: 0, total: nuevo }).eq('id', id);
   if (error) { alert('Error: ' + error.message); return; }
   const r = todasReservas.find(r => r.id === id);
-  if (r) r.honorario_final = nuevo;
+  if (r) { r.honorario_final = nuevo; r.ingredientes = 0; r.total = nuevo; }
   renderReservas();
 }
 
