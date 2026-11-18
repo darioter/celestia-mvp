@@ -3056,6 +3056,25 @@ async function guardarTraslado(id) {
 const ADIC_RE = /\s*\[ADIC \$([\d.]+) · (cobrar|absorbo)(?: · ([^\]]*))?\]/;
 function infoAdic(r) { const m = (r.notas || '').match(ADIC_RE); return m ? { monto: parseInt(m[1].replace(/\./g, '')) || 0, cobrar: m[2] === 'cobrar', det: m[3] || '' } : null; }
 const sinAdic = t => (t || '').replace(ADIC_RE, '').trim();
+// Una caja que quedó cargada como reserva (desde "Marcar fecha" del presupuesto): pasarla a Cajas
+const esCaja = r => /^caja celestia\b/i.test(r.menu || '') || /^caja\b/i.test(r.menu || '');
+async function pasarACajas(id) {
+  const r = todasReservas.find(x => x.id === id); if (!r) return;
+  if (!confirm('¿Pasar "' + (r.menu || 'la caja') + '" de ' + (r.nombre || '') + ' a Cajas? Se saca de Reservas y libera el turno en el calendario.')) return;
+  const total = Number(r.total) || ((r.honorario_final || r.honorario || 0) + (Number(r.ingredientes) || 0));
+  const partes = String(r.menu || '').split(' · ');
+  const seniaOk = r.senia_cobrada || r.estado === 'confirmada';
+  const fila = { ref: 'CJ-' + (r.ref || Date.now().toString(36).toUpperCase()), ocasion: 'amigos', entrega_fecha: r.fecha, entrega_franja: null,
+    items: [{ id: 'caja', nombre: partes[1] || partes[0] || 'Caja Celestia', variante: partes.slice(2).join(' · '), personas: r.personas || 0, cant: 1, precio: total, subtotal: total }],
+    subtotal: total, envio: 0, total, senia_monto: Number(r.senia_monto) || Math.round(total * 0.5),
+    nombre: r.nombre || 'Cliente', tel: r.tel || '—', email: r.email || null, dir: r.dir || null, notas: [r.ocasion, sinAdic(r.notas)].filter(Boolean).join(' · ') || null, estado: 'pendiente' };
+  const { error } = await supa.from('pedidos_cajas').insert(fila);
+  if (error) { alert('No se pudo crear el pedido de caja: ' + error.message); return; }
+  if (seniaOk) await supa.from('pedidos_cajas').update({ estado: 'sena_cobrada' }).eq('ref', fila.ref);
+  const { error: e2 } = await supa.from('reservas').update({ estado: 'cancelada', notas: '[Pasada a Cajas como ' + fila.ref + '] ' + (r.notas || '') }).eq('id', id);
+  if (e2) alert('El pedido quedó en Cajas, pero no pude sacar la reserva: ' + e2.message);
+  cargarReservas(); alert('✓ Listo: quedó en Cajas como ' + fila.ref + '.');
+}
 async function guardarDir(id) {
   const r = todasReservas.find(x => x.id === id); if (!r) return;
   const dir = document.getElementById('dir-' + id).value.trim();
@@ -3287,6 +3306,7 @@ function renderReservas() {
           </div>
           ${r.estado !== 'confirmada' ? `<button class="accion-btn btn-confirmar" onclick="cambiarEstado('${r.id}','confirmada')">✓ Confirmar seña cobrada</button>` : ''}
         ` : ''}
+        ${esCaja(r) && r.estado !== 'cancelada' ? `<button class="accion-btn btn-confirmar" onclick="pasarACajas('${r.id}')">📦 Pasar a Cajas</button>` : ''}
         ${r.estado !== 'cancelada' ? `<button class="accion-btn btn-cancelar" onclick="cancelarReserva('${r.id}','${r.nombre||''}')">✕ Cancelar</button>` : `<button class="accion-btn btn-cancelar" onclick="eliminarDefinitivo('${r.id}','${r.nombre}')" style="background:rgba(155,35,53,0.25);border-color:rgba(155,35,53,0.5);">🗑 Eliminar</button>`}
       </div>
       <div class="wa-btns">

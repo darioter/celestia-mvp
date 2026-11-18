@@ -292,6 +292,7 @@
     var msg = $('#pz-mf-msg'), say = function (t, ok) { if (msg) { msg.className = 'pz-msg ' + (ok ? 'ok' : 'err'); msg.textContent = t; } };
     if (typeof supa === 'undefined') return say('No hay sesión de admin.');
     if (!f.fecha) return say('Elegí la fecha primero.');
+    if (f.servicio === 'caja') return marcarCaja(say);
     var alt = f.servicio !== 'exp', r = alt ? calcAlt() : null, c = alt ? null : calcular(f);
     var total = alt ? r.total : (String(f.total).replace(/\D/g, '') ? +String(f.total).replace(/\D/g, '') : c.total);
     var turno = (f.servicio === 'exp' || f.servicio === 'libre') ? f.turno : 'almuerzo';
@@ -322,6 +323,28 @@
       if (otras.length && !confirm('Ya hay ' + otras.length + ' reserva(s) ese día en ese turno (' + otras.map(function (x) { return x.nombre; }).join(', ') + '). ¿Marcar igual?')) return;
       if (!f.reservaId && !confirm('¿Marcar el ' + fechaLarga(f.fecha) + ' (' + turno + ') para ' + datos.nombre + ' por ' + money(total) + '? Queda como reserva sin seña.')) return;
       return hacer();
+    }).catch(function (e) { say('No se pudo guardar: ' + (e && e.message || e)); });
+  }
+
+  // Las cajas van a Cajas (pedidos_cajas), no a Reservas: no ocupan el calendario de experiencias.
+  function marcarCaja(say) {
+    var r = calcAlt(), c = cajaSel(), ops = cajaOps(c), o = ops[+f.cajaOp] || ops[0];
+    var ct = String(f.contacto || ''), email = (ct.match(/[^\s,;]+@[^\s,;]+/) || [''])[0], tel = (ct.replace(email, '').match(/[+\d][\d\s\-()]{6,}/) || [''])[0].trim();
+    var items = r.items.concat(extrasItems()).map(function (x, i) { return i === 0 && c && o ? { id: c.id, nombre: c.nombre, variante: o.label, personas: o.personas || 0, cant: 1, precio: x[1], subtotal: x[1] } : { id: 'extra', nombre: x[0], variante: '', personas: 0, cant: 1, precio: x[1], subtotal: x[1] }; });
+    var sub = items.reduce(function (a, x) { return a + x.subtotal; }, 0), env = r.envio ? r.envio[1] : 0;
+    var datos = { ocasion: (c && c.ocasiones && c.ocasiones[0]) || 'amigos', entrega_fecha: f.fecha, entrega_franja: f.horario || null, items: items,
+      subtotal: sub, envio: env, total: r.total || (sub + env), senia_monto: Math.round((r.total || (sub + env)) * 0.5),
+      nombre: f.cliente || 'Cliente WhatsApp', tel: tel || '—', email: email || null, dir: f.dir || null, zona: ENVIO_TXT[f.envio] || null,
+      notas: 'Cargado desde el admin (pedido por WhatsApp). Presupuesto ' + nro + (f.notas ? ' · ' + f.notas : '') };
+    if (!f.cajaPedidoId && !confirm('¿Cargar el pedido de ' + datos.nombre + ' para el ' + fechaLarga(f.fecha) + ' por ' + money(datos.total) + '? Queda en Cajas como pendiente de seña.')) return;
+    var q = f.cajaPedidoId ? supa.from('pedidos_cajas').update(datos).eq('id', f.cajaPedidoId).select('id,ref').single()
+      : (datos.ref = 'CJ-ADM-' + Date.now().toString(36).toUpperCase(), datos.estado = 'pendiente', supa.from('pedidos_cajas').insert(datos).select('id,ref').single());
+    q.then(function (x) {
+      if (x.error) throw x.error;
+      f.cajaPedidoId = String(x.data.id); f.reservaRef = x.data.ref; guardar(); guardarBase(true);
+      var ok = '✓ Pedido cargado en Cajas: ' + fechaLarga(f.fecha) + ' (' + x.data.ref + ').';
+      form(); render(); var m = $('#pz-mf-msg'); if (m) { m.className = 'pz-msg ok'; m.textContent = ok; }
+      if (typeof cargarFiestas === 'function' && document.getElementById('fx-lista')) cargarFiestas();
     }).catch(function (e) { say('No se pudo guardar: ' + (e && e.message || e)); });
   }
 
@@ -480,7 +503,7 @@
       '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin:-4px 0 12px;font-size:11.5px"><span id="pz-gd" style="color:rgba(250,246,239,.6)">N.º ' + esc(nro) + ' · se guarda solo al escribir</span><button type="button" id="pz-dup" style="background:none;border:0;color:#E8C96B;font:600 11.5px \'DM Sans\';cursor:pointer;padding:0">Duplicar como nuevo</button></div>' +
       '<div class="pz-f"><label>Servicio</label><select data-k="servicio">' + Object.keys(SERVICIOS).map(function (k) { return '<option value="' + k + '"' + (f.servicio === k ? ' selected' : '') + '>' + esc(SERVICIOS[k]) + '</option>'; }).join('') + '</select></div>' +
       '<div class="pz-f"><label>Cargar desde una reserva</label><select id="pz-res"><option value="">— Elegir reserva (opcional) —</option></select></div>' +
-      '<div class="pz-mf"><b>📌 Pedido por WhatsApp</b><span>Completá cliente y fecha, y marcala: queda reservada sin que el cliente reserve en el sitio.</span><button type="button" id="pz-marcar">Marcar la fecha (sin reserva del cliente)</button>' + (f.reservaId ? '<button type="button" id="pz-actualizar" style="background:transparent;border:1px solid rgba(232,201,107,.6);color:#FAF6EF">Actualizar la reserva elegida</button>' : '') + '<div class="pz-msg" id="pz-mf-msg"></div></div>' +
+      '<div class="pz-mf"><b>📌 Pedido por WhatsApp</b><span>' + (f.servicio === 'caja' ? 'Completá cliente y fecha de entrega: el pedido queda cargado en Cajas, pendiente de seña.' : 'Completá cliente y fecha, y marcala: queda reservada sin que el cliente reserve en el sitio.') + '</span><button type="button" id="pz-marcar">' + (f.servicio === 'caja' ? (f.cajaPedidoId ? 'Actualizar el pedido en Cajas' : 'Cargar el pedido en Cajas') : 'Marcar la fecha (sin reserva del cliente)') + '</button>' + (f.reservaId && f.servicio !== 'caja' ? '<button type="button" id="pz-actualizar" style="background:transparent;border:1px solid rgba(232,201,107,.6);color:#FAF6EF">Actualizar la reserva elegida</button>' : '') + '<div class="pz-msg" id="pz-mf-msg"></div></div>' +
       (f.servicio !== 'exp' ? formComun() : formExp()) +
       '<div class="pz-acc"><button type="button" class="pri" id="pz-print">🖨️ Imprimir / Guardar PDF</button><button type="button" id="pz-nuevo">Nuevo</button></div>' +
       (f.servicio === 'exp' ? '<div class="pz-acc"><button type="button" id="pz-subir">⬆ Subir menú al sitio e ingredientes</button></div>' : '') +
