@@ -343,6 +343,7 @@
   .res-det{display:none;margin-top:6px}.res-wrap.abierta .res-det{display:block}.res-wrap.abierta .rr-a{transform:rotate(180deg)}
   .res-wrap.abierta .res-row{border-color:rgba(201,168,76,.35)}
   .adm-desglose .rec{align-items:center;margin:2px 0 4px}.adm-desglose .rec span{color:rgba(250,246,239,.4);font-size:11px}.adm-desglose .rec .precio-input{width:110px;margin-left:auto;padding:4px 8px;font-size:12px;height:auto}.adm-desglose .rec .precio-ok-btn{padding:4px 8px}
+  .pp-x{background:none;border:0;color:rgba(250,246,239,.35);cursor:pointer;font-size:11px;padding:0 0 0 6px}.pp-x:hover{color:#E57373}
   .adic-box{margin-top:8px;font-size:11.5px;border:1px dashed rgba(201,168,76,.25);border-radius:10px;padding:6px 10px}
   .adic-box summary{cursor:pointer;color:var(--gold);font-size:11.5px}
   .adic-box p{margin:6px 0;color:rgba(250,246,239,.45);font-size:11px;line-height:1.4}
@@ -3159,6 +3160,24 @@ function modalPersonas(r, antes, n, tA, tN, menuN, como) {
     Object.assign(r, upd); ov.remove(); renderReservas();
   };
 }
+async function guardarPagos(r, pagos) {
+  const { error } = await supa.from('reservas').update({ pagos }).eq('id', r.id);
+  if (error) { alert('Error: ' + error.message + (/pagos/.test(error.message) ? ' (falta la columna pagos en la base)' : '')); return false; }
+  r.pagos = pagos; renderReservas(); return true;
+}
+async function agregarPago(id) {
+  const r = todasReservas.find(x => x.id === id); if (!r) return;
+  const m = parseInt(document.getElementById('pp-m-' + id).value, 10), c = document.getElementById('pp-c-' + id).value, f = document.getElementById('pp-f-' + id).value;
+  if (!m || m <= 0) { alert('Poné el monto recibido.'); return; }
+  if (!confirm('¿Cargar pago de ' + fmtAR(m) + ' (' + c + ') para ' + (r.nombre || 'esta reserva') + '?')) return;
+  await guardarPagos(r, [...(Array.isArray(r.pagos) ? r.pagos : []), { c, m, f }]);
+}
+async function quitarPago(id, i) {
+  const r = todasReservas.find(x => x.id === id); if (!r) return;
+  const p = (r.pagos || [])[i]; if (!p) return;
+  if (!confirm('¿Quitar el pago de ' + fmtAR(p.m) + ' (' + (p.c || 'Pago') + ')?')) return;
+  await guardarPagos(r, r.pagos.filter((_, k) => k !== i));
+}
 async function guardarDir(id) {
   const r = todasReservas.find(x => x.id === id); if (!r) return;
   const dir = document.getElementById('dir-' + id).value.trim();
@@ -3306,7 +3325,11 @@ function renderReservas() {
     const aTransferir = seniaBase + (trasladoOk ? tr.monto : 0);
     const seniaRec = Number(r.senia_monto) > 0 && (r.senia_cobrada || r.estado === 'confirmada') ? Number(r.senia_monto) : 0;   // lo que realmente transfirió
     const saldoRec = Number(r.saldo_monto) > 0 && r.saldo_cobrado ? Number(r.saldo_monto) : 0;
-    const restaCobrar = Math.max(0, totalEst - (seniaRec || aTransferir) - saldoRec);
+    const pagosP = Array.isArray(r.pagos) ? r.pagos : [];                    // pagos parciales (acopio de ingredientes, seña en partes…)
+    const sumP = pagosP.reduce((a, x) => a + (Number(x.m) || 0), 0);
+    const recibido = seniaRec + saldoRec + sumP;
+    const seniaFalta = Math.max(0, aTransferir - seniaRec - sumP);
+    const restaCobrar = Math.max(0, recibido ? totalEst - recibido : totalEst - aTransferir);
     const adicTxt = adicCobro ? ` (incluye ${fmt(adicCobro)} de ingredientes adicionales${ad.det ? ': ' + ad.det.replace(/[`"$\\]/g, '') : ''})` : '';
     const msgM3 = `Hola ${primerNombre}, ¡tenemos disponibilidad! Confirmamos tu experiencia Celestia 🍽\\n\\n*${r.menu}* · ${fechaStr} · ${turnoStr} · ${r.personas} personas\\n\\n*Total (todo incluido):* ${fmt(totalEst)}\\n_Servicio, asistentes e ingredientes${trasladoOk ? ' y traslado' : ''}. Si el menú o los detalles cambian, te confirmo el importe final con el menú._\\n\\n*Para reservar la fecha* transferí la seña de *${fmt(aTransferir)}* al alias *daro.chef* y mandanos el comprobante por acá 🙌\\n\\n*El resto (${fmt(totalEst - aTransferir)})* se abona el día del servicio${adicTxt}.\\n\\n— Daro · Celestia Chef Privado`;
 
@@ -3364,11 +3387,20 @@ function renderReservas() {
           ${trasladoOk ? `<div><span>Traslado</span><b>${fmt(tr.monto)}</b></div>` : ''}
           <div class="pg"><span>Seña (50%${trasladoOk ? ' + traslado' : ''})</span><b>${fmt(aTransferir)}</b></div>
           <div class="rec"><span>Seña recibida</span><input class="precio-input" id="srec-${r.id}" type="number" value="${seniaRec || ''}" placeholder="${aTransferir}"><button class="precio-ok-btn" onclick="guardarRecibido('${r.id}','senia')">✓</button></div>
-          <div class="pg"><span>Saldo${seniaRec && seniaRec !== aTransferir ? ' (según lo recibido de seña)' : ' (50%)'}</span><b>${fmt(totalEst - (seniaRec || aTransferir))}</b></div>
+          ${pagosP.map((x, i) => `<div class="pg pp"><span>💵 ${x.c || 'Pago'}${x.f ? ' · ' + x.f.slice(8, 10) + '/' + x.f.slice(5, 7) : ''}</span><b>${fmt(x.m)} <button class="pp-x" title="Quitar este pago" onclick="quitarPago('${r.id}',${i})">✕</button></b></div>`).join('')}
+          ${(seniaRec || sumP) && seniaFalta ? `<div class="pg" style="color:#E2A33E"><span>Falta de la seña</span><b>${fmt(seniaFalta)}</b></div>` : ''}
+          <div class="pg"><span>Saldo${(seniaRec + sumP) > aTransferir ? ' (según lo recibido)' : ' (50%)'}</span><b>${fmt(Math.max(0, totalEst - Math.max(seniaRec + sumP, aTransferir)))}</b></div>
           <div class="rec"><span>Saldo recibido</span><input class="precio-input" id="lrec-${r.id}" type="number" value="${saldoRec || ''}" placeholder="${totalEst - (seniaRec || aTransferir)}"><button class="precio-ok-btn" onclick="guardarRecibido('${r.id}','saldo')">✓</button></div>
           ${ad ? `<div class="pg"><span>Adicionales${ad.det ? ' · ' + ad.det : ''}${ad.cobrar ? '' : ' (no se cobran)'}</span><b${ad.cobrar ? '' : ' style="text-decoration:line-through;opacity:.5"'}>${fmt(ad.monto)}</b></div>` : ''}
-          <div class="tot"><span>${restaCobrar ? (saldoRec ? 'Falta cobrar' : 'A cobrar el día del servicio') : '✓ Todo cobrado'}</span><b>${fmt(restaCobrar) === '—' ? '$0' : fmt(restaCobrar)}</b></div>
+          ${recibido ? `<div class="pg"><span>Recibido en total</span><b>${fmt(recibido)}</b></div>` : ''}
+          <div class="tot"><span>${restaCobrar ? (recibido ? 'Falta cobrar' : 'A cobrar el día del servicio') : '✓ Todo cobrado'}</span><b>${fmt(restaCobrar) === '—' ? '$0' : fmt(restaCobrar)}</b></div>
         </div>
+        <details class="adic-box"><summary>＋ Cargar pago parcial</summary>
+          <p>Para pagos fuera de la seña y el saldo: un adelanto para acopio de ingredientes, una seña en partes, etc. Se descuenta de lo que falta cobrar.</p>
+          <select class="precio-input adic-det" id="pp-c-${r.id}"><option>Acopio de ingredientes</option><option>Seña (parte)</option><option>Saldo (parte)</option><option>Otro</option></select>
+          <div class="precio-wrap"><input class="precio-input" id="pp-m-${r.id}" type="number" placeholder="Monto $"><input class="precio-input" id="pp-f-${r.id}" type="date" value="${new Date().toISOString().slice(0, 10)}" style="width:150px"></div>
+          <button class="precio-ok-btn" style="margin-top:8px" onclick="agregarPago('${r.id}')">＋ Agregar pago</button>
+        </details>
         <details class="adic-box"${ad ? ' open' : ''}><summary>＋ Adicionales de ingredientes</summary>
           <p>Si por el menú los ingredientes superan lo incluido. Elegís si se lo cobrás con el saldo o lo absorbés.</p>
           <div class="precio-wrap"><input class="precio-input" id="adic-${r.id}" value="${ad ? ad.monto : ''}" type="number" placeholder="Monto $"></div>
