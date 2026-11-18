@@ -1,6 +1,291 @@
 {
  "notas": [
   {
+   "slug": "como-poner-la-mesa-de-navidad-segun-protocolo",
+   "cat": "El arte de la mesa",
+   "icono": "🕯️",
+   "titulo": "Cómo poner la mesa de Navidad según protocolo (y cuánto de eso se respeta en Argentina)",
+   "bajada": "Dónde va cada cubierto y cada copa, quién se sienta dónde y cómo se sirve según el protocolo clásico. Y la parte honesta: qué de todo eso sobrevive en una mesa argentina del 24 con 30 grados.",
+   "img": "https://images.unsplash.com/photo-1692883982002-35a15de5f695?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1692883982002-35a15de5f695?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Shayla Bruins",
+   "url": "https://www.chefprivado.ar/blog/como-poner-la-mesa-de-navidad-segun-protocolo",
+   "tips": [
+    "Planchá el mantel ya puesto sobre la mesa, con una plancha a vapor: las marcas de los dobleces desaparecen y queda como en un salón."
+   ],
+   "datos": [
+    "Si la mesa va afuera, cuidá lo que va al centro: con calor, las fuentes con mayonesa o carnes frías no deberían pasar más de 1 hora fuera de la heladera. Te lo explico en la regla de las 2 horas."
+   ],
+   "secciones": [
+    {
+     "h2": "El cubierto, según el protocolo",
+     "texto": "Plato de sitio o bajo plato en el centro, a unos 2 cm del borde de la mesa."
+    },
+    {
+     "h2": "Las copas",
+     "texto": "Van arriba a la derecha, empezando sobre la punta del cuchillo."
+    },
+    {
+     "h2": "Quién se sienta dónde",
+     "texto": "Los anfitriones en las cabeceras · O enfrentados en el centro de los lados largos, para atender toda la mesa."
+    },
+    {
+     "h2": "Cómo se sirve",
+     "texto": "La comida se sirve por la izquierda del comensal y se retira por la derecha."
+    },
+    {
+     "h2": "El centro de mesa y la decoración",
+     "texto": "El centro de mesa tiene que ser bajo —menos de 30 cm— para que la gente se vea por encima."
+    },
+    {
+     "h2": "Cuánto de esto se respeta en Argentina",
+     "texto": "La parte honesta: la Navidad argentina es una fiesta familiar, larga, ruidosa y con mucho calor, y el protocolo se adapta."
+    }
+   ],
+   "voz": [
+    "La mesa de Navidad según protocolo.",
+    "[warmly] Y cuánto se respeta en Argentina.",
+    "[curious] Tenedores a la izquierda, cuchillos a la derecha.",
+    "[confidently] Las copas arriba a la derecha: agua, tinto, blanco y champagne.",
+    "[playfully] El invitado de honor, a la derecha del anfitrión.",
+    "[thoughtfully] Se sirve por la izquierda y se retira por la derecha.",
+    "[warmly] En Argentina: fuentes al centro y brindis a las doce.",
+    "[whispers] Un secreto de chef: planchá el mantel ya puesto sobre la mesa.",
+    "[cheerfully] La nota completa está en chefprivado punto ar barra blog. Guardala para cuando la necesites."
+   ]
+  },
+  {
+   "slug": "cuanto-tiempo-puede-estar-la-comida-fuera-de-la-heladera",
+   "cat": "Cocina segura",
+   "icono": "🧼",
+   "titulo": "Cuánto tiempo puede estar la comida fuera de la heladera (la regla de las 2 horas)",
+   "bajada": "En una cena de verano la comida pasa horas sobre la mesa. Qué es la zona de peligro, la regla de las 2 horas, qué hacer cuando hace más de 30 grados y cómo organizar una mesa larga sin riesgos.",
+   "img": "https://images.unsplash.com/photo-1639048759498-22f2068d00ff?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1639048759498-22f2068d00ff?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Le Petale Studio",
+   "url": "https://www.chefprivado.ar/blog/cuanto-tiempo-puede-estar-la-comida-fuera-de-la-heladera",
+   "tips": [
+    "En las cocinas profesionales se usa la regla de enfriar de 60 a 21 °C en 2 horas y de 21 a 5 °C en las 4 siguientes. En casa, el truco es el mismo: porciones chicas, recipientes chatos y nada de dejar la olla entera enfriándose en la hornalla toda la noche."
+   ],
+   "datos": [
+    "Algunas bacterias producen toxinas que el calor no destruye. Por eso recalentar algo que estuvo horas afuera no lo vuelve seguro: la bacteria muere, la toxina queda."
+   ],
+   "secciones": [
+    {
+     "h2": "La zona de peligro: entre 5 y 60 °C",
+     "texto": "Las bacterias que causan intoxicaciones se multiplican rápido entre los 5 y los 60 °C."
+    },
+    {
+     "h2": "La regla de las 2 horas",
+     "texto": "Hasta 32 °C · 2 horas, sumando todo: lo que tardó en servirse, la sobremesa y lo que estuvo en la mesada."
+    },
+    {
+     "h2": "Lo que más riesgo tiene en la mesa de verano",
+     "texto": "Mayonesa casera y todo lo que la lleva: ensalada rusa, huevos rellenos, vitel toné."
+    },
+    {
+     "h2": "Cómo organizar una mesa larga sin riesgos",
+     "texto": "Serví en fuentes chicas y reponé desde la heladera, en lugar de sacar todo de una vez."
+    },
+    {
+     "h2": "¿Y lo que sobró bien guardado?",
+     "texto": "Lo que fue a la heladera a tiempo dura 3 a 4 días."
+    }
+   ],
+   "voz": [
+    "[curious] ¿Cuánto puede estar la comida fuera de la heladera?",
+    "[warmly] La regla de las dos horas.",
+    "[curious] Entre cinco y sesenta grados, las bacterias se multiplican.",
+    "[confidently] Con más de treinta y dos grados, una hora.",
+    "[playfully] Mayonesa, fiambres y mariscos, lo más riesgoso.",
+    "[thoughtfully] Si estuvo horas al sol, se tira.",
+    "[whispers] Un secreto de chef: fuentes chicas y hielo debajo.",
+    "[cheerfully] La nota completa está en chefprivado punto ar barra blog. Guardala para cuando la necesites."
+   ]
+  },
+  {
+   "slug": "mayonesa-casera-y-huevos-crudos-como-evitar-la-salmonela",
+   "cat": "Cocina segura",
+   "icono": "🧼",
+   "titulo": "Mayonesa casera y huevos crudos: cómo evitar la salmonela en las fiestas",
+   "bajada": "La mayonesa casera es riquísima y es también una de las causas más comunes de intoxicación en verano. Por qué pasa, quiénes tienen que cuidarse más y cómo hacerla segura sin perder sabor.",
+   "img": "https://images.unsplash.com/photo-1499125613777-b4fd250db5cd?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1499125613777-b4fd250db5cd?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Caroline Attwood",
+   "url": "https://www.chefprivado.ar/blog/mayonesa-casera-y-huevos-crudos-como-evitar-la-salmonela",
+   "tips": [
+    "Si pasteurizás la yema, sumá una cucharadita de mostaza de Dijon al emulsionar: ayuda a que la mayonesa no se corte y le da más carácter."
+   ],
+   "datos": [
+    "Los grupos que tienen que evitar el huevo crudo sí o sí son las embarazadas, los chicos chicos, las personas mayores y quienes tienen las defensas bajas. Para ellos una intoxicación puede ser grave."
+   ],
+   "secciones": [
+    {
+     "h2": "Por qué el huevo crudo es un riesgo",
+     "texto": "La cocción mata a la salmonela; el limón y el vinagre de la mayonesa, no siempre."
+    },
+    {
+     "h2": "Cómo hacer una mayonesa casera segura",
+     "texto": "Hay tres caminos, de más fácil a más técnico:"
+    },
+    {
+     "h2": "Cómo elegir y guardar los huevos",
+     "texto": "Comprá huevos con la cáscara limpia y entera, y nunca uses los fisurados."
+    },
+    {
+     "h2": "En la mesa de las fiestas",
+     "texto": "Mayonesa casera (aunque sea segura) · Hacela el mismo día, guardala en la heladera y usala dentro de las 24 horas."
+    }
+   ],
+   "voz": [
+    "Mayonesa casera sin salmonela.",
+    "[warmly] El limón no alcanza para hacerla segura.",
+    "[curious] Usá huevo pasteurizado.",
+    "[confidently] O pasteurizá la yema a setenta y un grados.",
+    "[playfully] Los huevos no se lavan antes de guardarlos.",
+    "[seriously] Y nunca más de dos horas fuera de la heladera.",
+    "[whispers] Un secreto de chef: una cucharadita de mostaza para que no se corte.",
+    "[cheerfully] La nota completa está en chefprivado punto ar barra blog. Guardala para cuando la necesites."
+   ]
+  },
+  {
+   "slug": "por-que-en-argentina-la-navidad-es-fria",
+   "cat": "Para recibir",
+   "icono": "🥂",
+   "titulo": "Por qué en Argentina la Navidad se come fría: vitel toné, pan dulce y ensalada rusa",
+   "bajada": "Celebramos una fiesta de invierno en pleno verano, con platos que llegaron en barco desde Italia, España y hasta Rusia. La historia detrás de la mesa del 24 y por qué funciona tan bien.",
+   "img": "https://images.unsplash.com/photo-1594046243098-0fceea9d451e?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1594046243098-0fceea9d451e?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Luisa Brimble",
+   "url": "https://www.chefprivado.ar/blog/por-que-en-argentina-la-navidad-es-fria",
+   "tips": [
+    "Serví el vitel toné y el matambre en fuentes chicas y reponé desde la heladera. Lucen mejor, no se secan y se mantienen fríos toda la noche."
+   ],
+   "datos": [
+    "El vitello tonnato original se hacía con una salsa a base de los jugos de la cocción y atún; la versión con mayonesa que conocemos es posterior y es la que se impuso en Argentina."
+   ],
+   "secciones": [
+    {
+     "h2": "Una fiesta de invierno en pleno verano",
+     "texto": "Las tradiciones navideñas que trajeron los inmigrantes eran de invierno: platos contundentes, frutos secos, panes dulces cargados de manteca."
+    },
+    {
+     "h2": "De dónde viene cada plato",
+     "texto": "Vitel toné · Piamonte, norte de Italia: el vitello tonnato"
+    },
+    {
+     "h2": "Por qué la mesa fría funciona",
+     "texto": "Se cocina antes: casi todo se puede hacer el 23 o la mañana del 24."
+    },
+    {
+     "h2": "El lado B: el calor y la seguridad",
+     "texto": "Que se coma frío no quiere decir que pueda quedar horas sobre la mesa."
+    }
+   ],
+   "voz": [
+    "[curious] ¿Por qué en Argentina la Navidad se come fría?",
+    "[warmly] Una fiesta de invierno en pleno verano.",
+    "[excited] El vitel toné viene del Piamonte.",
+    "[confidently] El pan dulce, del panettone de Milán.",
+    "[thoughtfully] El turrón, de España.",
+    "[playfully] Y la ensalada rusa, de Moscú.",
+    "[warmly] Se cocina antes y mejora de un día para el otro.",
+    "[whispers] Un secreto de chef: serví en fuentes chicas y reponé desde la heladera.",
+    "[cheerfully] La nota completa está en chefprivado punto ar barra blog. Guardala para cuando la necesites."
+   ]
+  },
+  {
+   "slug": "como-lavar-frutas-y-verduras",
+   "cat": "Cocina segura",
+   "icono": "🧼",
+   "titulo": "Cómo lavar frutas y verduras (y por qué no hay que lavar el pollo)",
+   "bajada": "Lavar no es lo mismo que desinfectar. Qué hay que hacer con lo que se come crudo, cuánta lavandina por litro, qué no sirve de nada y el error más común de la cocina de casa.",
+   "img": "https://images.unsplash.com/photo-1578830610344-c9ad6d6531d8?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1578830610344-c9ad6d6531d8?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Louis Hansel",
+   "url": "https://www.chefprivado.ar/blog/como-lavar-frutas-y-verduras",
+   "tips": [
+    "Usá una tabla para lo crudo y otra para lo que va directo al plato. En las cocinas profesionales se usan por colores: roja para carnes, amarilla para aves, azul para pescados, verde para verduras. En casa con dos alcanza, pero que siempre sean las mismas."
+   ],
+   "datos": [
+    "La lavandina tiene que decir en la etiqueta que es apta para desinfección de alimentos o de agua de bebida, sin perfume ni aditivos. La de limpiar el baño no sirve."
+   ],
+   "secciones": [
+    {
+     "h2": "Lavar y desinfectar no es lo mismo",
+     "texto": "Lavar es sacar la tierra y la suciedad visible con agua."
+    },
+    {
+     "h2": "El paso a paso",
+     "texto": "Lavate las manos con agua y jabón, y limpiá la bacha antes de empezar."
+    },
+    {
+     "h2": "Lo que no sirve (o no alcanza)",
+     "texto": "Vinagre o limón en el agua · Ayudan poco: a la concentración que se usa en casa no desinfectan de manera confiable."
+    },
+    {
+     "h2": "Por qué no hay que lavar el pollo",
+     "texto": "Es el error más común en las cocinas de casa."
+    }
+   ],
+   "voz": [
+    "Cómo lavar bien frutas y verduras.",
+    "[warmly] Lavar no es lo mismo que desinfectar.",
+    "[curious] Primero, bajo el chorro, frotando.",
+    "[confidently] Después, una cucharadita de lavandina apta por litro, diez minutos.",
+    "[playfully] Vinagre y limón no alcanzan.",
+    "[thoughtfully] Y el pollo no se lava: salpica bacterias por toda la cocina.",
+    "[whispers] Un secreto de chef: una tabla para lo crudo y otra para lo que va al plato.",
+    "[cheerfully] La nota completa está en chefprivado punto ar barra blog. Guardala para cuando la necesites."
+   ]
+  },
+  {
+   "slug": "frutas-y-verduras-de-estacion-en-diciembre",
+   "cat": "La despensa",
+   "icono": "🧺",
+   "titulo": "Frutas y verduras de estación en diciembre: qué comprar para las fiestas",
+   "bajada": "Cerezas, duraznos, arándanos, choclo y tomates que saben a tomate. Qué está en su mejor momento en Argentina en diciembre, por qué conviene cocinar con eso y cómo usarlo en la mesa del 24 y del 31.",
+   "img": "https://images.unsplash.com/photo-1758915441005-755353a4899b?w=1080&h=1920&fit=crop&q=72&auto=format",
+   "img_sq": "https://images.unsplash.com/photo-1758915441005-755353a4899b?w=800&h=800&fit=crop&q=72&auto=format",
+   "foto": "Diego Machiaveli",
+   "url": "https://www.chefprivado.ar/blog/frutas-y-verduras-de-estacion-en-diciembre",
+   "tips": [
+    "La fruta de carozo (durazno, damasco, ciruela) termina de madurar fuera de la heladera, en una bolsa de papel. Una vez a punto, recién ahí va al frío, y sacala media hora antes de servir: fría pierde aroma."
+   ],
+   "datos": [
+    "Las fechas cambian un poco de un año a otro según el clima y la zona. La regla práctica: si está barato y lleno en todas las verdulerías del barrio, está en temporada."
+   ],
+   "secciones": [
+    {
+     "h2": "Por qué cocinar con lo de estación",
+     "texto": "Sabor: la fruta que madura en la planta y viaja poco tiene más azúcar y más aroma."
+    },
+    {
+     "h2": "El calendario de diciembre",
+     "texto": "Cerezas · Mendoza, Río Negro, Neuquén y la Patagonia sur"
+    },
+    {
+     "h2": "Cómo elegir bien",
+     "texto": "Cerezas: brillantes, firmes y con el cabito verde."
+    },
+    {
+     "h2": "Un menú de fiestas con producto de diciembre",
+     "texto": "Entrada: tomates de estación con burrata, albahaca y aceite de oliva."
+    }
+   ],
+   "voz": [
+    "Qué comprar en diciembre para las fiestas.",
+    "[warmly] Lo de estación está más rico, más barato y se luce solo.",
+    "[excited] Cerezas de la Patagonia y Mendoza.",
+    "[confidently] Duraznos, damascos y ciruelas de Cuyo.",
+    "[thoughtfully] Arándanos y frutillas.",
+    "[playfully] Tomates que vuelven a tener gusto.",
+    "[warmly] Choclo para la parrilla.",
+    "[whispers] Un secreto de chef: el tomate nunca a la heladera.",
+    "[cheerfully] La nota completa está en chefprivado punto ar barra blog. Guardala para cuando la necesites."
+   ]
+  },
+  {
    "slug": "chef-privado-vacaciones-de-verano",
    "cat": "Chef privado",
    "icono": "🍽️",

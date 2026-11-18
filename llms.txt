@@ -29,6 +29,7 @@
 ## Notas del blog (técnicas de escuela de cocina, recetas y gestión gastronómica)
 
 ### La despensa
+- [Frutas y verduras de estación en diciembre: qué comprar para las fiestas](https://www.chefprivado.ar/blog/frutas-y-verduras-de-estacion-en-diciembre): Cerezas, duraznos, arándanos, choclo y tomates que saben a tomate. Qué está en su mejor momento en Argentina en diciembre, por qué conviene cocinar con eso y cómo usarlo en la mesa del 24 y del 31.
 - [Especias y hierbas: la guía para usarlas como un cocinero](https://www.chefprivado.ar/blog/especias-y-hierbas-guia-para-usarlas): De dónde sale cada una, cuándo se agregan, cuáles van al principio y cuáles al final, y cómo guardarlas para que no pierdan el aroma.
 
 ### Cortes y técnica
@@ -70,6 +71,7 @@
 - [El ABC de la pastelería: técnicas básicas para que todo te salga](https://www.chefprivado.ar/blog/abc-de-la-pasteleria-tecnicas-basicas): La pastelería no perdona la improvisación, pero tampoco es magia. Pesar, temperaturas, qué hace cada ingrediente y las grandes familias de masas y cremas que sostienen cualquier receta.
 
 ### Para recibir
+- [Por qué en Argentina la Navidad se come fría: vitel toné, pan dulce y ensalada rusa](https://www.chefprivado.ar/blog/por-que-en-argentina-la-navidad-es-fria): Celebramos una fiesta de invierno en pleno verano, con platos que llegaron en barco desde Italia, España y hasta Rusia. La historia detrás de la mesa del 24 y por qué funciona tan bien.
 - [Cuánta comida por persona para Navidad y Año Nuevo: la guía de cantidades](https://www.chefprivado.ar/blog/cantidades-por-persona-para-navidad-y-ano-nuevo): Cuántos gramos de carne, cuántos bocados, cuánto vino, espumante y hielo calcular por persona para las fiestas, más qué se puede adelantar y cómo cuidar la comida con el calor de diciembre.
 - [Cómo armar un cóctel en casa: cuántos bocados por persona y cómo combinarlos](https://www.chefprivado.ar/blog/como-armar-un-coctel-en-casa-bocados): La regla del bocado, cuánto calcular según el tipo de reunión, cómo equilibrar fríos y calientes y qué dejar listo antes de que toque el timbre.
 
@@ -93,6 +95,7 @@
 - [Emplatar como en un menú de 7 pasos](https://www.chefprivado.ar/blog/emplatar-como-chef): La comida entra primero por los ojos. Con cinco reglas simples, un plato casero se ve de restaurante.
 
 ### El arte de la mesa
+- [Cómo poner la mesa de Navidad según protocolo (y cuánto de eso se respeta en Argentina)](https://www.chefprivado.ar/blog/como-poner-la-mesa-de-navidad-segun-protocolo): Dónde va cada cubierto y cada copa, quién se sienta dónde y cómo se sirve según el protocolo clásico. Y la parte honesta: qué de todo eso sobrevive en una mesa argentina del 24 con 30 grados.
 - [Cómo poner la mesa como en un restaurante (sin volverte loco)](https://www.chefprivado.ar/blog/como-poner-la-mesa-como-en-un-restaurante): Dónde va cada cubierto, cuántas copas poner, qué hacer con la servilleta y los pequeños gestos de servicio que cambian una cena en casa.
 
 ### Copa y maridaje
@@ -108,6 +111,9 @@
 - [Mitos de la alimentación: 10 frases que escuchás siempre (y qué hay de cierto)](https://www.chefprivado.ar/blog/mitos-de-la-alimentacion): La espinaca que da fuerza, la fruta de postre que engorda, la miel más sana que el azúcar. Lo que dice la nutrición sobre los mitos de siempre.
 
 ### Cocina segura
+- [Cuánto tiempo puede estar la comida fuera de la heladera (la regla de las 2 horas)](https://www.chefprivado.ar/blog/cuanto-tiempo-puede-estar-la-comida-fuera-de-la-heladera): En una cena de verano la comida pasa horas sobre la mesa. Qué es la zona de peligro, la regla de las 2 horas, qué hacer cuando hace más de 30 grados y cómo organizar una mesa larga sin riesgos.
+- [Mayonesa casera y huevos crudos: cómo evitar la salmonela en las fiestas](https://www.chefprivado.ar/blog/mayonesa-casera-y-huevos-crudos-como-evitar-la-salmonela): La mayonesa casera es riquísima y es también una de las causas más comunes de intoxicación en verano. Por qué pasa, quiénes tienen que cuidarse más y cómo hacerla segura sin perder sabor.
+- [Cómo lavar frutas y verduras (y por qué no hay que lavar el pollo)](https://www.chefprivado.ar/blog/como-lavar-frutas-y-verduras): Lavar no es lo mismo que desinfectar. Qué hay que hacer con lo que se come crudo, cuánta lavandina por litro, qué no sirve de nada y el error más común de la cocina de casa.
 - [Cómo regenerar comida para que quede como recién hecha](https://www.chefprivado.ar/blog/como-regenerar-comida-para-que-quede-como-recien-hecha): Recalentar no es lo mismo que regenerar. Temperaturas, tiempos y el método justo para cada cosa, para que lo que cocinaste ayer (o te llegó listo) se sirva como si saliera recién de la cocina.
 - [Manipulación de alimentos: las 4 reglas de oro que usan los cocineros (y deberías copiar en casa)](https://www.chefprivado.ar/blog/manipulacion-de-alimentos-reglas-de-oro): Limpiar, separar, cocinar y enfriar. La zona de peligro de temperatura, la contaminación cruzada y los errores de todos los días que hacen que una comida rica te caiga mal.
 
