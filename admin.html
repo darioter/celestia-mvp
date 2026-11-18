@@ -107,7 +107,10 @@
   .nav-g{display:flex;flex-direction:column;gap:7px;padding:9px 11px 11px;border:1px solid rgba(255,255,255,.06);border-top:2px solid var(--g);border-radius:12px;background:rgba(255,255,255,.02)}
   .nav-gl{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--g);font-weight:600}
   .nav-gb{display:flex;gap:6px;flex-wrap:wrap}
-  .nav-gb .filter-btn{padding:7px 12px}
+  .nav-gb .filter-btn{padding:7px 12px;position:relative}
+  .nav-dot{display:none;position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#E53935;color:#fff;font-style:normal;font-size:10.5px;font-weight:700;line-height:18px;text-align:center;box-shadow:0 0 0 2px #0B1626;animation:navPulse 2s ease-in-out infinite}
+  .nav-dot.on{display:block}
+  @keyframes navPulse{0%,100%{box-shadow:0 0 0 2px #0B1626,0 0 0 0 rgba(229,57,53,.5)}50%{box-shadow:0 0 0 2px #0B1626,0 0 0 6px rgba(229,57,53,0)}}
   .nav-g .filter-btn.active{border-color:var(--g);color:var(--g);background:color-mix(in srgb,var(--g) 14%,transparent)}
   .login-forgot{display:block;margin-top:14px;font-size:12.5px;color:var(--gold-light);text-decoration:none;text-align:center}
   .login-msg{display:none;margin-top:10px;font-size:12.5px;color:rgba(250,246,239,.75);text-align:center;line-height:1.5}
@@ -344,6 +347,8 @@
   .res-wrap.abierta .res-row{border-color:rgba(201,168,76,.35)}
   .adm-desglose .rec{align-items:center;margin:2px 0 4px}.adm-desglose .rec span{color:rgba(250,246,239,.4);font-size:11px}.adm-desglose .rec .precio-input{width:110px;margin-left:auto;padding:4px 8px;font-size:12px;height:auto}.adm-desglose .rec .precio-ok-btn{padding:4px 8px}
   .pp-x{background:none;border:0;color:rgba(250,246,239,.35);cursor:pointer;font-size:11px;padding:0 0 0 6px}.pp-x:hover{color:#E57373}
+  .cj-pagos{margin-top:10px;font-size:13px}.cj-pg{display:flex;gap:10px;align-items:center;padding:3px 0}.cj-pg span{flex:1;color:rgba(250,246,239,.7)}
+  .cj-form{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.cj-form .bloqueo-input{width:auto;flex:1 1 140px;padding:7px 10px}
   .adic-box{margin-top:8px;font-size:11.5px;border:1px dashed rgba(201,168,76,.25);border-radius:10px;padding:6px 10px}
   .adic-box summary{cursor:pointer;color:var(--gold);font-size:11.5px}
   .adic-box p{margin:6px 0;color:rgba(250,246,239,.45);font-size:11px;line-height:1.4}
@@ -1013,9 +1018,9 @@ select{color-scheme:dark}select option,select optgroup{background:#13263a;color:
 
   <div class="admin-body">
     <div class="adm-nav">
-      <div class="nav-g" style="--g:#C9A84C"><span class="nav-gl">Celestia · Servicio</span><div class="nav-gb"><button class="filter-btn active" onclick="verSeccion('reservas',this)">Reservas</button><button class="filter-btn" onclick="verSeccion('semanal',this)">Chef Semanal</button><button class="filter-btn" onclick="verSeccion('agenda',this)">Agenda</button><button class="filter-btn" onclick="verSeccion('pagos',this)">Pagos</button><button class="filter-btn" onclick="verSeccion('bloqueos',this)">Bloquear días</button><button class="filter-btn" onclick="verSeccion('presupuestos',this)">📄 Presupuestos</button><button class="filter-btn" onclick="verSeccion('chefs',this)">Chefs</button></div></div>
+      <div class="nav-g" style="--g:#C9A84C"><span class="nav-gl">Celestia · Servicio</span><div class="nav-gb"><button class="filter-btn active" id="nav-agenda" onclick="verSeccion('agenda',this)">📅 Agenda</button><button class="filter-btn" id="nav-reservas" onclick="verSeccion('reservas',this)">Reservas<i class="nav-dot" id="dot-reservas"></i></button><button class="filter-btn" onclick="verSeccion('semanal',this)">Chef Semanal</button><button class="filter-btn" onclick="verSeccion('pagos',this)">Pagos</button><button class="filter-btn" onclick="verSeccion('bloqueos',this)">Bloquear días</button><button class="filter-btn" onclick="verSeccion('presupuestos',this)">📄 Presupuestos</button><button class="filter-btn" onclick="verSeccion('chefs',this)">Chefs</button></div></div>
       <div class="nav-g" style="--g:#5DBF87"><span class="nav-gl">Cocina &amp; costos</span><div class="nav-gb"><button class="filter-btn" onclick="verSeccion('ingredientes',this)">Ingredientes</button><button class="filter-btn" onclick="verSeccion('platos',this)">Platos</button></div></div>
-      <div class="nav-g" style="--g:#E2A33E"><span class="nav-gl">Tienda</span><div class="nav-gb"><button class="filter-btn" onclick="verSeccion('fiestas',this)">📦 Cajas</button><button class="filter-btn" onclick="verSeccion('cupones',this)">Cupones</button></div></div>
+      <div class="nav-g" style="--g:#E2A33E"><span class="nav-gl">Tienda</span><div class="nav-gb"><button class="filter-btn" id="nav-cajas" onclick="verSeccion('fiestas',this)">📦 Cajas<i class="nav-dot" id="dot-cajas"></i></button><button class="filter-btn" onclick="verSeccion('cupones',this)">Cupones</button></div></div>
       <div class="nav-g" style="--g:#D98BB5"><span class="nav-gl">Marketing</span><div class="nav-gb"><button class="filter-btn" onclick="verSeccion('casos',this)">Casos de éxito</button><button class="filter-btn" onclick="verSeccion('resenas',this)">Reseñas</button><button class="filter-btn" onclick="verSeccion('banners',this)">Banners</button><button class="filter-btn" onclick="verSeccion('catalogo',this)">📲 Catálogo WhatsApp</button><button class="filter-btn" onclick="verSeccion('wabot',this)">🤖 Bot WhatsApp</button><a class="filter-btn" href="/admin-historias" style="text-decoration:none;">📸 Historias IG</a></div></div>
       <div class="nav-g" style="--g:#8EC5E8"><span class="nav-gl">Management · Clases</span><div class="nav-gb"><button class="filter-btn" onclick="verSeccion('management',this)">🎓 Management</button></div></div>
     </div>
@@ -1169,7 +1174,7 @@ select{color-scheme:dark}select option,select optgroup{background:#13263a;color:
     </div>
 
     <!-- SECCIÓN AGENDA -->
-    <div id="seccion-agenda" style="display:none;">
+    <div id="seccion-agenda">
       <div class="agenda-layout">
         <!-- IZQUIERDA: mes grande -->
         <div class="agenda-left">
@@ -1236,7 +1241,7 @@ select{color-scheme:dark}select option,select optgroup{background:#13263a;color:
     </div>
 
     <!-- SECCIÓN RESERVAS -->
-    <div id="seccion-reservas">
+    <div id="seccion-reservas" style="display:none;">
     <div class="filters">
       <button class="filter-btn active" onclick="setFiltro('todas', this)">Todas</button>
       <button class="filter-btn" onclick="setFiltro('reservada', this)">Pendientes</button>
@@ -1530,12 +1535,19 @@ function irAMes(y, m) {
 }
 
 async function cargarDatosAgenda() {
-  const [resR, resB] = await Promise.all([
+  const [resR, resB, resC] = await Promise.all([
     supa.from('reservas').select('id,fecha,turno,estado,nombre,personas,menu,tipo,jornadas,ocasion,tel,email,total').not('estado','in','(cancelada,rechazada,cancelado)'),
-    supa.from('bloqueos').select('fecha,motivo')
+    supa.from('bloqueos').select('fecha,motivo'),
+    supa.from('pedidos_cajas').select('id,ref,entrega_fecha,entrega_franja,estado,nombre,items,total,tel,ocasion').neq('estado', 'cancelado')
   ]);
   bloqueosDias = resB.data || [];
-  agendaReservas = resR.data || [];
+  // Los pedidos de cajas entran a la agenda como un servicio más (todo lo recibido en un solo lugar)
+  const cajas = (resC.data || []).filter(p => p.ocasion !== 'extras').map(p => ({
+    id: 'cj-' + p.id, fecha: String(p.entrega_fecha).slice(0, 10), turno: 'almuerzo', tipo: 'caja',
+    estado: p.estado === 'pendiente' ? 'reservada' : 'confirmada', nombre: p.nombre,
+    personas: (p.items || []).reduce((a, it) => a + (it.personas || 0) * (it.cant || 1), 0) || '—',
+    menu: 'Caja Celestia · ' + (p.items || []).map(it => it.nombre).join(' + '), total: p.total, tel: p.tel }));
+  agendaReservas = (resR.data || []).concat(cajas);
 }
 
 // Tipo de servicio de cada reserva, para pintarla con su color en la agenda
@@ -2919,6 +2931,20 @@ async function cargarBloqueos() {
   `).join('');
 }
 
+// ─── Avisos en el menú: punto rojo con contador ───
+// Cajas: pedidos activos que vienen (sin entregar ni cancelar). Reservas: pendientes de validar.
+async function contarAvisos() {
+  try {
+    const hoy = new Date().toISOString().slice(0, 10);
+    const [c, r] = await Promise.all([
+      supa.from('pedidos_cajas').select('id', { count: 'exact', head: true }).gte('entrega_fecha', hoy).in('estado', ['pendiente', 'sena_cobrada', 'en_produccion']).neq('ocasion', 'extras'),
+      supa.from('reservas').select('id', { count: 'exact', head: true }).gte('fecha', hoy).eq('estado', 'reservada')
+    ]);
+    const pon = (id, n) => { const d = document.getElementById(id); if (!d) return; d.textContent = n > 99 ? '99+' : n; d.classList.toggle('on', n > 0); };
+    pon('dot-cajas', c.count || 0); pon('dot-reservas', r.count || 0);
+  } catch (e) {}
+}
+
 // ─── Cajas bloquean el día para experiencias (no puedo entregar un pedido y armar una experiencia el mismo día) ───
 // Cada día con un pedido de caja activo tiene un bloqueo "📦 Caja …". Si el pedido se cancela o cambia de día, se libera.
 async function sincronizarBloqueosCajas() {
@@ -2962,8 +2988,9 @@ function entrarAdmin() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('admin-screen').style.display = 'block';
   cargarReservas();
-  iniciarRealtimeAdmin();
+  verSeccion('agenda', document.getElementById('nav-agenda'));
   sincronizarBloqueosCajas();
+  contarAvisos(); setInterval(contarAvisos, 60000);
 }
 // Si ya hay sesión de admin (por ejemplo, al volver de Instagram u otra página), entrar directo
 (async () => {
@@ -3085,21 +3112,28 @@ const sinAdic = t => (t || '').replace(ADIC_RE, '').trim();
 const esCaja = r => /^caja celestia\b/i.test(r.menu || '') || /^caja\b/i.test(r.menu || '');
 async function pasarACajas(id) {
   const r = todasReservas.find(x => x.id === id); if (!r) return;
-  if (!confirm('¿Pasar "' + (r.menu || 'la caja') + '" de ' + (r.nombre || '') + ' a Cajas? Se saca de Reservas y el día queda bloqueado para experiencias.')) return;
   const total = Number(r.total) || ((r.honorario_final || r.honorario || 0) + (Number(r.ingredientes) || 0));
   const partes = String(r.menu || '').split(' · ');
   const seniaOk = r.senia_cobrada || r.estado === 'confirmada';
+  // lo que ya se cobró en la reserva viaja como pagos del pedido de caja
+  const hoyP = new Date().toISOString().slice(0, 10);
+  const pagos = [...(Number(r.senia_monto) > 0 && seniaOk ? [{ c: 'Seña', m: Number(r.senia_monto), f: r.senia_fecha || hoyP }] : []),
+    ...(Number(r.saldo_monto) > 0 && r.saldo_cobrado ? [{ c: 'Saldo', m: Number(r.saldo_monto), f: r.saldo_fecha || hoyP }] : []),
+    ...(Array.isArray(r.pagos) ? r.pagos : [])];
   const fila = { ref: 'CJ-' + (r.ref || Date.now().toString(36).toUpperCase()), ocasion: 'amigos', entrega_fecha: r.fecha, entrega_franja: null,
     items: [{ id: 'caja', nombre: partes[1] || partes[0] || 'Caja Celestia', variante: partes.slice(2).join(' · '), personas: r.personas || 0, cant: 1, precio: total, subtotal: total }],
     subtotal: total, envio: 0, total, senia_monto: Number(r.senia_monto) || Math.round(total * 0.5),
     nombre: r.nombre || 'Cliente', tel: r.tel || '—', email: r.email || null, dir: r.dir || null, notas: [r.ocasion, sinAdic(r.notas)].filter(Boolean).join(' · ') || null, estado: 'pendiente' };
+  const recibido = pagos.reduce((a, x) => a + (Number(x.m) || 0), 0);
+  const msjPagos = recibido ? '\n\nPagos que pasan con el pedido: ' + pagos.map(x => x.c + ' ' + fmtAR(x.m)).join(', ') + '.' : '\n\nNo tiene pagos cargados: los cargás después en Cajas (podés cargar la seña en partes).';
+  if (!confirm('¿Pasar "' + (r.menu || 'la caja') + '" de ' + (r.nombre || '') + ' a Cajas? Se saca de Reservas y el día queda bloqueado para experiencias.' + msjPagos)) return;
   const { error } = await supa.from('pedidos_cajas').insert(fila);
   if (error) { alert('No se pudo crear el pedido de caja: ' + error.message); return; }
-  if (seniaOk) await supa.from('pedidos_cajas').update({ estado: 'sena_cobrada' }).eq('ref', fila.ref);
+  if (recibido) await supa.from('pedidos_cajas').update({ pagos, ...(recibido >= fila.senia_monto ? { estado: 'sena_cobrada' } : {}) }).eq('ref', fila.ref);
   const { error: e2 } = await supa.from('reservas').update({ estado: 'cancelada', notas: '[Pasada a Cajas como ' + fila.ref + '] ' + (r.notas || '') }).eq('id', id);
   if (e2) alert('El pedido quedó en Cajas, pero no pude sacar la reserva: ' + e2.message);
   await sincronizarBloqueosCajas();
-  cargarReservas(); alert('✓ Listo: quedó en Cajas como ' + fila.ref + '. El día sigue bloqueado para experiencias.');
+  cargarReservas(); contarAvisos(); alert('✓ Listo: quedó en Cajas como ' + fila.ref + '. El día sigue bloqueado para experiencias.' + (recibido < fila.senia_monto ? ' Desde Cajas podés cargar el resto de la seña.' : ''));
 }
 // ─── Cambiar cantidad de personas: recalcula el importe y pide confirmación ───
 let _CAJAS_ADM = null;
@@ -3823,13 +3857,14 @@ function renderFiestas() {
   const lista = todosFiestas.filter(p => (!f || p.entrega_fecha === f) && (verC || p.estado !== 'cancelado'));
   const activos = lista.filter(p => p.estado !== 'cancelado');
   const tot = activos.reduce((a, p) => a + (p.total || 0), 0);
-  const cobr = activos.filter(p => p.estado !== 'pendiente').reduce((a, p) => a + (p.senia_monto || 0), 0);
+  const recP = p => (Array.isArray(p.pagos) && p.pagos.length) ? p.pagos.reduce((a, x) => a + (Number(x.m) || 0), 0) : (p.estado !== 'pendiente' ? (p.senia_monto || 0) : 0);
+  const cobr = activos.reduce((a, p) => a + recP(p), 0);
   const pend = activos.filter(p => p.estado === 'pendiente').length;
   document.getElementById('fx-resumen').innerHTML = [
     ['Pedidos', activos.length, pend ? pend + ' sin seña' : 'todos con seña'],
     ['Facturación', fxMoney(tot), 'total de los pedidos'],
-    ['Señas cobradas', fxMoney(cobr), 'confirmadas'],
-    ['A cobrar al entregar', fxMoney(activos.filter(p => p.estado !== 'entregado').reduce((a, p) => a + (p.total || 0) - (p.estado !== 'pendiente' ? (p.senia_monto || 0) : 0), 0)), 'saldo + señas pendientes']
+    ['Cobrado', fxMoney(cobr), 'señas y pagos recibidos'],
+    ['A cobrar al entregar', fxMoney(activos.filter(p => p.estado !== 'entregado').reduce((a, p) => a + Math.max(0, (p.total || 0) - recP(p)), 0)), 'saldo + señas pendientes']
   ].map(([l, v, s]) => `<div class="resumen-card"><div class="resumen-label">${l}</div><div class="resumen-valor">${v}</div><div class="resumen-sub">${s}</div></div>`).join('');
   // producción: cantidades a cocinar por fecha de entrega
   const porFecha = {};
@@ -3846,6 +3881,8 @@ function renderFiestas() {
   L.innerHTML = lista.map(p => {
     const tel = String(p.tel || '').replace(/\D/g, ''); const wa = tel ? (tel.startsWith('54') ? tel : '549' + tel.replace(/^0/, '').replace(/^15/, '')) : '';
     const col = { pendiente: '#E2A33E', sena_cobrada: '#5DBF87', en_produccion: '#8EC5E8', entregado: 'rgba(250,246,239,.4)', cancelado: '#c46a6a' }[p.estado] || '#fff';
+    const pg = Array.isArray(p.pagos) ? p.pagos : [], rec = pg.reduce((a, x) => a + (Number(x.m) || 0), 0), falta = Math.max(0, (p.total || 0) - rec);
+    const faltaSena = Math.max(0, (p.senia_monto || 0) - rec);
     return `<div class="caso-card" style="border-left:3px solid ${col};">
       <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:baseline;justify-content:space-between;">
         <div><b style="font-size:16px;">${escapeHtmlCaso(p.nombre)}</b> <span style="color:rgba(250,246,239,.5);font-size:12px;">${escapeHtmlCaso(p.ref)} · ${({ extras: '🍷 Extras de un pedido', thanksgiving: '🦃 Thanksgiving', navidad: '🎄 Navidad', anio_nuevo: '🥂 Año Nuevo', romantica: '❤️ Cena romántica', cumple: '🎂 Cumpleaños', merienda: '☕ Merienda', amigos: '🍽️ Cena con amigos' })[p.ocasion] || escapeHtmlCaso(p.ocasion || '')}</span></div>
@@ -3855,11 +3892,21 @@ function renderFiestas() {
       <div style="font-size:13.5px;margin:6px 0 8px;">${(p.items || []).map(it => `• ${it.cant > 1 ? it.cant + ' × ' : ''}${escapeHtmlCaso(it.nombre)} <span style="color:rgba(250,246,239,.5)">(${escapeHtmlCaso(it.variante)})</span> — ${fxMoney(it.subtotal)}`).join('<br>')}</div>
       ${p.notas ? `<div style="font-size:13px;background:rgba(201,168,76,.08);border-radius:8px;padding:8px 10px;margin-bottom:8px;">📝 ${escapeHtmlCaso(p.notas)}</div>` : ''}
       <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:13px;">
-        ${p.ocasion === 'extras' ? `<span>Total extras <b>${fxMoney(p.total)}</b> · se suma al saldo</span>` : `<span>Total <b>${fxMoney(p.total)}</b> (envío ${p.envio ? fxMoney(p.envio) : 'gratis'}${p.descuento ? ' · cupón ' + escapeHtmlCaso(p.cupon || '') + ' −' + fxMoney(p.descuento) : ''}) · Seña <b>${fxMoney(p.senia_monto)}</b></span>`}
+        ${p.ocasion === 'extras' ? `<span>Total extras <b>${fxMoney(p.total)}</b> · se suma al saldo</span>` : `<span>Total <b>${fxMoney(p.total)}</b> (envío ${p.envio ? fxMoney(p.envio) : 'gratis'}${p.descuento ? ' · cupón ' + escapeHtmlCaso(p.cupon || '') + ' −' + fxMoney(p.descuento) : ''}) · Seña <b>${fxMoney(p.senia_monto)}</b>${rec ? ` · Recibido <b style="color:#81C784">${fxMoney(rec)}</b> · Falta <b style="color:${falta ? '#E2A33E' : '#81C784'}">${falta ? fxMoney(falta) : '✓ nada'}</b>` : ''}</span>`}
         <span style="flex:1"></span>
         ${wa ? `<a href="https://wa.me/${wa}" target="_blank" style="font-size:12px;color:#5DBF87;background:rgba(45,122,79,0.08);border:1px solid rgba(45,122,79,0.25);padding:6px 14px;border-radius:20px;text-decoration:none;">WA ${escapeHtmlCaso(p.tel)}</a>` : ''}
         <select class="bloqueo-input" style="width:auto;padding:6px 10px;" onchange="estadoFiesta('${p.id}',this.value)">${Object.entries(FX_ESTADOS).map(([k, l]) => `<option value="${k}" ${p.estado === k ? 'selected' : ''}>${l}</option>`).join('')}</select>
-      </div></div>`;
+      </div>
+      ${p.ocasion === 'extras' ? '' : `<div class="cj-pagos">
+        ${pg.map((x, i) => `<div class="cj-pg"><span>💵 ${escapeHtmlCaso(x.c || 'Pago')}${x.f ? ' · ' + x.f.slice(8, 10) + '/' + x.f.slice(5, 7) : ''}</span><b>${fxMoney(x.m)}</b><button class="pp-x" title="Quitar este pago" onclick="pagoCaja('${p.id}',${i})">✕</button></div>`).join('')}
+        ${rec && faltaSena ? `<div class="cj-pg" style="color:#E2A33E"><span>Falta de la seña</span><b>${fxMoney(faltaSena)}</b></div>` : ''}
+        <details class="adic-box" id="cjd-${p.id}"><summary>＋ Cargar pago${rec ? '' : ' (seña completa o en partes)'}</summary>
+          <div class="cj-form"><select class="bloqueo-input" id="cpc-${p.id}"><option>Seña</option><option>Seña (parte)</option><option>Acopio de ingredientes</option><option>Saldo</option><option>Otro</option></select>
+          <input class="bloqueo-input" id="cpm-${p.id}" type="number" placeholder="Monto $" value="${rec ? '' : (p.senia_monto || '')}">
+          <input class="bloqueo-input" id="cpf-${p.id}" type="date" value="${new Date().toISOString().slice(0, 10)}">
+          <button class="precio-ok-btn" onclick="pagoCaja('${p.id}')">＋ Agregar</button></div>
+        </details></div>`}
+      </div>`;
   }).join('');
 }
 /* ───────── Carritos (abandonos y recuperación) ───────── */
@@ -3964,7 +4011,27 @@ async function estadoFiesta(id, estado) {
   const { error } = await supa.from('pedidos_cajas').update({ estado }).eq('id', id);
   if (error) { alert('Error: ' + error.message); return; }
   const p = todosFiestas.find(x => x.id === id); if (p) p.estado = estado; renderFiestas();
-  sincronizarBloqueosCajas();
+  sincronizarBloqueosCajas(); contarAvisos();
+}
+// Pagos parciales de un pedido de caja (seña en partes, etc.)
+async function pagoCaja(id, quitar) {
+  const p = todosFiestas.find(x => x.id === id); if (!p) return;
+  let pagos = Array.isArray(p.pagos) ? p.pagos.slice() : [];
+  if (quitar != null) { const x = pagos[quitar]; if (!x || !confirm('¿Quitar el pago de ' + fxMoney(x.m) + ' (' + (x.c || 'Pago') + ')?')) return; pagos.splice(quitar, 1); }
+  else {
+    const m = parseInt(document.getElementById('cpm-' + id).value, 10), c = document.getElementById('cpc-' + id).value, f = document.getElementById('cpf-' + id).value;
+    if (!m || m <= 0) { alert('Poné el monto recibido.'); return; }
+    if (!confirm('¿Cargar pago de ' + fxMoney(m) + ' (' + c + ') para ' + (p.nombre || 'este pedido') + '?')) return;
+    pagos.push({ c, m, f });
+  }
+  const suma = pagos.reduce((a, x) => a + (Number(x.m) || 0), 0);
+  const upd = { pagos };
+  // con la seña completa pasa a "Seña cobrada"; si se quitan pagos y no llega, vuelve a pendiente
+  if (p.estado === 'pendiente' && suma >= (p.senia_monto || 0) && suma > 0) upd.estado = 'sena_cobrada';
+  if (p.estado === 'sena_cobrada' && suma < (p.senia_monto || 0) && quitar != null) upd.estado = 'pendiente';
+  const { error } = await supa.from('pedidos_cajas').update(upd).eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  Object.assign(p, upd); renderFiestas(); contarAvisos();
 }
 </script>
 <script src="/js/menus-ejemplo.js"></script>
