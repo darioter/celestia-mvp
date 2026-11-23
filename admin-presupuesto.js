@@ -172,7 +172,8 @@
     } else if (f.servicio === 'caja') {
       var c = cajaSel(), ops = cajaOps(c), o = ops[+f.cajaOp] || ops[0];
       r.titulo = String(f.cajaNom || '').trim() || (c ? c.nombre : 'Caja Celestia'); r.formato = o ? o.label : '—'; r.personas = o ? (o.personas + ' personas') : '';
-      if (c && o) r.items.push([r.titulo + ' · ' + o.label, o.precio]);
+      var pMan = +String(f.cajaPrecio || '').replace(/\D/g, '');
+      if (c && o) r.items.push([r.titulo + ' · ' + o.label, pMan || o.precio]);
       var sub = r.items.concat(extrasItems()).reduce(function (a, x) { return a + x[1]; }, 0);
       var env = sub >= ENVIO_GRATIS ? 0 : (ENVIO[f.envio] || 0);
       r.envio = ['Envío · ' + (ENVIO_TXT[f.envio] || 'CABA') + (env ? '' : ' (sin cargo)'), env];
@@ -212,6 +213,7 @@
       h += '<div class="pz-f"><label>Caja</label><select data-k="caja"><option value="">' + (CAJAS.length ? '— Elegir caja —' : 'Cargando cajas…') + '</option>' + CAJAS.map(function (x) { return '<option value="' + esc(x.id) + '"' + (x.id === f.caja ? ' selected' : '') + '>' + esc(x.nombre + ' · ' + (x.grupo || '')) + '</option>'; }).join('') + '</select></div>';
       if (c) h += '<div class="pz-f"><label>Opción</label>' + sel('cajaOp', cajaOps(c).map(function (o, i) { return [i, o.label + ' · ' + money(o.precio)]; }), f.cajaOp) + '</div>';
       // Caja a medida: nombre, bajada y menú propios sobre el precio de la caja elegida
+      h += '<div class="pz-f"><label>Precio de la caja (opcional · vacío = el del sitio)</label><input data-k="cajaPrecio" inputmode="numeric" value="' + esc(f.cajaPrecio || '') + '" placeholder="' + esc(c ? (function () { var o = cajaOps(c)[+f.cajaOp] || cajaOps(c)[0]; return o ? String(o.precio) : ''; })() : '') + '"></div>';
       h += '<div class="pz-f"><label>Nombre a medida (opcional)</label><input data-k="cajaNom" value="' + esc(f.cajaNom || '') + '" placeholder="' + esc(c ? c.nombre : 'Ej.: Desayuno Celestia') + '"></div>';
       h += '<div class="pz-f"><label>Bajada a medida (opcional)</label><input data-k="cajaLead" value="' + esc(f.cajaLead || '') + '" placeholder="Una frase que describa la caja"></div>';
       h += '<div class="pz-f"><label>Menú a medida (opcional)</label><textarea data-k="cajaMenu" rows="4" placeholder="Una línea por sección. Ej.:&#10;Salado: croissants · quiche · scones&#10;Dulce: medialunas · budín">' + esc(f.cajaMenu || '') + '</textarea></div>';
