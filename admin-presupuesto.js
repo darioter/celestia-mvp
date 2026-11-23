@@ -171,13 +171,14 @@
       r.cond = 'Si la carne o el pollo vienen sin picar, se suman ~2 horas y hace falta picadora. Coordinamos la jornada con al menos 48 horas de anticipación.';
     } else if (f.servicio === 'caja') {
       var c = cajaSel(), ops = cajaOps(c), o = ops[+f.cajaOp] || ops[0];
-      r.titulo = c ? c.nombre : 'Caja Celestia'; r.formato = o ? o.label : '—'; r.personas = o ? (o.personas + ' personas') : '';
-      if (c && o) r.items.push([c.nombre + ' · ' + o.label, o.precio]);
+      r.titulo = String(f.cajaNom || '').trim() || (c ? c.nombre : 'Caja Celestia'); r.formato = o ? o.label : '—'; r.personas = o ? (o.personas + ' personas') : '';
+      if (c && o) r.items.push([r.titulo + ' · ' + o.label, o.precio]);
       var sub = r.items.concat(extrasItems()).reduce(function (a, x) { return a + x[1]; }, 0);
       var env = sub >= ENVIO_GRATIS ? 0 : (ENVIO[f.envio] || 0);
       r.envio = ['Envío · ' + (ENVIO_TXT[f.envio] || 'CABA') + (env ? '' : ' (sin cargo)'), env];
-      r.menuTit = 'El menú'; r.menu = c ? (c.menu || []) : [];
-      if (c && c.lead) r.lead = String(c.lead).replace('{mesa}', (o && o.mesa) || ('para ' + ((o && o.personas) || '') + ' personas'));
+      var mm = String(f.cajaMenu || '').split('\n').map(function (l) { var k = l.indexOf(':'); return k > 0 ? [l.slice(0, k).trim(), l.slice(k + 1).trim()] : (l.trim() ? ['', l.trim()] : null); }).filter(Boolean);
+      r.menuTit = 'El menú'; r.menu = mm.length ? mm : (c ? (c.menu || []) : []);
+      if (String(f.cajaLead || '').trim()) r.lead = String(f.cajaLead).trim(); else if (c && c.lead) r.lead = String(c.lead).replace('{mesa}', (o && o.mesa) || ('para ' + ((o && o.personas) || '') + ' personas'));
       r.incluye = ['Elaboración artesanal el día anterior o el mismo día', 'Cada preparación en su envase, lista para regenerar', 'Guía impresa para regenerar y servir', 'Entrega refrigerada en la franja elegida'];
       r.noIncluye = ['Bebidas', 'Vajilla y servicio en mesa', 'IVA (los precios son sin IVA)'];
       r.pago = 'seña del 50% para confirmar el pedido y saldo antes de la entrega, por transferencia o MercadoPago.';
@@ -210,6 +211,10 @@
       var c = cajaSel();
       h += '<div class="pz-f"><label>Caja</label><select data-k="caja"><option value="">' + (CAJAS.length ? '— Elegir caja —' : 'Cargando cajas…') + '</option>' + CAJAS.map(function (x) { return '<option value="' + esc(x.id) + '"' + (x.id === f.caja ? ' selected' : '') + '>' + esc(x.nombre + ' · ' + (x.grupo || '')) + '</option>'; }).join('') + '</select></div>';
       if (c) h += '<div class="pz-f"><label>Opción</label>' + sel('cajaOp', cajaOps(c).map(function (o, i) { return [i, o.label + ' · ' + money(o.precio)]; }), f.cajaOp) + '</div>';
+      // Caja a medida: nombre, bajada y menú propios sobre el precio de la caja elegida
+      h += '<div class="pz-f"><label>Nombre a medida (opcional)</label><input data-k="cajaNom" value="' + esc(f.cajaNom || '') + '" placeholder="' + esc(c ? c.nombre : 'Ej.: Desayuno Celestia') + '"></div>';
+      h += '<div class="pz-f"><label>Bajada a medida (opcional)</label><input data-k="cajaLead" value="' + esc(f.cajaLead || '') + '" placeholder="Una frase que describa la caja"></div>';
+      h += '<div class="pz-f"><label>Menú a medida (opcional)</label><textarea data-k="cajaMenu" rows="4" placeholder="Una línea por sección. Ej.:&#10;Salado: croissants · quiche · scones&#10;Dulce: medialunas · budín">' + esc(f.cajaMenu || '') + '</textarea></div>';
       h += '<div class="pz-f"><label>Envío</label>' + sel('envio', [['z1', 'CABA · ' + money(ENVIO.z1)], ['z2', 'GBA cercano · ' + money(ENVIO.z2)], ['z3', 'GBA más lejos · ' + money(ENVIO.z3)]], f.envio) + '</div>';
     }
     if (f.servicio === 'libre') h += '<div class="pz-f"><label>Comensales</label><input type="number" min="1" max="200" data-k="personas" value="' + esc(f.personas) + '"></div>';
@@ -330,7 +335,7 @@
   function marcarCaja(say) {
     var r = calcAlt(), c = cajaSel(), ops = cajaOps(c), o = ops[+f.cajaOp] || ops[0];
     var ct = String(f.contacto || ''), email = (ct.match(/[^\s,;]+@[^\s,;]+/) || [''])[0], tel = (ct.replace(email, '').match(/[+\d][\d\s\-()]{6,}/) || [''])[0].trim();
-    var items = r.items.concat(extrasItems()).map(function (x, i) { return i === 0 && c && o ? { id: c.id, nombre: c.nombre, variante: o.label, personas: o.personas || 0, cant: 1, precio: x[1], subtotal: x[1] } : { id: 'extra', nombre: x[0], variante: '', personas: 0, cant: 1, precio: x[1], subtotal: x[1] }; });
+    var items = r.items.concat(extrasItems()).map(function (x, i) { return i === 0 && c && o ? { id: c.id, nombre: String(f.cajaNom || '').trim() || c.nombre, variante: o.label, personas: o.personas || 0, cant: 1, precio: x[1], subtotal: x[1] } : { id: 'extra', nombre: x[0], variante: '', personas: 0, cant: 1, precio: x[1], subtotal: x[1] }; });
     var sub = items.reduce(function (a, x) { return a + x.subtotal; }, 0), env = r.envio ? r.envio[1] : 0;
     var datos = { ocasion: (c && c.ocasiones && c.ocasiones[0]) || 'amigos', entrega_fecha: f.fecha, entrega_franja: f.horario || null, items: items,
       subtotal: sub, envio: env, total: r.total || (sub + env), senia_monto: Math.round((r.total || (sub + env)) * 0.5),
