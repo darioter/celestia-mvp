@@ -1186,6 +1186,14 @@ textarea { resize: vertical; min-height: 80px; }
   flex-shrink: 0;
   padding-top: 2px;
 }
+.rx-box{margin:14px 0 4px;padding:12px 14px;border:1px dashed rgba(201,168,76,.45);border-radius:10px}
+.rx-tit{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}.rx-tit span{opacity:.6;letter-spacing:.04em;text-transform:none}
+.rx-op,.rx-op *{text-transform:none!important;letter-spacing:normal!important}label.rx-op{color:inherit!important;opacity:1!important;font-size:13.5px!important}.rx-op b{color:inherit;font-weight:600}
+.rx-op{display:flex;gap:10px;align-items:flex-start;padding:8px 0;cursor:pointer;font-size:13.5px;line-height:1.4}.rx-op+.rx-op{border-top:1px solid rgba(201,168,76,.18)}
+.rx-op input{margin-top:3px;accent-color:var(--gold);width:16px;height:16px;flex:none}
+.rx-op>span{flex:1;min-width:0}.rx-op small{display:block;font-size:12px;opacity:.65;margin-top:2px}
+.rx-op em{font-style:normal;white-space:nowrap;color:var(--gold);font-weight:500}
+.rx-op select{flex:none;padding:6px 8px;border-radius:8px;border:1px solid rgba(201,168,76,.45);background:transparent;color:inherit;font:inherit}
 .asistente-note {
   background: rgba(201,168,76,0.1);
   border: 1px solid rgba(201,168,76,0.2);
@@ -4317,8 +4325,26 @@ const state = {
   calcPersonas: 4,
   calcDia: 'finde',
   nombre: '', tel: '', email: '', dir: '', personas: '', ocasion: '', visibilidad: '', notas: '',
+  extraMesa: false, extraHoras: 0,
   ref: null
 };
+
+// ─── ADICIONALES DE LA EXPERIENCIA (opcionales, se tildan en el resumen) ───
+// El servicio dura lo mismo en almuerzo o cena: 2 h (3 pasos) o 3 h (7 pasos) desde el inicio, + 1 h de llegada antes.
+const VALOR_HORA_EQUIPO = 40000;                 // por persona del equipo, por hora o fracción
+function horasServicio(menu) { return menu && menu.id === 2 ? 3 : 2; }
+function calcExtras(personas) {
+  const n = parseInt(personas) || 4;
+  const equipo = 1 + cantAsistentes(n);          // chef + asistentes
+  const mozos = n > 10 ? 2 : 1;
+  const hs = horasServicio(state.menu);
+  const items = [];
+  if (state.extraMesa) items.push({ k: 'mesa', txt: `Servicio de mesa · ${mozos} ${mozos > 1 ? 'mozos' : 'mozo'}`, monto: mozos * (hs + 1) * VALOR_HORA_EQUIPO });
+  const h = parseInt(state.extraHoras) || 0;
+  if (h) items.push({ k: 'horas', txt: `Sobremesa con el equipo · +${h} h`, monto: h * (equipo + (state.extraMesa ? mozos : 0)) * VALOR_HORA_EQUIPO });
+  return { items, total: items.reduce((a, x) => a + x.monto, 0), mozos, equipo, hs };
+}
+function setExtra(k, v) { state[k] = v; renderResumen(); }
 
 let calYear, calMonth;
 
@@ -4865,7 +4891,7 @@ function renderDesglose() {
       </div>
       <div class="calc-pp">~${fmt(Math.round(total / personas))} por persona</div>
       <div class="calc-context">Incluye la planificación del menú, la visita previa a tu domicilio, las compras y los ingredientes, el mise en place, el servicio completo con asistentes y el cierre. El importe puede variar según el menú y los detalles que definamos: te lo confirmamos junto con el menú, antes de la seña. Las bebidas corren por cuenta del anfitrión; si lo deseás, Daro puede recomendar maridajes según el menú elegido.</div>
-      <div class="calc-context" style="margin-top:8px;opacity:.85">Incluye el emplatado, el pase de los platos a la mesa y el retiro de la vajilla hasta el postre. No incluye el servicio de mesa (armado y decoración de la mesa, fajinado de copas y cristalería, recarga de agua, descorche y servicio de vinos): si lo necesitás, se cotiza aparte. Llegamos 1 hora antes del inicio pactado; el servicio dura 2 horas en la experiencia de 3 pasos y 3 horas en la de 7, y termina al retirar el postre (la sobremesa no está incluida). Si el inicio se demora o el servicio se extiende, cada hora extra o fracción se cobra $40.000 por persona del equipo.</div>
+      <div class="calc-context" style="margin-top:8px;opacity:.85">Incluye el emplatado, el pase de los platos a la mesa y el retiro de la vajilla hasta el postre. No incluye el servicio de mesa (armado y decoración de la mesa, fajinado de copas y cristalería, recarga de agua, descorche y servicio de vinos): podés sumarlo como adicional al reservar. Llegamos 1 hora antes del inicio pactado; el servicio dura 2 horas en la experiencia de 3 pasos y 3 horas en la de 7, y termina al retirar el postre (la sobremesa no está incluida). Si el inicio se demora o el servicio se extiende, cada hora extra o fracción se cobra $40.000 por persona del equipo.</div>
     </div>`;
 
   document.getElementById('desglose-content').innerHTML = html;
@@ -5933,15 +5959,27 @@ async function renderResumen() {
   await verificarCuponDisponible();
   const fecha = new Date(state.fecha + 'T12:00:00');
   const fechaStr = fecha.toLocaleDateString('es-AR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
-  const turnoStr = state.turno === 'almuerzo' ? '☀️ Almuerzo (12:00–15:30)' : '🌙 Cena (20:00–23:30)';
+  const turnoStr = (state.turno === 'almuerzo' ? '☀️ Almuerzo' : '🌙 Cena') + ' · servicio de ' + horasServicio(state.menu) + ' h desde el inicio (hora a coordinar)';
   const personas = parseInt(state.personas) || 4;
   const fin = esFinde(state.fecha);
   const hon = calcHonorario(state.menu.id, personas, fin);
   const ingredientes = calcIngredientes(state.menu, personas);
   const total = hon.total + (ingredientes || 0);
   const descuentoCupon = calcularDescuentoCupon(total);
-  const totalFinal = total - descuentoCupon;
+  const ex = calcExtras(personas);
+  const totalFinal = total - descuentoCupon + ex.total;
   const fmt = n => '$' + n.toLocaleString('es-AR');
+  const mozoTxt = ex.mozos > 1 ? ex.mozos + ' mozos' : '1 mozo';
+  const extrasHTML = `
+    <div class="rx-box">
+      <div class="rx-tit">Adicionales <span>opcionales</span></div>
+      <label class="rx-op"><input type="checkbox" ${state.extraMesa ? 'checked' : ''} onchange="setExtra('extraMesa', this.checked)">
+        <span><b>Servicio de mesa</b> · ${mozoTxt}<small>Armado y decoración de la mesa, fajinado de copas y cristalería, recarga de agua, descorche y servicio de vinos.</small></span>
+        <em>${fmt(ex.mozos * (ex.hs + 1) * VALOR_HORA_EQUIPO)}</em></label>
+      <div class="rx-op"><span><b>Sobremesa con el equipo</b><small>El servicio termina al retirar el postre (${ex.hs} h desde el inicio). Si querés que nos quedemos más, cada hora suma ${fmt(VALOR_HORA_EQUIPO)} por persona del equipo.</small></span>
+        <select onchange="setExtra('extraHoras', +this.value)">${[0, 1, 2, 3].map(h => `<option value="${h}"${(+state.extraHoras || 0) === h ? ' selected' : ''}>${h ? '+' + h + ' h' : 'No'}</option>`).join('')}</select></div>
+    </div>
+    ${ex.items.map(x => `<div class="resumen-row"><div class="resumen-label">＋ ${x.txt}</div><div class="resumen-val">${fmt(x.monto)}</div></div>`).join('')}`;
   document.getElementById('resumen-card').innerHTML = `
     <div class="resumen-title">${t('resumen_titulo')}</div>
     <div class="resumen-row">
@@ -5966,11 +6004,12 @@ async function renderResumen() {
       <div class="resumen-label" style="color:#4caf7d;">✦ Descuento de bienvenida</div>
       <div class="resumen-val" style="color:#4caf7d;">−${fmt(descuentoCupon)}</div>
     </div>` : ''}
+    ${extrasHTML}
     <div class="resumen-row" style="background:rgba(201,168,76,0.08);margin:0 -32px;padding:12px 32px;border-radius:0;">
       <div class="resumen-label" style="color:var(--gold-light);">Total · todo incluido</div>
       <div class="resumen-val" style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--gold-light);">${fmt(totalFinal)}</div>
     </div>
-    <div style="margin-top:12px;padding:10px 12px;border-radius:8px;background:rgba(201,168,76,0.14);border:1px solid rgba(201,168,76,0.45);font-size:12.5px;line-height:1.5;color:inherit">&#9432; Incluye servicio, asistentes e ingredientes. El importe puede variar según el menú y los detalles: te lo confirmamos junto con el menú, antes de la seña.<br><span style="opacity:.85">Incluye el emplatado, el pase de los platos a la mesa y el retiro de la vajilla hasta el postre. No incluye el servicio de mesa (armado y decoración de la mesa, fajinado de copas y cristalería, recarga de agua, descorche y servicio de vinos): si lo necesitás, se cotiza aparte. Llegamos 1 hora antes del inicio pactado; el servicio dura 2 horas en la experiencia de 3 pasos y 3 horas en la de 7, y termina al retirar el postre (la sobremesa no está incluida). Si el inicio se demora o el servicio se extiende, cada hora extra o fracción se cobra $40.000 por persona del equipo.</span></div>` : ''}
+    <div style="margin-top:12px;padding:10px 12px;border-radius:8px;background:rgba(201,168,76,0.14);border:1px solid rgba(201,168,76,0.45);font-size:12.5px;line-height:1.5;color:inherit">&#9432; Incluye servicio, asistentes e ingredientes. El importe puede variar según el menú y los detalles: te lo confirmamos junto con el menú, antes de la seña.<br><span style="opacity:.85">Incluye el emplatado, el pase de los platos a la mesa y el retiro de la vajilla hasta el postre. No incluye el servicio de mesa (armado y decoración de la mesa, fajinado de copas y cristalería, recarga de agua, descorche y servicio de vinos): podés sumarlo como adicional al reservar. Llegamos 1 hora antes del inicio pactado; el servicio dura 2 horas en la experiencia de 3 pasos y 3 horas en la de 7, y termina al retirar el postre (la sobremesa no está incluida). Si el inicio se demora o el servicio se extiende, cada hora extra o fracción se cobra $40.000 por persona del equipo.</span></div>` : ''}
     <div class="resumen-row">
       <div class="resumen-label">${t('resumen_presencia')}</div>
 
@@ -6041,13 +6080,13 @@ function markSent() {
   const ing = calcIngredientes(state.menu, personas) || 0;
   const total = hon.base + hon.asistente + ing;
   const descuentoCupon = calcularDescuentoCupon(total);
-  const totalFinal = total - descuentoCupon;
+  const ex = calcExtras(personas);
+  const totalFinal = total - descuentoCupon + ex.total;
+  const extrasTxt = ex.items.length ? '[ADICIONALES: ' + ex.items.map(x => x.txt + ' $' + x.monto.toLocaleString('es-AR')).join(' · ') + ']' : '';
 
   const zonaTxt = state.zona || '';
   const dirConZona = zonaTxt && !state.dir.toLowerCase().includes(zonaTxt.toLowerCase()) ? `${state.dir} (${zonaTxt})` : state.dir;
-  const notasConZona = state.fueraAMBA
-    ? `[TRASLADO A COTIZAR · ${zonaTxt}]${state.notas ? ' ' + state.notas : ''}`
-    : state.notas;
+  const notasConZona = [state.fueraAMBA ? `[TRASLADO A COTIZAR · ${zonaTxt}]` : '', state.notas || '', extrasTxt].filter(Boolean).join(' ');
   const reservaNueva = {
     ref,
     chef: state.chef.nombre,
@@ -6061,7 +6100,7 @@ function markSent() {
     personas: state.personas,
     ocasion: state.ocasion,
     notas: notasConZona,
-    honorario: hon.base + hon.asistente,
+    honorario: hon.base + hon.asistente + ex.total,
     ingredientes: ing,
     total: totalFinal,
     cupon_id: state.cuponAplicado ? state.cuponAplicado.id : null,
@@ -6077,11 +6116,11 @@ function markSent() {
       body: JSON.stringify({ cupon_id: state.cuponAplicado.id })
     }).catch(e => console.warn('Error incrementando uso de cupón:', e));
   }
-  const senia = Math.round((hon.base + hon.asistente) * 0.5 / 100) * 100;
+  const senia = Math.round((hon.base + hon.asistente + ex.total) * 0.5 / 100) * 100;
   const fmt = n => '$' + n.toLocaleString('es-AR');
   const fecha = new Date(state.fecha + 'T12:00:00');
   const fechaStr = fecha.toLocaleDateString('es-AR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
-  const turnoStr = state.turno === 'almuerzo' ? 'Almuerzo · 12:00hs' : 'Cena · 20:00hs';
+  const turnoStr = (state.turno === 'almuerzo' ? 'Almuerzo' : 'Cena') + ' · servicio de ' + horasServicio(state.menu) + ' h (hora de inicio a coordinar)';
 
   // Poblar ticket
   document.getElementById('ticket-ref').textContent = ref;
@@ -6142,6 +6181,7 @@ function markSent() {
     (state.fueraAMBA ? `\nEs fuera de CABA/GBA (${zonaTxt}): quedo a la espera del costo de traslado.\n` : '') +
     (state.ocasion ? `*Ocasión:* ${state.ocasion}\n` : '') +
     (state.notas ? `*Notas:* ${state.notas}\n` : '') +
+    (ex.items.length ? `*Adicionales:*\n${ex.items.map(x => '• ' + x.txt + ': ' + fmt(x.monto)).join('\n')}\n` : '') +
     `\n*Total (todo incluido):* ${fmt(totalFinal)}\n` +
     `Ref: ${ref}\n\n` +
     `Quedo a la espera de la confirmación. ¡Gracias!\n— ${state.nombre}`;
@@ -6152,13 +6192,13 @@ function markSent() {
 
   // ─── M2: guardamos el mensaje para envío manual ─────────
   const primerNombre = state.nombre?.split(' ')[0] || state.nombre;
-  const seniaHonorario = Math.round((hon.base + hon.asistente) * 0.5 / 100) * 100;
+  const seniaHonorario = Math.round((hon.base + hon.asistente + ex.total) * 0.5 / 100) * 100;
   window._msgM2Cliente = state.tel ? (() => {
     const telLimpio = state.tel.replace(/\D/g, '');
     const telWA = telLimpio.startsWith('54') ? telLimpio : '54' + telLimpio;
     const msg =
       `Hola ${primerNombre} 👋\n\n` +
-      `Recibimos tu solicitud para una *${state.menu.nombre}* el *${fechaStr}* en turno *${state.turno === 'almuerzo' ? 'Almuerzo · 12:00hs' : 'Cena · 20:00hs'}* para *${personas} personas*.\n\n` +
+      `Recibimos tu solicitud para una *${state.menu.nombre}* el *${fechaStr}* en turno *${turnoStr}* para *${personas} personas*.\n\n` +
       (state.fueraAMBA
         ? `Como el evento es en *${zonaTxt}*, te pasamos en breve el costo de traslado y, cuando lo confirmes, los datos para la seña.\n\n`
         : `Para confirmar te enviamos en breve los datos de pago de la seña de *${fmt(seniaHonorario)}* — esto reserva el turno exclusivamente para vos.\n\n`) +
