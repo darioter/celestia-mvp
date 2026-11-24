@@ -151,7 +151,8 @@ section{padding:70px 0}
 @media(max-width:600px){.hdr{padding:0 16px}.hdr nav a:not(.cta){display:none}.wrap{padding:0 16px}.hero-in{padding:0 16px 44px}.hero{min-height:520px}.fiestas{grid-template-columns:1fr}.merc{grid-template-columns:1fr}.pasos3{grid-template-columns:1fr}.two{grid-template-columns:1fr}section{padding:54px 0}.menu li span{width:78px}}
 
 /* Ocasiones: todas del mismo tamaño */
-.fiestas.oc{grid-template-columns:repeat(var(--n,5),1fr);grid-auto-rows:1fr;gap:12px}
+.fiestas.oc{grid-template-columns:repeat(min(var(--n,5),4),1fr);grid-auto-rows:1fr;gap:14px}
+.fiestas.oc .fz b{overflow-wrap:normal;word-break:normal;hyphens:manual}
 @media(max-width:900px){.fiestas.oc{grid-template-columns:repeat(3,1fr)}}
 .fiestas.oc .fz{display:flex;flex-direction:column;align-items:flex-start;min-height:150px;padding:18px 18px 16px}
 .fiestas.oc .fz i{position:static;font-size:30px;line-height:1;margin-bottom:10px}
