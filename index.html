@@ -2637,12 +2637,12 @@ programar();
       <div class="turno-card" id="turno-almuerzo" onclick="selectTurno('almuerzo')">
         <div class="turno-icon">☀️</div>
         <div class="turno-name" id="i18n-almuerzo-nombre">Almuerzo</div>
-        <div class="turno-time">12:00 – 15:30</div>
+        <div class="turno-time">Desde las 12:00 · inicio a coordinar</div>
       </div>
       <div class="turno-card" id="turno-cena" onclick="selectTurno('cena')">
         <div class="turno-icon">🌙</div>
         <div class="turno-name" id="i18n-cena-nombre">Cena</div>
-        <div class="turno-time">20:00 – 23:30</div>
+        <div class="turno-time">Desde las 20:00 · inicio a coordinar</div>
       </div>
     </div>
 
@@ -4214,7 +4214,7 @@ const MENUS = [
 
 // ─── TARIFAS REALES (sept 2026) ─────────────────────────
 // Índice = cantidad de personas (2 a 12). Servicio incluye traslados en CABA/GBA.
-// Asistentes: 1 desde 3 personas, 2 desde 9 · $100.000 c/u (sin recargo).
+// Asistentes: hasta 4 personas solo el chef; 1 de 5 a 8; 2 de 9 a 12 · $100.000 c/u (sin recargo). Más de 12: evento a cotizar.
 // Fin de semana (viernes noche, sábado y domingo): +10% sobre servicio y traslados.
 const TARIFAS = {
   1: { // 3 pasos
@@ -4242,7 +4242,7 @@ function celTotalDesde(menuId){ var tf = TARIFAS[menuId]; return tf.servicio[2] 
 } catch(e) {} })();
 function celPintarDesde(){ document.querySelectorAll('.cel-desde').forEach(function(el){ el.textContent = '$' + celTotalDesde(+el.getAttribute('data-m')).toLocaleString('es-AR'); }); }
 document.addEventListener('cel-idx', celPintarDesde);
-function cantAsistentes(personas) { return personas >= 9 ? 2 : (personas >= 3 ? 1 : 0); }
+function cantAsistentes(personas) { return personas >= 9 ? 2 : (personas >= 5 ? 1 : 0); }   // hasta 4: solo el chef · 5 a 8: 1 asistente · 9 a 12: 2 (más de 12 es evento a cotizar)
 function _tarifa(tabla, extraPP, personas) {
   const p = Math.max(2, parseInt(personas) || 2);
   if (tabla[p] != null) return tabla[p];
@@ -4339,10 +4339,11 @@ function calcExtras(personas) {
   const mozos = n > 10 ? 2 : 1;
   const hs = horasServicio(state.menu);
   const items = [];
-  if (state.extraMesa) items.push({ k: 'mesa', txt: `Servicio de mesa · ${mozos} ${mozos > 1 ? 'mozos' : 'mozo'}`, monto: mozos * (hs + 1) * VALOR_HORA_EQUIPO });
+  const quien = n <= 4 ? '1 asistente' : (mozos > 1 ? mozos + ' mozos' : '1 mozo');   // hasta 4 personas va solo el chef: el servicio de mesa suma un asistente
+  if (state.extraMesa) items.push({ k: 'mesa', txt: `Servicio de mesa · ${quien}`, monto: mozos * (hs + 1) * VALOR_HORA_EQUIPO });
   const h = parseInt(state.extraHoras) || 0;
   if (h) items.push({ k: 'horas', txt: `Sobremesa con el equipo · +${h} h`, monto: h * (equipo + (state.extraMesa ? mozos : 0)) * VALOR_HORA_EQUIPO });
-  return { items, total: items.reduce((a, x) => a + x.monto, 0), mozos, equipo, hs };
+  return { items, total: items.reduce((a, x) => a + x.monto, 0), mozos, equipo, hs, quien };
 }
 function setExtra(k, v) { state[k] = v; renderResumen(); }
 
@@ -5969,7 +5970,7 @@ async function renderResumen() {
   const ex = calcExtras(personas);
   const totalFinal = total - descuentoCupon + ex.total;
   const fmt = n => '$' + n.toLocaleString('es-AR');
-  const mozoTxt = ex.mozos > 1 ? ex.mozos + ' mozos' : '1 mozo';
+  const mozoTxt = (parseInt(personas) || 4) <= 4 ? 'suma 1 asistente' : ex.quien;
   const extrasHTML = `
     <div class="rx-box">
       <div class="rx-tit">Adicionales <span>opcionales</span></div>
@@ -6711,8 +6712,8 @@ var I18N = {
     chefs_zona: '<strong>Chefs disponibles</strong> en tu zona',
     menu_sub: 'Seleccioná la propuesta que mejor se adapta a tu ocasión',
     ocupado: 'Ocupado',
-    turno_almuerzo: '12:00 – 15:30',
-    turno_cena: '20:00 – 23:30',
+    turno_almuerzo: 'Desde las 12:00 · inicio a coordinar',
+    turno_cena: 'Desde las 20:00 · inicio a coordinar',
     finde: 'Fin de semana', semana: 'Semana',
     // Resumen
     resumen_titulo: '✦ Detalle de tu reserva',
@@ -6839,8 +6840,8 @@ var I18N = {
     chefs_zona: '<strong>Chefs available</strong> in your area',
     menu_sub: 'Select the proposal that best fits your occasion',
     ocupado: 'Unavailable',
-    turno_almuerzo: '12:00 – 15:30',
-    turno_cena: '20:00 – 23:30',
+    turno_almuerzo: 'From 12:00 · start time to be agreed',
+    turno_cena: 'From 20:00 · start time to be agreed',
     finde: 'Weekend', semana: 'Weekday',
     resumen_titulo: '✦ Your booking details',
     resumen_chef: 'Chef', resumen_servicio: 'Service', resumen_fecha: 'Date',
@@ -6955,8 +6956,8 @@ var I18N = {
     chefs_zona: '<strong>Chefs disponíveis</strong> na sua área',
     menu_sub: 'Selecione a proposta que melhor se adapta à sua ocasião',
     ocupado: 'Indisponível',
-    turno_almuerzo: '12:00 – 15:30',
-    turno_cena: '20:00 – 23:30',
+    turno_almuerzo: 'A partir das 12:00 · início a combinar',
+    turno_cena: 'A partir das 20:00 · início a combinar',
     finde: 'Fim de semana', semana: 'Semana',
     resumen_titulo: '✦ Detalhes da sua reserva',
     resumen_chef: 'Chef', resumen_servicio: 'Serviço', resumen_fecha: 'Data',
