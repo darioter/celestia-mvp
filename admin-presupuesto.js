@@ -17,7 +17,7 @@
   };
   var VALOR_ASISTENTE = 100000, RECARGO_FINDE = 0.10, IDX = 1;
   function tabla(t, extra, p) { p = Math.max(2, p | 0); return t[p] != null ? t[p] : t[12] + (p - 12) * extra; }
-  function asistentes(p) { return p >= 9 ? 2 : (p >= 5 ? 1 : 0); }   // hasta 4: solo el chef
+  function asistentes(p) { return p >= 9 ? 2 : (p >= 3 ? 1 : 0); }   // hasta 2: solo el chef
   function esFinde(fecha, turno) {
     if (!fecha) return false;
     var w = new Date(fecha + 'T12:00:00').getDay();

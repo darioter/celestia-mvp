@@ -4214,7 +4214,7 @@ const MENUS = [
 
 // ─── TARIFAS REALES (sept 2026) ─────────────────────────
 // Índice = cantidad de personas (2 a 12). Servicio incluye traslados en CABA/GBA.
-// Asistentes: hasta 4 personas solo el chef; 1 de 5 a 8; 2 de 9 a 12 · $100.000 c/u (sin recargo). Más de 12: evento a cotizar.
+// Asistentes: hasta 2 personas solo el chef; 1 de 3 a 8; 2 de 9 a 12 · $100.000 c/u (sin recargo). Más de 12: evento a cotizar.
 // Fin de semana (viernes noche, sábado y domingo): +10% sobre servicio y traslados.
 const TARIFAS = {
   1: { // 3 pasos
@@ -4242,7 +4242,7 @@ function celTotalDesde(menuId){ var tf = TARIFAS[menuId]; return tf.servicio[2] 
 } catch(e) {} })();
 function celPintarDesde(){ document.querySelectorAll('.cel-desde').forEach(function(el){ el.textContent = '$' + celTotalDesde(+el.getAttribute('data-m')).toLocaleString('es-AR'); }); }
 document.addEventListener('cel-idx', celPintarDesde);
-function cantAsistentes(personas) { return personas >= 9 ? 2 : (personas >= 5 ? 1 : 0); }   // hasta 4: solo el chef · 5 a 8: 1 asistente · 9 a 12: 2 (más de 12 es evento a cotizar)
+function cantAsistentes(personas) { return personas >= 9 ? 2 : (personas >= 3 ? 1 : 0); }   // hasta 2: solo el chef · 3 a 8: 1 asistente · 9 a 12: 2 (más de 12 es evento a cotizar)
 function _tarifa(tabla, extraPP, personas) {
   const p = Math.max(2, parseInt(personas) || 2);
   if (tabla[p] != null) return tabla[p];
@@ -4339,7 +4339,7 @@ function calcExtras(personas) {
   const mozos = n > 10 ? 2 : 1;
   const hs = horasServicio(state.menu);
   const items = [];
-  const quien = n <= 4 ? '1 asistente' : (mozos > 1 ? mozos + ' mozos' : '1 mozo');   // hasta 4 personas va solo el chef: el servicio de mesa suma un asistente
+  const quien = n <= 2 ? '1 asistente' : (mozos > 1 ? mozos + ' mozos' : '1 mozo');   // hasta 2 personas va solo el chef: el servicio de mesa suma un asistente
   if (state.extraMesa) items.push({ k: 'mesa', txt: `Servicio de mesa · ${quien}`, monto: mozos * (hs + 1) * VALOR_HORA_EQUIPO });
   const h = parseInt(state.extraHoras) || 0;
   if (h) items.push({ k: 'horas', txt: `Sobremesa con el equipo · +${h} h`, monto: h * (equipo + (state.extraMesa ? mozos : 0)) * VALOR_HORA_EQUIPO });
@@ -5970,7 +5970,7 @@ async function renderResumen() {
   const ex = calcExtras(personas);
   const totalFinal = total - descuentoCupon + ex.total;
   const fmt = n => '$' + n.toLocaleString('es-AR');
-  const mozoTxt = (parseInt(personas) || 4) <= 4 ? 'suma 1 asistente' : ex.quien;
+  const mozoTxt = (parseInt(personas) || 4) <= 2 ? 'suma 1 asistente' : ex.quien;
   const extrasHTML = `
     <div class="rx-box">
       <div class="rx-tit">Adicionales <span>opcionales</span></div>
