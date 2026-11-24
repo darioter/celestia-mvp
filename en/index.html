@@ -1186,14 +1186,21 @@ textarea { resize: vertical; min-height: 80px; }
   flex-shrink: 0;
   padding-top: 2px;
 }
-.rx-box{margin:14px 0 4px;padding:12px 14px;border:1px dashed rgba(201,168,76,.45);border-radius:10px}
-.rx-tit{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}.rx-tit span{opacity:.6;letter-spacing:.04em;text-transform:none}
-.rx-op,.rx-op *{text-transform:none!important;letter-spacing:normal!important}label.rx-op{color:inherit!important;opacity:1!important;font-size:13.5px!important}.rx-op b{color:inherit;font-weight:600}
-.rx-op{display:flex;gap:10px;align-items:flex-start;padding:8px 0;cursor:pointer;font-size:13.5px;line-height:1.4}.rx-op+.rx-op{border-top:1px solid rgba(201,168,76,.18)}
-.rx-op input{margin-top:3px;accent-color:var(--gold);width:16px;height:16px;flex:none}
-.rx-op>span{flex:1;min-width:0}.rx-op small{display:block;font-size:12px;opacity:.65;margin-top:2px}
-.rx-op em{font-style:normal;white-space:nowrap;color:var(--gold);font-weight:500}
-.rx-op select{flex:none;padding:6px 8px;border-radius:8px;border:1px solid rgba(201,168,76,.45);background:transparent;color:inherit;font:inherit}
+.rx-box{margin:14px 0 4px;padding:14px 16px;border:1px dashed rgba(201,168,76,.45);border-radius:12px;color:#FAF6EF}
+.rx-tit{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}.rx-tit span{opacity:.6;letter-spacing:.04em;text-transform:none}
+.rx-op,.rx-op *{text-transform:none!important;letter-spacing:normal!important}
+.rx-op{display:flex;gap:12px;align-items:flex-start;padding:10px 0;font-size:14px;line-height:1.4;color:#FAF6EF!important;opacity:1!important}
+label.rx-op{cursor:pointer}.rx-op+.rx-op{border-top:1px solid rgba(201,168,76,.18)}
+.rx-op>span{flex:1;min-width:0}.rx-op b{color:#FAF6EF;font-weight:600}
+.rx-op small{display:block;font-size:12.5px;color:rgba(250,246,239,.6);margin-top:3px}
+.rx-op em{font-style:normal;white-space:nowrap;color:var(--gold-light,#E8C96A);font-weight:600}
+.rx-ck{appearance:none;-webkit-appearance:none;flex:none;width:22px!important;min-width:22px!important;max-width:22px!important;height:22px!important;padding:0!important;margin:1px 0 0!important;box-shadow:none!important;border:1.5px solid var(--gold);border-radius:6px;background:transparent;cursor:pointer;display:grid;place-content:center;transition:background .15s}
+.rx-ck::after{content:'';width:6px;height:11px;border:solid #0F1B2D;border-width:0 2.5px 2.5px 0;transform:rotate(45deg) translate(-1px,-1px);opacity:0}
+.rx-ck:checked{background:var(--gold)}.rx-ck:checked::after{opacity:1}
+.rx-ck:focus-visible{outline:2px solid var(--gold-light,#E8C96A);outline-offset:2px}
+.rx-seg{display:flex;gap:6px;margin:2px 0 4px 0}
+.rx-seg button{flex:1;padding:9px 0;border-radius:999px;border:1px solid rgba(201,168,76,.45);background:transparent;color:#FAF6EF;font:inherit;font-size:13.5px;cursor:pointer}
+.rx-seg button.on{background:var(--gold);border-color:var(--gold);color:#0F1B2D;font-weight:600}
 .asistente-note {
   background: rgba(201,168,76,0.1);
   border: 1px solid rgba(201,168,76,0.2);
@@ -5974,11 +5981,12 @@ async function renderResumen() {
   const extrasHTML = `
     <div class="rx-box">
       <div class="rx-tit">Adicionales <span>opcionales</span></div>
-      <label class="rx-op"><input type="checkbox" ${state.extraMesa ? 'checked' : ''} onchange="setExtra('extraMesa', this.checked)">
+      <label class="rx-op"><input type="checkbox" class="rx-ck" ${state.extraMesa ? 'checked' : ''} onchange="setExtra('extraMesa', this.checked)">
         <span><b>Servicio de mesa</b> · ${mozoTxt}<small>Armado y decoración de la mesa, fajinado de copas y cristalería, recarga de agua, descorche y servicio de vinos.</small></span>
         <em>${fmt(ex.mozos * (ex.hs + 1) * VALOR_HORA_EQUIPO)}</em></label>
       <div class="rx-op"><span><b>Sobremesa con el equipo</b><small>El servicio termina al retirar el postre (${ex.hs} h desde el inicio). Si querés que nos quedemos más, cada hora suma ${fmt(VALOR_HORA_EQUIPO)} por persona del equipo.</small></span>
-        <select onchange="setExtra('extraHoras', +this.value)">${[0, 1, 2, 3].map(h => `<option value="${h}"${(+state.extraHoras || 0) === h ? ' selected' : ''}>${h ? '+' + h + ' h' : 'No'}</option>`).join('')}</select></div>
+        </div>
+      <div class="rx-seg" role="group" aria-label="Horas de sobremesa">${[0, 1, 2, 3].map(h => `<button type="button" class="${(+state.extraHoras || 0) === h ? 'on' : ''}" onclick="setExtra('extraHoras', ${h})">${h ? '+' + h + ' h' : 'No'}</button>`).join('')}</div>
     </div>
     ${ex.items.map(x => `<div class="resumen-row"><div class="resumen-label">＋ ${x.txt}</div><div class="resumen-val">${fmt(x.monto)}</div></div>`).join('')}`;
   document.getElementById('resumen-card').innerHTML = `
