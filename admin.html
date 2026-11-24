@@ -3345,7 +3345,8 @@ function renderReservas() {
     const waBtn = (mKey, label, msg, activo) => {
       const sent = enviados.includes(mKey);
       const cls = sent ? 'btn-wa-m sent btn-wa-active' : (activo ? 'btn-wa-m btn-wa-active' : 'btn-wa-m btn-wa-inactive');
-      const onclick = (activo && !sent && r.tel) ? `onclick="enviarM('${r.id}','${mKey}','${telWA}',\`${msg.replace(/`/g,'\\`')}\`)"` : '';
+      const onclick = (activo && !sent) ? (r.tel ? `onclick="enviarM('${r.id}','${mKey}','${telWA}',\`${msg.replace(/`/g,'\\`')}\`)"`
+        : `onclick="navigator.clipboard.writeText(\`${msg.replace(/`/g,'\\`')}\`).then(()=>alert('Esta reserva no tiene teléfono cargado: copié el mensaje para que lo pegues donde quieras.'))"`) : '';
       return `<button class="${cls}" ${onclick} ${!activo || sent ? 'disabled' : ''}>${sent ? '✓' : '○'} ${label}</button>`;
     };
 
@@ -3387,7 +3388,8 @@ function renderReservas() {
     const m3Activo = !(tr && !tr.cotizado);
     const m4Activo = enviados.includes('M3');
     const m5Activo = enviados.includes('M3');
-    const m6Activo = r.saldo_cobrado;
+    // Post evento: se habilita cuando ya pasó la fecha del servicio o cuando está todo cobrado (saldo recibido o pagos parciales que completan el total)
+    const m6Activo = !!(r.saldo_cobrado || (r.fecha && r.fecha <= new Date().toISOString().slice(0, 10)) || (recibido > 0 && restaCobrar === 0));
     const mnActivo = !!(r.menu_definitivo && r.menu_definitivo_ok);
     const m7Activo = enviados.includes('M6');
 
