@@ -707,6 +707,7 @@ const MERCADITO = [
   { id: 'm-minipostres', img: 'photo-1670819916757-e8d5935a6c65', ic: '🧁', nombre: 'Minipostres surtidos', det: '12 unidades · lemon pie, cheesecake, brownie y tartas de fruta', precio: 30000 },
   { id: 'm-minipostres30', img: 'photo-1583337912553-c0e828c51bc5', ic: '🍰', nombre: 'Mesa de minipostres', det: '30 unidades en 6 variedades', precio: 69000 },
   { id: 'm-scones', img: 'photo-1611337854278-d50f443c3a03', ic: '🥐', nombre: 'Scones de queso', det: '12 unidades, para tibiar', precio: 18000 },
+  { id: 'm-picada', img: 'photo-1678572823447-45fc146df43c', ic: '🧀', nombre: 'Picada de fiambres y quesos', det: 'Bandeja de 27 cm · para 4 a 5 personas', precio: 100000, ocasiones: ['thanksgiving', 'navidad', 'anio_nuevo'] },
   { id: 'm-garrapinada', img: 'photo-1648473546534-a1941a4ae9a3', ic: '🥜', nombre: 'Garrapiñada', det: '250 g', precio: 8000, ocasiones: ['navidad', 'anio_nuevo'] }
 ];
 MERCADITO.push(...BEBIDAS);
@@ -841,10 +842,12 @@ document.getElementById('ocasiones').addEventListener('click', e => {
 });
 
 /* ═════════ catálogo ═════════ */
-function opciones(c) { if (c.tipo !== 'pp') return c.opciones; const out = []; for (let p = c.personas[0]; p <= (c.max || 20); p++) out.push({ label: p + ' personas', personas: p, precio: p * c.pp }); return out; }
+// Navidad y Año Nuevo: mínimo 6 personas en las cenas por persona (con menos no cierran trabajo, ingredientes y entrega)
+const MIN_OCASION = { navidad: 6, anio_nuevo: 6 };
+function opciones(c) { if (c.tipo !== 'pp') return c.opciones; const out = []; for (let p = Math.max(c.personas[0], MIN_OCASION[st.ocasion] || 0); p <= (c.max || 20); p++) out.push({ label: p + ' personas', personas: p, precio: p * c.pp }); return out; }
 const conStepper = c => c.calc || c.tipo === 'pp';
 function cajaHTML(c) {
-  const opts = opciones(c), sel = st.sel[c.id] != null ? st.sel[c.id] : 0, o = opts[sel];
+  const opts = opciones(c), sel = Math.min(st.sel[c.id] != null ? st.sel[c.id] : 0, opts.length - 1), o = opts[sel];
   return `<article class="caja" data-id="${c.id}">
     <div class="img" style="background-image:url('${c.img.charAt(0) === '/' ? c.img : U(c.img, 900, 506)}')"><span class="tag">${c.tag}</span></div>
     <div class="b"><h4>${c.nombre}</h4><p class="lead">${String(c.lead).replace('{mesa}', (o && o.mesa) || 'para compartir')}</p>
@@ -904,7 +907,7 @@ document.addEventListener('click', e => {
   const sp = e.target.closest('.stp-b'); if (sp) { const c = CAJAS.find(x => x.id === sp.closest('.caja').dataset.id), n = opciones(c).length; st.sel[c.id] = Math.max(0, Math.min(n - 1, (st.sel[c.id] || 0) + +sp.dataset.paso)); pintarCatalogo(); return; }
   const op = e.target.closest('.op'); if (op) { st.sel[op.closest('.caja').dataset.id] = +op.dataset.op; pintarCatalogo(); return; }
   const add = e.target.closest('[data-add]'); if (add) {
-    const c = CAJAS.find(x => x.id === add.dataset.add), o = opciones(c)[st.sel[c.id] || 0], key = c.id + '|' + o.label;
+    const c = CAJAS.find(x => x.id === add.dataset.add), oo = opciones(c), o = oo[Math.min(st.sel[c.id] || 0, oo.length - 1)], key = c.id + '|' + o.label;
     if (!st.ocasion) { const k = c.ocasiones.find(x => visible(x) && abierta(x) && !temporada(x)) || c.ocasiones.find(x => visible(x) && abierta(x)); if (k) { st.ocasion = k; pintarOcasiones(); pintarCuando(); } }
     const it = st.carrito.find(x => x.key === key); if (it) it.cant++; else st.carrito.push({ key, id: c.id, nombre: c.nombre, variante: o.label, personas: o.personas, precio: o.precio, cant: 1 });
     guardar(); pintarCatalogo(); pintarRes(); const b = document.querySelector('[data-add="' + c.id + '"]'); if (b) { b.textContent = '✓ Agregado'; b.classList.add('ok'); setTimeout(() => { b.textContent = 'Agregar al carrito'; b.classList.remove('ok'); }, 1400); } bump(); avisar(c.nombre + ' · ' + o.label);
