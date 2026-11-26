@@ -842,8 +842,8 @@ document.getElementById('ocasiones').addEventListener('click', e => {
 });
 
 /* ═════════ catálogo ═════════ */
-// Navidad y Año Nuevo: mínimo 6 personas en las cenas por persona (con menos no cierran trabajo, ingredientes y entrega)
-const MIN_OCASION = { navidad: 6, anio_nuevo: 6 };
+// Navidad y Año Nuevo: mínimo 10 personas en las cenas por persona (con menos no cierran trabajo, ingredientes y entrega)
+const MIN_OCASION = { navidad: 10, anio_nuevo: 10 };
 function opciones(c) { if (c.tipo !== 'pp') return c.opciones; const out = []; for (let p = Math.max(c.personas[0], MIN_OCASION[st.ocasion] || 0); p <= (c.max || 20); p++) out.push({ label: p + ' personas', personas: p, precio: p * c.pp }); return out; }
 const conStepper = c => c.calc || c.tipo === 'pp';
 function cajaHTML(c) {
