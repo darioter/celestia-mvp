@@ -630,13 +630,13 @@ const CAJAS = [
            ['Guarniciones', 'Stuffing de pan y hierbas · Puré de papas a la manteca · Cazuela de batatas con pecanes · Green bean casserole: chauchas en crema de hongos y cebolla crocante · Cranberry sauce con naranja · Dinner rolls tibios'],
            ['Postres', 'Pumpkin pie con crema batida · Apple pie de doble masa'],
            ['Incluye', 'Cada plato en su envase con una tarjeta y la guía para regenerar · Tarjeta del día después: el turkey sandwich del viernes']] },
-  { id: 'cena-tradicion', grupo: 'Cenas completas', nombre: 'Cena Tradición', tag: 'Los clásicos de las fiestas', img: 'photo-1601118964938-228a89955311', tipo: 'pp', pp: 39000, personas: [4, 6, 8, 10],
+  { id: 'cena-tradicion', grupo: 'Cenas completas', nombre: 'Cena Tradición', tag: 'Los clásicos de las fiestas', img: 'photo-1601118964938-228a89955311', tipo: 'pp', pp: 100000, personas: [4, 6, 8, 10],
     ocasiones: ['navidad', 'anio_nuevo'], lead: 'La mesa de las fiestas argentinas, hecha como en un restaurante.',
     menu: [['Entradas', 'Vitel toné de peceto con salsa atonnata casera · Pionono salado de jamón crudo, rúcula y queso crema'],
            ['Principal', 'Matambre de ternera arrollado con verduras y huevo · Pollo deshuesado relleno de verduras y hongos'],
            ['Guarnición', 'Ensalada rusa de chef con mayonesa casera · Hojas verdes, manzana verde y nueces'],
            ['Postre', 'Tiramisú']] },
-  { id: 'cena-celestia', grupo: 'Cenas completas', nombre: 'Cena Celestia', tag: 'La de autor', img: 'photo-1735190093468-e59af2d86382', tipo: 'pp', pp: 54000, personas: [4, 6, 8, 10],
+  { id: 'cena-celestia', grupo: 'Cenas completas', nombre: 'Cena Celestia', tag: 'La de autor', img: 'photo-1735190093468-e59af2d86382', tipo: 'pp', pp: 120000, personas: [4, 6, 8, 10],
     ocasiones: ['navidad', 'anio_nuevo', 'cumple', 'amigos'], lead: 'Para una noche distinta: producto premium y sabores de chef.',
     menu: [['Entradas', 'Burrata con tomates confitados, pesto y focaccia de romero · Langostinos con mayonesa de lima y palta'],
            ['Principal', 'Lomo al Malbec con chimichurri de hierbas · Bondiola braseada a la cerveza y miel'],
@@ -842,9 +842,9 @@ document.getElementById('ocasiones').addEventListener('click', e => {
 });
 
 /* ═════════ catálogo ═════════ */
-// Navidad y Año Nuevo: mínimo 10 personas en las cenas por persona (con menos no cierran trabajo, ingredientes y entrega)
-const MIN_OCASION = { navidad: 10, anio_nuevo: 10 };
-function opciones(c) { if (c.tipo !== 'pp') return c.opciones; const out = []; for (let p = Math.max(c.personas[0], MIN_OCASION[st.ocasion] || 0); p <= (c.max || 20); p++) out.push({ label: p + ' personas', personas: p, precio: p * c.pp }); return out; }
+// Navidad y Año Nuevo: cenas por persona de 8 a 12; menos o más, se consulta (con menos no cierran trabajo, ingredientes y entrega)
+const MIN_OCASION = { navidad: 8, anio_nuevo: 8 }, MAX_OCASION = { navidad: 12, anio_nuevo: 12 };
+function opciones(c) { if (c.tipo !== 'pp') return c.opciones; const out = []; for (let p = Math.max(c.personas[0], MIN_OCASION[st.ocasion] || 0); p <= Math.min(c.max || 20, MAX_OCASION[st.ocasion] || 99); p++) out.push({ label: p + ' personas', personas: p, precio: p * c.pp }); return out; }
 const conStepper = c => c.calc || c.tipo === 'pp';
 function cajaHTML(c) {
   const opts = opciones(c), sel = Math.min(st.sel[c.id] != null ? st.sel[c.id] : 0, opts.length - 1), o = opts[sel];
@@ -852,7 +852,7 @@ function cajaHTML(c) {
     <div class="img" style="background-image:url('${c.img.charAt(0) === '/' ? c.img : U(c.img, 900, 506)}')"><span class="tag">${c.tag}</span></div>
     <div class="b"><h4>${c.nombre}</h4><p class="lead">${String(c.lead).replace('{mesa}', (o && o.mesa) || 'para compartir')}</p>
       <ul class="menu">${c.menu.map(m => `<li><span>${m[0]}</span><div>${m[1]}</div></li>`).join('')}</ul>
-      ${conStepper(c) ? `<div class="cuantos"><span>¿Para cuántas personas?</span><div class="stp"><button type="button" class="stp-b" data-paso="-1" aria-label="Menos personas"${sel <= 0 ? ' disabled' : ''}>−</button><b>${o.personas}</b><button type="button" class="stp-b" data-paso="1" aria-label="Más personas"${sel >= opts.length - 1 ? ' disabled' : ''}>+</button></div>${o.det ? `<small>${o.det}</small>` : ''}${sel >= opts.length - 1 ? '<small>¿Son más? Escribime por WhatsApp.</small>' : ''}</div>` : opts.length > 1 ? `<div class="opc">${opts.map((x, i) => `<button type="button" class="op${i === sel ? ' on' : ''}" data-op="${i}">${x.label}</button>`).join('')}</div>` : ''}
+      ${conStepper(c) ? `<div class="cuantos"><span>¿Para cuántas personas?</span><div class="stp"><button type="button" class="stp-b" data-paso="-1" aria-label="Menos personas"${sel <= 0 ? ' disabled' : ''}>−</button><b>${o.personas}</b><button type="button" class="stp-b" data-paso="1" aria-label="Más personas"${sel >= opts.length - 1 ? ' disabled' : ''}>+</button></div>${o.det ? `<small>${o.det}</small>` : ''}${sel >= opts.length - 1 ? '<small>¿Son más? Escribime por WhatsApp.</small>' : ''}${sel <= 0 && c.tipo === 'pp' && MIN_OCASION[st.ocasion] ? '<small>¿Son menos? Consultame por WhatsApp.</small>' : ''}</div>` : opts.length > 1 ? `<div class="opc">${opts.map((x, i) => `<button type="button" class="op${i === sel ? ' on' : ''}" data-op="${i}">${x.label}</button>`).join('')}</div>` : ''}
       <div class="pie"><div class="precio"><b>${f$(o.precio)}</b><small>${c.tipo === 'pp' ? f$(c.pp) + ' por persona' : c.calc ? 'Total para ' + o.personas + ' personas' : o.label}</small></div>
         <button type="button" class="btn add" data-add="${c.id}">Agregar al carrito</button></div>
       <button type="button" class="wa-caja" data-wa-caja="${c.id}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21c5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2Z"/></svg> Pedila por WhatsApp</button>
