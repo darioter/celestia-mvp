@@ -642,7 +642,7 @@ const CAJAS = [
            ['Principal', 'Lomo al Malbec con chimichurri de hierbas · Bondiola braseada a la cerveza y miel'],
            ['Guarnición', 'Papas confitadas al romero · Quinoa con vegetales asados y feta'],
            ['Postre', 'Pavlova de frutos rojos y crema de mascarpone']] },
-  { id: 'cena-casera', grupo: 'Cenas completas', nombre: 'Cena de la casa', tag: 'Para compartir', img: 'photo-1519671282429-b44660ead0a7', tipo: 'pp', pp: 34000, personas: [4, 6, 8, 10],
+  { id: 'cena-casera', grupo: 'Cenas completas', nombre: 'Cena de la casa', tag: 'Para compartir', img: 'photo-1519671282429-b44660ead0a7', tipo: 'pp', pp: 75000, personas: [4, 6, 8, 10],
     ocasiones: ['cumple', 'amigos'], lead: 'Platos generosos para una mesa larga, con sabor de casa y técnica de chef.',
     menu: [['Entrada', 'Tabla de quesos, fiambres y focaccia · Empanadas de carne cortada a cuchillo'],
            ['Principal', 'Ossobuco braseado al vino tinto · Pollo al limón y hierbas'],
@@ -655,9 +655,9 @@ const CAJAS = [
            ['Postre', 'Volcán de chocolate con frutos rojos'],
            ['Incluye', 'Guía para regenerar y emplatar, con sugerencia de vino']] },
   { id: 'bocados', grupo: 'Para picar y brindar', nombre: 'Bocados y picada', tag: 'Para la previa y el brindis', img: 'photo-1678572823447-45fc146df43c', tipo: 'fijo',
-    calc: true, cajas: [{ r: 'para 8', max: 8, precio: 219000 }, { r: 'para 12', max: 12, precio: 319000 }, { r: 'para 20', max: 20, precio: 499000 }],
+    calc: true, cajas: [{ r: 'para 8', max: 8, precio: 260000 }, { r: 'para 12', max: 12, precio: 380000 }, { r: 'para 20', max: 20, precio: 600000 }],
     opciones: (function () {
-      const T = [[8, 219000, 'para 8'], [12, 319000, 'para 12'], [20, 499000, 'para 20']], out = [];
+      const T = [[8, 260000, 'para 8'], [12, 380000, 'para 12'], [20, 600000, 'para 20']], out = [];
       for (let n = 6; n <= 60; n++) {
         let best = null;
         (function rec(k, cap, tot, cs) { if (cap >= n) { if (!best || cs.length < best.cs.length || (cs.length === best.cs.length && tot < best.tot)) best = { tot, cs: cs.slice() }; return; } if (cs.length >= 4) return; for (let t = k; t < T.length; t++) { cs.push(T[t]); rec(t, cap + T[t][0], tot + T[t][1], cs); cs.pop(); } })(0, 0, 0, []);
@@ -670,10 +670,10 @@ const CAJAS = [
     ocasiones: ['navidad', 'anio_nuevo', 'cumple', 'amigos'], lead: '8 bocados por persona en 6 variedades, más una tabla de quesos y fiambres.',
     menu: [['Bocados', 'Bruschettas de tomates confitados · Tartaletas de queso azul y pera · Mini empanadas de carne cortada a cuchillo · Langostinos crocantes con alioli · Brochettes caprese · Rolls de jamón crudo y rúcula'],
            ['Picada', 'Quesos, fiambres, frutos secos, panes y grisines caseros']] },
-  { id: 'mesa-dulce', grupo: 'Postres', nombre: 'Mesa dulce navideña', tag: 'Todo casero', img: 'photo-1636394849426-39501364873c', tipo: 'fijo', opciones: [{ label: 'Para 8 a 10', personas: 10, precio: 79000 }],
+  { id: 'mesa-dulce', grupo: 'Postres', nombre: 'Mesa dulce navideña', tag: 'Todo casero', img: 'photo-1636394849426-39501364873c', tipo: 'fijo', opciones: [{ label: 'Para 8 a 10', personas: 10, precio: 95000 }],
     ocasiones: ['navidad', 'anio_nuevo'], lead: 'Lo dulce de la sobremesa, hecho a mano.',
     menu: [['Incluye', 'Pan dulce de autor (1 kg) · Budín de limón y amapola · Turrón de almendras y miel · Garrapiñada · 6 alfajores de maicena · 12 trufas de chocolate']] },
-  { id: 'merienda', grupo: 'Meriendas', nombre: 'Merienda estilo pâtisserie', tag: 'Para compartir', img: 'photo-1532509334149-d2130d74253c', tipo: 'pp', pp: 21000, personas: [4, 6, 8, 10],
+  { id: 'merienda', grupo: 'Meriendas', nombre: 'Merienda estilo pâtisserie', tag: 'Para compartir', img: 'photo-1532509334149-d2130d74253c', tipo: 'pp', pp: 28000, personas: [4, 6, 8, 10],
     ocasiones: ['merienda', 'cumple'], lead: 'Una tarde de pastelería francesa en casa: salado, dulce y todo listo para poner la mesa.',
     menu: [['Salado', 'Mini croissants de jamón crudo y brie · Scones de queso con manteca de hierbas · Tartaletas de calabaza asada y queso de cabra · Sándwiches de brioche con salmón ahumado'],
            ['Dulce', 'Cuadrados de lemon pie · Mini cheesecakes de frutos rojos · Alfajores de maicena · Budín de limón y amapola · Cookies con chips de chocolate'],
@@ -685,27 +685,27 @@ const CAJAS = [
            ['Fresco', 'Por persona: yogur natural con granola casera (150 g) · fruta de estación cortada (125 g)'],
            ['Para la mesa', 'Jugo de naranja exprimido (250 ml por persona) · Mermelada casera, manteca y queso crema']] },
   { id: 'torta', grupo: 'Postres', nombre: 'Torta de cumpleaños', tag: 'Con vela y cartel', img: 'photo-1588195538326-c5b1e9f80a1b', tipo: 'fijo',
-    opciones: [{ label: '12 porciones', personas: 12, precio: 46000 }, { label: '20 porciones', personas: 20, precio: 69000 }],
+    opciones: [{ label: '12 porciones', personas: 12, precio: 60000 }, { label: '20 porciones', personas: 20, precio: 95000 }],
     ocasiones: ['cumple', 'merienda'], lead: 'Elegís el sabor en las notas del pedido.',
     menu: [['Sabores', 'Chajá (merengue, durazno y dulce de leche) · Selva negra · Rogel · Lemon pie']] }
 ];
 /* El mercadito se ofrece completo en todas las ocasiones. 'ocasiones' solo marca con la etiqueta "Fiestas" lo navideño. */
 const MERCADITO = [
-  { id: 'm-vitel', img: 'photo-1529694157872-4e0c0f3b238b', ic: '🥩', nombre: 'Vitel toné', det: 'Para 6 personas', precio: 42000, ocasiones: ['navidad', 'anio_nuevo'] },
-  { id: 'm-pionono', img: 'photo-1676300187437-f09c6397a959', ic: '🥖', nombre: 'Pionono salado', det: 'Jamón crudo, rúcula y queso · 8 porciones', precio: 26000 },
-  { id: 'm-lomo', img: 'photo-1504973960431-1c467e159aa4', ic: '🍷', nombre: 'Lomo al Malbec', det: '1 kg, con chimichurri', precio: 72000 },
-  { id: 'm-matambre', img: 'photo-1629213911949-471e4063a566', ic: '🥩', nombre: 'Matambre arrollado', det: '1 kg, laminado', precio: 38000 },
-  { id: 'm-langostinos', img: 'photo-1691201659377-978b28daa417', ic: '🦐', nombre: 'Langostinos con mayo de lima', det: '500 g', precio: 48000 },
-  { id: 'm-burrata', img: 'photo-1649400454485-b8ad827f929d', ic: '🧀', nombre: 'Burratas con tomates confitados', det: '2 unidades con pesto', precio: 22000 },
-  { id: 'm-empanadas', img: 'photo-1624128082323-beb6b8b508db', ic: '🥟', nombre: 'Empanadas de carne cortada a cuchillo', det: '12 unidades, para hornear', precio: 28000 },
-  { id: 'm-rusa', img: 'photo-1593895648796-9139c6bee45c', ic: '🥗', nombre: 'Ensalada rusa de chef', det: '1 kg', precio: 16000 },
+  { id: 'm-vitel', img: 'photo-1529694157872-4e0c0f3b238b', ic: '🥩', nombre: 'Vitel toné', det: 'Para 6 personas', precio: 100000, ocasiones: ['navidad', 'anio_nuevo'] },
+  { id: 'm-pionono', img: 'photo-1676300187437-f09c6397a959', ic: '🥖', nombre: 'Pionono salado', det: 'Jamón crudo, rúcula y queso · 8 porciones', precio: 38000 },
+  { id: 'm-lomo', img: 'photo-1504973960431-1c467e159aa4', ic: '🍷', nombre: 'Lomo al Malbec', det: '1 kg, con chimichurri', precio: 110000 },
+  { id: 'm-matambre', img: 'photo-1629213911949-471e4063a566', ic: '🥩', nombre: 'Matambre arrollado', det: '1 kg, laminado', precio: 66000 },
+  { id: 'm-langostinos', img: 'photo-1691201659377-978b28daa417', ic: '🦐', nombre: 'Langostinos con mayo de lima', det: '500 g', precio: 64000 },
+  { id: 'm-burrata', img: 'photo-1649400454485-b8ad827f929d', ic: '🧀', nombre: 'Burratas con tomates confitados', det: '2 unidades con pesto', precio: 52000 },
+  { id: 'm-empanadas', img: 'photo-1624128082323-beb6b8b508db', ic: '🥟', nombre: 'Empanadas de carne cortada a cuchillo', det: '12 unidades, para hornear', precio: 48000 },
+  { id: 'm-rusa', img: 'photo-1593895648796-9139c6bee45c', ic: '🥗', nombre: 'Ensalada rusa de chef', det: '1 kg', precio: 18000 },
   { id: 'm-papas', img: 'photo-1633959639799-6d3f66e05710', ic: '🥔', nombre: 'Papas confitadas al romero', det: '1 kg, para regenerar', precio: 18000 },
-  { id: 'm-pavlova', img: 'photo-1624300603538-1207400f4116', ic: '🍓', nombre: 'Pavlova de frutos rojos', det: '8 porciones', precio: 36000 },
-  { id: 'm-tiramisu', img: 'photo-1702744998351-090b3ee4e976', ic: '☕', nombre: 'Tiramisú', det: '8 porciones', precio: 34000 },
-  { id: 'm-pandulce', img: 'photo-1762304887845-0eef96543910', ic: '🍞', nombre: 'Pan dulce de autor', det: '1 kg', precio: 29000, ocasiones: ['navidad', 'anio_nuevo'] },
-  { id: 'm-turron', img: 'photo-1589210191580-09ec1d559aa0', ic: '🍯', nombre: 'Turrón de almendras y miel', det: '300 g', precio: 15000, ocasiones: ['navidad', 'anio_nuevo'] },
-  { id: 'm-minipostres', img: 'photo-1670819916757-e8d5935a6c65', ic: '🧁', nombre: 'Minipostres surtidos', det: '12 unidades · lemon pie, cheesecake, brownie y tartas de fruta', precio: 30000 },
-  { id: 'm-minipostres30', img: 'photo-1583337912553-c0e828c51bc5', ic: '🍰', nombre: 'Mesa de minipostres', det: '30 unidades en 6 variedades', precio: 69000 },
+  { id: 'm-pavlova', img: 'photo-1624300603538-1207400f4116', ic: '🍓', nombre: 'Pavlova de frutos rojos', det: '8 porciones', precio: 42000 },
+  { id: 'm-tiramisu', img: 'photo-1702744998351-090b3ee4e976', ic: '☕', nombre: 'Tiramisú', det: '8 porciones', precio: 65000 },
+  { id: 'm-pandulce', img: 'photo-1762304887845-0eef96543910', ic: '🍞', nombre: 'Pan dulce de autor', det: '1 kg', precio: 32000, ocasiones: ['navidad', 'anio_nuevo'] },
+  { id: 'm-turron', img: 'photo-1589210191580-09ec1d559aa0', ic: '🍯', nombre: 'Turrón de almendras y miel', det: '300 g', precio: 20000, ocasiones: ['navidad', 'anio_nuevo'] },
+  { id: 'm-minipostres', img: 'photo-1670819916757-e8d5935a6c65', ic: '🧁', nombre: 'Minipostres surtidos', det: '12 unidades · lemon pie, cheesecake, brownie y tartas de fruta', precio: 32000 },
+  { id: 'm-minipostres30', img: 'photo-1583337912553-c0e828c51bc5', ic: '🍰', nombre: 'Mesa de minipostres', det: '30 unidades en 6 variedades', precio: 72000 },
   { id: 'm-scones', img: 'photo-1611337854278-d50f443c3a03', ic: '🥐', nombre: 'Scones de queso', det: '12 unidades, para tibiar', precio: 18000 },
   { id: 'm-picada', img: 'photo-1678572823447-45fc146df43c', ic: '🧀', nombre: 'Picada de fiambres y quesos', det: 'Bandeja de 27 cm · para 4 a 5 personas', precio: 100000, ocasiones: ['thanksgiving', 'navidad', 'anio_nuevo'] },
   { id: 'm-garrapinada', img: 'photo-1648473546534-a1941a4ae9a3', ic: '🥜', nombre: 'Garrapiñada', det: '250 g', precio: 8000, ocasiones: ['navidad', 'anio_nuevo'] }
