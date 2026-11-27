@@ -598,8 +598,8 @@ const ANTICIPACION_HORAS = 48;           // pedidos comunes: mínimo 48 h antes 
 const FRANJAS = ['10 a 13 h', '16 a 19 h'];
 const OCASIONES = {
   thanksgiving: { nombre: 'Acción de Gracias', img: 'photo-1574672280600-4accfa5b6f98', icono: '🦃', sub: 'Thanksgiving · 26 de noviembre', fecha: '2026-11-26', cierre: '2026-11-20', franjas: ['12 a 15 h', '15 a 17 h'] },
-  navidad:    { nombre: 'Navidad',        img: 'photo-1640331703778-9aac4d988e26', icono: '🎄', sub: 'Nochebuena · 24 de diciembre', fecha: '2026-12-24', cierre: '2026-12-21', franjas: ['9 a 13 h', '13 a 17 h'] },
-  anio_nuevo: { nombre: 'Año Nuevo',      img: 'photo-1608416026650-66b4e0c0c301', icono: '🥂', sub: 'Fin de año · 31 de diciembre', fecha: '2026-12-31', cierre: '2026-12-28', franjas: ['9 a 13 h', '13 a 17 h'] },
+  navidad:    { nombre: 'Navidad',        img: 'photo-1640331703778-9aac4d988e26', icono: '🎄', sub: 'Nochebuena · entrega 23 o 24 de diciembre', fecha: '2026-12-24', fechas: ['2026-12-23', '2026-12-24'], cierre: '2026-12-21', franjas: ['9 a 13 h', '13 a 17 h'] },
+  anio_nuevo: { nombre: 'Año Nuevo',      img: 'photo-1608416026650-66b4e0c0c301', icono: '🥂', sub: 'Fin de año · entrega 30 o 31 de diciembre', fecha: '2026-12-31', fechas: ['2026-12-30', '2026-12-31'], cierre: '2026-12-28', franjas: ['9 a 13 h', '13 a 17 h'] },
   romantica:  { nombre: 'Cena romántica', img: 'photo-1529521001454-2cf987c34008', icono: '❤️', sub: 'Aniversario, San Valentín o porque sí' },
   cumple:     { nombre: 'Cumpleaños',     img: 'photo-1588195538326-c5b1e9f80a1b', icono: '🎂', sub: 'Festejá en casa sin cocinar' },
   desayuno:   { nombre: 'Desayuno y brunch', img: 'photo-1623334044303-241021148842', icono: '🥐', sub: 'Pastelería de chef, lista para servir', franjas: ['8 h', '9 a 11 h'] },
@@ -630,17 +630,17 @@ const CAJAS = [
            ['Guarniciones', 'Stuffing de pan y hierbas · Puré de papas a la manteca · Cazuela de batatas con pecanes · Green bean casserole: chauchas en crema de hongos y cebolla crocante · Cranberry sauce con naranja · Dinner rolls tibios'],
            ['Postres', 'Pumpkin pie con crema batida · Apple pie de doble masa'],
            ['Incluye', 'Cada plato en su envase con una tarjeta y la guía para regenerar · Tarjeta del día después: el turkey sandwich del viernes']] },
-  { id: 'cena-tradicion', grupo: 'Cenas completas', nombre: 'Cena Tradición', tag: 'Los clásicos de las fiestas', img: 'photo-1601118964938-228a89955311', tipo: 'pp', pp: 100000, personas: [4, 6, 8, 10],
+  { id: 'cena-tradicion', grupo: 'Cenas completas', nombre: 'Cena Tradición', tag: 'Los clásicos de las fiestas', img: 'photo-1601118964938-228a89955311', tipo: 'pp', pp: 85000, personas: [4, 6, 8, 10],
     ocasiones: ['navidad', 'anio_nuevo'], lead: 'La mesa de las fiestas argentinas, hecha como en un restaurante.',
     menu: [['Entradas', 'Vitel toné de peceto con salsa atonnata casera · Pionono salado de jamón crudo, rúcula y queso crema'],
-           ['Principal', 'Matambre de ternera arrollado con verduras y huevo · Pollo deshuesado relleno de verduras y hongos'],
-           ['Guarnición', 'Ensalada rusa de chef con mayonesa casera · Hojas verdes, manzana verde y nueces'],
+           ['Principal', 'Matambre de ternera arrollado con verduras y huevo'],
+           ['Guarnición', 'Ensalada rusa de chef'],
            ['Postre', 'Tiramisú']] },
-  { id: 'cena-celestia', grupo: 'Cenas completas', nombre: 'Cena Celestia', tag: 'La de autor', img: 'photo-1735190093468-e59af2d86382', tipo: 'pp', pp: 120000, personas: [4, 6, 8, 10],
+  { id: 'cena-celestia', grupo: 'Cenas completas', nombre: 'Cena Celestia', tag: 'La de autor', img: 'photo-1735190093468-e59af2d86382', tipo: 'pp', pp: 100000, personas: [4, 6, 8, 10],
     ocasiones: ['navidad', 'anio_nuevo', 'cumple', 'amigos'], lead: 'Para una noche distinta: producto premium y sabores de chef.',
     menu: [['Entradas', 'Burrata con tomates confitados, pesto y focaccia de romero · Langostinos con mayonesa de lima y palta'],
-           ['Principal', 'Lomo al Malbec con chimichurri de hierbas · Bondiola braseada a la cerveza y miel'],
-           ['Guarnición', 'Papas confitadas al romero · Quinoa con vegetales asados y feta'],
+           ['Principal', 'Lomo al Malbec con chimichurri de hierbas'],
+           ['Guarnición', 'Papas confitadas al romero'],
            ['Postre', 'Pavlova de frutos rojos y crema de mascarpone']] },
   { id: 'cena-casera', grupo: 'Cenas completas', nombre: 'Cena de la casa', tag: 'Para compartir', img: 'photo-1519671282429-b44660ead0a7', tipo: 'pp', pp: 75000, personas: [4, 6, 8, 10],
     ocasiones: ['cumple', 'amigos'], lead: 'Platos generosos para una mesa larga, con sabor de casa y técnica de chef.',
@@ -729,6 +729,12 @@ const f$ = n => '$' + Math.round(n).toLocaleString('es-AR');
 const iso = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
 const st = { ocasion: null, fecha: null, franja: null, carrito: [], sel: {}, cupon: null, cliente: {} };
 let BLOQ = new Set();
+// Cupo por día en las fiestas: así se produce en tanda. Lo cuenta la función cajas_ocupacion (Supabase).
+const CUPO_FIESTAS = 6; let OCUP = {};
+fetch(SUPA.url + '/rest/v1/rpc/cajas_ocupacion', { method: 'POST', headers: { apikey: SUPA.key, Authorization: 'Bearer ' + SUPA.key, 'Content-Type': 'application/json' }, body: '{}' })
+  .then(r => r.ok ? r.json() : []).then(j => { (j || []).forEach(x => { OCUP[String(x.fecha).slice(0, 10)] = +x.n || 0; }); if (typeof pintarCuando === 'function' && st.ocasion) { pintarCuando(); pintarRes(); } }).catch(() => {});
+const fechasTemp = o => o.fechas || [o.fecha];
+const sinCupo = f => (OCUP[f] || 0) >= CUPO_FIESTAS;
 try { const g = JSON.parse(localStorage.getItem('cel_cajas') || 'null'); if (g && g.carrito) Object.assign(st, g); } catch (e) {}
 const guardar = () => { try { localStorage.setItem('cel_cajas', JSON.stringify({ ocasion: st.ocasion, fecha: st.fecha, franja: st.franja, carrito: st.carrito, cupon: st.cupon, cliente: st.cliente })); } catch (e) {} sincronizar(); };
 const HDR = { apikey: SUPA.key, Authorization: 'Bearer ' + SUPA.key, 'Content-Type': 'application/json' };
@@ -788,7 +794,7 @@ let calMes = null;
 const MESES_DN = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
 function diaEstado(f) {
   const o = OCASIONES[st.ocasion];
-  if (temporada(st.ocasion)) return f === o.fecha ? 'ok' : 'no';
+  if (temporada(st.ocasion)) return fechasTemp(o).includes(f) ? (sinCupo(f) ? 'oc' : 'ok') : 'no';
   if (f < primeraFecha() || f > ultimaFecha()) return 'no';
   if (BLOQ.has(f)) return 'oc';
   return 'ok';
@@ -797,7 +803,7 @@ function pintarCuando() {
   const C = document.getElementById('cuando'), o = OCASIONES[st.ocasion];
   if (!o) { C.innerHTML = ''; return; }
   const franjas = o.franjas || FRANJAS;
-  if (temporada(st.ocasion)) st.fecha = o.fecha;
+  if (temporada(st.ocasion) && !(fechasTemp(o).includes(st.fecha) && !sinCupo(st.fecha))) st.fecha = fechasTemp(o).find(f => !sinCupo(f)) || null;
   const base = st.fecha || (temporada(st.ocasion) ? o.fecha : primeraFecha());
   if (!calMes) calMes = base.slice(0, 7);
   if (temporada(st.ocasion)) calMes = o.fecha.slice(0, 7);
@@ -814,7 +820,7 @@ function pintarCuando() {
   const selTxt = st.fecha ? cap(fechaLarga(st.fecha)) : 'Elegí un día';
   C.innerHTML = `<div class="paso" style="margin-bottom:12px"><b>3</b> ¿Cuándo la recibís?</div>
   <div class="cal-wrap"><div class="cc cal-card${C.dataset.mes === calMes ? ' cc-still' : ''}">
-    <div class="cc-top"><div><span class="cc-k">${temporada(st.ocasion) ? o.icono + ' ' + o.nombre + ' · entrega el día del evento' : 'Entrega a domicilio · ' + ANTICIPACION_HORAS + ' h de anticipación'}</span><span class="cc-mo"><span>${mesTxt}</span></span></div>
+    <div class="cc-top"><div><span class="cc-k">${temporada(st.ocasion) ? o.icono + ' ' + o.nombre + (fechasTemp(o).length > 1 ? ' · entrega ' + fechasTemp(o).map(f => +f.slice(8)).join(' o ') + ' · cupos limitados' : ' · entrega el día del evento') : 'Entrega a domicilio · ' + ANTICIPACION_HORAS + ' h de anticipación'}</span><span class="cc-mo"><span>${mesTxt}</span></span></div>
       <div class="cc-nav"><button type="button" data-nav="-1" aria-label="Mes anterior" ${temporada(st.ocasion) || calMes <= minMes ? 'disabled' : ''}>‹</button><button type="button" data-nav="1" aria-label="Mes siguiente" ${temporada(st.ocasion) || calMes >= maxMes ? 'disabled' : ''}>›</button></div></div>
     <div class="cc-dn">${MESES_DN.map(x => `<span>${x}</span>`).join('')}</div>
     <div class="cc-grid">${cel}</div>
@@ -974,7 +980,7 @@ function pintarCP() {
 }
 
 /* ═════════ resumen ═════════ */
-const fechaOK = () => st.fecha && (temporada(st.ocasion) || (st.fecha >= primeraFecha() && !BLOQ.has(st.fecha)));
+const fechaOK = () => st.fecha && (temporada(st.ocasion) ? (fechasTemp(OCASIONES[st.ocasion]).includes(st.fecha) && !sinCupo(st.fecha)) : (st.fecha >= primeraFecha() && !BLOQ.has(st.fecha)));
 function faltan() {
   const v = id => document.getElementById(id).value.trim(), out = [];
   if (!st.ocasion) out.push('elegí la ocasión'); else if (!fechaOK()) out.push('elegí la fecha'); else if (!st.franja) out.push('elegí la franja de entrega');
@@ -1167,14 +1173,12 @@ const REGENERAR = [
     [F, 'Vitel toné', 'Sacalo 20 minutos antes y napá con la salsa al servir.', 'Frío'],
     [F, 'Pionono salado', 'Cortá en porciones con cuchillo húmedo.', 'Frío'],
     [F, 'Matambre arrollado', 'Viene laminado: acomodalo en fuente.', 'Frío'],
-    [H, 'Pollo relleno', 'Tapado con papel aluminio. También va frío.', '180 °C · 12-15 min'],
-    [F, 'Ensalada rusa y hojas verdes', 'Aliñá las hojas al momento con el aderezo que viene aparte.', 'Frío'],
+    [F, 'Ensalada rusa', 'En la heladera hasta servir; revolvé suave antes de llevarla a la mesa.', 'Frío'],
     [F, 'Tiramisú', 'En la heladera hasta el momento de servir.', 'Frío'] ] },
   { k: 'cena-celestia', n: 'Cena Celestia', it: [
     [A, 'Burrata con tomates confitados', 'Sacala 20 minutos antes. Aceite de oliva, sal y pimienta al servir.', 'Ambiente'],
     [F, 'Langostinos', 'La mayonesa de lima viene aparte: sumala al servir.', 'Frío'],
     [H, 'Lomo al Malbec', 'Solo para entibiar y mantener el punto. Chimichurri al final.', '180 °C · 8 min'],
-    [H, 'Bondiola braseada', 'Tapada con su jugo; destapá los últimos 5 minutos.', '180 °C · 20 min'],
     [H, 'Papas confitadas', 'Sin tapa, hasta que doren.', '200 °C · 15 min'],
     [A, 'Pavlova', 'Armala al momento: crema sobre el merengue y frutos rojos arriba.', 'Armar'] ] },
   { k: 'cena-casera', n: 'Cena de la casa', it: [
