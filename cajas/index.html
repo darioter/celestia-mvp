@@ -67,6 +67,9 @@ section{padding:70px 0}
 .caja .lead{color:var(--mut);font-size:14.5px;margin:6px 0 12px}
 .menu{list-style:none;font-size:14px;margin-bottom:14px}
 .menu li{padding:5px 0;border-bottom:1px dashed var(--crd);display:flex;gap:10px}
+.menu>li>div{flex:1;min-width:0}.menu li span small{display:block;font-size:9.5px;letter-spacing:.06em;opacity:.8;margin-top:2px}
+.mi{list-style:none;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;background:none!important;box-shadow:none!important}.mi li{display:block!important;border:0!important;padding:1px 0 1px 14px!important;position:relative}.mi li:before{content:'';position:absolute;left:2px;top:.62em;width:5px;height:5px;border-radius:50%;background:#c9a84c}
+.mcount{font-size:12px;color:#a08a5c;margin:-6px 0 12px;letter-spacing:.02em}
 .menu li span{flex:none;width:92px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#a08a5c;padding-top:2px}
 .opc{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 14px}
 .op{border:1.5px solid var(--crd);background:#fff;border-radius:10px;padding:7px 12px;cursor:pointer;font:500 13.5px 'DM Sans',sans-serif;color:var(--tx)}
@@ -858,7 +861,9 @@ function cajaHTML(c) {
   return `<article class="caja" data-id="${c.id}">
     <div class="img" style="background-image:url('${c.img.charAt(0) === '/' ? c.img : U(c.img, 900, 506)}')"><span class="tag">${c.tag}</span></div>
     <div class="b"><h4>${c.nombre}</h4><p class="lead">${String(c.lead).replace('{mesa}', (o && o.mesa) || 'para compartir')}</p>
-      <ul class="menu">${c.menu.map(m => `<li><span>${m[0]}</span><div>${m[1]}</div></li>`).join('')}</ul>
+      <ul class="menu">${c.menu.map(m => { const pp = /^Por persona:\s*/.test(m[1]), it = m[1].replace(/^Por persona:\s*/, '').split(/\s+·\s+/);
+        return `<li><span>${m[0]}${pp ? '<small>por persona</small>' : ''}</span><div>${it.length > 1 ? `<ul class="mi">${it.map(x => `<li>${x}</li>`).join('')}</ul>` : it[0]}</div></li>`; }).join('')}</ul>
+      ${c.menu.length ? `<p class="mcount">${(() => { const n = c.menu.filter(m => !/^(Incluye|Para la mesa)/i.test(m[0])).reduce((a, m) => a + m[1].replace(/^Por persona:\s*/, '').split(/\s+·\s+/).length, 0); return n > 1 ? n + ' preparaciones' + (c.tipo === 'pp' ? ' · cada una en su envase' : '') : ''; })()}</p>` : ''}
       ${conStepper(c) ? `<div class="cuantos"><span>¿Para cuántas personas?</span><div class="stp"><button type="button" class="stp-b" data-paso="-1" aria-label="Menos personas"${sel <= 0 ? ' disabled' : ''}>−</button><b>${o.personas}</b><button type="button" class="stp-b" data-paso="1" aria-label="Más personas"${sel >= opts.length - 1 ? ' disabled' : ''}>+</button></div>${o.det ? `<small>${o.det}</small>` : ''}${sel >= opts.length - 1 ? '<small>¿Son más? Escribime por WhatsApp.</small>' : ''}${sel <= 0 && c.tipo === 'pp' && MIN_OCASION[st.ocasion] ? '<small>¿Son menos? Consultame por WhatsApp.</small>' : ''}</div>` : opts.length > 1 ? `<div class="opc">${opts.map((x, i) => `<button type="button" class="op${i === sel ? ' on' : ''}" data-op="${i}">${x.label}</button>`).join('')}</div>` : ''}
       <div class="pie"><div class="precio"><b>${f$(o.precio)}</b><small>${c.tipo === 'pp' ? f$(c.pp) + ' por persona' : c.calc ? 'Total para ' + o.personas + ' personas' : o.label}</small></div>
         <button type="button" class="btn add" data-add="${c.id}">Agregar al carrito</button></div>
